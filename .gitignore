@@ -9,3 +9,4 @@ pipeline-build-config.json
 test-report.xml
 .scannerwork/
 .github
+.env
