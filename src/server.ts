@@ -1,17 +1,21 @@
 import * as express from 'express';
-import {Server} from 'typescript-rest';
-import {Inject} from 'typescript-ioc';
-import {AddressInfo} from 'net';
+import { AddressInfo } from 'net';
+import { Inject } from 'typescript-ioc';
+import { Server } from 'typescript-rest';
 
 import * as npmPackage from '../package.json';
-import {parseCsvString} from './util/string-util';
-import {LoggerApi} from './logger';
-import {TracerApi} from './tracer';
-import {opentracingMiddleware} from './util/opentracing/express-middleware';
+import { LoggerApi } from './logger';
+import { TracerApi } from './tracer';
+import { opentracingMiddleware } from './util/opentracing/express-middleware';
+import { parseCsvString } from './util/string-util';
+
 import fs = require('fs');
 import http = require('http');
 import path = require('path');
 import cors = require('cors');
+
+import * as dotenv from 'dotenv';
+import * as mongoose from 'mongoose';
 
 const config = npmPackage.config || {
   protocol: 'http',
@@ -33,7 +37,7 @@ export class ApiServer {
 
   constructor(private readonly app: express.Application = express(), apiContext = configApiContext) {
 
-    this.app.use(opentracingMiddleware({tracer: this.tracer}));
+    this.app.use(opentracingMiddleware({ tracer: this.tracer }));
     this.logger.apply(this.app);
     this.app.use(cors());
 
@@ -77,6 +81,16 @@ export class ApiServer {
    * @returns {Promise<any>}
    */
   public async start(): Promise<ApiServer> {
+    dotenv.config();
+
+    await mongoose.connect(process.env.MONGO_URL as string, {
+      useCreateIndex: true,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      bufferCommands: false,
+      bufferMaxEntries: 0,
+    });
+
     return new Promise<ApiServer>((resolve, reject) => {
       this.server = this.app.listen(this.PORT, () => {
         const addressInfo = this.server.address() as AddressInfo;
