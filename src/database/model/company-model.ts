@@ -6,7 +6,14 @@ import { ProjectInterface } from './project-model';
 export interface CompanyInterface extends Document {
     name: string,
     email: string,
-    telefone: string,
+    phoneNumber: string,
+    socialMedia: SocialMediaInterface,
+    address?: AddressInterface['_id'],
+    projects?: ProjectInterface['_id'][],
+    jobs?: JobInterface['_id'][],
+};
+
+export interface SocialMediaInterface {
     website?: string,
     github?: string,
     twitter?: string,
@@ -15,9 +22,6 @@ export interface CompanyInterface extends Document {
     telegram?: string,
     facebook?: string,
     discord?: string,
-    address?: AddressInterface['_id'],
-    projects?: ProjectInterface['_id'][],
-    jobs?: JobInterface['_id'][],
 };
 
 const companySchema: Schema = new Schema({
@@ -31,40 +35,11 @@ const companySchema: Schema = new Schema({
         required: true,
         trim: true
     },
-    telefone: {
+    phoneNumber: {
         type: Number
     },
-    website: {
-        type: String,
-        trim: true
-    },
-    github: {
-        type: String,
-        trim: true
-    },
-    twitter: {
-        type: String,
-        trim: true
-    },
-    linkedIn: {
-        type: String,
-        trim: true
-    },
-    reddit: {
-        type: String,
-        trim: true
-    },
-    telegram: {
-        type: String,
-        trim: true
-    },
-    facebook: {
-        type: String,
-        trim: true
-    },
-    discord: {
-        type: String,
-        trim: true
+    socialMedia: {
+        type: Object
     },
     address: {
         type: Schema.Types.ObjectId
