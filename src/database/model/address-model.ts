@@ -2,7 +2,7 @@ import { Model, model, Schema, Document } from 'mongoose';
 
 export interface AddressInterface extends Document {
     street: string,
-    streetNumber: number,
+    streetNumber: string,
     city: string,
     state: string,
     zipCode: string,
@@ -15,7 +15,7 @@ const addressSchema: Schema = new Schema({
         trim: true
     },
     streetNumber: {
-        type: Number
+        type: String
     },
     city: {
         type: String,
