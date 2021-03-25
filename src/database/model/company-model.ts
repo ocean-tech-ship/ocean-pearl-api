@@ -11,6 +11,8 @@ export interface CompanyInterface extends Document {
     address?: AddressInterface['_id'],
     projects?: ProjectInterface['_id'][],
     jobs?: JobInterface['_id'][],
+    creationDate: Date,
+    updateDate?: Date,
 };
 
 export interface SocialMediaInterface {
@@ -49,7 +51,25 @@ const companySchema: Schema = new Schema({
     },
     jobs: {
         type: Array
+    },
+    creationDate: {
+        type: Date,
+        required: true
+    },
+    updateDate: {
+        type: Date
     }
+});
+
+companySchema.pre('save', function(this: CompanyInterface, next){
+    const now: Date = new Date();
+
+    this.updateDate = now;
+    if( !this.creationDate ) {
+        this.creationDate = now
+    }
+
+    next();
 });
 
 export const Company: Model<CompanyInterface> = model('Project', companySchema);

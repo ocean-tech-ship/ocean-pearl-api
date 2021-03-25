@@ -6,9 +6,10 @@ export interface ProjectInterface extends Document {
     link: string,
     logo?: string,
     pictures?: string[],
-    creationDate: Date,
     startDate: Date,
     finishDate: Date,
+    creationDate: Date,
+    updateDate?: Date,
 };
 
 const projectSchema: Schema = new Schema({
@@ -32,8 +33,8 @@ const projectSchema: Schema = new Schema({
     pictures: {
         type: Array
     },
-    creationDate: {
-        type: Date,
+    company: {
+        type: Schema.Types.ObjectId,
         required: true
     },
     startDate: {
@@ -43,7 +44,25 @@ const projectSchema: Schema = new Schema({
     finishDate: {
         type: Date,
         required: true
+    },
+    creationDate: {
+        type: Date,
+        required: true
+    },
+    updateDate: {
+        type: Date
     }
+});
+
+projectSchema.pre('save', function(this: ProjectInterface, next){
+    const now: Date = new Date();
+
+    this.updateDate = now;
+    if( !this.creationDate ) {
+        this.creationDate = now
+    }
+
+    next();
 });
 
 export const Project: Model<ProjectInterface> = model('Project', projectSchema);

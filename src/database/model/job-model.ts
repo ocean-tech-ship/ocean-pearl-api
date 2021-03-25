@@ -8,6 +8,7 @@ export interface JobInterface extends Document {
     salaryFrom: number,
     salaryTo: number,
     creationDate: Date,
+    updateDate?: Date,
     startDate: Date,
     company: CompanyInterface['_id'],
 };
@@ -38,6 +39,9 @@ const jobSchema: Schema = new Schema({
         type: Date,
         required: true
     },
+    updateDate: {
+        type: Date
+    },
     startDate: {
         type: Date,
         required: true
@@ -46,6 +50,17 @@ const jobSchema: Schema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     }
+});
+
+jobSchema.pre('save', function(this: JobInterface, next){
+    const now: Date = new Date();
+
+    this.updateDate = now;
+    if( !this.creationDate ) {
+        this.creationDate = now
+    }
+
+    next();
 });
 
 export const Job: Model<JobInterface> = model('Project', jobSchema);
