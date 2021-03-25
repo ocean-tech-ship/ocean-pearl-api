@@ -2,7 +2,7 @@ import { Model, model, Schema, Document } from 'mongoose';
 
 export interface ProjectInterface extends Document {
     title: string,
-    describtion: string,
+    description: string,
     link: string,
     logo?: string,
     pictures?: string[],
@@ -17,7 +17,7 @@ const projectSchema: Schema = new Schema({
         required: true,
         trim: true
     },
-    describtion: {
+    description: {
         type: String,
         required: true,
         trim: true
