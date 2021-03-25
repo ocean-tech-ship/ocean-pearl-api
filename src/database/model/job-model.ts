@@ -5,7 +5,8 @@ export interface JobInterface extends Document {
     title: string,
     describtion: string,
     location: string,
-    salary: number,
+    salaryFrom: number,
+    salaryTo: number,
     creationDate: Date,
     startDate: Date,
     company: CompanyInterface['_id'],
@@ -27,7 +28,10 @@ const jobSchema: Schema = new Schema({
         require: true,
         trim: true
     },
-    salary: {
+    salaryFrom: {
+        type: Number,
+    },
+    salaryTo: {
         type: Number,
     },
     creationDate: {
