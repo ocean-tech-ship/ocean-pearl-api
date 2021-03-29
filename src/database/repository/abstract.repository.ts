@@ -1,7 +1,7 @@
 import { Document, FilterQuery, Model } from "mongoose";
 import { RepositoryInterface } from "./repository.inteface";
 
-export class AbstractRepository<T extends Document> implements RepositoryInterface<T> {
+export abstract class AbstractRepository<T extends Document> implements RepositoryInterface<T> {
 
     private model: Model<Document>;
 
