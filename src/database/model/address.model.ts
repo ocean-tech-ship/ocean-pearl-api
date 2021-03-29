@@ -1,4 +1,4 @@
-import { Model, model, Schema, Document } from 'mongoose';
+import { model, Schema, Document } from 'mongoose';
 
 export interface AddressInterface extends Document {
     street: string,
@@ -35,4 +35,4 @@ const addressSchema: Schema = new Schema({
     }
 });
 
-export const Address: Model<AddressInterface> = model('Project', addressSchema);
+export const Address = model('Address', addressSchema);
