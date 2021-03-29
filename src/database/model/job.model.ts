@@ -1,5 +1,5 @@
-import { Model, model, Schema, Document } from 'mongoose';
-import { CompanyInterface } from './company-model';
+import { model, Schema, Document } from 'mongoose';
+import { CompanyInterface } from './company.model';
 
 export interface JobInterface extends Document {
     title: string,
@@ -7,8 +7,8 @@ export interface JobInterface extends Document {
     location: string,
     salaryFrom: number,
     salaryTo: number,
-    creationDate: Date,
-    updateDate?: Date,
+    created: Date,
+    updated?: Date,
     startDate: Date,
     company: CompanyInterface['_id'],
 };
@@ -35,11 +35,11 @@ const jobSchema: Schema = new Schema({
     salaryTo: {
         type: Number,
     },
-    creationDate: {
+    created: {
         type: Date,
         required: true
     },
-    updateDate: {
+    updated: {
         type: Date
     },
     startDate: {
@@ -55,12 +55,13 @@ const jobSchema: Schema = new Schema({
 jobSchema.pre('save', function(this: JobInterface, next){
     const now: Date = new Date();
 
-    this.updateDate = now;
-    if( !this.creationDate ) {
-        this.creationDate = now
+    this.updated = now;
+
+    if( !this.created ) {
+        this.created = now
     }
 
     next();
 });
 
-export const Job: Model<JobInterface> = model('Project', jobSchema);
+export const Job = model('Job', jobSchema);
