@@ -1,7 +1,7 @@
-import { Model, model, Schema, Document } from 'mongoose';
-import { AddressInterface } from './address-model';
-import { JobInterface } from './job-model';
-import { ProjectInterface } from './project-model';
+import { model, Schema, Document } from 'mongoose';
+import { AddressInterface } from './address.model';
+import { JobInterface } from './job.model';
+import { ProjectInterface } from './project.model';
 
 export interface CompanyInterface extends Document {
     name: string,
@@ -11,8 +11,8 @@ export interface CompanyInterface extends Document {
     address?: AddressInterface['_id'],
     projects?: ProjectInterface['_id'][],
     jobs?: JobInterface['_id'][],
-    creationDate: Date,
-    updateDate?: Date,
+    created?: Date,
+    updated?: Date,
 };
 
 export interface SocialMediaInterface {
@@ -52,11 +52,11 @@ const companySchema: Schema = new Schema({
     jobs: {
         type: Array
     },
-    creationDate: {
+    created: {
         type: Date,
         required: true
     },
-    updateDate: {
+    updated: {
         type: Date
     }
 });
@@ -64,12 +64,13 @@ const companySchema: Schema = new Schema({
 companySchema.pre('save', function(this: CompanyInterface, next){
     const now: Date = new Date();
 
-    this.updateDate = now;
-    if( !this.creationDate ) {
-        this.creationDate = now
+    this.updated = now;
+
+    if( !this.created ) {
+        this.created = now
     }
 
     next();
 });
 
-export const Company: Model<CompanyInterface> = model('Project', companySchema);
+export const Company = model('Company', companySchema);
