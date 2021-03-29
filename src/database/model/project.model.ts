@@ -1,15 +1,17 @@
-import { Model, model, Schema, Document } from 'mongoose';
+import { model, Schema, Document } from 'mongoose';
+import { CompanyInterface } from './company.model';
+import { DaoProposalInterface } from './dao-proposal.model';
 
 export interface ProjectInterface extends Document {
     title: string,
     description: string,
-    link: string,
+    website?: string,
     logo?: string,
     pictures?: string[],
-    startDate: Date,
-    finishDate: Date,
-    creationDate: Date,
-    updateDate?: Date,
+    company: CompanyInterface['_id'][],
+    daoProposals?: DaoProposalInterface['_id'][],
+    created: Date,
+    updated?: Date,
 };
 
 const projectSchema: Schema = new Schema({
@@ -23,9 +25,8 @@ const projectSchema: Schema = new Schema({
         required: true,
         trim: true
     },
-    link: {
+    website: {
         type: String,
-        required: true
     },
     logo: {
         type: String
@@ -37,19 +38,14 @@ const projectSchema: Schema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
-    startDate: {
+    daoProposal: {
+        type: Schema.Types.ObjectId
+    },
+    created: {
         type: Date,
         required: true
     },
-    finishDate: {
-        type: Date,
-        required: true
-    },
-    creationDate: {
-        type: Date,
-        required: true
-    },
-    updateDate: {
+    updated: {
         type: Date
     }
 });
@@ -57,12 +53,13 @@ const projectSchema: Schema = new Schema({
 projectSchema.pre('save', function(this: ProjectInterface, next){
     const now: Date = new Date();
 
-    this.updateDate = now;
-    if( !this.creationDate ) {
-        this.creationDate = now
+    this.updated = now;
+
+    if( !this.created ) {
+        this.created = now
     }
 
     next();
 });
 
-export const Project: Model<ProjectInterface> = model('Project', projectSchema);
+export const Project = model('Project', projectSchema);
