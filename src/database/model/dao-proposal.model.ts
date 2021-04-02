@@ -1,13 +1,14 @@
 import { model, Schema, Document } from 'mongoose';
-import { mongoosePaginate } from 'mongoose-paginate-v2';
 import { ProjectInterface } from './project.model';
+
+import mongoosePaginate = require('mongoose-paginate-v2');
 
 export interface DaoProposalInterface extends Document {
     startDate: Date,
     finishDate: Date,
-    created: Date,
+    created?: Date,
     fundingRound: number,
-    project: ProjectInterface['_id'][]
+    project: ProjectInterface['_id']
 };
 
 const daoProposalSchema: Schema = new Schema({
@@ -21,7 +22,8 @@ const daoProposalSchema: Schema = new Schema({
     },
     created: {
         type: Date,
-        required: true
+        required: true,
+        default: Date.now
     },
     fundingRound: {
         type: Number,
@@ -31,15 +33,6 @@ const daoProposalSchema: Schema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     }
-});
-
-daoProposalSchema.pre('save', function(this: DaoProposalInterface, next){
-    if( this.created ) {
-        next();
-    }
-
-    const now: Date = new Date();
-    this.created = now
 });
 
 daoProposalSchema.plugin(mongoosePaginate);
