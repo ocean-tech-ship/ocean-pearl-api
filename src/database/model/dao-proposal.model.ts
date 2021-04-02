@@ -1,4 +1,5 @@
 import { model, Schema, Document } from 'mongoose';
+import { mongoosePaginate } from 'mongoose-paginate-v2';
 import { ProjectInterface } from './project.model';
 
 export interface DaoProposalInterface extends Document {
@@ -40,5 +41,7 @@ daoProposalSchema.pre('save', function(this: DaoProposalInterface, next){
     const now: Date = new Date();
     this.created = now
 });
+
+daoProposalSchema.plugin(mongoosePaginate);
 
 export const DaoProposal = model('DoaProposal', daoProposalSchema);

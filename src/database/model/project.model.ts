@@ -1,4 +1,5 @@
 import { model, Schema, Document } from 'mongoose';
+import { mongoosePaginate } from 'mongoose-paginate-v2';
 import { CompanyInterface } from './company.model';
 import { DaoProposalInterface } from './dao-proposal.model';
 
@@ -61,5 +62,7 @@ projectSchema.pre('save', function(this: ProjectInterface, next){
 
     next();
 });
+
+projectSchema.plugin(mongoosePaginate);
 
 export const Project = model('Project', projectSchema);

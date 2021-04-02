@@ -1,4 +1,5 @@
 import { model, Schema, Document } from 'mongoose';
+import { mongoosePaginate } from 'mongoose-paginate-v2';
 import { AddressInterface } from './address.model';
 import { JobInterface } from './job.model';
 import { ProjectInterface } from './project.model';
@@ -72,5 +73,7 @@ companySchema.pre('save', function(this: CompanyInterface, next){
 
     next();
 });
+
+companySchema.plugin(mongoosePaginate);
 
 export const Company = model('Company', companySchema);

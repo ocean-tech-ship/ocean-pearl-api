@@ -1,4 +1,5 @@
 import { model, Schema, Document } from 'mongoose';
+import { mongoosePaginate } from 'mongoose-paginate-v2';
 import { CompanyInterface } from './company.model';
 
 export interface JobInterface extends Document {
@@ -63,5 +64,7 @@ jobSchema.pre('save', function(this: JobInterface, next){
 
     next();
 });
+
+jobSchema.plugin(mongoosePaginate);
 
 export const Job = model('Job', jobSchema);
