@@ -1,12 +1,12 @@
 import { model, Schema, Document } from 'mongoose';
 
 export interface AddressInterface extends Document {
-    street: string,
-    streetNumber: string,
-    city: string,
-    state: string,
-    zipCode: string,
-    country: string
+    street?: string,
+    streetNumber?: string,
+    city?: string,
+    state?: string,
+    zipCode?: string,
+    country?: string
 };
 
 const addressSchema: Schema = new Schema({
@@ -15,7 +15,8 @@ const addressSchema: Schema = new Schema({
         trim: true
     },
     streetNumber: {
-        type: String
+        type: String,
+        trim: true
     },
     city: {
         type: String,
