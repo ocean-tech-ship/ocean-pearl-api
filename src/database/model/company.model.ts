@@ -1,8 +1,9 @@
 import { model, Schema, Document } from 'mongoose';
-import { mongoosePaginate } from 'mongoose-paginate-v2';
 import { AddressInterface } from './address.model';
 import { JobInterface } from './job.model';
 import { ProjectInterface } from './project.model';
+
+import mongoosePaginate = require('mongoose-paginate-v2');
 
 export interface CompanyInterface extends Document {
     name: string,
@@ -39,7 +40,7 @@ const companySchema: Schema = new Schema({
         trim: true
     },
     phoneNumber: {
-        type: Number
+        type: String
     },
     socialMedia: {
         type: Object
@@ -55,7 +56,8 @@ const companySchema: Schema = new Schema({
     },
     created: {
         type: Date,
-        required: true
+        required: true,
+        default: Date.now
     },
     updated: {
         type: Date
@@ -63,13 +65,7 @@ const companySchema: Schema = new Schema({
 });
 
 companySchema.pre('save', function(this: CompanyInterface, next){
-    const now: Date = new Date();
-
-    this.updated = now;
-
-    if( !this.created ) {
-        this.created = now
-    }
+    this.updated = new Date();
 
     next();
 });
