@@ -1,7 +1,8 @@
 import { model, Schema, Document } from 'mongoose';
-import { mongoosePaginate } from 'mongoose-paginate-v2';
 import { CompanyInterface } from './company.model';
 import { DaoProposalInterface } from './dao-proposal.model';
+
+import mongoosePaginate = require('mongoose-paginate-v2');
 
 export interface ProjectInterface extends Document {
     title: string,
@@ -9,9 +10,9 @@ export interface ProjectInterface extends Document {
     website?: string,
     logo?: string,
     pictures?: string[],
-    company: CompanyInterface['_id'][],
+    company: CompanyInterface['_id'],
     daoProposals?: DaoProposalInterface['_id'][],
-    created: Date,
+    created?: Date,
     updated?: Date,
 };
 
@@ -27,7 +28,7 @@ const projectSchema: Schema = new Schema({
         trim: true
     },
     website: {
-        type: String,
+        type: String
     },
     logo: {
         type: String
@@ -44,7 +45,8 @@ const projectSchema: Schema = new Schema({
     },
     created: {
         type: Date,
-        required: true
+        required: true,
+        default: Date.now
     },
     updated: {
         type: Date
@@ -52,13 +54,7 @@ const projectSchema: Schema = new Schema({
 });
 
 projectSchema.pre('save', function(this: ProjectInterface, next){
-    const now: Date = new Date();
-
-    this.updated = now;
-
-    if( !this.created ) {
-        this.created = now
-    }
+    this.updated = new Date();
 
     next();
 });
