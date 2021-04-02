@@ -1,3 +1,4 @@
+import {Container} from 'typescript-ioc';
 import { JobRepository } from '../../../src/database/repository/job.repository';
 import { Job, JobInterface } from '../../../src/database/model/job.model';
 
@@ -7,7 +8,7 @@ import * as mongoose from 'mongoose';
 describe('company.repository', () => {
 
 
-    const repository: JobRepository = new JobRepository();
+    const repository: JobRepository = Container.get(JobRepository);
     let job: JobInterface = <JobInterface>{
         _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
         title: 'Head of doing Stuff',

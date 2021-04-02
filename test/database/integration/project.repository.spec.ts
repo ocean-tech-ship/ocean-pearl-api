@@ -1,3 +1,4 @@
+import {Container} from 'typescript-ioc';
 import { ProjectRepository } from '../../../src/database/repository/project.repository';
 import { Project, ProjectInterface } from '../../../src/database/model/project.model';
 
@@ -7,7 +8,7 @@ import * as mongoose from 'mongoose';
 describe('company.repository', () => {
 
 
-    const repository: ProjectRepository = new ProjectRepository();
+    const repository: ProjectRepository = Container.get(ProjectRepository);
     let project: ProjectInterface = <ProjectInterface>{
         _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
         title: 'Best project ever',

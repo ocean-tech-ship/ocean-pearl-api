@@ -1,3 +1,4 @@
+import {Container} from 'typescript-ioc';
 import { DaoProposal, DaoProposalInterface } from '../../../src/database/model/dao-proposal.model';
 import { DaoProposalRepository } from '../../../src/database/repository/dao-proposal.repository';
 
@@ -7,7 +8,7 @@ import * as mongoose from 'mongoose';
 describe('company.repository', () => {
 
 
-    const repository: DaoProposalRepository = new DaoProposalRepository();
+    const repository: DaoProposalRepository = Container.get(DaoProposalRepository);
     let daoProposal: DaoProposalInterface = <DaoProposalInterface>{
         _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
         startDate: new Date(),

@@ -1,3 +1,4 @@
+import {Container} from 'typescript-ioc';
 import { Address, AddressInterface } from '../../../src/database/model/address.model';
 import { AddressRepository } from '../../../src/database/repository/address.repository';
 
@@ -7,7 +8,7 @@ import * as mongoose from 'mongoose';
 describe('company.repository', () => {
 
 
-    const repository: AddressRepository = new AddressRepository();
+    const repository: AddressRepository = Container.get(AddressRepository);
     let address: AddressInterface = <AddressInterface>{
         _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
         street: 'Teststreet',

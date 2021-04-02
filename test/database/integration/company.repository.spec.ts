@@ -1,3 +1,4 @@
+import {Container} from 'typescript-ioc';
 import { Company, CompanyInterface } from '../../../src/database/model/company.model';
 import { CompanyRepository } from '../../../src/database/repository/company.repository';
 
@@ -7,7 +8,7 @@ import * as mongoose from 'mongoose';
 describe('company.repository', () => {
 
 
-    const repository: CompanyRepository = new CompanyRepository();
+    const repository: CompanyRepository = Container.get(CompanyRepository);
     let company: CompanyInterface = <CompanyInterface>{
         _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
         name: 'Test',
