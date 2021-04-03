@@ -10,3 +10,4 @@ test-report.xml
 .scannerwork/
 .github
 .env
+.DS_Store
