@@ -11,3 +11,4 @@ test-report.xml
 .github
 .env
 .DS_Store
+package-lock.json
