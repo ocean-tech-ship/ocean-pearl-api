@@ -12,8 +12,6 @@ export interface ProjectInterface extends Document {
     pictures?: string[],
     company: CompanyInterface['_id'],
     daoProposals?: DaoProposalInterface['_id'][],
-    created?: Date,
-    updated?: Date,
 };
 
 const projectSchema: Schema = new Schema({
@@ -42,22 +40,9 @@ const projectSchema: Schema = new Schema({
     },
     daoProposal: {
         type: Schema.Types.ObjectId
-    },
-    created: {
-        type: Date,
-        required: true,
-        default: Date.now
-    },
-    updated: {
-        type: Date
     }
-});
-
-projectSchema.pre('save', function(this: ProjectInterface, next){
-    this.updated = new Date();
-
-    next();
-});
+},
+{ timestamps: true });
 
 projectSchema.plugin(mongoosePaginate);
 

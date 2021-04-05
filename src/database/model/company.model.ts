@@ -13,8 +13,6 @@ export interface CompanyInterface extends Document {
     address?: AddressInterface['_id'],
     projects?: ProjectInterface['_id'][],
     jobs?: JobInterface['_id'][],
-    created?: Date,
-    updated?: Date,
 };
 
 export interface SocialMediaInterface {
@@ -53,22 +51,9 @@ const companySchema: Schema = new Schema({
     },
     jobs: {
         type: Array
-    },
-    created: {
-        type: Date,
-        required: true,
-        default: Date.now
-    },
-    updated: {
-        type: Date
     }
-});
-
-companySchema.pre('save', function(this: CompanyInterface, next){
-    this.updated = new Date();
-
-    next();
-});
+},
+{ timestamps: true });
 
 companySchema.plugin(mongoosePaginate);
 

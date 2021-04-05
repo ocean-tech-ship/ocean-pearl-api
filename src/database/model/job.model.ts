@@ -9,8 +9,6 @@ export interface JobInterface extends Document {
     location: string,
     salaryFrom: number,
     salaryTo: number,
-    created?: Date,
-    updated?: Date,
     startDate: Date,
     company: CompanyInterface['_id'],
 };
@@ -37,14 +35,6 @@ const jobSchema: Schema = new Schema({
     salaryTo: {
         type: Number
     },
-    created: {
-        type: Date,
-        required: true,
-        default: Date.now
-    },
-    updated: {
-        type: Date
-    },
     startDate: {
         type: Date,
         required: true
@@ -53,13 +43,8 @@ const jobSchema: Schema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     }
-});
-
-jobSchema.pre('save', function(this: JobInterface, next){
-    this.updated = new Date();
-
-    next();
-});
+},
+{ timestamps: true });
 
 jobSchema.plugin(mongoosePaginate);
 
