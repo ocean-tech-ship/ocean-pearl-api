@@ -1,4 +1,5 @@
 import { model, Schema, Document } from 'mongoose';
+import { CountryEnum } from '../Enums/country.enum';
 
 export interface AddressInterface extends Document {
     street?: string,
@@ -6,7 +7,7 @@ export interface AddressInterface extends Document {
     city?: string,
     state?: string,
     zipCode?: string,
-    country?: string
+    country?: CountryEnum
 };
 
 const addressSchema: Schema = new Schema({
