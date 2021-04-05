@@ -12,27 +12,39 @@ export interface AddressInterface extends Document {
 const addressSchema: Schema = new Schema({
     street: {
         type: String,
-        trim: true
+        trim: true,
+        lowercase: true,
+        maxLength: 254
     },
     streetNumber: {
         type: String,
-        trim: true
+        trim: true,
+        lowercase: true,
+        maxLength: 20
     },
     city: {
         type: String,
-        trim: true
+        trim: true,
+        lowercase: true,
+        maxLength: 254
     },
     state: {
         type: String,
-        trim: true
+        trim: true,
+        lowercase: true,
+        maxLength: 64
     },
     zipCode: {
         type: String,
-        trim: true
+        trim: true,
+        lowercase: true,
+        maxLength: 16
     },
     country: {
         type: String,
-        trim: true
+        trim: true,
+        lowercase: true,
+        maxLength: 4
     }
 });
 
