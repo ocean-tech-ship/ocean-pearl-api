@@ -21,7 +21,9 @@ const daoProposalSchema: Schema = new Schema({
     },
     fundingRound: {
         type: Number,
-        required: true
+        required: true,
+        min: 0,
+        max: 9999
     },
     project: {
         type: Schema.Types.ObjectId,
