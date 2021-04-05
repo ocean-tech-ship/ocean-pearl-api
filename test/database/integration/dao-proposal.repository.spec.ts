@@ -2,6 +2,7 @@ import {Container} from 'typescript-ioc';
 import { DaoProposal, DaoProposalInterface } from '../../../src/database/model/dao-proposal.model';
 import { DaoProposalRepository } from '../../../src/database/repository/dao-proposal.repository';
 
+import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
 
 describe('company.repository', () => {
@@ -17,7 +18,9 @@ describe('company.repository', () => {
     }
 
   beforeEach(async () => {
-    await mongoose.connect('mongodb://127.0.0.1:27017/ocean-pearl' as string, {
+    dotenv.config()
+
+    await mongoose.connect(process.env.TEST_MONGO_URL as string, {
       useNewUrlParser: true,
     });
   });

@@ -2,6 +2,7 @@ import {Container} from 'typescript-ioc';
 import { ProjectRepository } from '../../../src/database/repository/project.repository';
 import { Project, ProjectInterface } from '../../../src/database/model/project.model';
 
+import * as dotenv from 'dotenv'; 
 import * as mongoose from 'mongoose';
 
 describe('company.repository', () => {
@@ -18,7 +19,9 @@ describe('company.repository', () => {
     }
 
   beforeEach(async () => {
-    await mongoose.connect('mongodb://127.0.0.1:27017/ocean-pearl' as string, {
+    dotenv.config()
+
+    await mongoose.connect(process.env.TEST_MONGO_URL as string, {
       useNewUrlParser: true,
     });
   });
