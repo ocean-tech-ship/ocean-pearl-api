@@ -5,7 +5,7 @@ import { DaoProposalRepository } from '../../../src/database/repository/dao-prop
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
 
-describe('company.repository', () => {
+describe('doa-proposal.repository', () => {
 
 
     const repository: DaoProposalRepository = Container.get(DaoProposalRepository);
@@ -34,12 +34,12 @@ describe('company.repository', () => {
     expect(true).toBe(true);
   });
 
-    describe('Given I have a company object', () => {
-        test('it should save the company',async () => {
+    describe('Given I have a daoProposal repository', () => {
+        test('it should save a daoProposal',async () => {
             expect(await repository.create(daoProposal)).toEqual(true);
         });
 
-        test('it should return the company', async () => {
+        test('it should return a daoProposal', async () => {
             const dbDoaProposal = await repository.getByID(daoProposal._id)
 
             expect({
@@ -51,17 +51,17 @@ describe('company.repository', () => {
             }).toEqual(daoProposal);
         });
 
-        test('it should return all companies',async () => {
+        test('it should return all daoProposals',async () => {
             expect((await repository.getAll()).length).toBeGreaterThanOrEqual(1);
         });
 
-        test('it should update the company',async () => {
+        test('it should update a daoProposal',async () => {
             daoProposal.fundingRound = 4;
 
             expect(await repository.update(daoProposal)).toEqual(true);
         });
 
-        test('it should delete the company',async () => {
+        test('it should delete a daoProposal',async () => {
             expect(await repository.delete(daoProposal._id)).toEqual(true);
         });
   });

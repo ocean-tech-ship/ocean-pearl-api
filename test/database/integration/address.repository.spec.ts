@@ -1,11 +1,12 @@
 import {Container} from 'typescript-ioc';
 import { Address, AddressInterface } from '../../../src/database/model/address.model';
 import { AddressRepository } from '../../../src/database/repository/address.repository';
+import { CountryEnum } from '../../../src/database/enums/country.enum';
 
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
 
-describe('company.repository', () => {
+describe('address.repository', () => {
 
 
     const repository: AddressRepository = Container.get(AddressRepository);
@@ -16,7 +17,7 @@ describe('company.repository', () => {
         city: 'TestCity',
         state: 'TestState',
         zipCode: '12345',
-        country: 'Germany'
+        country: CountryEnum.Germany
     }
 
   beforeEach(async () => {
@@ -36,12 +37,12 @@ describe('company.repository', () => {
     expect(true).toBe(true);
   });
 
-    describe('Given I have a company object', () => {
-        test('it should save the company',async () => {
+    describe('Given I have an address repository', () => {
+        test('it should save an address',async () => {
             expect(await repository.create(address)).toEqual(true);
         });
 
-        test('it should return the company', async () => {
+        test('it should return an address', async () => {
             const dbAddress = await repository.getByID(address._id)
 
             expect({
@@ -52,20 +53,28 @@ describe('company.repository', () => {
                 state: dbAddress.state,
                 zipCode: dbAddress.zipCode,
                 country: dbAddress.country,
-            }).toEqual(address);
+            }).toEqual({
+              _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
+              street: 'teststreet',
+              streetNumber: '43c',
+              city: 'testcity',
+              state: 'teststate',
+              zipCode: '12345',
+              country: CountryEnum.Germany
+          });
         });
 
-        test('it should return all companies',async () => {
+        test('it should return all addresses',async () => {
             expect((await repository.getAll()).length).toBeGreaterThanOrEqual(1);
         });
 
-        test('it should update the company',async () => {
+        test('it should update an address',async () => {
             address.city = 'UpdateTest';
 
             expect(await repository.update(address)).toEqual(true);
         });
 
-        test('it should delete the company',async () => {
+        test('it should delete an address',async () => {
             expect(await repository.delete(address._id)).toEqual(true);
         });
   });
