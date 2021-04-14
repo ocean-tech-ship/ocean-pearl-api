@@ -1,5 +1,5 @@
 import { model, Schema, Document } from 'mongoose';
-import { CountryEnum } from '../Enums/country.enum';
+import { CountryEnum } from '../enums/country.enum';
 
 export interface AddressInterface extends Document {
     street?: string,
@@ -15,19 +15,19 @@ const addressSchema: Schema = new Schema({
         type: String,
         trim: true,
         lowercase: true,
-        maxLength: 254
+        maxLength: 256
     },
     streetNumber: {
         type: String,
         trim: true,
         lowercase: true,
-        maxLength: 20
+        maxLength: 8
     },
     city: {
         type: String,
         trim: true,
         lowercase: true,
-        maxLength: 254
+        maxLength: 256
     },
     state: {
         type: String,
@@ -44,7 +44,7 @@ const addressSchema: Schema = new Schema({
     country: {
         type: String,
         trim: true,
-        lowercase: true,
+        uppercase: true,
         maxLength: 4
     }
 });
