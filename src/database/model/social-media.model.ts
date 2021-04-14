@@ -62,4 +62,4 @@ const socialMediaSchema: Schema = new Schema({
     },
 });
 
-export const Company = model('SocialMedia', socialMediaSchema);
+export const SocialMedia = model('SocialMedia', socialMediaSchema);
