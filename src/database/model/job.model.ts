@@ -11,7 +11,7 @@ export interface JobInterface extends Document {
     location: CountryEnum,
     tokenSalaryOption?: TokenOptionEnum,
     token?: string,
-    tokenAmount: number,
+    tokenAmount?: number,
     salaryFrom: number,
     salaryTo: number,
     startDate: Date,
