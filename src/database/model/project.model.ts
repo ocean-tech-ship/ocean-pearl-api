@@ -1,13 +1,14 @@
 import { model, Schema, Document } from 'mongoose';
 import { CompanyInterface } from './company.model';
 import { DaoProposalInterface } from './dao-proposal.model';
+import { SocialMediaInterface } from './social-media.model';
 
 import mongoosePaginate = require('mongoose-paginate-v2');
 
 export interface ProjectInterface extends Document {
     title: string,
     description: string,
-    website?: string,
+    socialMedia: SocialMediaInterface['_id'],
     logo?: string,
     pictures?: string[],
     company: CompanyInterface['_id'],
@@ -17,6 +18,7 @@ export interface ProjectInterface extends Document {
 const projectSchema: Schema = new Schema({
     title: {
         type: String,
+        maxLength: 256,
         required: true,
         trim: true
     },
@@ -25,8 +27,8 @@ const projectSchema: Schema = new Schema({
         required: true,
         trim: true
     },
-    website: {
-        type: String
+    socialMedia: {
+        type: Schema.Types.ObjectId
     },
     logo: {
         type: String
