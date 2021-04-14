@@ -2,46 +2,37 @@ import { model, Schema, Document } from 'mongoose';
 import { AddressInterface } from './address.model';
 import { JobInterface } from './job.model';
 import { ProjectInterface } from './project.model';
-
-import mongoosePaginate = require('mongoose-paginate-v2');
+import { SocialMediaInterface } from './social-media.model';
+import * as mongoosePaginate from 'mongoose-paginate-v2';
 
 export interface CompanyInterface extends Document {
     name: string,
     email: string,
     phoneNumber: string,
-    socialMedia: SocialMediaInterface,
+    socialMedia?: SocialMediaInterface['_id'],
     address?: AddressInterface['_id'],
     projects?: ProjectInterface['_id'][],
     jobs?: JobInterface['_id'][],
-};
-
-export interface SocialMediaInterface {
-    website?: string,
-    github?: string,
-    twitter?: string,
-    linkedIn?: string,
-    reddit?: string,
-    telegram?: string,
-    facebook?: string,
-    discord?: string,
 };
 
 const companySchema: Schema = new Schema({
     name: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        maxLength: 256
     },
     email: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        lowercase: true
     },
     phoneNumber: {
         type: String
     },
     socialMedia: {
-        type: Object
+        type: Schema.Types.ObjectId
     },
     address: {
         type: Schema.Types.ObjectId
