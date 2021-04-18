@@ -10,6 +10,10 @@
     "port": 3000,
     "contextRoot": ""
   },
+  "engines": {
+    "node": "12.22.x",
+    "npm": "6.x"
+  },
   "pact": {
     "providerBaseUrl": "",
     "pactBrokerUrl": ""
@@ -17,6 +21,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "test": "jest --coverage",
+    "test_ci": "yarn test --ci",
     "test-integration": "jest -c jest.config.integration.js",
     "tdd": "jest --watch",
     "prebuild": "npm run clean",
