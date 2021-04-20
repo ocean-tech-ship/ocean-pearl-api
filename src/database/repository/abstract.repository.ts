@@ -11,6 +11,7 @@ export abstract class AbstractRepository<T extends Document>
         this.model = model;
     }
 
+
     public async getByID(id: string): Promise<T> {
 
         try {
@@ -43,12 +44,12 @@ export abstract class AbstractRepository<T extends Document>
         }
     }
 
-    public async create(model: T): Promise<boolean> {
+    public async create(model: T): Promise<string> {
 
         try {
             const response: T = await this.model.create(model) as T;
 
-            return response !== null;
+            return response._id;
         } catch (error: any) {
 
             throw error;
