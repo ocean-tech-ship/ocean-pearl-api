@@ -3,49 +3,55 @@ import { CompanyInterface } from './company.model';
 import { DaoProposalInterface } from './dao-proposal.model';
 import { SocialMediaInterface } from './social-media.model';
 
-import mongoosePaginate = require('mongoose-paginate-v2');
-
 export interface ProjectInterface extends Document {
-    title: string,
-    description: string,
-    socialMedia: SocialMediaInterface['_id'],
-    logo?: string,
-    pictures?: string[],
-    company: CompanyInterface['_id'],
-    daoProposals?: DaoProposalInterface['_id'][],
-};
+    title: string;
+    description: string;
+    socialMedia?: SocialMediaInterface['_id'];
+    logo?: string;
+    pictures?: string[];
+    company?: CompanyInterface['_id'];
+    daoProposals?: DaoProposalInterface['_id'][];
+}
 
-const projectSchema: Schema = new Schema({
-    title: {
-        type: String,
-        maxLength: 256,
-        required: true,
-        trim: true
+const projectSchema: Schema = new Schema(
+    {
+        title: {
+            type: String,
+            maxLength: 256,
+            required: true,
+            trim: true,
+        },
+        description: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        socialMedia: {
+            type: Schema.Types.ObjectId,
+            ref: 'SocialMedia',
+        },
+        logo: {
+            type: String,
+        },
+        pictures: [
+            {
+                type: String,
+            },
+        ],
+        company: {
+            type: Schema.Types.ObjectId,
+            ref: 'Company',
+        },
+        daoProposals: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'DaoProposal',
+            },
+        ],
     },
-    description: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    socialMedia: {
-        type: Schema.Types.ObjectId
-    },
-    logo: {
-        type: String
-    },
-    pictures: {
-        type: Array
-    },
-    company: {
-        type: Schema.Types.ObjectId,
-        required: true
-    },
-    daoProposal: {
-        type: Schema.Types.ObjectId
-    }
-},
-{ timestamps: true });
+    { timestamps: true }
+);
 
-projectSchema.plugin(mongoosePaginate);
+const Project = model<ProjectInterface>('Project', projectSchema);
 
-export const Project = model('Project', projectSchema);
+export default Project;
