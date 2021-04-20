@@ -91,6 +91,8 @@ export class ApiServer {
       bufferMaxEntries: 0,
     });
 
+    require('./database/index');
+
     return new Promise<ApiServer>((resolve, reject) => {
       this.server = this.app.listen(this.PORT, () => {
         const addressInfo = this.server.address() as AddressInfo;
