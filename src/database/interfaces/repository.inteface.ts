@@ -7,7 +7,7 @@ export interface RepositoryInterface<T extends Document> {
 
     update(model: T): Promise<boolean>;
 
-    create(model: T): Promise<boolean>;
+    create(model: T): Promise<string>;
 
     delete(id: string): Promise<boolean>;
 }
