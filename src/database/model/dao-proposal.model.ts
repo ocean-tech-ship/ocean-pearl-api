@@ -1,37 +1,41 @@
 import { model, Schema, Document } from 'mongoose';
 import { ProjectInterface } from './project.model';
 
-import mongoosePaginate = require('mongoose-paginate-v2');
-
 export interface DaoProposalInterface extends Document {
-    startDate: Date,
-    finishDate: Date,
-    fundingRound: number,
-    project: ProjectInterface['_id']
-};
+    startDate: Date;
+    finishDate: Date;
+    fundingRound: number;
+    project: ProjectInterface['_id'];
+}
 
-const daoProposalSchema: Schema = new Schema({
-    startDate: {
-        type: Date,
-        required: true
+const daoProposalSchema: Schema = new Schema(
+    {
+        startDate: {
+            type: Date,
+            required: true,
+        },
+        finishDate: {
+            type: Date,
+            required: true,
+        },
+        fundingRound: {
+            type: Number,
+            required: true,
+            min: 0,
+            max: 9999,
+        },
+        project: {
+            type: Schema.Types.ObjectId,
+            ref: 'Project',
+            required: true,
+        },
     },
-    finishDate: {
-        type: Date,
-        required: true
-    },
-    fundingRound: {
-        type: Number,
-        required: true,
-        min: 0,
-        max: 9999
-    },
-    project: {
-        type: Schema.Types.ObjectId,
-        required: true
-    }
-},
-{ timestamps: true });
+    { timestamps: true }
+);
 
-daoProposalSchema.plugin(mongoosePaginate);
+const DaoProposal = model<DaoProposalInterface>(
+    'DaoProposal',
+    daoProposalSchema
+);
 
-export const DaoProposal = model('DoaProposal', daoProposalSchema);
+export default DaoProposal;

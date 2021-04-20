@@ -2,51 +2,53 @@ import { model, Schema, Document } from 'mongoose';
 import { CountryEnum } from '../enums/country.enum';
 
 export interface AddressInterface extends Document {
-    street?: string,
-    streetNumber?: string,
-    city?: string,
-    state?: string,
-    zipCode?: string,
-    country?: CountryEnum
-};
+    street?: string;
+    streetNumber?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+    country?: CountryEnum;
+}
 
 const addressSchema: Schema = new Schema({
     street: {
         type: String,
         trim: true,
         lowercase: true,
-        maxLength: 256
+        maxLength: 256,
     },
     streetNumber: {
         type: String,
         trim: true,
         lowercase: true,
-        maxLength: 8
+        maxLength: 8,
     },
     city: {
         type: String,
         trim: true,
         lowercase: true,
-        maxLength: 256
+        maxLength: 256,
     },
     state: {
         type: String,
         trim: true,
         lowercase: true,
-        maxLength: 64
+        maxLength: 64,
     },
     zipCode: {
         type: String,
         trim: true,
         lowercase: true,
-        maxLength: 16
+        maxLength: 16,
     },
     country: {
         type: String,
         trim: true,
         uppercase: true,
-        maxLength: 4
-    }
+        maxLength: 4,
+    },
 });
 
-export const Address = model('Address', addressSchema);
+const Address = model<AddressInterface>('Address', addressSchema);
+
+export default Address;
