@@ -5,7 +5,7 @@ import { LoggerApi } from '../logger';
 import { DaoProposalService } from '../services/dao-proposal/dao-proposal.service';
 
 @Path('/dao-proposal')
-export class ProjectController {
+export class DaoProposalController {
     @Inject
     _baseLogger: LoggerApi;
     @Inject
