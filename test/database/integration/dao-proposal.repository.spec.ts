@@ -1,46 +1,52 @@
-import {Container} from 'typescript-ioc';
-import { DaoProposal, DaoProposalInterface } from '../../../src/database/model/dao-proposal.model';
+import { Container } from 'typescript-ioc';
+import DaoProposal, {
+    DaoProposalInterface,
+} from '../../../src/database/model/dao-proposal.model';
 import { DaoProposalRepository } from '../../../src/database/repository/dao-proposal.repository';
 
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
 
+beforeEach(async () => {
+    dotenv.config();
+
+    await mongoose.connect(process.env.TEST_MONGO_URL as string, {
+        useNewUrlParser: true,
+    });
+
+    require('../../../src/database/index');
+});
+
+afterAll(async () => {
+    await DaoProposal.collection.drop();
+    await mongoose.connection.close();
+});
+
 describe('doa-proposal.repository', () => {
-
-
-    const repository: DaoProposalRepository = Container.get(DaoProposalRepository);
+    const repository: DaoProposalRepository = Container.get(
+        DaoProposalRepository
+    );
     let daoProposal: DaoProposalInterface = <DaoProposalInterface>{
         _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
         startDate: new Date(),
         finishDate: new Date(),
         fundingRound: 2,
-        project: new mongoose.Types.ObjectId('6060e915a8c5f54934190541')
-    }
+        project: new mongoose.Types.ObjectId('6060e915a8c5f54934190541'),
+    };
 
-  beforeEach(async () => {
-    dotenv.config()
-
-    await mongoose.connect(process.env.TEST_MONGO_URL as string, {
-      useNewUrlParser: true,
+    test('canary validates test infrastructure', () => {
+        expect(true).toBe(true);
     });
-  });
-
-  afterAll(async () => {
-    await DaoProposal.collection.drop();
-    await mongoose.connection.close();
-  })
-
-  test('canary validates test infrastructure', () => {
-    expect(true).toBe(true);
-  });
 
     describe('Given I have a daoProposal repository', () => {
-        test('it should save a daoProposal',async () => {
-            expect(await repository.create(daoProposal)).toEqual(true);
+        test('it should save a daoProposal', async () => {
+            expect(await repository.create(daoProposal)).toEqual(
+                new mongoose.Types.ObjectId('6060e915a8c5f54934190542')
+            );
         });
 
         test('it should return a daoProposal', async () => {
-            const dbDoaProposal = await repository.getByID(daoProposal._id)
+            const dbDoaProposal = await repository.getByID(daoProposal._id);
 
             expect({
                 _id: dbDoaProposal._id,
@@ -48,21 +54,29 @@ describe('doa-proposal.repository', () => {
                 finishDate: dbDoaProposal.finishDate,
                 fundingRound: dbDoaProposal.fundingRound,
                 project: dbDoaProposal.project,
-            }).toEqual(daoProposal);
+            }).toEqual({
+                _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
+                startDate: daoProposal.startDate,
+                finishDate: daoProposal.finishDate,
+                fundingRound: 2,
+                project: null,
+            });
         });
 
-        test('it should return all daoProposals',async () => {
-            expect((await repository.getAll()).length).toBeGreaterThanOrEqual(1);
+        test('it should return all daoProposals', async () => {
+            expect((await repository.getAll()).length).toBeGreaterThanOrEqual(
+                1
+            );
         });
 
-        test('it should update a daoProposal',async () => {
+        test('it should update a daoProposal', async () => {
             daoProposal.fundingRound = 4;
 
-            expect(await repository.update(daoProposal)).toEqual(true);
+            expect(await repository.update(daoProposal)).toBeTruthy();
         });
 
-        test('it should delete a daoProposal',async () => {
-            expect(await repository.delete(daoProposal._id)).toEqual(true);
+        test('it should delete a daoProposal', async () => {
+            expect(await repository.delete(daoProposal._id)).toBeTruthy();
         });
-  });
+    });
 });
