@@ -38,7 +38,7 @@ export class DaoProposalRepository
         try {
             return await this.model
                 .find(query || {})
-                .skip(page - 1 * limit)
+                .skip((page - 1) * limit)
                 .limit(limit)
                 .populate('project');
         } catch (error: any) {
