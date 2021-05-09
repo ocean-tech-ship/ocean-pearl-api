@@ -18,7 +18,7 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-    await DaoProposal.collection.drop();
+    await DaoProposal.deleteOne({id: '6060e915a8c5f54934190542'});
     await mongoose.connection.close();
 });
 
