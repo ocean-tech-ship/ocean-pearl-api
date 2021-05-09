@@ -1,11 +1,13 @@
-import { model, Schema, Document } from 'mongoose';
-import { ProjectInterface } from './project.model';
+import { model, Schema, Document, Types, Model } from 'mongoose';
 
-export interface DaoProposalInterface extends Document {
+export type DaoProposalType = DaoProposalInterface & Document;
+
+export interface DaoProposalInterface {
+    _id?: Types.ObjectId;
     startDate: Date;
     finishDate: Date;
     fundingRound: number;
-    project: ProjectInterface['_id'];
+    project: Types.ObjectId;
 }
 
 const daoProposalSchema: Schema = new Schema(
@@ -33,7 +35,7 @@ const daoProposalSchema: Schema = new Schema(
     { timestamps: true }
 );
 
-const DaoProposal = model<DaoProposalInterface>(
+const DaoProposal: Model<DaoProposalType> = model<DaoProposalType>(
     'DaoProposal',
     daoProposalSchema
 );
