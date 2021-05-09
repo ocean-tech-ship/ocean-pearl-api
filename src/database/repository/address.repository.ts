@@ -1,17 +1,17 @@
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
-import Address, { AddressInterface } from '../model/address.model';
+import Address, { AddressInterface, AddressType } from '../model/address.model';
 
 export class AddressRepository
-    implements RepositoryInterface<AddressInterface> {
-    private model: Model<AddressInterface>;
+    implements RepositoryInterface<AddressType> {
+    private model: Model<AddressType>;
 
     constructor() {
         this.model = Address;
     }
 
-    public async getByID(id: string): Promise<AddressInterface> {
+    public async getByID(id: Types.ObjectId): Promise<AddressType> {
         try {
             return await this.model.findById(id);
         } catch (error: any) {
@@ -19,7 +19,7 @@ export class AddressRepository
         }
     }
 
-    public async getAll(query?: FilterQuery<any>): Promise<AddressInterface[]> {
+    public async getAll(query?: FilterQuery<any>): Promise<AddressType[]> {
         try {
             return await this.model.find(query || {});
         } catch (error: any) {
@@ -40,7 +40,7 @@ export class AddressRepository
         }
     }
 
-    public async create(model: AddressInterface): Promise<string> {
+    public async create(model: AddressInterface): Promise<Types.ObjectId> {
         try {
             const response: AddressInterface = await this.model.create(model);
 
@@ -50,7 +50,7 @@ export class AddressRepository
         }
     }
 
-    public async delete(id: string): Promise<boolean> {
+    public async delete(id: Types.ObjectId): Promise<boolean> {
         try {
             const response: MongooseDeleteResponseInterface = await this.model.deleteOne(
                 { _id: id }

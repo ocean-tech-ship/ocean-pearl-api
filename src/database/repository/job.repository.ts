@@ -1,16 +1,16 @@
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
-import Job, { JobInterface } from '../model/job.model';
+import Job, { JobInterface, JobType } from '../model/job.model';
 
-export class JobRepository implements RepositoryInterface<JobInterface> {
-    private model: Model<JobInterface>;
+export class JobRepository implements RepositoryInterface<JobType> {
+    private model: Model<JobType>;
 
     constructor() {
         this.model = Job;
     }
 
-    public async getByID(id: string): Promise<JobInterface> {
+    public async getByID(id: Types.ObjectId): Promise<JobType> {
         try {
             return await this.model.findById(id).populate('company');
         } catch (error: any) {
@@ -18,7 +18,7 @@ export class JobRepository implements RepositoryInterface<JobInterface> {
         }
     }
 
-    public async getAll(query?: FilterQuery<any>): Promise<JobInterface[]> {
+    public async getAll(query?: FilterQuery<any>): Promise<JobType[]> {
         try {
             return await this.model.find(query || {}).populate('company');
         } catch (error: any) {
@@ -39,7 +39,7 @@ export class JobRepository implements RepositoryInterface<JobInterface> {
         }
     }
 
-    public async create(model: JobInterface): Promise<string> {
+    public async create(model: JobInterface): Promise<Types.ObjectId> {
         try {
             const response: JobInterface = await this.model.create(model);
 
@@ -49,7 +49,7 @@ export class JobRepository implements RepositoryInterface<JobInterface> {
         }
     }
 
-    public async delete(id: string): Promise<boolean> {
+    public async delete(id: Types.ObjectId): Promise<boolean> {
         try {
             const response: MongooseDeleteResponseInterface = await this.model.deleteOne(
                 { _id: id }
