@@ -17,6 +17,8 @@ import cors = require('cors');
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
 
+require('./database/index');
+
 const config = npmPackage.config || {
   protocol: 'http',
   host: 'localhost',
@@ -90,8 +92,6 @@ export class ApiServer {
       bufferCommands: false,
       bufferMaxEntries: 0,
     });
-
-    require('./database/index');
 
     return new Promise<ApiServer>((resolve, reject) => {
       this.server = this.app.listen(this.PORT, () => {
