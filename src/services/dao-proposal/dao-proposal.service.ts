@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { Inject } from 'typescript-ioc';
 import { DaoProposalInterface, DaoProposalRepository } from '../../database';
 import { DaoProposalApi } from './dao-proposal.api';
@@ -7,7 +8,7 @@ export class DaoProposalService implements DaoProposalApi {
 
     constructor(
         @Inject
-        daoProposalRepository: DaoProposalRepository,
+        daoProposalRepository: DaoProposalRepository
     ) {
         this.daoProposalRepository = daoProposalRepository;
     }
@@ -17,12 +18,15 @@ export class DaoProposalService implements DaoProposalApi {
     }
 
     async getFeaturedDaoProposals(): Promise<DaoProposalInterface[]> {
-        let projects: DaoProposalInterface[] = await this.daoProposalRepository.getAll();
-        
-        return projects.slice(0, 5);
+        let projects: DaoProposalInterface[] = await this.daoProposalRepository.getPaginated(
+            1,
+            5
+        );
+
+        return projects;
     }
 
-    async getDaoProposalById(id: string): Promise<DaoProposalInterface> {
+    async getDaoProposalById(id: Types.ObjectId): Promise<DaoProposalInterface> {
         return this.daoProposalRepository.getByID(id);
     }
 }
