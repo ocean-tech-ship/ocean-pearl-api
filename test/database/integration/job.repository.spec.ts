@@ -18,7 +18,7 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-    await Job.collection.drop();
+    await Job.deleteOne({id: '6060e915a8c5f54934190542'});
     await mongoose.connection.close();
 });
 
