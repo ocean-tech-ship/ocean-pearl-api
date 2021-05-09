@@ -1,7 +1,10 @@
-import { model, Schema, Document } from 'mongoose';
+import { model, Schema, Document, Types, Model } from 'mongoose';
 import { CountryEnum } from '../enums/country.enum';
 
-export interface AddressInterface extends Document {
+export type AddressType = AddressInterface & Document;
+
+export interface AddressInterface {
+    _id?: Types.ObjectId;
     street?: string;
     streetNumber?: string;
     city?: string;
@@ -49,6 +52,9 @@ const addressSchema: Schema = new Schema({
     },
 });
 
-const Address = model<AddressInterface>('Address', addressSchema);
+const Address: Model<AddressType> = model<AddressType>(
+    'Address',
+    addressSchema
+);
 
 export default Address;

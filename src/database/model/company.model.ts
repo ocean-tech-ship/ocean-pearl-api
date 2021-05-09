@@ -1,17 +1,16 @@
-import { model, Schema, Document } from 'mongoose';
-import { AddressInterface } from './address.model';
-import { JobInterface } from './job.model';
-import { ProjectInterface } from './project.model';
-import { SocialMediaInterface } from './social-media.model';
+import { model, Schema, Document, Types, Model } from 'mongoose';
 
-export interface CompanyInterface extends Document {
+export type CompanyType = CompanyInterface & Document;
+
+export interface CompanyInterface {
+    _id?: Types.ObjectId;
     name: string;
     email: string;
     phoneNumber: string;
-    socialMedia?: SocialMediaInterface['_id'];
-    address?: AddressInterface['_id'];
-    projects?: ProjectInterface['_id'][];
-    jobs?: JobInterface['_id'][];
+    socialMedia?: Types.ObjectId;
+    address?: Types.ObjectId;
+    projects?: Types.ObjectId[];
+    jobs?: Types.ObjectId[];
 }
 
 const companySchema: Schema = new Schema(
@@ -55,6 +54,9 @@ const companySchema: Schema = new Schema(
     { timestamps: true }
 );
 
-const Company = model<CompanyInterface>('Company', companySchema);
+const Company: Model<CompanyType> = model<CompanyType>(
+    'Company',
+    companySchema
+);
 
 export default Company;

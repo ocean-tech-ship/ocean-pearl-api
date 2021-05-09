@@ -1,9 +1,11 @@
-import { model, Schema, Document } from 'mongoose';
+import { model, Schema, Document, Types, Model } from 'mongoose';
 import { CountryEnum } from '../enums/country.enum';
 import { TokenOptionEnum } from '../enums/token-option.enum';
-import { CompanyInterface } from './company.model';
 
-export interface JobInterface extends Document {
+export type JobType = JobInterface & Document;
+
+export interface JobInterface {
+    _id?: Types.ObjectId;
     title: string;
     description: string;
     location: CountryEnum;
@@ -13,7 +15,7 @@ export interface JobInterface extends Document {
     salaryFrom: number;
     salaryTo: number;
     startDate: Date;
-    company: CompanyInterface['_id'];
+    company: Types.ObjectId;
 }
 
 const jobSchema: Schema = new Schema(
@@ -77,6 +79,6 @@ const jobSchema: Schema = new Schema(
     { timestamps: true }
 );
 
-const Job = model<JobInterface>('Job', jobSchema);
+const Job: Model<JobType> = model<JobType>('Job', jobSchema);
 
 export default Job;

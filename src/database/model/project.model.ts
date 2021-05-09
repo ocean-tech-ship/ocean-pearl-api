@@ -1,16 +1,16 @@
-import { model, Schema, Document } from 'mongoose';
-import { CompanyInterface } from './company.model';
-import { DaoProposalInterface } from './dao-proposal.model';
-import { SocialMediaInterface } from './social-media.model';
+import { model, Schema, Document, Model, Types } from 'mongoose';
 
-export interface ProjectInterface extends Document {
+export type ProjectType = ProjectInterface & Document;
+
+export interface ProjectInterface {
+    _id?: Types.ObjectId,
     title: string;
     description: string;
-    socialMedia?: SocialMediaInterface['_id'];
+    socialMedia?: Types.ObjectId;
     logo?: string;
     pictures?: string[];
-    company?: CompanyInterface['_id'];
-    daoProposals?: DaoProposalInterface['_id'][];
+    company?: Types.ObjectId;
+    daoProposals?: Types.ObjectId[];
 }
 
 const projectSchema: Schema = new Schema(
@@ -52,6 +52,6 @@ const projectSchema: Schema = new Schema(
     { timestamps: true }
 );
 
-const Project = model<ProjectInterface>('Project', projectSchema);
+const Project: Model<ProjectType> = model<ProjectType>('Project', projectSchema);
 
 export default Project;

@@ -1,6 +1,9 @@
-import { model, Schema, Document } from 'mongoose';
+import { model, Schema, Document, Types, Model } from 'mongoose';
 
-export interface SocialMediaInterface extends Document {
+export type SocialMediaType = SocialMediaInterface & Document;
+
+export interface SocialMediaInterface {
+    _id?: Types.ObjectId;
     website?: string;
     github?: string;
     twitter?: string;
@@ -62,7 +65,7 @@ const socialMediaSchema: Schema = new Schema({
     },
 });
 
-const SocialMedia = model<SocialMediaInterface>(
+const SocialMedia: Model<SocialMediaType> = model<SocialMediaType>(
     'SocialMedia',
     socialMediaSchema
 );
