@@ -24,7 +24,7 @@ test('canary validates test infrastructure', () => {
     expect(true).toBe(true);
 });
 
-describe('project.repository', () => {
+describe('social-media.repository', () => {
     const repository: SocialMediaRepository = Container.get(
         SocialMediaRepository
     );
@@ -35,14 +35,14 @@ describe('project.repository', () => {
         twitter: 'testTwitter.com',
     };
 
-    describe('Given I have a project repository', () => {
-        test('it should save a project', async () => {
+    describe('Given I have a socialMedia repository', () => {
+        test('it should save a socialMedia object', async () => {
             expect(await repository.create(socialMedia)).toEqual(
                 new mongoose.Types.ObjectId('6060e915a8c5f54934190542')
             );
         });
 
-        test('it should return a project', async () => {
+        test('it should return a socialMedia object', async () => {
             const dbSocialMedia = await repository.getByID(socialMedia._id);
 
             expect({
@@ -58,19 +58,19 @@ describe('project.repository', () => {
             });
         });
 
-        test('it should return all projects', async () => {
+        test('it should return all socialMedia objects', async () => {
             expect((await repository.getAll()).length).toBeGreaterThanOrEqual(
                 1
             );
         });
 
-        test('it should update a project', async () => {
+        test('it should update a socialMedia object', async () => {
             socialMedia.website = 'UpdateTest';
 
             expect(await repository.update(socialMedia)).toBeTruthy();
         });
 
-        test('it should delete a project', async () => {
+        test('it should delete a socialMedia object', async () => {
             expect(await repository.delete(socialMedia._id)).toBeTruthy();
         });
     });
