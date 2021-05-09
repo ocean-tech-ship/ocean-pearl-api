@@ -48,7 +48,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         try {
             return await this.model
                 .find(query || {})
-                .skip(page - 1 * limit)
+                .skip((page - 1) * limit)
                 .limit(limit)
                 .populate('company')
                 .populate('daoProposals')
