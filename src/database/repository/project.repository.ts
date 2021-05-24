@@ -16,6 +16,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .findById(id)
                 .populate('company')
                 .populate('daoProposals')
+                .populate('team')
                 .populate({
                     path: 'socialMedia',
                     options: { lean: true },
@@ -31,6 +32,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .find(query || {})
                 .populate('company')
                 .populate('daoProposals')
+                .populate('team')
                 .populate({
                     path: 'socialMedia',
                     options: { lean: true },
@@ -52,6 +54,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .limit(limit)
                 .populate('company')
                 .populate('daoProposals')
+                .populate('team')
                 .populate({
                     path: 'socialMedia',
                     options: { lean: true },
@@ -86,13 +89,16 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
 
     public async delete(id: Types.ObjectId): Promise<boolean> {
         try {
-            const response: MongooseDeleteResponseInterface = await this.model.deleteOne(
-                { _id: id }
-            );
+            const response: MongooseDeleteResponseInterface =
+                await this.model.deleteOne({ _id: id });
 
             return response.deletedCount === 1;
         } catch (error: any) {
             throw error;
         }
+    }
+
+    public getModel(): Model<ProjectType> {
+        return this.model;
     }
 }

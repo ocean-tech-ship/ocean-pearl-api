@@ -7,7 +7,8 @@ import DaoProposal, {
 } from '../model/dao-proposal.model';
 
 export class DaoProposalRepository
-    implements RepositoryInterface<DaoProposalType> {
+    implements RepositoryInterface<DaoProposalType>
+{
     private model: Model<DaoProposalType>;
 
     constructor() {
@@ -16,7 +17,17 @@ export class DaoProposalRepository
 
     public async getByID(id: Types.ObjectId): Promise<DaoProposalType> {
         try {
-            return await this.model.findById(id).populate('project');
+            return await this.model
+                .findById(id)
+                .populate('project')
+                .populate({
+                    path: 'deliverables',
+                    options: { lean: true },
+                })
+                .populate({
+                    path: 'kpiTargets',
+                    options: { lean: true },
+                });
         } catch (error: any) {
             throw error;
         }
@@ -24,7 +35,17 @@ export class DaoProposalRepository
 
     public async getAll(query?: FilterQuery<any>): Promise<DaoProposalType[]> {
         try {
-            return await this.model.find(query || {}).populate('project');
+            return await this.model
+                .find(query || {})
+                .populate('project')
+                .populate({
+                    path: 'deliverables',
+                    options: { lean: true },
+                })
+                .populate({
+                    path: 'kpiTargets',
+                    options: { lean: true },
+                });
         } catch (error: any) {
             throw error;
         }
@@ -40,7 +61,15 @@ export class DaoProposalRepository
                 .find(query || {})
                 .skip((page - 1) * limit)
                 .limit(limit)
-                .populate('project');
+                .populate('project')
+                .populate({
+                    path: 'deliverables',
+                    options: { lean: true },
+                })
+                .populate({
+                    path: 'kpiTargets',
+                    options: { lean: true },
+                });
         } catch (error: any) {
             throw error;
         }
@@ -48,10 +77,8 @@ export class DaoProposalRepository
 
     public async update(model: DaoProposalInterface): Promise<boolean> {
         try {
-            const response: DaoProposalInterface = await this.model.findOneAndUpdate(
-                { _id: model._id },
-                model
-            );
+            const response: DaoProposalInterface =
+                await this.model.findOneAndUpdate({ _id: model._id }, model);
 
             return response !== null;
         } catch (error: any) {
@@ -73,13 +100,16 @@ export class DaoProposalRepository
 
     public async delete(id: Types.ObjectId): Promise<boolean> {
         try {
-            const response: MongooseDeleteResponseInterface = await this.model.deleteOne(
-                { _id: id }
-            );
+            const response: MongooseDeleteResponseInterface =
+                await this.model.deleteOne({ _id: id });
 
             return response.deletedCount === 1;
         } catch (error: any) {
             throw error;
         }
+    }
+
+    public getModel(): Model<DaoProposalType> {
+        return this.model;
     }
 }
