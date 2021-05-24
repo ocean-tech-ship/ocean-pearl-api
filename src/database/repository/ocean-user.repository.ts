@@ -6,7 +6,7 @@ import OceanUser, {
     OceanUserType,
 } from '../model/ocean-user.model';
 
-export class JobRepository implements RepositoryInterface<OceanUserType> {
+export class OceanUserRepository implements RepositoryInterface<OceanUserType> {
     private model: Model<OceanUserType>;
 
     constructor() {
