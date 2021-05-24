@@ -11,6 +11,7 @@ export interface ProjectInterface {
     pictures?: string[];
     company?: Types.ObjectId;
     daoProposals?: Types.ObjectId[];
+    team?: Types.ObjectId[];
 }
 
 const projectSchema: Schema = new Schema(
@@ -46,6 +47,12 @@ const projectSchema: Schema = new Schema(
             {
                 type: Schema.Types.ObjectId,
                 ref: 'DaoProposal',
+            },
+        ],
+        team: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'OceanUser',
             },
         ],
     },
