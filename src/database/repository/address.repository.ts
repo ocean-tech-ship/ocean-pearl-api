@@ -3,8 +3,7 @@ import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-r
 import { RepositoryInterface } from '../interfaces/repository.inteface';
 import Address, { AddressInterface, AddressType } from '../model/address.model';
 
-export class AddressRepository
-    implements RepositoryInterface<AddressType> {
+export class AddressRepository implements RepositoryInterface<AddressType> {
     private model: Model<AddressType>;
 
     constructor() {
@@ -29,10 +28,8 @@ export class AddressRepository
 
     public async update(model: AddressInterface): Promise<boolean> {
         try {
-            const response: AddressInterface = await this.model.findOneAndUpdate(
-                { _id: model._id },
-                model
-            );
+            const response: AddressInterface =
+                await this.model.findOneAndUpdate({ _id: model._id }, model);
 
             return response !== null;
         } catch (error: any) {
@@ -52,13 +49,16 @@ export class AddressRepository
 
     public async delete(id: Types.ObjectId): Promise<boolean> {
         try {
-            const response: MongooseDeleteResponseInterface = await this.model.deleteOne(
-                { _id: id }
-            );
+            const response: MongooseDeleteResponseInterface =
+                await this.model.deleteOne({ _id: id });
 
             return response.deletedCount === 1;
         } catch (error: any) {
             throw error;
         }
+    }
+
+    public getModel(): Model<AddressType> {
+        return this.model;
     }
 }

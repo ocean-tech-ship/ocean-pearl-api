@@ -50,10 +50,8 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
 
     public async update(model: CompanyInterface): Promise<boolean> {
         try {
-            const response: CompanyInterface = await this.model.findOneAndUpdate(
-                { _id: model._id },
-                model
-            );
+            const response: CompanyInterface =
+                await this.model.findOneAndUpdate({ _id: model._id }, model);
 
             return response !== null;
         } catch (error: any) {
@@ -73,13 +71,16 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
 
     public async delete(id: Types.ObjectId): Promise<boolean> {
         try {
-            const response: MongooseDeleteResponseInterface = await this.model.deleteOne(
-                { _id: id }
-            );
+            const response: MongooseDeleteResponseInterface =
+                await this.model.deleteOne({ _id: id });
 
             return response.deletedCount === 1;
         } catch (error: any) {
             throw error;
         }
+    }
+
+    public getModel(): Model<CompanyType> {
+        return this.model;
     }
 }

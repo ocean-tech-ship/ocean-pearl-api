@@ -60,4 +60,8 @@ export class JobRepository implements RepositoryInterface<JobType> {
             throw error;
         }
     }
+
+    public getModel(): Model<JobType> {
+        return this.model;
+    }
 }

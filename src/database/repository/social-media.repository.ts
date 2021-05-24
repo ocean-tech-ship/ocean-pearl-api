@@ -1,10 +1,14 @@
 import { FilterQuery, Model, Types } from 'mongoose';
 import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
-import SocialMedia, { SocialMediaInterface, SocialMediaType } from '../model/social-media.model';
+import SocialMedia, {
+    SocialMediaInterface,
+    SocialMediaType,
+} from '../model/social-media.model';
 
 export class SocialMediaRepository
-    implements RepositoryInterface<SocialMediaType> {
+    implements RepositoryInterface<SocialMediaType>
+{
     private model: Model<SocialMediaType>;
 
     constructor() {
@@ -19,9 +23,7 @@ export class SocialMediaRepository
         }
     }
 
-    public async getAll(
-        query?: FilterQuery<any>
-    ): Promise<SocialMediaType[]> {
+    public async getAll(query?: FilterQuery<any>): Promise<SocialMediaType[]> {
         try {
             return await this.model.find(query || {});
         } catch (error: any) {
@@ -31,10 +33,8 @@ export class SocialMediaRepository
 
     public async update(model: SocialMediaInterface): Promise<boolean> {
         try {
-            const response: SocialMediaInterface = await this.model.findOneAndUpdate(
-                { _id: model._id },
-                model
-            );
+            const response: SocialMediaInterface =
+                await this.model.findOneAndUpdate({ _id: model._id }, model);
 
             return response !== null;
         } catch (error: any) {
@@ -56,13 +56,16 @@ export class SocialMediaRepository
 
     public async delete(id: Types.ObjectId): Promise<boolean> {
         try {
-            const response: MongooseDeleteResponseInterface = await this.model.deleteOne(
-                { _id: id }
-            );
+            const response: MongooseDeleteResponseInterface =
+                await this.model.deleteOne({ _id: id });
 
             return response.deletedCount === 1;
         } catch (error: any) {
             throw error;
         }
+    }
+
+    public getModel(): Model<SocialMediaType> {
+        return this.model;
     }
 }
