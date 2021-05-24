@@ -18,7 +18,7 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-    await DaoProposal.deleteOne({id: '6060e915a8c5f54934190542'});
+    await DaoProposal.deleteOne({ id: '6060e915a8c5f54934190542' });
     await mongoose.connection.close();
 });
 
@@ -32,6 +32,11 @@ describe('doa-proposal.repository', () => {
         finishDate: new Date(),
         fundingRound: 2,
         project: new mongoose.Types.ObjectId('6060e915a8c5f54934190541'),
+        kpiRoi: 'kpiRoi',
+        oceanProtocalPortLink: 'oceanProtocalPortLink.com',
+        title: 'The Title of the Proposal',
+        description: 'Here stands a description',
+        walletAddress: '0x967da4048cD07aB37855c090aAF366e4ce1b9F48',
     };
 
     test('canary validates test infrastructure', () => {
@@ -54,12 +59,22 @@ describe('doa-proposal.repository', () => {
                 finishDate: dbDoaProposal.finishDate,
                 fundingRound: dbDoaProposal.fundingRound,
                 project: dbDoaProposal.project,
+                kpiRoi: dbDoaProposal.kpiRoi,
+                oceanProtocalPortLink: dbDoaProposal.oceanProtocalPortLink,
+                title: dbDoaProposal.title,
+                description: dbDoaProposal.description,
+                walletAddress: dbDoaProposal.walletAddress,
             }).toEqual({
                 _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
                 startDate: daoProposal.startDate,
                 finishDate: daoProposal.finishDate,
                 fundingRound: 2,
                 project: null,
+                kpiRoi: 'kpiRoi',
+                oceanProtocalPortLink: 'oceanProtocalPortLink.com',
+                title: 'The Title of the Proposal',
+                description: 'Here stands a description',
+                walletAddress: '0x967da4048cD07aB37855c090aAF366e4ce1b9F48',
             });
         });
 
