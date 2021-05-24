@@ -34,6 +34,7 @@ const jobSchema: Schema = new Schema(
         },
         location: {
             type: String,
+            enum: CountryEnum,
             require: true,
             trim: true,
             maxLength: 4,
@@ -41,6 +42,7 @@ const jobSchema: Schema = new Schema(
         },
         tokenSalaryOption: {
             type: String,
+            enum: TokenOptionEnum,
             maxLength: 4,
             required: false,
             default: 'none',

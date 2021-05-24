@@ -46,6 +46,7 @@ const addressSchema: Schema = new Schema({
     },
     country: {
         type: String,
+        enum: CountryEnum,
         trim: true,
         uppercase: true,
         maxLength: 4,
