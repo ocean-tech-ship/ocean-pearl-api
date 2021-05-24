@@ -1,4 +1,5 @@
 import { model, Schema, Document, Types, Model } from 'mongoose';
+import { DaoProposalStatusEnum } from '../enums/dao-proposal-status.enum';
 
 export type DaoProposalType = DaoProposalInterface & Document;
 
@@ -8,6 +9,21 @@ export interface DaoProposalInterface {
     finishDate: Date;
     fundingRound: number;
     project: Types.ObjectId;
+    votes: number;
+    counterVotes: number;
+    requestedGrantUSD?: number;
+    requestedGrantToken?: number;
+    grantAmountUSD?: number;
+    grantAmountToken?: number;
+    funded: DaoProposalStatusEnum;
+    walletAddress: string;
+    title: string;
+    description: string;
+    oceanProtocalPortLink: string;
+    deliverables: Types.ObjectId[];
+    kpiTargets: Types.ObjectId[];
+    kpiRoi: string;
+    images?: string[];
 }
 
 const daoProposalSchema: Schema = new Schema(
@@ -31,6 +47,93 @@ const daoProposalSchema: Schema = new Schema(
             ref: 'Project',
             required: true,
         },
+        votes: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 0,
+        },
+        counterVotes: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 0,
+        },
+        requestedGrantUSD: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 0,
+        },
+        requestedGrantToken: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 0,
+        },
+        grantAmountUSD: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 0,
+        },
+        grantAmountToken: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 0,
+        },
+        funded: {
+            type: DaoProposalStatusEnum,
+            required: true,
+            default: DaoProposalStatusEnum.FundingRoundActive,
+        },
+        walletAddress: {
+            type: String,
+            required: true,
+            trim: true,
+            maxLength: 64,
+        },
+        title: {
+            type: String,
+            required: true,
+            trim: true,
+            maxLength: 256,
+        },
+        description: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        oceanProtocalPortLink: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        deliverables: [
+            {
+                type: Types.ObjectId,
+                ref: 'Deliverable',
+                required: true,
+            },
+        ],
+        kpiTargets: [
+            {
+                type: Types.ObjectId,
+                ref: 'KpiTarget',
+                required: true,
+            },
+        ],
+        kpiRoi: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        images: [
+            {
+                type: String,
+            },
+        ],
     },
     { timestamps: true }
 );
