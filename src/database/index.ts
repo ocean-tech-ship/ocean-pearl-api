@@ -6,6 +6,7 @@ export * from './model/project.model';
 export * from './model/ocean-user.model';
 export * from './model/kpi-target.model';
 export * from './model/deliverable.model';
+export * from './model/social-media.model';
 
 export * from './repository/address.repository'
 export * from './repository/company.repository'
