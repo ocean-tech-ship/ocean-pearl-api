@@ -1,4 +1,5 @@
 import { model, Schema, Document, Types, Model } from 'mongoose';
+import { CategoryEnum } from '../enums/category.enum';
 import { DaoProposalStatusEnum } from '../enums/dao-proposal-status.enum';
 
 export type DaoProposalType = DaoProposalInterface & Document;
@@ -19,6 +20,7 @@ export interface DaoProposalInterface {
     walletAddress: string;
     title: string;
     description: string;
+    category: string;
     oceanProtocalPortLink: string;
     deliverables: Types.ObjectId[];
     kpiTargets: Types.ObjectId[];
@@ -104,6 +106,11 @@ const daoProposalSchema: Schema = new Schema(
             type: String,
             required: true,
             trim: true,
+        },
+        category: {
+            type: String,
+            enum: CategoryEnum,
+            required: true,
         },
         oceanProtocalPortLink: {
             type: String,
