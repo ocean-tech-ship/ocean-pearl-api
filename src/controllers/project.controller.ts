@@ -5,7 +5,7 @@ import { ProjectInterface } from '../database';
 import { Types } from 'mongoose';
 import { GetFeaturedProjectsCommand, GetProjectByIdCommand, GetProjectsCommand } from '../services';
 
-@Path('/project')
+@Path('/projects')
 export class ProjectController {
     @Inject
     _baseLogger: LoggerApi;
@@ -37,12 +37,6 @@ export class ProjectController {
         } catch (error: any) {
             this.logger.error(error);
         }
-    }
-
-    @Path('latest')
-    @GET
-    async getLatestProjects(): Promise<ProjectInterface[]> {
-        return;
     }
 
     @Path('detail/:id')
