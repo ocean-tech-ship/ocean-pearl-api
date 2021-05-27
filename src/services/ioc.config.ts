@@ -7,7 +7,7 @@ import {
 } from '.';
 import { DaoProposalApi } from './dao-proposal/dao-proposal.api';
 import { DaoProposalService } from './dao-proposal/dao-proposal.service';
-import { GetProjectsCommandApi } from './project/api/getProjectsCommand.api';
+import { GetProjectsCommandApi } from './project/api/get-projects-command.api';
 import { GetProjectsCommand } from './project/command/get-projects.command';
 
 const config: ContainerConfiguration[] = [
