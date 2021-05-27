@@ -5,7 +5,7 @@ import { DaoProposalInterface } from '../database';
 import { LoggerApi } from '../logger';
 import { DaoProposalService } from '../services/dao-proposal/dao-proposal.service';
 
-@Path('/dao-proposal')
+@Path('/dao-proposals')
 export class DaoProposalController {
     @Inject
     _baseLogger: LoggerApi;
@@ -17,7 +17,7 @@ export class DaoProposalController {
     }
 
     @GET
-    async getProjects(): Promise<DaoProposalInterface[]> {
+    async getDaoProposals(): Promise<DaoProposalInterface[]> {
         try {
             return await this.daoProposalService.getDaoProposals();
         } catch (error: any) {
@@ -27,7 +27,7 @@ export class DaoProposalController {
 
     @Path('featured')
     @GET
-    async getFeaturedProjectList(): Promise<DaoProposalInterface[]> {
+    async getFeaturedDaoProposals(): Promise<DaoProposalInterface[]> {
         try {
             return await this.daoProposalService.getFeaturedDaoProposals();
         } catch (error: any) {
