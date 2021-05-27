@@ -6,6 +6,7 @@ import Project, {
 
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
+import { CategoryEnum } from '../../../src/database/enums/category.enum';
 
 beforeEach(async () => {
     dotenv.config();
@@ -28,6 +29,7 @@ describe('project.repository', () => {
         _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
         title: 'Best project ever',
         description: 'Still the best project ever.',
+        category: CategoryEnum.Marketplace,
         socialMedia: new mongoose.Types.ObjectId('6060e915a8c5f54934190540'),
         logo: 'picture here pls',
         company: new mongoose.Types.ObjectId('6060e915a8c5f54934190541'),
@@ -52,6 +54,7 @@ describe('project.repository', () => {
                 title: dbProject.title,
                 description: dbProject.description,
                 socialMedia: dbProject.socialMedia,
+                category: dbProject.category,
                 logo: dbProject.logo,
                 company: dbProject.company,
             }).toEqual({
@@ -61,6 +64,7 @@ describe('project.repository', () => {
                 socialMedia: null,
                 logo: 'picture here pls',
                 company: null,
+                category: CategoryEnum.Marketplace
             });
         });
 

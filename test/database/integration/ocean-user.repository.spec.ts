@@ -1,9 +1,10 @@
 import { Container } from 'typescript-ioc';
-import * as dotenv from 'dotenv';
-import * as mongoose from 'mongoose';
 import { OceanUserInterface, OceanUserRepository } from '../../../src/database';
 import { UserTitleEnum } from '../../../src/database/enums/user-title.enum';
 import OceanUser from '../../../src/database/model/ocean-user.model';
+
+import * as dotenv from 'dotenv';
+import * as mongoose from 'mongoose';
 
 beforeEach(async () => {
     dotenv.config();

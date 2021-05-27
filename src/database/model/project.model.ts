@@ -1,4 +1,5 @@
 import { model, Schema, Document, Model, Types } from 'mongoose';
+import { CategoryEnum } from '../enums/category.enum';
 
 export type ProjectType = ProjectInterface & Document;
 
@@ -6,6 +7,7 @@ export interface ProjectInterface {
     _id?: Types.ObjectId,
     title: string;
     description: string;
+    category: string;
     socialMedia?: Types.ObjectId;
     logo?: string;
     pictures?: string[];
@@ -26,6 +28,11 @@ const projectSchema: Schema = new Schema(
             type: String,
             required: true,
             trim: true,
+        },
+        category: {
+            type: String,
+            enum: CategoryEnum,
+            required: true,
         },
         socialMedia: {
             type: Schema.Types.ObjectId,
