@@ -3,14 +3,18 @@ import { Inject } from 'typescript-ioc';
 import { GET, Path, PathParam } from 'typescript-rest';
 import { DaoProposalInterface } from '../database';
 import { LoggerApi } from '../logger';
-import { DaoProposalService } from '../services/dao-proposal/dao-proposal.service';
+import { GetDaoProposalByIdCommand, GetDaoProposalsCommand, GetFeaturedDaoProposalsCommand } from '../services';
 
 @Path('/dao-proposals')
 export class DaoProposalController {
     @Inject
     _baseLogger: LoggerApi;
     @Inject
-    daoProposalService: DaoProposalService;
+    getDaoProposalsCommand: GetDaoProposalsCommand;
+    @Inject
+    getDaoProposalByIdCommand: GetDaoProposalByIdCommand;
+    @Inject
+    getFeaturedDaoProposalsCommand: GetFeaturedDaoProposalsCommand;
 
     get logger() {
         return this._baseLogger.child('DaoProposalController');
@@ -19,7 +23,7 @@ export class DaoProposalController {
     @GET
     async getDaoProposals(): Promise<DaoProposalInterface[]> {
         try {
-            return await this.daoProposalService.getDaoProposals();
+            return await this.getDaoProposalsCommand.execute();
         } catch (error: any) {
             this.logger.error(error);
         }
@@ -29,7 +33,7 @@ export class DaoProposalController {
     @GET
     async getFeaturedDaoProposals(): Promise<DaoProposalInterface[]> {
         try {
-            return await this.daoProposalService.getFeaturedDaoProposals();
+            return await this.getFeaturedDaoProposalsCommand.execute();
         } catch (error: any) {
             this.logger.error(error);
         }
@@ -37,11 +41,11 @@ export class DaoProposalController {
 
     @Path('detail/:id')
     @GET
-    async getProjectById(
+    async getDaoProposalById(
         @PathParam('id') id: string
     ): Promise<DaoProposalInterface> {
         try {
-            return await this.daoProposalService.getDaoProposalById(
+            return await this.getDaoProposalByIdCommand.execute(
                 new Types.ObjectId(id)
             );
         } catch (error: any) {
