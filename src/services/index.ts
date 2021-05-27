@@ -10,8 +10,12 @@ export * from './project/command/get-featured-projects.command';
 export * from './project/command/get-project-by-id.command';
 export * from './project/command/get-projects.command';
 
-export * from './dao-proposal/dao-proposal.api';
-export * from './dao-proposal/dao-proposal.service';
+export * from './dao-proposal/api/get-dao-proposals-command.api';
+export * from './dao-proposal/api/get-doa-proposals-by-id-command.api';
+export * from './dao-proposal/api/get-featured-dao-proposals-comand.api';
+export * from './dao-proposal/command/get-dao-proposals.command';
+export * from './dao-proposal/command/get-doa-proposal-by-id.command';
+export * from './dao-proposal/command/get-featured-doa-proposals.command';
 
 import config from './ioc.config';
 
