@@ -3,7 +3,9 @@ import { Inject } from 'typescript-ioc';
 import { LoggerApi } from '../logger';
 import { ProjectInterface } from '../database';
 import { Types } from 'mongoose';
-import { GetFeaturedProjectsCommand, GetProjectByIdCommand, GetProjectsCommand } from '../services';
+import { GetProjectByIdCommand, GetProjectsCommand } from '../services';
+import { PaginationOptionsInterface } from '../database/interfaces/pagination-options.interface';
+import { GetProjectsPaginatedCommand } from '../services/project/command/get-projects-paginated.command';
 
 @Path('/projects')
 export class ProjectController {
@@ -12,16 +14,16 @@ export class ProjectController {
     @Inject
     getProjectsCommand: GetProjectsCommand;
     @Inject
-    getFeaturedProjectsCommand: GetFeaturedProjectsCommand;
-    @Inject
     getProjectByIdCommand: GetProjectByIdCommand;
+    @Inject
+    getProjectsPaginatedCommand: GetProjectsPaginatedCommand;
 
     get logger() {
         return this._baseLogger.child('ProjectController');
     }
 
     @GET
-    async getProjects(): Promise<Array<ProjectInterface>> {
+    async getProjects(): Promise<ProjectInterface[]> {
         try {
             return await this.getProjectsCommand.execute();
         } catch (error: any) {
@@ -29,11 +31,19 @@ export class ProjectController {
         }
     }
 
-    @Path('featured')
+    @Path('paginated/:page/:limit')
     @GET
-    async getFeaturedProjectList(): Promise<ProjectInterface[]> {
+    async getProjectPaginated(
+        @PathParam('page') page: number,
+        @PathParam('limit') limit: number
+    ) {
         try {
-            return await this.getFeaturedProjectsCommand.execute();
+            const options = <PaginationOptionsInterface>{
+                page: page,
+                limit: limit,
+            };
+
+            return this.getProjectsPaginatedCommand.execute(options);
         } catch (error: any) {
             this.logger.error(error);
         }
