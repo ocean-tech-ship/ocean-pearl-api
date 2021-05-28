@@ -7,6 +7,7 @@ import { DaoProposalRepository } from '../../../src/database/repository/dao-prop
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
 import { CategoryEnum } from '../../../src/database/enums/category.enum';
+import { DaoProposalStatusEnum } from '../../../src/database/enums/dao-proposal-status.enum';
 
 beforeEach(async () => {
     dotenv.config();
@@ -39,6 +40,11 @@ describe('doa-proposal.repository', () => {
         description: 'Here stands a description',
         walletAddress: '0x967da4048cD07aB37855c090aAF366e4ce1b9F48',
         category: CategoryEnum.Defi,
+        votes: 100000,
+        counterVotes: 20,
+        status: DaoProposalStatusEnum.FundingRoundActive,
+        deliverables: [new mongoose.Types.ObjectId('6060e915a8c5f54934190543')],
+        kpiTargets: [new mongoose.Types.ObjectId('6060e915a8c5f54934190544')],
     };
 
     test('canary validates test infrastructure', () => {
@@ -78,7 +84,7 @@ describe('doa-proposal.repository', () => {
                 title: 'The Title of the Proposal',
                 description: 'Here stands a description',
                 walletAddress: '0x967da4048cD07aB37855c090aAF366e4ce1b9F48',
-                category: CategoryEnum.Defi
+                category: CategoryEnum.Defi,
             });
         });
 
