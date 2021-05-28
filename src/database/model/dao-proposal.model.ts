@@ -16,7 +16,7 @@ export interface DaoProposalInterface {
     requestedGrantToken?: number;
     grantAmountUSD?: number;
     grantAmountToken?: number;
-    funded: DaoProposalStatusEnum;
+    status: DaoProposalStatusEnum;
     walletAddress: string;
     title: string;
     description: string;
@@ -85,8 +85,9 @@ const daoProposalSchema: Schema = new Schema(
             min: 0,
             default: 0,
         },
-        funded: {
-            type: DaoProposalStatusEnum,
+        status: {
+            type: String,
+            enum: DaoProposalStatusEnum,
             required: true,
             default: DaoProposalStatusEnum.FundingRoundActive,
         },
@@ -117,20 +118,26 @@ const daoProposalSchema: Schema = new Schema(
             required: true,
             trim: true,
         },
-        deliverables: [
-            {
-                type: Types.ObjectId,
-                ref: 'Deliverable',
-                required: true,
-            },
-        ],
-        kpiTargets: [
-            {
-                type: Types.ObjectId,
-                ref: 'KpiTarget',
-                required: true,
-            },
-        ],
+        deliverables: {
+            type: [
+                {
+                    type: Types.ObjectId,
+                    ref: 'Deliverable',
+                },
+            ],
+            default: void 0,
+            required: true,
+        },
+        kpiTargets: {
+            type: [
+                {
+                    type: Types.ObjectId,
+                    ref: 'KpiTarget',
+                },
+            ],
+            default: void 0,
+            required: true,
+        },
         kpiRoi: {
             type: String,
             required: true,
