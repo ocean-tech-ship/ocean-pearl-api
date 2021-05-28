@@ -1,5 +1,6 @@
 import { FilterQuery, Model, Types } from 'mongoose';
 import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-response.interface';
+import { PaginationOptionsInterface } from '../interfaces/pagination-options.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
 import DaoProposal, {
     DaoProposalInterface,
@@ -52,15 +53,14 @@ export class DaoProposalRepository
     }
 
     public async getPaginated(
-        page: number,
-        limit: number,
-        query?: FilterQuery<any>
+        options: PaginationOptionsInterface
     ): Promise<DaoProposalType[]> {
         try {
             return await this.model
-                .find(query || {})
-                .skip((page - 1) * limit)
-                .limit(limit)
+                .find(options.find || {})
+                .sort(options.sort || {})
+                .skip((options.page - 1) * options.limit)
+                .limit(options.limit)
                 .populate('project')
                 .populate({
                     path: 'deliverables',
