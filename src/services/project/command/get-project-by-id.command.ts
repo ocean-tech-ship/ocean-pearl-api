@@ -13,7 +13,7 @@ export class GetProjectByIdCommand implements GetProjectByIdCommandApi {
         this.projectRepository = projectRepository;
     }
 
-    async execute(id: Types.ObjectId): Promise<ProjectInterface> {
+    public async execute(id: Types.ObjectId): Promise<ProjectInterface> {
         return await this.projectRepository.getByID(id);
     }
 }

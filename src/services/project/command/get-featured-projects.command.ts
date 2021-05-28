@@ -12,7 +12,7 @@ export class GetFeaturedProjectsCommand implements GetFeaturedProjectsCommandApi
         this.projectRepository = projectRepository;
     }
 
-    async execute(): Promise<ProjectInterface[]> {
-        return await this.projectRepository.getPaginated(1, 4);
+    public async execute(): Promise<ProjectInterface[]> {
+        return await this.projectRepository.getAll();
     }
 }
