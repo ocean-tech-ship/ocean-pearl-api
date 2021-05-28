@@ -12,7 +12,7 @@ export class GetProjectsCommand implements GetProjectsCommandApi {
         this.projectRepository = projectRepository;
     }
 
-    async execute(): Promise<ProjectInterface[]> {
+    public async execute(): Promise<ProjectInterface[]> {
         return await this.projectRepository.getAll();
     }
 }
