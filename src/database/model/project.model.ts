@@ -4,7 +4,7 @@ import { CategoryEnum } from '../enums/category.enum';
 export type ProjectType = ProjectInterface & Document;
 
 export interface ProjectInterface {
-    _id?: Types.ObjectId,
+    _id?: Types.ObjectId;
     title: string;
     description: string;
     category: string;
@@ -50,22 +50,31 @@ const projectSchema: Schema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Company',
         },
-        daoProposals: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: 'DaoProposal',
-            },
-        ],
-        team: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: 'OceanUser',
-            },
-        ],
+        daoProposals: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: 'DaoProposal',
+                },
+            ],
+            default: void 0,
+        },
+        team: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: 'OceanUser',
+                },
+            ],
+            default: void 0,
+        },
     },
     { timestamps: true }
 );
 
-const Project: Model<ProjectType> = model<ProjectType>('Project', projectSchema);
+const Project: Model<ProjectType> = model<ProjectType>(
+    'Project',
+    projectSchema
+);
 
 export default Project;
