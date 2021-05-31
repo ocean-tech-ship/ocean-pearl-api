@@ -6,7 +6,7 @@ export type ProjectType = ProjectInterface & Document;
 export interface ProjectInterface {
     _id?: Types.ObjectId;
     title: string;
-    description: string;
+    description?: string;
     category: string;
     socialMedia?: Types.ObjectId;
     logo?: string;
@@ -14,6 +14,7 @@ export interface ProjectInterface {
     company?: Types.ObjectId;
     daoProposals?: Types.ObjectId[];
     team?: Types.ObjectId[];
+    address?: Types.ObjectId;
 }
 
 const projectSchema: Schema = new Schema(
@@ -22,17 +23,16 @@ const projectSchema: Schema = new Schema(
             type: String,
             maxLength: 256,
             required: true,
+            unique: true,
             trim: true,
         },
         description: {
             type: String,
-            required: true,
             trim: true,
         },
         category: {
             type: String,
             enum: CategoryEnum,
-            required: true,
         },
         socialMedia: {
             type: Schema.Types.ObjectId,
@@ -67,6 +67,10 @@ const projectSchema: Schema = new Schema(
                 },
             ],
             default: void 0,
+        },
+        address: {
+            type: Schema.Types.ObjectId,
+            ref: 'Address',
         },
     },
     { timestamps: true }

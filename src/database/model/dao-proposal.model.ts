@@ -6,8 +6,8 @@ export type DaoProposalType = DaoProposalInterface & Document;
 
 export interface DaoProposalInterface {
     _id?: Types.ObjectId;
-    startDate: Date;
-    finishDate: Date;
+    startDate?: Date;
+    finishDate?: Date;
     fundingRound: number;
     project: Types.ObjectId;
     votes: number;
@@ -17,14 +17,17 @@ export interface DaoProposalInterface {
     grantAmountUSD?: number;
     grantAmountToken?: number;
     status: DaoProposalStatusEnum;
-    walletAddress: string;
-    title: string;
+    walletAddress?: string;
+    ethWalletAddress?: string;
+    title?: string;
     description: string;
     category: string;
-    oceanProtocalPortLink: string;
+    oceanProtocalPortUrl?: string;
     deliverables: Types.ObjectId[];
-    kpiTargets: Types.ObjectId[];
-    kpiRoi: string;
+    kpiTargets?: Types.ObjectId[];
+    kpiRoi?: string;
+    ipfsHash?: string;
+    voteUrl?: string;
     images?: string[];
 }
 
@@ -32,11 +35,9 @@ const daoProposalSchema: Schema = new Schema(
     {
         startDate: {
             type: Date,
-            required: true,
         },
         finishDate: {
             type: Date,
-            required: true,
         },
         fundingRound: {
             type: Number,
@@ -51,37 +52,31 @@ const daoProposalSchema: Schema = new Schema(
         },
         votes: {
             type: Number,
-            required: true,
             min: 0,
             default: 0,
         },
         counterVotes: {
             type: Number,
-            required: true,
             min: 0,
             default: 0,
         },
         requestedGrantUSD: {
             type: Number,
-            required: true,
             min: 0,
             default: 0,
         },
         requestedGrantToken: {
             type: Number,
-            required: true,
             min: 0,
             default: 0,
         },
         grantAmountUSD: {
             type: Number,
-            required: true,
             min: 0,
             default: 0,
         },
         grantAmountToken: {
             type: Number,
-            required: true,
             min: 0,
             default: 0,
         },
@@ -93,29 +88,29 @@ const daoProposalSchema: Schema = new Schema(
         },
         walletAddress: {
             type: String,
-            required: true,
+            trim: true,
+            maxLength: 64,
+        },
+        ethWalletAddress: {
+            type: String,
             trim: true,
             maxLength: 64,
         },
         title: {
             type: String,
-            required: true,
             trim: true,
             maxLength: 256,
         },
         description: {
             type: String,
-            required: true,
             trim: true,
         },
         category: {
             type: String,
             enum: CategoryEnum,
-            required: true,
         },
-        oceanProtocalPortLink: {
+        oceanProtocalPortUrl: {
             type: String,
-            required: true,
             trim: true,
         },
         deliverables: {
@@ -126,7 +121,6 @@ const daoProposalSchema: Schema = new Schema(
                 },
             ],
             default: void 0,
-            required: true,
         },
         kpiTargets: {
             type: [
@@ -136,11 +130,17 @@ const daoProposalSchema: Schema = new Schema(
                 },
             ],
             default: void 0,
-            required: true,
         },
         kpiRoi: {
             type: String,
-            required: true,
+            trim: true,
+        },
+        ipfsHash: {
+            type: String,
+            trim: true,
+        },
+        voteUrl: {
+            type: String,
             trim: true,
         },
         images: [
