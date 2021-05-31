@@ -16,14 +16,14 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
                 .findById(id)
                 .populate({
                     path: 'address',
-                    options: { lean: true },
+                    select: '-_id -__v',
                 })
                 .populate('jobs')
                 .populate('projects')
                 .populate({
                     path: 'socialMedia',
-                    options: { lean: true },
-                });
+                    select: '-_id -__v',
+                }).select('-__v');
         } catch (error: any) {
             throw error;
         }
@@ -35,14 +35,14 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
                 .find(query || {})
                 .populate({
                     path: 'address',
-                    options: { lean: true },
+                    select: '-_id -__v',
                 })
                 .populate('jobs')
                 .populate('projects')
                 .populate({
                     path: 'socialMedia',
-                    options: { lean: true },
-                });
+                    select: '-_id -__v',
+                }).select('-__v');
         } catch (error: any) {
             throw error;
         }

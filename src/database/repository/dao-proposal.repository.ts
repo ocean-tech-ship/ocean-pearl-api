@@ -23,12 +23,12 @@ export class DaoProposalRepository
                 .populate('project')
                 .populate({
                     path: 'deliverables',
-                    options: { lean: true },
+                    select: '-_id -__v',
                 })
                 .populate({
                     path: 'kpiTargets',
-                    options: { lean: true },
-                });
+                    select: '-_id -__v',
+                }).select('-__v');
         } catch (error: any) {
             throw error;
         }
@@ -41,12 +41,12 @@ export class DaoProposalRepository
                 .populate('project')
                 .populate({
                     path: 'deliverables',
-                    options: { lean: true },
+                    select: '-_id -__v',
                 })
                 .populate({
                     path: 'kpiTargets',
-                    options: { lean: true },
-                });
+                    select: '-_id -__v',
+                }).select('-__v');
         } catch (error: any) {
             throw error;
         }
@@ -64,12 +64,12 @@ export class DaoProposalRepository
                 .populate('project')
                 .populate({
                     path: 'deliverables',
-                    options: { lean: true },
+                    select: '-_id -__v',
                 })
                 .populate({
                     path: 'kpiTargets',
-                    options: { lean: true },
-                });
+                    select: '-_id -__v',
+                }).select('-__v');
         } catch (error: any) {
             throw error;
         }

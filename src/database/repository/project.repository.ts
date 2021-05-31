@@ -19,9 +19,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .populate('daoProposals')
                 .populate('team')
                 .populate({
+                    path: 'address',
+                    select: '-_id -__v',
+                })
+                .populate({
                     path: 'socialMedia',
-                    options: { lean: true },
-                });
+                    select: '-_id -__v',
+                }).select('-__v');
         } catch (error: any) {
             throw error;
         }
@@ -35,9 +39,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .populate('daoProposals')
                 .populate('team')
                 .populate({
+                    path: 'address',
+                    select: '-_id -__v',
+                })
+                .populate({
                     path: 'socialMedia',
-                    options: { lean: true },
-                });
+                    select: '-_id -__v',
+                }).select('-__v');
         } catch (error: any) {
             throw error;
         }
@@ -56,9 +64,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .populate('daoProposals')
                 .populate('team')
                 .populate({
+                    path: 'address',
+                    select: '-_id -__v',
+                })
+                .populate({
                     path: 'socialMedia',
-                    options: { lean: true },
-                });
+                    select: '-_id -__v',
+                }).select('-__v');
         } catch (error: any) {
             throw error;
         }
