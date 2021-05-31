@@ -1,9 +1,15 @@
 import { ContainerConfiguration, Scope } from 'typescript-ioc';
+import { GetDaoProposalsByRoundCommandApi } from './dao-proposal/api/get-dao-proposals-by-round-command.api';
 import { GetDaoProposalsCommandApi } from './dao-proposal/api/get-dao-proposals-command.api';
+import { GetDaoProposalsPaginatedCommandApi } from './dao-proposal/api/get-dao-proposals-paginated-command.api';
 import { GetDaoProposalByIdCommandApi } from './dao-proposal/api/get-doa-proposals-by-id-command.api';
+import { GetLatestDaoProposalsCommandApi } from './dao-proposal/api/get-latest-dao-proposal-command.api';
 import { GetOpenDaoProposalsCommandApi } from './dao-proposal/api/get-open-dao-proposals-comand.api';
+import { GetDaoProposalsByRoundCommand } from './dao-proposal/command/get-dao-proposals-by-round.command';
+import { GetDaoProposalsPaginatedCommand } from './dao-proposal/command/get-dao-proposals-paginated.command';
 import { GetDaoProposalsCommand } from './dao-proposal/command/get-dao-proposals.command';
 import { GetDaoProposalByIdCommand } from './dao-proposal/command/get-doa-proposal-by-id.command';
+import { GetLatestDaoProposalsCommand } from './dao-proposal/command/get-latest-dao-proposals.command';
 import { GetOpenDaoProposalsCommand } from './dao-proposal/command/get-open-doa-proposals.command';
 import { CalculateMetricsCommandApi } from './metrics/api/calculate-metrics-command.api';
 import { CalculateMetricsCommand } from './metrics/command/calculate-metrics.command';
@@ -66,6 +72,21 @@ const config: ContainerConfiguration[] = [
     {
         bind: GetDaoProposalByIdCommandApi,
         to: GetDaoProposalByIdCommand,
+        scope: Scope.Singleton,
+    },
+    {
+        bind: GetDaoProposalsPaginatedCommandApi,
+        to: GetDaoProposalsPaginatedCommand,
+        scope: Scope.Singleton,
+    },
+    {
+        bind: GetLatestDaoProposalsCommandApi,
+        to: GetLatestDaoProposalsCommand,
+        scope: Scope.Singleton,
+    },
+    {
+        bind: GetDaoProposalsByRoundCommandApi,
+        to: GetDaoProposalsByRoundCommand,
         scope: Scope.Singleton,
     },
     // Metrics
