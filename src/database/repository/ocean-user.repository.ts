@@ -15,7 +15,10 @@ export class OceanUserRepository implements RepositoryInterface<OceanUserType> {
 
     public async getByID(id: Types.ObjectId): Promise<OceanUserType> {
         try {
-            return await this.model.findById(id);
+            return await this.model.findById(id).populate({
+                path: 'address',
+                select: '-_id -__v',
+            });
         } catch (error: any) {
             throw error;
         }
@@ -23,7 +26,10 @@ export class OceanUserRepository implements RepositoryInterface<OceanUserType> {
 
     public async getAll(query?: FilterQuery<any>): Promise<OceanUserType[]> {
         try {
-            return await this.model.find(query || {});
+            return await this.model.find(query || {}).populate({
+                path: 'address',
+                select: '-_id -__v',
+            });
         } catch (error: any) {
             throw error;
         }
