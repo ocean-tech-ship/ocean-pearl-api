@@ -19,9 +19,15 @@ export * from './project/command/get-projects-paginated.command';
 export * from './dao-proposal/api/get-dao-proposals-command.api';
 export * from './dao-proposal/api/get-doa-proposals-by-id-command.api';
 export * from './dao-proposal/api/get-open-dao-proposals-comand.api';
+export * from './dao-proposal/api/get-dao-proposals-paginated-command.api';
+export * from './dao-proposal/api/get-latest-dao-proposal-command.api';
+export * from './dao-proposal/api/get-dao-proposals-by-round-command.api';
 export * from './dao-proposal/command/get-dao-proposals.command';
 export * from './dao-proposal/command/get-doa-proposal-by-id.command';
 export * from './dao-proposal/command/get-open-doa-proposals.command';
+export * from './dao-proposal/command/get-dao-proposals-paginated.command';
+export * from './dao-proposal/command/get-latest-dao-proposals.command';
+export * from './dao-proposal/command/get-dao-proposals-by-round.command';
 
 export * from './metrics/api/calculate-metrics-command.api';
 export * from './metrics/command/calculate-metrics.command';
