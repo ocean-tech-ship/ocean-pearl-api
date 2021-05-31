@@ -1,6 +1,5 @@
 import { Inject } from 'typescript-ioc';
 import { ProjectInterface, ProjectRepository } from '../../../database';
-import { DaoProposalStatusEnum } from '../../../database/enums/dao-proposal-status.enum';
 import { GetDaoFeaturedProjectsCommandApi } from '../api/get-dao-featured-projects-comand.api';
 
 export class GetDaoFeaturedProjectsCommand
@@ -25,7 +24,7 @@ export class GetDaoFeaturedProjectsCommand
                         from: 'daoproposals',
                         let: {
                             id: '$_id',
-                            status: DaoProposalStatusEnum.FundingRoundActive,
+                            fundingRound: 6,
                         },
                         pipeline: [
                             {
@@ -33,16 +32,19 @@ export class GetDaoFeaturedProjectsCommand
                                     $expr: {
                                         $and: [
                                             { $eq: ['$project', '$$id'] },
-                                            { $eq: ['$status', '$$status'] },
+                                            { $eq: ['$fundingRound', '$$fundingRound'] },
                                         ],
                                     },
                                 },
                             },
+                            { $project: { __v: 0, _id: 0 } }
                         ],
                         as: 'featuredDaoProposal',
                     },
                 },
+                { $match: { 'featuredDaoProposal.fundingRound': { '$eq': 6 } } },
+                { $project: { __v: 0 } }
             ])
-            .limit(2);
+            .limit(2)
     }
 }
