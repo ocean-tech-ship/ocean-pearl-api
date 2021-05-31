@@ -18,4 +18,12 @@ export enum CategoryEnum {
     SupplyChain = 'supplyChain',
     Work = 'work',
     Other = 'other',
+
+    BuildAndIntegrate = 'buildAndIntegrate',
+    CoreSoftware = 'coreSoftware',
+    DAO = 'dao',
+    NewEntrants = 'newEntrants',
+    Outreach = 'outreach',
+    UnleashData = 'unleashData',
+    
 }
