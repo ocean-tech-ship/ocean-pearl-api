@@ -5,7 +5,7 @@ export type KpiTargetType = KpiTargetInterface & Document;
 export interface KpiTargetInterface {
     _id?: Types.ObjectId;
     title: string;
-    descciption: string;
+    description: string;
     daoProposal: Types.ObjectId;
 }
 
@@ -22,7 +22,7 @@ const kpiTargetSchema: Schema = new Schema(
             required: true,
             trim: true,
         },
-        doaProposal: {
+        daoProposal: {
             type: Types.ObjectId,
             ref: 'DaoProposal',
             required: true,

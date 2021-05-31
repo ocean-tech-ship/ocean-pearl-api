@@ -5,7 +5,7 @@ export type DeliverableType = DeliverableInterface & Document;
 export interface DeliverableInterface {
     _id?: Types.ObjectId;
     title: string;
-    descciption: string;
+    description: string;
     daoProposal: Types.ObjectId;
     delivered?: boolean;
 }
@@ -23,7 +23,7 @@ const deliverableSchema: Schema = new Schema(
             required: true,
             trim: true,
         },
-        doaProposal: {
+        daoProposal: {
             type: Types.ObjectId,
             ref: 'DaoProposal',
             required: true,
