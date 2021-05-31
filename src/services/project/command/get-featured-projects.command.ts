@@ -13,6 +13,21 @@ export class GetFeaturedProjectsCommand implements GetFeaturedProjectsCommandApi
     }
 
     public async execute(): Promise<ProjectInterface[]> {
-        return await this.projectRepository.getAll();
+        const model = this.projectRepository.getModel();
+
+        return await model
+            .find()
+            .sort({ createdAt: -1 })
+            .limit(4)
+            .populate('company')
+            .populate({
+                path: 'daoProposals',
+                select: '-__v',
+            })
+            .populate('team')
+            .populate({
+                path: 'socialMedia',
+                select: '-_id -__v',
+            }).select('-__v');
     }
 }
