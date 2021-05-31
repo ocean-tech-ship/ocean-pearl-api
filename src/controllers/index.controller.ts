@@ -2,7 +2,7 @@ import { GET, Path } from 'typescript-rest';
 import { Inject } from 'typescript-ioc';
 import { LoggerApi } from '../logger';
 import { DaoProposalInterface, ProjectInterface } from '../database';
-import { GetDaoFeaturedProjectsCommand, GetFeaturedProjectsCommand, GetLatestProjectsComand, GetOpenDaoProposalsCommand } from '../services';
+import { GetDaoFeaturedProjectsCommand, GetFeaturedProjectsCommand, GetLatestDaoProposalsCommand, GetLatestProjectsComand, GetOpenDaoProposalsCommand } from '../services';
 import { MetricsInterface } from '../services/metrics/interface/metrics.interface';
 import { CalculateMetricsCommand } from '../services/metrics/command/calculate-metrics.command';
 
@@ -17,7 +17,7 @@ export class IndexController {
     @Inject
     getDaoFeaturedProjectsCommand: GetDaoFeaturedProjectsCommand;
     @Inject
-    getOpenDaoProposalsCommand: GetOpenDaoProposalsCommand;
+    getLatestDaoProposalsCommand: GetLatestDaoProposalsCommand;
     @Inject
     calculateMetricsCommand: CalculateMetricsCommand;
 
@@ -38,7 +38,7 @@ export class IndexController {
             const featuredProjects = await this.getFeaturedProjectsCommand.execute();
             const latestProjects = await this.getLatestProjectsCommand.execute();
             const daoFeaturedProjects = await this.getDaoFeaturedProjectsCommand.execute();
-            const daoProposals = await this.getOpenDaoProposalsCommand.execute();
+            const daoProposals = await this.getLatestDaoProposalsCommand.execute();
             const metrics = await this.calculateMetricsCommand.execute();
 
             return {
