@@ -4,8 +4,6 @@ import { DaoProposalInterface, DaoProposalRepository } from '../../../database';
 import { DaoProposalStatusEnum } from '../../../database/enums/dao-proposal-status.enum';
 import { GetOpenDaoProposalsCommandApi } from '../api/get-open-dao-proposals-comand.api';
 
-
-
 export class GetOpenDaoProposalsCommand
     implements GetOpenDaoProposalsCommandApi
 {
@@ -18,7 +16,9 @@ export class GetOpenDaoProposalsCommand
         this.daoProposalRepository = daoProposalRepository;
     }
 
-    public async execute(fundingRound?: number): Promise<DaoProposalInterface[]> {
+    public async execute(
+        fundingRound?: number
+    ): Promise<DaoProposalInterface[]> {
         let filterQuery: FilterQuery<any> = {
             status: DaoProposalStatusEnum.FundingRoundActive,
         };
