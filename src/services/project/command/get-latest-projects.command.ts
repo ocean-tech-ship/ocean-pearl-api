@@ -20,11 +20,14 @@ export class GetLatestProjectsComand implements GetLatestProjectsComandApi {
             .sort({ createdAt: -1 })
             .limit(6)
             .populate('company')
-            .populate('daoProposals')
+            .populate({
+                path: 'daoProposals',
+                select: '-__v',
+            })
             .populate('team')
             .populate({
                 path: 'socialMedia',
-                options: { lean: true },
-            });
+                select: '-_id -__v',
+            }).select('-__v');
     }
 }
