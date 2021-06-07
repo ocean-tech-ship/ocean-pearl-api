@@ -18,7 +18,7 @@ export interface DaoProposalInterface {
     grantAmountToken?: number;
     status: DaoProposalStatusEnum;
     walletAddress?: string;
-    ethWalletAddress?: string;
+    paymentWalletsAddresses?: string[];
     title?: string;
     description: string;
     category: string;
@@ -26,7 +26,9 @@ export interface DaoProposalInterface {
     deliverables: Types.ObjectId[];
     kpiTargets?: Types.ObjectId[];
     kpiRoi?: string;
+    fundamentalMetric: string;
     ipfsHash?: string;
+    snapshotBlock?: number;
     voteUrl?: string;
     images?: string[];
 }
@@ -91,11 +93,13 @@ const daoProposalSchema: Schema = new Schema(
             trim: true,
             maxLength: 64,
         },
-        ethWalletAddress: {
-            type: String,
-            trim: true,
-            maxLength: 64,
-        },
+        paymentWalletsAddresses: [
+            {
+                type: String,
+                trim: true,
+                maxLength: 64,
+            },
+        ],
         title: {
             type: String,
             trim: true,
@@ -135,9 +139,17 @@ const daoProposalSchema: Schema = new Schema(
             type: String,
             trim: true,
         },
+        fundamentalMetric: {
+            type: String,
+            trim: true,
+            required: true,
+        },
         ipfsHash: {
             type: String,
             trim: true,
+        },
+        snapshotBlock: {
+            type: Number,
         },
         voteUrl: {
             type: String,
