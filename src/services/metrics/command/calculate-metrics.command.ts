@@ -28,7 +28,7 @@ export class CalculateMetricsCommand implements CalculateMetricsCommandApi {
         return {
             fundingRound: CURRENT_ROUND,
             totalDaoProposals: daoProposals.length,
-            endDate: new Date(),
+            endDate: daoProposals[0].finishDate,
             totalRequestedFunding: totalRequestedFunding,
             totalVotes: totalVotesCount,
         };
