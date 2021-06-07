@@ -17,8 +17,10 @@ export class GetLatestProjectsComand implements GetLatestProjectsComandApi {
 
         return await model
             .find()
-            .sort({ createdAt: -1 })
-            .limit(6)
+            .sort({
+                createdAt: -1
+            })
+            .limit(5)
             .populate('company')
             .populate({
                 path: 'daoProposals',
@@ -28,6 +30,7 @@ export class GetLatestProjectsComand implements GetLatestProjectsComandApi {
             .populate({
                 path: 'socialMedia',
                 select: '-_id -__v',
-            }).select('-__v');
+            })
+            .select('-__v');
     }
 }
