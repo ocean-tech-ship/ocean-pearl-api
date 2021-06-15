@@ -1,4 +1,5 @@
-import { FilterQuery, Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { FindQueryInterface } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-response.interface';
 import { PaginationOptionsInterface } from '../interfaces/pagination-options.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
@@ -28,16 +29,20 @@ export class DaoProposalRepository
                 .populate({
                     path: 'kpiTargets',
                     select: '-_id -__v',
-                }).select('-__v');
+                })
+                .select('-__v');
         } catch (error: any) {
             throw error;
         }
     }
 
-    public async getAll(query?: FilterQuery<any>): Promise<DaoProposalType[]> {
+    public async getAll(
+        query?: FindQueryInterface
+    ): Promise<DaoProposalType[]> {
         try {
             return await this.model
-                .find(query || {})
+                .find(query?.find || {})
+                .sort(query?.sort || {})
                 .populate('project')
                 .populate({
                     path: 'deliverables',
@@ -46,7 +51,8 @@ export class DaoProposalRepository
                 .populate({
                     path: 'kpiTargets',
                     select: '-_id -__v',
-                }).select('-__v');
+                })
+                .select('-__v');
         } catch (error: any) {
             throw error;
         }
@@ -69,7 +75,8 @@ export class DaoProposalRepository
                 .populate({
                     path: 'kpiTargets',
                     select: '-_id -__v',
-                }).select('-__v');
+                })
+                .select('-__v');
         } catch (error: any) {
             throw error;
         }
