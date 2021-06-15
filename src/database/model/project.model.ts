@@ -16,6 +16,7 @@ export interface ProjectInterface {
     team?: Types.ObjectId[];
     teamName: string;
     address?: Types.ObjectId;
+    featured?: boolean;
 }
 
 const projectSchema: Schema = new Schema(
@@ -77,6 +78,10 @@ const projectSchema: Schema = new Schema(
         address: {
             type: Schema.Types.ObjectId,
             ref: 'Address',
+        },
+        featured: {
+            type: Boolean,
+            default: false,
         },
     },
     { timestamps: true }
