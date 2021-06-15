@@ -1,6 +1,7 @@
 import { Inject } from 'typescript-ioc';
 import { GetProjectsCommandApi } from '../..';
 import { ProjectInterface, ProjectRepository } from '../../../database';
+import { FindQueryInterface } from '../../../database/interfaces/find-query.interface';
 
 export class GetProjectsCommand implements GetProjectsCommandApi {
     projectRepository: ProjectRepository;
@@ -13,6 +14,10 @@ export class GetProjectsCommand implements GetProjectsCommandApi {
     }
 
     public async execute(): Promise<ProjectInterface[]> {
-        return await this.projectRepository.getAll();
+        let query: FindQueryInterface = {
+            sort: { createdAt: -1 },
+        };
+
+        return await this.projectRepository.getAll(query);
     }
 }
