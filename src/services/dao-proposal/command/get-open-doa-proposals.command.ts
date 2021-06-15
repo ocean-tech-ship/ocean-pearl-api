@@ -1,7 +1,7 @@
-import { FilterQuery } from 'mongoose';
 import { Inject } from 'typescript-ioc';
 import { DaoProposalInterface, DaoProposalRepository } from '../../../database';
 import { DaoProposalStatusEnum } from '../../../database/enums/dao-proposal-status.enum';
+import { FindQueryInterface } from '../../../database/interfaces/find-query.interface';
 import { GetOpenDaoProposalsCommandApi } from '../api/get-open-dao-proposals-comand.api';
 
 export class GetOpenDaoProposalsCommand
@@ -19,14 +19,14 @@ export class GetOpenDaoProposalsCommand
     public async execute(
         fundingRound?: number
     ): Promise<DaoProposalInterface[]> {
-        let filterQuery: FilterQuery<any> = {
-            status: DaoProposalStatusEnum.FundingRoundActive,
+        let query: FindQueryInterface = {
+            find: { status: DaoProposalStatusEnum.FundingRoundActive },
         };
 
         if (fundingRound) {
-            filterQuery.fundingRound = fundingRound;
+            query.find.fundingRound = fundingRound;
         }
 
-        return await this.daoProposalRepository.getAll(filterQuery);
+        return await this.daoProposalRepository.getAll(query);
     }
 }
