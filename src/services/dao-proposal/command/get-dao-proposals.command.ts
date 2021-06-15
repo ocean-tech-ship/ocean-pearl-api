@@ -1,5 +1,6 @@
 import { Inject } from 'typescript-ioc';
 import { DaoProposalInterface, DaoProposalRepository } from '../../../database';
+import { FindQueryInterface } from '../../../database/interfaces/find-query.interface';
 import { GetDaoProposalsCommandApi } from '../api/get-dao-proposals-command.api';
 
 export class GetDaoProposalsCommand implements GetDaoProposalsCommandApi {
@@ -13,6 +14,10 @@ export class GetDaoProposalsCommand implements GetDaoProposalsCommandApi {
     }
 
     public async execute(): Promise<DaoProposalInterface[]> {
-        return await this.daoProposalRepository.getAll();
+        let query: FindQueryInterface = {
+            sort: { fundingRound: -1 },
+        };
+
+        return await this.daoProposalRepository.getAll(query);
     }
 }
