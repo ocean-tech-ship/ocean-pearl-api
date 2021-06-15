@@ -1,4 +1,5 @@
-import { FilterQuery, Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { FindQueryInterface } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-response.interface';
 import { PaginationOptionsInterface } from '../interfaces/pagination-options.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
@@ -25,16 +26,18 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .populate({
                     path: 'socialMedia',
                     select: '-_id -__v',
-                }).select('-__v');
+                })
+                .select('-__v');
         } catch (error: any) {
             throw error;
         }
     }
 
-    public async getAll(query?: FilterQuery<any>): Promise<ProjectType[]> {
+    public async getAll(query?: FindQueryInterface): Promise<ProjectType[]> {
         try {
             return await this.model
-                .find(query || {})
+                .find(query?.find || {})
+                .sort(query?.sort || {})
                 .populate('company')
                 .populate('daoProposals')
                 .populate('team')
@@ -45,7 +48,8 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .populate({
                     path: 'socialMedia',
                     select: '-_id -__v',
-                }).select('-__v');
+                })
+                .select('-__v');
         } catch (error: any) {
             throw error;
         }
@@ -70,7 +74,8 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .populate({
                     path: 'socialMedia',
                     select: '-_id -__v',
-                }).select('-__v');
+                })
+                .select('-__v');
         } catch (error: any) {
             throw error;
         }
