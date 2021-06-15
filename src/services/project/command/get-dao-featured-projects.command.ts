@@ -32,19 +32,25 @@ export class GetDaoFeaturedProjectsCommand
                                     $expr: {
                                         $and: [
                                             { $eq: ['$project', '$$id'] },
-                                            { $eq: ['$fundingRound', '$$fundingRound'] },
+                                            {
+                                                $eq: [
+                                                    '$fundingRound',
+                                                    '$$fundingRound',
+                                                ],
+                                            },
                                         ],
                                     },
                                 },
                             },
-                            { $project: { __v: 0, _id: 0 } }
+                            { $project: { __v: 0, _id: 0 } },
                         ],
                         as: 'featuredDaoProposal',
                     },
                 },
-                { $match: { 'featuredDaoProposal.fundingRound': { '$eq': 6 } } },
-                { $project: { __v: 0 } }
+                { $match: { 'featuredDaoProposal.fundingRound': { $eq: 6 } } },
+                { $match: { 'featured': { $eq: true } } },
+                { $project: { __v: 0 } },
             ])
-            .limit(2)
+            .limit(2);
     }
 }
