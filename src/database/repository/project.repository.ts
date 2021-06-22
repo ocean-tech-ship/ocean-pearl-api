@@ -16,20 +16,17 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
             return await this.model
                 .findOne({ id: id })
                 .lean()
-                .populate({ 
+                .populate({
                     path: 'company',
                     select: '-_id -__v',
-                    options: { lean: true}
                 })
-                .populate({ 
+                .populate({
                     path: 'daoProposals',
                     select: '-project -_id -__v -deliverables -kpiTargets',
-                    options: { lean: true}
                 })
-                .populate({ 
+                .populate({
                     path: 'team',
                     select: '-_id -__v',
-                    options: { lean: true}
                 })
                 .select('-_id -__v')
                 .exec();
@@ -43,20 +40,17 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
             return await this.model
                 .find(query || {})
                 .lean()
-                .populate({ 
+                .populate({
                     path: 'company',
                     select: '-_id -__v',
-                    options: { lean: true}
                 })
-                .populate({ 
+                .populate({
                     path: 'daoProposals',
                     select: '-project -_id -__v -deliverables -kpiTargets',
-                    options: { lean: true}
                 })
-                .populate({ 
+                .populate({
                     path: 'team',
                     select: '-_id -__v',
-                    options: { lean: true}
                 })
                 .select('-_id -__v')
                 .exec();
@@ -75,20 +69,17 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .skip((options.page - 1) * options.limit)
                 .limit(options.limit)
                 .lean()
-                .populate({ 
+                .populate({
                     path: 'company',
                     select: '-_id -__v',
-                    options: { lean: true}
                 })
-                .populate({ 
+                .populate({
                     path: 'daoProposals',
                     select: '-project -_id -__v -deliverables -kpiTargets',
-                    options: { lean: true}
                 })
-                .populate({ 
+                .populate({
                     path: 'team',
                     select: '-_id -__v',
-                    options: { lean: true}
                 })
                 .select('-_id -__v -socialMedia._id -address._id')
                 .exec();

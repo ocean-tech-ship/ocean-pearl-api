@@ -24,17 +24,14 @@ export class DaoProposalRepository
                 .populate({
                     path: 'project',
                     select: '-daoProposals -_id -__v',
-                    options: { lean: true },
                 })
                 .populate({
                     path: 'deliverables',
                     select: '-_id -__v',
-                    options: { lean: true },
                 })
                 .populate({
                     path: 'kpiTargets',
                     select: '-_id -__v',
-                    options: { lean: true },
                 })
                 .select('-_id -__v')
                 .exec();
@@ -53,17 +50,14 @@ export class DaoProposalRepository
                 .populate({
                     path: 'project',
                     select: '-daoProposals -_id -__v',
-                    options: { lean: true },
                 })
                 .populate({
                     path: 'deliverables',
                     select: '-_id -__v',
-                    options: { lean: true },
                 })
                 .populate({
                     path: 'kpiTargets',
                     select: '-_id -__v',
-                    options: { lean: true },
                 })
                 .select('-_id -__v')
                 .exec();
@@ -85,17 +79,14 @@ export class DaoProposalRepository
                 .populate({
                     path: 'project',
                     select: '-daoProposals -_id -__v',
-                    options: { lean: true },
                 })
                 .populate({
                     path: 'deliverables',
                     select: '-_id -__v',
-                    options: { lean: true },
                 })
                 .populate({
                     path: 'kpiTargets',
                     select: '-_id -__v',
-                    options: { lean: true },
                 })
                 .select('-_id -__v')
                 .exec();
