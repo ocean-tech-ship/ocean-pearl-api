@@ -23,7 +23,7 @@ export class GetDaoFeaturedProjectsCommand
                     $lookup: {
                         from: 'daoproposals',
                         let: {
-                            id: '$id',
+                            id: '$_id',
                             fundingRound: 6,
                         },
                         pipeline: [
@@ -59,7 +59,7 @@ export class GetDaoFeaturedProjectsCommand
                     $lookup: {
                         from: 'daoproposals',
                         let: {
-                            id: '$id',
+                            id: '$_id',
                         },
                         pipeline: [
                             {
