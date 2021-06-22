@@ -1,10 +1,14 @@
 import { model, Schema, Document, Model, Types } from 'mongoose';
 import { UserTitleEnum } from '../enums/user-title.enum';
+import { nanoid } from '../functions/nano-id.function';
+import { AddressInterface, addressSchema } from './address.model';
+import { SocialMediaInterface, socialMediaSchema } from './social-media.model';
 
 export type OceanUserType = OceanUserInterface & Document;
 
 export interface OceanUserInterface {
     _id?: Types.ObjectId;
+    id?: string;
     title?: UserTitleEnum;
     firstname: string;
     lastname?: string;
@@ -12,12 +16,17 @@ export interface OceanUserInterface {
     userImage?: string;
     joinDate: Date;
     activeUntil?: Date;
-    address?: Types.ObjectId;
-    socialMedia?: Types.ObjectId;
+    address?: AddressInterface;
+    socialMedia?: SocialMediaInterface;
 }
 
 const oceanUserSchema: Schema = new Schema(
     {
+        id: {
+            type: String,
+            default: () => nanoid(),
+            unique: true,
+        },
         title: {
             type: String,
             enum: UserTitleEnum,
@@ -49,12 +58,10 @@ const oceanUserSchema: Schema = new Schema(
             type: Date,
         },
         address: {
-            type: Schema.Types.ObjectId,
-            ref: 'Address',
+            type: addressSchema,
         },
         socialMedia: {
-            type: Schema.Types.ObjectId,
-            ref: 'SocialMedia',
+            type: socialMediaSchema,
         },
     },
     { timestamps: true }
