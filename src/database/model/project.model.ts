@@ -18,7 +18,9 @@ export interface ProjectInterface {
     company?: Types.ObjectId;
     daoProposals?: Types.ObjectId[];
     team?: Types.ObjectId[];
+    teamName: string;    
     address?: AddressInterface;
+    featured?: boolean;
 }
 
 const projectSchema: Schema = new Schema(
@@ -76,8 +78,17 @@ const projectSchema: Schema = new Schema(
             ],
             default: void 0,
         },
+        teamName: {
+            type: String,
+            required: true,
+            trim: true,
+        },
         address: {
             type: addressSchema,
+        },
+        featured: {
+            type: Boolean,
+            default: false,
         },
     },
     { timestamps: true }

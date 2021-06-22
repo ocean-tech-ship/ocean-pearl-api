@@ -1,4 +1,5 @@
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
+import { FindQueryInterface } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-response.interface';
 import { PaginationOptionsInterface } from '../interfaces/pagination-options.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
@@ -35,10 +36,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async getAll(query?: FilterQuery<any>): Promise<ProjectInterface[]> {
+    public async getAll(
+        query?: FindQueryInterface
+    ): Promise<ProjectInterface[]> {
         try {
             return await this.model
-                .find(query || {})
+                .find(query?.find || {})
+                .sort(query?.sort || {})
                 .lean()
                 .populate({
                     path: 'company',
@@ -81,7 +85,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                     path: 'team',
                     select: '-_id -__v',
                 })
-                .select('-_id -__v -socialMedia._id -address._id')
+                .select('-_id -__v')
                 .exec();
         } catch (error: any) {
             throw error;

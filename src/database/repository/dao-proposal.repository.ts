@@ -1,4 +1,5 @@
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
+import { FindQueryInterface } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-response.interface';
 import { PaginationOptionsInterface } from '../interfaces/pagination-options.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
@@ -41,11 +42,12 @@ export class DaoProposalRepository
     }
 
     public async getAll(
-        query?: FilterQuery<any>
+        query?: FindQueryInterface
     ): Promise<DaoProposalInterface[]> {
         try {
             return await this.model
-                .find(query || {})
+                .find(query?.find || {})
+                .sort(query?.sort || {})
                 .lean()
                 .populate({
                     path: 'project',

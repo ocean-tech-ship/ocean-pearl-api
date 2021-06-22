@@ -18,7 +18,7 @@ export class GetLatestProjectsComand implements GetLatestProjectsComandApi {
         return await model
             .find()
             .sort({ createdAt: -1 })
-            .limit(6)
+            .limit(5)
             .lean()
             .populate({
                 path: 'company',

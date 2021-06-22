@@ -83,6 +83,7 @@ export class GetDaoFeaturedProjectsCommand
                     },
                 },
                 { $match: { 'featuredDaoProposal.fundingRound': { $eq: 6 } } },
+                { $match: { 'featured': { $eq: true } } },
                 { $project: { __v: 0, _id: 0 } },
             ])
             .limit(2);
