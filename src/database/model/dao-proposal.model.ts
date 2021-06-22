@@ -24,7 +24,7 @@ export interface DaoProposalInterface {
     title?: string;
     description: string;
     category: string;
-    oceanProtocalPortUrl?: string;
+    oceanProtocolPortUrl?: string;
     deliverables: Types.ObjectId[];
     kpiTargets?: Types.ObjectId[];
     kpiRoi?: string;
@@ -120,7 +120,7 @@ const daoProposalSchema: Schema = new Schema(
             type: String,
             enum: CategoryEnum,
         },
-        oceanProtocalPortUrl: {
+        oceanProtocolPortUrl: {
             type: String,
             trim: true,
         },
