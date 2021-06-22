@@ -15,7 +15,12 @@ export class JobRepository implements RepositoryInterface<JobType> {
             return await this.model
                 .findOne({ id: id })
                 .lean()
-                .populate('company');
+                .populate({
+                    path: 'company',
+                    select: 'id',
+                })
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -26,7 +31,12 @@ export class JobRepository implements RepositoryInterface<JobType> {
             return await this.model
                 .find(query || {})
                 .lean()
-                .populate('company');
+                .populate({
+                    path: 'company',
+                    select: 'id',
+                })
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }

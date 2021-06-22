@@ -15,8 +15,16 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
             return await this.model
                 .findOne({ id: id })
                 .lean()
-                .populate('jobs')
-                .populate('projects');
+                .populate({
+                    path: 'jobs',
+                    select: 'id',
+                })
+                .populate({
+                    path: 'projects',
+                    select: 'id',
+                })
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -27,8 +35,16 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
             return await this.model
                 .find(query || {})
                 .lean()
-                .populate('jobs')
-                .populate('projects');
+                .populate({
+                    path: 'jobs',
+                    select: 'id',
+                })
+                .populate({
+                    path: 'projects',
+                    select: 'id',
+                })
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
