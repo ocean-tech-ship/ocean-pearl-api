@@ -23,7 +23,7 @@ export class GetDaoFeaturedProjectsCommand
                     $lookup: {
                         from: 'daoproposals',
                         let: {
-                            id: '$_id',
+                            id: '$id',
                             fundingRound: 6,
                         },
                         pipeline: [
@@ -32,19 +32,59 @@ export class GetDaoFeaturedProjectsCommand
                                     $expr: {
                                         $and: [
                                             { $eq: ['$project', '$$id'] },
-                                            { $eq: ['$fundingRound', '$$fundingRound'] },
+                                            {
+                                                $eq: [
+                                                    '$fundingRound',
+                                                    '$$fundingRound',
+                                                ],
+                                            },
                                         ],
                                     },
                                 },
                             },
-                            { $project: { __v: 0, _id: 0 } }
+                            {
+                                $project: {
+                                    __v: 0,
+                                    _id: 0,
+                                    project: 0,
+                                    deliverables: 0,
+                                    kpiTargets: 0,
+                                },
+                            },
                         ],
                         as: 'featuredDaoProposal',
                     },
                 },
-                { $match: { 'featuredDaoProposal.fundingRound': { '$eq': 6 } } },
-                { $project: { __v: 0 } }
+                {
+                    $lookup: {
+                        from: 'daoproposals',
+                        let: {
+                            id: '$id',
+                        },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$project', '$$id'],
+                                    },
+                                },
+                            },
+                            {
+                                $project: {
+                                    __v: 0,
+                                    _id: 0,
+                                    project: 0,
+                                    deliverables: 0,
+                                    kpiTargets: 0,
+                                },
+                            },
+                        ],
+                        as: 'daoProposals',
+                    },
+                },
+                { $match: { 'featuredDaoProposal.fundingRound': { $eq: 6 } } },
+                { $project: { __v: 0, _id: 0 } },
             ])
-            .limit(2)
+            .limit(2);
     }
 }
