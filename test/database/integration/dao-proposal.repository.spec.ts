@@ -3,11 +3,14 @@ import DaoProposal, {
     DaoProposalInterface,
 } from '../../../src/database/model/dao-proposal.model';
 import { DaoProposalRepository } from '../../../src/database/repository/dao-proposal.repository';
+import { DaoProposalStatusEnum } from '../../../src/database/enums/dao-proposal-status.enum';
+import { CategoryEnum } from '../../../src/database/enums/category.enum';
+import { nanoid } from '../../../src/database/functions/nano-id.function';
 
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
-import { CategoryEnum } from '../../../src/database/enums/category.enum';
-import { DaoProposalStatusEnum } from '../../../src/database/enums/dao-proposal-status.enum';
+
+const DAO_PROPOSAL_ID: string = nanoid();
 
 beforeEach(async () => {
     dotenv.config();
@@ -20,7 +23,7 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-    await DaoProposal.deleteOne({ id: '6060e915a8c5f54934190542' });
+    await DaoProposal.deleteOne({ id: DAO_PROPOSAL_ID });
     await mongoose.connection.close();
 });
 
@@ -29,7 +32,7 @@ describe('doa-proposal.repository', () => {
         DaoProposalRepository
     );
     let daoProposal: DaoProposalInterface = <DaoProposalInterface>{
-        _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
+        id: DAO_PROPOSAL_ID,
         startDate: new Date(),
         finishDate: new Date(),
         fundingRound: 2,
@@ -54,15 +57,15 @@ describe('doa-proposal.repository', () => {
     describe('Given I have a daoProposal repository', () => {
         test('it should save a daoProposal', async () => {
             expect(await repository.create(daoProposal)).toEqual(
-                new mongoose.Types.ObjectId('6060e915a8c5f54934190542')
+                DAO_PROPOSAL_ID
             );
         });
 
         test('it should return a daoProposal', async () => {
-            const dbDoaProposal = await repository.getByID(daoProposal._id);
+            const dbDoaProposal = await repository.getByID(daoProposal.id);
 
             expect({
-                _id: dbDoaProposal._id,
+                id: dbDoaProposal.id,
                 startDate: dbDoaProposal.startDate,
                 finishDate: dbDoaProposal.finishDate,
                 fundingRound: dbDoaProposal.fundingRound,
@@ -74,7 +77,7 @@ describe('doa-proposal.repository', () => {
                 walletAddress: dbDoaProposal.walletAddress,
                 category: dbDoaProposal.category,
             }).toEqual({
-                _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
+                id: DAO_PROPOSAL_ID,
                 startDate: daoProposal.startDate,
                 finishDate: daoProposal.finishDate,
                 fundingRound: 2,
@@ -101,7 +104,7 @@ describe('doa-proposal.repository', () => {
         });
 
         test('it should delete a daoProposal', async () => {
-            expect(await repository.delete(daoProposal._id)).toBeTruthy();
+            expect(await repository.delete(daoProposal.id)).toBeTruthy();
         });
     });
 });

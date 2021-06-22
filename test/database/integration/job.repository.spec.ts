@@ -3,9 +3,12 @@ import { JobRepository } from '../../../src/database/repository/job.repository';
 import Job, { JobInterface } from '../../../src/database/model/job.model';
 import { CountryEnum } from '../../../src/database/enums/country.enum';
 import { TokenOptionEnum } from '../../../src/database/enums/token-option.enum';
+import { nanoid } from '../../../src/database/functions/nano-id.function';
 
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
+
+const JOB_ID: string = nanoid();
 
 beforeEach(async () => {
     dotenv.config();
@@ -18,14 +21,14 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-    await Job.deleteOne({id: '6060e915a8c5f54934190542'});
+    await Job.deleteOne({ id: JOB_ID });
     await mongoose.connection.close();
 });
 
 describe('job.repository', () => {
     const repository: JobRepository = Container.get(JobRepository);
     let job: JobInterface = <JobInterface>{
-        _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
+        id: JOB_ID,
         title: 'Head of doing Stuff',
         description: 'Do some Stuff plz.',
         location: CountryEnum.Germany,
@@ -43,16 +46,14 @@ describe('job.repository', () => {
 
     describe('Given I have a job repository', () => {
         test('it should save a job', async () => {
-            expect(await repository.create(job)).toEqual(
-                new mongoose.Types.ObjectId('6060e915a8c5f54934190542')
-            );
+            expect(await repository.create(job)).toEqual(JOB_ID);
         });
 
         test('it should return a job', async () => {
-            const dbJob = await repository.getByID(job._id);
+            const dbJob = await repository.getByID(job.id);
 
             expect({
-                _id: dbJob._id,
+                id: dbJob.id,
                 title: dbJob.title,
                 description: dbJob.description,
                 location: dbJob.location,
@@ -63,7 +64,7 @@ describe('job.repository', () => {
                 startDate: dbJob.startDate,
                 company: dbJob.company,
             }).toEqual({
-                _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
+                id: JOB_ID,
                 title: 'Head of doing Stuff',
                 description: 'Do some Stuff plz.',
                 location: CountryEnum.Germany,
@@ -89,7 +90,7 @@ describe('job.repository', () => {
         });
 
         test('it should delete a job', async () => {
-            expect(await repository.delete(job._id)).toBeTruthy();
+            expect(await repository.delete(job.id)).toBeTruthy();
         });
     });
 });

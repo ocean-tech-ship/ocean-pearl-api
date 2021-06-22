@@ -1,10 +1,13 @@
 import { Container } from 'typescript-ioc';
-import { OceanUserInterface, OceanUserRepository } from '../../../src/database';
+import { OceanUserInterface, OceanUserRepository, SocialMediaInterface } from '../../../src/database';
 import { UserTitleEnum } from '../../../src/database/enums/user-title.enum';
 import OceanUser from '../../../src/database/model/ocean-user.model';
+import { nanoid } from '../../../src/database/functions/nano-id.function';
 
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
+
+const OCEAN_USER_ID: string = nanoid();
 
 beforeEach(async () => {
     dotenv.config();
@@ -17,19 +20,19 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-    await OceanUser.deleteOne({ id: '6060e915a8c5f54934190542' });
+    await OceanUser.deleteOne({ id: OCEAN_USER_ID });
     await mongoose.connection.close();
 });
 
 describe('ocean-user.repository', () => {
     const repository: OceanUserRepository = Container.get(OceanUserRepository);
     let oceanUser: OceanUserInterface = <OceanUserInterface>{
-        _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
+        id: OCEAN_USER_ID,
         title: UserTitleEnum.Dr,
         firstname: 'John',
         lastname: 'Doe',
         age: 28,
-        socialMedia: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
+        socialMedia: {} as SocialMediaInterface,
     };
 
     test('canary validates test infrastructure', () => {
@@ -38,30 +41,26 @@ describe('ocean-user.repository', () => {
 
     describe('Given I have a ocean user repository', () => {
         test('it should save a user', async () => {
-            expect(await repository.create(oceanUser)).toEqual(
-                new mongoose.Types.ObjectId('6060e915a8c5f54934190542')
-            );
+            expect(await repository.create(oceanUser)).toEqual(OCEAN_USER_ID);
         });
 
         test('it should return a user', async () => {
-            const dbOceanUser = await repository.getByID(oceanUser._id);
+            const dbOceanUser = await repository.getByID(oceanUser.id);
 
             expect({
-                _id: dbOceanUser._id,
+                id: dbOceanUser.id,
                 title: dbOceanUser.title,
                 firstname: dbOceanUser.firstname,
                 lastname: dbOceanUser.lastname,
                 age: dbOceanUser.age,
                 socialMedia: dbOceanUser.socialMedia,
             }).toEqual({
-                _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
+                id: OCEAN_USER_ID,
                 title: UserTitleEnum.Dr,
                 firstname: 'John',
                 lastname: 'Doe',
                 age: 28,
-                socialMedia: new mongoose.Types.ObjectId(
-                    '6060e915a8c5f54934190542'
-                ),
+                socialMedia: null,
             });
         });
 
@@ -78,7 +77,7 @@ describe('ocean-user.repository', () => {
         });
 
         test('it should delete a user', async () => {
-            expect(await repository.delete(oceanUser._id)).toBeTruthy();
+            expect(await repository.delete(oceanUser.id)).toBeTruthy();
         });
     });
 });
