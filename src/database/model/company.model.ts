@@ -47,13 +47,13 @@ const companySchema: Schema = new Schema(
         },
         projects: [
             {
-                type: String,
+                type: Types.ObjectId,
                 ref: 'Project',
             },
         ],
         jobs: [
             {
-                type: String,
+                type: Types.ObjectId,
                 ref: 'Job',
             },
         ],
