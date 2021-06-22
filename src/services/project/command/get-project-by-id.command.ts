@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import { Inject } from 'typescript-ioc';
 import { GetProjectByIdCommandApi } from '../..';
 import { ProjectInterface, ProjectRepository } from '../../../database';
@@ -13,7 +12,7 @@ export class GetProjectByIdCommand implements GetProjectByIdCommandApi {
         this.projectRepository = projectRepository;
     }
 
-    public async execute(id: Types.ObjectId): Promise<ProjectInterface> {
+    public async execute(id: string): Promise<ProjectInterface> {
         return await this.projectRepository.getByID(id);
     }
 }
