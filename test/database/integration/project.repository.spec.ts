@@ -33,7 +33,6 @@ describe('project.repository', () => {
         title: 'Best project ever',
         description: 'Still the best project ever.',
         category: CategoryEnum.Marketplace,
-        socialMedia: new mongoose.Types.ObjectId('6060e915a8c5f54934190540'),
         logo: 'picture here pls',
         company: new mongoose.Types.ObjectId('6060e915a8c5f54934190541'),
     };
