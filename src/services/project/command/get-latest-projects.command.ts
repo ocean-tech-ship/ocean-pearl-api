@@ -17,20 +17,22 @@ export class GetLatestProjectsComand implements GetLatestProjectsComandApi {
 
         return await model
             .find()
-            .sort({
-                createdAt: -1
-            })
+            .sort({ createdAt: -1 })
             .limit(5)
-            .populate('company')
+            .lean()
             .populate({
-                path: 'daoProposals',
-                select: '-__v',
-            })
-            .populate('team')
-            .populate({
-                path: 'socialMedia',
+                path: 'company',
                 select: '-_id -__v',
             })
-            .select('-__v');
+            .populate({
+                path: 'daoProposals',
+                select: '-project -_id -__v -deliverables -kpiTargets',
+            })
+            .populate({
+                path: 'team',
+                select: '-_id -__v',
+            })
+            .select('-_id -__v')
+            .exec();
     }
 }

@@ -6,6 +6,9 @@ import { CompanyRepository } from '../../../src/database/repository/company.repo
 
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
+import { nanoid } from '../../../src/database/functions/nano-id.function';
+
+const COMPANY_ID: string = nanoid();
 
 beforeEach(async () => {
     dotenv.config();
@@ -18,18 +21,18 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-    await Company.deleteOne({id: '6060e915a8c5f54934190542'});
+    await Company.deleteOne({id: COMPANY_ID});
     await mongoose.connection.close();
 });
 
 describe('company.repository', () => {
     const repository: CompanyRepository = Container.get(CompanyRepository);
     let company: CompanyInterface = <CompanyInterface>{
-        _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
+        id: COMPANY_ID,
         name: 'Test',
         email: 'Test.email@email.com',
         phoneNumber: '123456789',
-        socialMedia: new mongoose.Types.ObjectId('6060e915a8c5f54934190541'),
+        socialMedia: nanoid(),
     };
 
     test('canary validates test infrastructure', () => {
@@ -39,21 +42,21 @@ describe('company.repository', () => {
     describe('Given I have a company repository', () => {
         test('it should save a company', async () => {
             expect(await repository.create(company)).toEqual(
-                new mongoose.Types.ObjectId('6060e915a8c5f54934190542')
+                COMPANY_ID
             );
         });
 
         test('it should return a company', async () => {
-            const dbCompany = await repository.getByID(company._id);
+            const dbCompany = await repository.getByID(company.id);
 
             expect({
-                _id: dbCompany._id,
+                id: dbCompany.id,
                 name: dbCompany.name,
                 email: dbCompany.email,
                 phoneNumber: dbCompany.phoneNumber,
                 socialMedia: dbCompany.socialMedia,
             }).toEqual({
-                _id: new mongoose.Types.ObjectId('6060e915a8c5f54934190542'),
+                id: COMPANY_ID,
                 name: 'Test',
                 email: 'test.email@email.com',
                 phoneNumber: '123456789',
@@ -74,7 +77,7 @@ describe('company.repository', () => {
         });
 
         test('it should delete a company', async () => {
-            expect(await repository.delete(company._id)).toBeTruthy();
+            expect(await repository.delete(company.id)).toBeTruthy();
         });
     });
 });

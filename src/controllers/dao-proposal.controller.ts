@@ -55,9 +55,7 @@ export class DaoProposalController {
         @PathParam('id') id: string
     ): Promise<DaoProposalInterface> {
         try {
-            return await this.getDaoProposalByIdCommand.execute(
-                new Types.ObjectId(id)
-            );
+            return await this.getDaoProposalByIdCommand.execute(id);
         } catch (error: any) {
             this.logger.error(error);
         }

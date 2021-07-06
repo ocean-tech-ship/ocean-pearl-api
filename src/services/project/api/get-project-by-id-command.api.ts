@@ -1,6 +1,5 @@
-import { Types } from 'mongoose';
 import { ProjectInterface } from '../../../database';
 
 export abstract class GetProjectByIdCommandApi {
-    abstract execute(id: Types.ObjectId): Promise<ProjectInterface>;
+    abstract execute(id: string): Promise<ProjectInterface>;
 }

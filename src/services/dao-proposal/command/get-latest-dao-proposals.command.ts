@@ -20,14 +20,20 @@ export class GetLatestDaoProposalsCommand
             .find()
             .sort({ fundingRound: -1 })
             .limit(4)
+            .lean()
             .populate({
                 path: 'project',
-                select: '-__v',
+                select: '-daoProposals -_id -__v',
             })
             .populate({
-                path: 'socialMedia',
+                path: 'deliverables',
                 select: '-_id -__v',
             })
-            .select('-__v');
+            .populate({
+                path: 'kpiTargets',
+                select: '-_id -__v',
+            })
+            .select('-_id -__v')
+            .exec();
     }
 }

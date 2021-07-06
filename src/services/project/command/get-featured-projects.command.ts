@@ -2,7 +2,9 @@ import { Inject } from 'typescript-ioc';
 import { GetFeaturedProjectsCommandApi } from '../..';
 import { ProjectInterface, ProjectRepository } from '../../../database';
 
-export class GetFeaturedProjectsCommand implements GetFeaturedProjectsCommandApi{
+export class GetFeaturedProjectsCommand
+    implements GetFeaturedProjectsCommandApi
+{
     projectRepository: ProjectRepository;
 
     constructor(
@@ -19,15 +21,20 @@ export class GetFeaturedProjectsCommand implements GetFeaturedProjectsCommandApi
             .find()
             .sort({ createdAt: -1 })
             .limit(4)
-            .populate('company')
+            .lean()
+            .populate({
+                path: 'company',
+                select: '-_id -__v',
+            })
             .populate({
                 path: 'daoProposals',
-                select: '-__v',
+                select: '-project -_id -__v -deliverables -kpiTargets',
             })
-            .populate('team')
             .populate({
-                path: 'socialMedia',
+                path: 'team',
                 select: '-_id -__v',
-            }).select('-__v');
+            })
+            .select('-_id -__v')
+            .exec();
     }
 }

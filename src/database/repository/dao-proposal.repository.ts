@@ -1,4 +1,4 @@
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { FindQueryInterface } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-response.interface';
 import { PaginationOptionsInterface } from '../interfaces/pagination-options.interface';
@@ -17,11 +17,15 @@ export class DaoProposalRepository
         this.model = DaoProposal;
     }
 
-    public async getByID(id: Types.ObjectId): Promise<DaoProposalType> {
+    public async getByID(id: string): Promise<DaoProposalInterface> {
         try {
             return await this.model
-                .findById(id)
-                .populate('project')
+                .findOne({ id: id })
+                .lean()
+                .populate({
+                    path: 'project',
+                    select: '-daoProposals -_id -__v',
+                })
                 .populate({
                     path: 'deliverables',
                     select: '-_id -__v',
@@ -30,7 +34,8 @@ export class DaoProposalRepository
                     path: 'kpiTargets',
                     select: '-_id -__v',
                 })
-                .select('-__v');
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -38,12 +43,16 @@ export class DaoProposalRepository
 
     public async getAll(
         query?: FindQueryInterface
-    ): Promise<DaoProposalType[]> {
+    ): Promise<DaoProposalInterface[]> {
         try {
             return await this.model
                 .find(query?.find || {})
                 .sort(query?.sort || {})
-                .populate('project')
+                .lean()
+                .populate({
+                    path: 'project',
+                    select: '-daoProposals -_id -__v',
+                })
                 .populate({
                     path: 'deliverables',
                     select: '-_id -__v',
@@ -52,7 +61,8 @@ export class DaoProposalRepository
                     path: 'kpiTargets',
                     select: '-_id -__v',
                 })
-                .select('-__v');
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -60,14 +70,18 @@ export class DaoProposalRepository
 
     public async getPaginated(
         options: PaginationOptionsInterface
-    ): Promise<DaoProposalType[]> {
+    ): Promise<DaoProposalInterface[]> {
         try {
             return await this.model
                 .find(options.find || {})
                 .sort(options.sort || {})
                 .skip((options.page - 1) * options.limit)
                 .limit(options.limit)
-                .populate('project')
+                .lean()
+                .populate({
+                    path: 'project',
+                    select: '-daoProposals -_id -__v',
+                })
                 .populate({
                     path: 'deliverables',
                     select: '-_id -__v',
@@ -76,7 +90,8 @@ export class DaoProposalRepository
                     path: 'kpiTargets',
                     select: '-_id -__v',
                 })
-                .select('-__v');
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -85,7 +100,7 @@ export class DaoProposalRepository
     public async update(model: DaoProposalInterface): Promise<boolean> {
         try {
             const response: DaoProposalInterface =
-                await this.model.findOneAndUpdate({ _id: model._id }, model);
+                await this.model.findOneAndUpdate({ id: model.id }, model);
 
             return response !== null;
         } catch (error: any) {
@@ -93,22 +108,22 @@ export class DaoProposalRepository
         }
     }
 
-    public async create(model: DaoProposalInterface): Promise<Types.ObjectId> {
+    public async create(model: DaoProposalInterface): Promise<string> {
         try {
             const response: DaoProposalInterface = await this.model.create(
                 model
             );
 
-            return response._id;
+            return response.id;
         } catch (error: any) {
             throw error;
         }
     }
 
-    public async delete(id: Types.ObjectId): Promise<boolean> {
+    public async delete(id: string): Promise<boolean> {
         try {
             const response: MongooseDeleteResponseInterface =
-                await this.model.deleteOne({ _id: id });
+                await this.model.deleteOne({ id: id });
 
             return response.deletedCount === 1;
         } catch (error: any) {

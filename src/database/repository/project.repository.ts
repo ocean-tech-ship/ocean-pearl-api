@@ -1,4 +1,4 @@
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { FindQueryInterface } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-response.interface';
 import { PaginationOptionsInterface } from '../interfaces/pagination-options.interface';
@@ -12,44 +12,52 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         this.model = Project;
     }
 
-    public async getByID(id: Types.ObjectId): Promise<ProjectType> {
+    public async getByID(id: string): Promise<ProjectInterface> {
         try {
             return await this.model
-                .findById(id)
-                .populate('company')
-                .populate('daoProposals')
-                .populate('team')
+                .findOne({ id: id })
+                .lean()
                 .populate({
-                    path: 'address',
+                    path: 'company',
                     select: '-_id -__v',
                 })
                 .populate({
-                    path: 'socialMedia',
+                    path: 'daoProposals',
+                    select: '-project -_id -__v -deliverables -kpiTargets',
+                })
+                .populate({
+                    path: 'team',
                     select: '-_id -__v',
                 })
-                .select('-__v');
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
     }
 
-    public async getAll(query?: FindQueryInterface): Promise<ProjectType[]> {
+    public async getAll(
+        query?: FindQueryInterface
+    ): Promise<ProjectInterface[]> {
         try {
             return await this.model
                 .find(query?.find || {})
                 .sort(query?.sort || {})
-                .populate('company')
-                .populate('daoProposals')
-                .populate('team')
+                .lean()
                 .populate({
-                    path: 'address',
+                    path: 'company',
                     select: '-_id -__v',
                 })
                 .populate({
-                    path: 'socialMedia',
+                    path: 'daoProposals',
+                    select: '-project -_id -__v -deliverables -kpiTargets',
+                })
+                .populate({
+                    path: 'team',
                     select: '-_id -__v',
                 })
-                .select('-__v');
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -57,25 +65,28 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
 
     public async getPaginated(
         options: PaginationOptionsInterface
-    ): Promise<ProjectType[]> {
+    ): Promise<ProjectInterface[]> {
         try {
             return await this.model
                 .find(options.find || {})
                 .sort(options.sort || {})
                 .skip((options.page - 1) * options.limit)
                 .limit(options.limit)
-                .populate('company')
-                .populate('daoProposals')
-                .populate('team')
+                .lean()
                 .populate({
-                    path: 'address',
+                    path: 'company',
                     select: '-_id -__v',
                 })
                 .populate({
-                    path: 'socialMedia',
+                    path: 'daoProposals',
+                    select: '-project -_id -__v -deliverables -kpiTargets',
+                })
+                .populate({
+                    path: 'team',
                     select: '-_id -__v',
                 })
-                .select('-__v');
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -84,7 +95,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
     public async update(model: ProjectInterface): Promise<boolean> {
         try {
             const response: ProjectType = await this.model.findOneAndUpdate(
-                { _id: model._id },
+                { id: model.id },
                 model
             );
 
@@ -94,20 +105,20 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async create(model: ProjectInterface): Promise<Types.ObjectId> {
+    public async create(model: ProjectInterface): Promise<string> {
         try {
             const response: ProjectInterface = await this.model.create(model);
 
-            return response._id;
+            return response.id;
         } catch (error: any) {
             throw error;
         }
     }
 
-    public async delete(id: Types.ObjectId): Promise<boolean> {
+    public async delete(id: string): Promise<boolean> {
         try {
             const response: MongooseDeleteResponseInterface =
-                await this.model.deleteOne({ _id: id });
+                await this.model.deleteOne({ id: id });
 
             return response.deletedCount === 1;
         } catch (error: any) {

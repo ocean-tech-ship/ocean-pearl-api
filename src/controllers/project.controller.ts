@@ -55,9 +55,7 @@ export class ProjectController {
         @PathParam('id') id: string
     ): Promise<ProjectInterface> {
         try {
-            return await this.getProjectByIdCommand.execute(
-                new Types.ObjectId(id)
-            );
+            return await this.getProjectByIdCommand.execute(id);
         } catch (error: any) {
             this.logger.error(error);
         }

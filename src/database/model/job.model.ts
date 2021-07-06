@@ -1,11 +1,13 @@
 import { model, Schema, Document, Types, Model } from 'mongoose';
 import { CountryEnum } from '../enums/country.enum';
 import { TokenOptionEnum } from '../enums/token-option.enum';
+import { nanoid } from '../functions/nano-id.function';
 
 export type JobType = JobInterface & Document;
 
 export interface JobInterface {
     _id?: Types.ObjectId;
+    id?: string;
     title: string;
     description: string;
     location: CountryEnum;
@@ -20,6 +22,11 @@ export interface JobInterface {
 
 const jobSchema: Schema = new Schema(
     {
+        id: {
+            type: String,
+            default: () => nanoid(),
+            unique: true,
+        },
         title: {
             type: String,
             required: true,

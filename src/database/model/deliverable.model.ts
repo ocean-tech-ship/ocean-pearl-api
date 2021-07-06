@@ -1,17 +1,23 @@
 import { model, Schema, Document, Model, Types } from 'mongoose';
+import { nanoid } from '../functions/nano-id.function';
 
 export type DeliverableType = DeliverableInterface & Document;
 
 export interface DeliverableInterface {
     _id?: Types.ObjectId;
+    id?: string;
     title: string;
     description: string;
-    daoProposal: Types.ObjectId;
     delivered?: boolean;
 }
 
 const deliverableSchema: Schema = new Schema(
     {
+        id: {
+            type: String,
+            default: () => nanoid(),
+            unique: true,
+        },
         title: {
             type: String,
             required: true,
@@ -22,11 +28,6 @@ const deliverableSchema: Schema = new Schema(
             type: String,
             required: true,
             trim: true,
-        },
-        daoProposal: {
-            type: Types.ObjectId,
-            ref: 'DaoProposal',
-            required: true,
         },
         delivered: {
             type: Boolean,

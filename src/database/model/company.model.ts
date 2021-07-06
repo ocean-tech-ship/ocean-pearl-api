@@ -1,20 +1,29 @@
-import { model, Schema, Document, Types, Model } from 'mongoose';
+import { model, Schema, Document, Model, Types } from 'mongoose';
+import { nanoid } from '../functions/nano-id.function';
+import { AddressInterface, addressSchema } from './address.model';
+import { SocialMediaInterface, socialMediaSchema } from './social-media.model';
 
 export type CompanyType = CompanyInterface & Document;
 
 export interface CompanyInterface {
     _id?: Types.ObjectId;
+    id?: string;
     name: string;
     email: string;
     phoneNumber: string;
-    socialMedia?: Types.ObjectId;
-    address?: Types.ObjectId;
+    socialMedia?: SocialMediaInterface;
+    address?: AddressInterface;
     projects?: Types.ObjectId[];
     jobs?: Types.ObjectId[];
 }
 
 const companySchema: Schema = new Schema(
     {
+        id: {
+            type: String,
+            default: () => nanoid(),
+            unique: true,
+        },
         name: {
             type: String,
             required: true,
@@ -31,22 +40,20 @@ const companySchema: Schema = new Schema(
             type: String,
         },
         socialMedia: {
-            type: Schema.Types.ObjectId,
-            ref: 'SocialMedia',
+            type: socialMediaSchema,
         },
         address: {
-            type: Schema.Types.ObjectId,
-            ref: 'Address',
+            type: addressSchema,
         },
         projects: [
             {
-                type: Schema.Types.ObjectId,
+                type: Types.ObjectId,
                 ref: 'Project',
             },
         ],
         jobs: [
             {
-                type: Schema.Types.ObjectId,
+                type: Types.ObjectId,
                 ref: 'Job',
             },
         ],

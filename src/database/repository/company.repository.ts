@@ -1,4 +1,4 @@
-import { FilterQuery, Model, Types } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { MongooseDeleteResponseInterface } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
 import Company, { CompanyInterface, CompanyType } from '../model/company.model';
@@ -10,39 +10,41 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
         this.model = Company;
     }
 
-    public async getByID(id: Types.ObjectId): Promise<CompanyType> {
+    public async getByID(id: string): Promise<CompanyInterface> {
         try {
             return await this.model
-                .findById(id)
+                .findOne({ id: id })
+                .lean()
                 .populate({
-                    path: 'address',
-                    select: '-_id -__v',
+                    path: 'jobs',
+                    select: 'id',
                 })
-                .populate('jobs')
-                .populate('projects')
                 .populate({
-                    path: 'socialMedia',
-                    select: '-_id -__v',
-                }).select('-__v');
+                    path: 'projects',
+                    select: 'id',
+                })
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
     }
 
-    public async getAll(query?: FilterQuery<any>): Promise<CompanyType[]> {
+    public async getAll(query?: FilterQuery<any>): Promise<CompanyInterface[]> {
         try {
             return await this.model
                 .find(query || {})
+                .lean()
                 .populate({
-                    path: 'address',
-                    select: '-_id -__v',
+                    path: 'jobs',
+                    select: 'id',
                 })
-                .populate('jobs')
-                .populate('projects')
                 .populate({
-                    path: 'socialMedia',
-                    select: '-_id -__v',
-                }).select('-__v');
+                    path: 'projects',
+                    select: 'id',
+                })
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -51,7 +53,7 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
     public async update(model: CompanyInterface): Promise<boolean> {
         try {
             const response: CompanyInterface =
-                await this.model.findOneAndUpdate({ _id: model._id }, model);
+                await this.model.findOneAndUpdate({ id: model.id }, model);
 
             return response !== null;
         } catch (error: any) {
@@ -59,20 +61,20 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
         }
     }
 
-    public async create(model: CompanyInterface): Promise<Types.ObjectId> {
+    public async create(model: CompanyInterface): Promise<string> {
         try {
             const response: CompanyInterface = await this.model.create(model);
 
-            return response._id;
+            return response.id;
         } catch (error: any) {
             throw error;
         }
     }
 
-    public async delete(id: Types.ObjectId): Promise<boolean> {
+    public async delete(id: string): Promise<boolean> {
         try {
             const response: MongooseDeleteResponseInterface =
-                await this.model.deleteOne({ _id: id });
+                await this.model.deleteOne({ id: id });
 
             return response.deletedCount === 1;
         } catch (error: any) {

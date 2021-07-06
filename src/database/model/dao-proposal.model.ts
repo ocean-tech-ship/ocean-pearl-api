@@ -1,11 +1,13 @@
 import { model, Schema, Document, Types, Model } from 'mongoose';
 import { CategoryEnum } from '../enums/category.enum';
 import { DaoProposalStatusEnum } from '../enums/dao-proposal-status.enum';
+import { nanoid } from '../functions/nano-id.function';
 
 export type DaoProposalType = DaoProposalInterface & Document;
 
 export interface DaoProposalInterface {
     _id?: Types.ObjectId;
+    id?: string;
     startDate?: Date;
     finishDate?: Date;
     fundingRound: number;
@@ -22,7 +24,7 @@ export interface DaoProposalInterface {
     title?: string;
     description: string;
     category: string;
-    oceanProtocalPortUrl?: string;
+    oceanProtocolPortUrl?: string;
     deliverables: Types.ObjectId[];
     kpiTargets?: Types.ObjectId[];
     kpiRoi?: string;
@@ -35,6 +37,11 @@ export interface DaoProposalInterface {
 
 const daoProposalSchema: Schema = new Schema(
     {
+        id: {
+            type: String,
+            default: () => nanoid(),
+            unique: true,
+        },
         startDate: {
             type: Date,
         },
@@ -113,7 +120,7 @@ const daoProposalSchema: Schema = new Schema(
             type: String,
             enum: CategoryEnum,
         },
-        oceanProtocalPortUrl: {
+        oceanProtocolPortUrl: {
             type: String,
             trim: true,
         },

@@ -1,26 +1,35 @@
 import { model, Schema, Document, Model, Types } from 'mongoose';
 import { CategoryEnum } from '../enums/category.enum';
+import { nanoid } from '../functions/nano-id.function';
+import { AddressInterface, addressSchema } from './address.model';
+import { SocialMediaInterface, socialMediaSchema } from './social-media.model';
 
 export type ProjectType = ProjectInterface & Document;
 
 export interface ProjectInterface {
     _id?: Types.ObjectId;
+    id?: string;
     title: string;
     description?: string;
     category: string;
-    socialMedia?: Types.ObjectId;
+    socialMedia?: SocialMediaInterface;
     logo?: string;
     pictures?: string[];
     company?: Types.ObjectId;
     daoProposals?: Types.ObjectId[];
     team?: Types.ObjectId[];
-    teamName: string;
-    address?: Types.ObjectId;
+    teamName: string;    
+    address?: AddressInterface;
     featured?: boolean;
 }
 
 const projectSchema: Schema = new Schema(
     {
+        id: {
+            type: String,
+            default: () => nanoid(),
+            unique: true,
+        },
         title: {
             type: String,
             maxLength: 256,
@@ -37,8 +46,7 @@ const projectSchema: Schema = new Schema(
             enum: CategoryEnum,
         },
         socialMedia: {
-            type: Schema.Types.ObjectId,
-            ref: 'SocialMedia',
+            type: socialMediaSchema,
         },
         logo: {
             type: String,
@@ -76,8 +84,7 @@ const projectSchema: Schema = new Schema(
             trim: true,
         },
         address: {
-            type: Schema.Types.ObjectId,
-            ref: 'Address',
+            type: addressSchema,
         },
         featured: {
             type: Boolean,

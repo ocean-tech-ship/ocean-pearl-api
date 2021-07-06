@@ -42,14 +42,49 @@ export class GetDaoFeaturedProjectsCommand
                                     },
                                 },
                             },
-                            { $project: { __v: 0, _id: 0 } },
+                            {
+                                $project: {
+                                    __v: 0,
+                                    _id: 0,
+                                    project: 0,
+                                    deliverables: 0,
+                                    kpiTargets: 0,
+                                },
+                            },
                         ],
                         as: 'featuredDaoProposal',
                     },
                 },
+                {
+                    $lookup: {
+                        from: 'daoproposals',
+                        let: {
+                            id: '$_id',
+                        },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$project', '$$id'],
+                                    },
+                                },
+                            },
+                            {
+                                $project: {
+                                    __v: 0,
+                                    _id: 0,
+                                    project: 0,
+                                    deliverables: 0,
+                                    kpiTargets: 0,
+                                },
+                            },
+                        ],
+                        as: 'daoProposals',
+                    },
+                },
                 { $match: { 'featuredDaoProposal.fundingRound': { $eq: 6 } } },
                 { $match: { 'featured': { $eq: true } } },
-                { $project: { __v: 0 } },
+                { $project: { __v: 0, _id: 0 } },
             ])
             .limit(2);
     }
