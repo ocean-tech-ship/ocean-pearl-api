@@ -6,4 +6,5 @@ export enum DaoProposalStatusEnum {
     NotGranted = 'notGranted',
     Received = 'received',
     Rejected = 'rejected',
+    Ended = 'ended',
 }
