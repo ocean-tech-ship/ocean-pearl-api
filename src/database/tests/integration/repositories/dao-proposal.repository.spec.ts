@@ -7,16 +7,13 @@ import { DaoProposalStatusEnum } from '../../../enums/dao-proposal-status.enum';
 import { nanoid } from '../../../functions/nano-id.function';
 import { DaoProposalRepository } from '../../../repositories/dao-proposal.repository';
 import { DaoProposal } from '../../../schemas/dao-proposal.schema';
-import { Project } from '../../../schemas/project.schema';
 
 const DAO_PROPOSAL_ID: string = nanoid();
 
 describe('DaoProposalRepository', () => {
-    let daoProposal: DaoProposal = <DaoProposal>{
+    let daoProposal: DaoProposal = {
         id: DAO_PROPOSAL_ID,
-        startDate: new Date(),
-        finishDate: new Date(),
-        fundingRound: 2,
+        fundingRound: new Types.ObjectId(),
         project: new Types.ObjectId(),
         kpiRoi: 'kpiRoi',
         oceanProtocolPortUrl: 'oceanProtocolPortLink.com',
@@ -26,20 +23,18 @@ describe('DaoProposalRepository', () => {
         category: CategoryEnum.BuildAndIntegrate,
         votes: 100000,
         counterVotes: 20,
-        status: DaoProposalStatusEnum.FundingRoundActive,
+        status: DaoProposalStatusEnum.Running,
         deliverables: [new Types.ObjectId()],
         kpiTargets: [new Types.ObjectId()],
         requestedGrantToken: 10000,
-        requestedGrantUSD: 5000,
-        grantAmountToken: 10000,
-        grantAmountUSD: 5000,
+        grantedToken: 10000,
         fundamentalMetric: 'test',
         paymentWalletsAddresses: [],
         ipfsHash: '',
         snapshotBlock: 123456789,
         voteUrl: '',
         images: []
-    };
+    } as DaoProposal;
 
     let service: DaoProposalRepository;
   
@@ -71,8 +66,6 @@ describe('DaoProposalRepository', () => {
 
             expect({
                 id: dbDoaProposal.id,
-                startDate: dbDoaProposal.startDate,
-                finishDate: dbDoaProposal.finishDate,
                 fundingRound: dbDoaProposal.fundingRound,
                 project: dbDoaProposal.project,
                 kpiRoi: dbDoaProposal.kpiRoi,
@@ -83,8 +76,6 @@ describe('DaoProposalRepository', () => {
                 category: dbDoaProposal.category,
             }).toEqual({
                 id: DAO_PROPOSAL_ID,
-                startDate: daoProposal.startDate,
-                finishDate: daoProposal.finishDate,
                 fundingRound: 2,
                 project: null,
                 kpiRoi: 'kpiRoi',
@@ -103,7 +94,7 @@ describe('DaoProposalRepository', () => {
         });
 
         test('it should update a daoProposal', async () => {
-            daoProposal.fundingRound = 4;
+            daoProposal.status = DaoProposalStatusEnum.Funded;
 
             expect(await service.update(daoProposal)).toBeTruthy();
         });

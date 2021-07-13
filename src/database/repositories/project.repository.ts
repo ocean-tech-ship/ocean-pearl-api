@@ -9,10 +9,7 @@ import { Project, ProjectType } from '../schemas/project.schema';
 
 @Injectable()
 export class ProjectRepository implements RepositoryInterface<ProjectType> {
-
-    constructor(
-        @InjectModel('Project') private model: Model<ProjectType>
-    ) {}
+    constructor(@InjectModel('Project') private model: Model<ProjectType>) {}
 
     public async getByID(id: string, lean: boolean = true): Promise<Project> {
         try {
@@ -28,8 +25,10 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                     select: '-project -_id -__v -deliverables -kpiTargets',
                     populate: {
                         path: 'fundingRound',
-                        model: 'Round'
-                    }
+                        model: 'Round',
+                        select: '-_id -__v',
+                        options: { sort: { created_at: -1 } },
+                    },
                 })
                 .populate({
                     path: 'team',
@@ -42,9 +41,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async getAll(
-        query?: FindQuery
-    ): Promise<Project[]> {
+    public async getAll(query?: FindQuery): Promise<Project[]> {
         try {
             return await this.model
                 .find(query?.find || {})
@@ -59,8 +56,10 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                     select: '-project -_id -__v -deliverables -kpiTargets',
                     populate: {
                         path: 'fundingRound',
-                        model: 'Round'
-                    }
+                        model: 'Round',
+                        select: '-_id -__v',
+                        options: { sort: { created_at: -1 } },
+                    },
                 })
                 .populate({
                     path: 'team',
@@ -73,9 +72,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async getPaginated(
-        options: PaginationOptions
-    ): Promise<Project[]> {
+    public async getPaginated(options: PaginationOptions): Promise<Project[]> {
         try {
             return await this.model
                 .find(options.find || {})
@@ -93,7 +90,9 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
-                    }
+                        select: '-_id -__v',
+                        options: { sort: { created_at: -1 } },
+                    },
                 })
                 .populate({
                     path: 'team',
@@ -110,7 +109,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         try {
             const response: ProjectType = await this.model.findOneAndUpdate(
                 { id: model.id },
-                model
+                model,
             );
 
             return response !== null;
@@ -131,8 +130,9 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
 
     public async delete(id: string): Promise<boolean> {
         try {
-            const response: MongooseDeleteResponse =
-                await this.model.deleteOne({ id: id });
+            const response: MongooseDeleteResponse = await this.model.deleteOne(
+                { id: id },
+            );
 
             return response.deletedCount === 1;
         } catch (error: any) {
