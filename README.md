@@ -5,7 +5,7 @@ Backend repository for the ocean-pearl project
 ## Startup
 
 Create .env files for each working enviroment.
-An Example for the file can be fouind within the enviroment folder. 
+An example for the file can be found inside the enviroment folder. 
 
 ```bash
 $ npm install
