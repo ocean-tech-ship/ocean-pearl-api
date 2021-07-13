@@ -27,7 +27,6 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                         path: 'fundingRound',
                         model: 'Round',
                         select: '-_id -__v',
-                        options: { sort: { created_at: -1 } },
                     },
                 })
                 .populate({
@@ -58,7 +57,6 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                         path: 'fundingRound',
                         model: 'Round',
                         select: '-_id -__v',
-                        options: { sort: { created_at: -1 } },
                     },
                 })
                 .populate({
@@ -91,7 +89,6 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                         path: 'fundingRound',
                         model: 'Round',
                         select: '-_id -__v',
-                        options: { sort: { created_at: -1 } },
                     },
                 })
                 .populate({
