@@ -89,6 +89,8 @@ export class SyncProposalsDataService {
                 let existingProposal: DaoProposal = await this.fetchExistingProposal(
                     project,
                     round.round,
+                    proposal['Grant Category'].trim(),
+                    proposal['Overview']
                 );
 
                 if (!existingProposal) {
@@ -184,6 +186,8 @@ export class SyncProposalsDataService {
     private async fetchExistingProposal(
         project: Project,
         round: number,
+        category: string,
+        description: string
     ): Promise<DaoProposal | null> {
         if (project.daoProposals.length === 0) {
             return null;
@@ -199,7 +203,9 @@ export class SyncProposalsDataService {
                 .exec();
             const proposalRound = databaseProposal.fundingRound as Round;
 
-            if (proposalRound.round === round) {
+            if (proposalRound.round === round 
+                && databaseProposal.category === CategoryMap[category]
+                && databaseProposal.description === description) {
                 return databaseProposal;
             }
         }
