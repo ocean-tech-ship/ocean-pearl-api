@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { CurrencyEnum } from '../enums/currency.enum';
 import { nanoid } from '../functions/nano-id.function';
 
 export type RoundType = Round & Document;
@@ -42,6 +43,13 @@ export class Round {
         default: 0,
     })
     availableFunding: number;
+
+    @Prop({
+        type: String,
+        enum: CurrencyEnum,
+        default: CurrencyEnum.Ocean,
+    })
+    grantCurrency: CurrencyEnum;
 
     @Prop({
         type: Date,
