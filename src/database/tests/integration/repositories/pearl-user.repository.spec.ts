@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Types } from 'mongoose';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../database.module';
 import { UserTitleEnum } from '../../../enums/user-title.enum';
@@ -8,9 +9,11 @@ import { PearlUser } from '../../../schemas/pearl-user.schema';
 import { SocialMedia } from '../../../schemas/social-media.schema';
 
 const PEARL_USER_ID: string = nanoid();
+const PEARL_USER_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('PearlUserRepository', () => {
     let oceanUser: PearlUser = <PearlUser>{
+        _id: PEARL_USER_MONGO_ID,
         id: PEARL_USER_ID,
         title: UserTitleEnum.Dr,
         firstname: 'John',
@@ -39,7 +42,7 @@ describe('PearlUserRepository', () => {
 
     describe('Given I have a ocean user repository', () => {
         test('it should save a user', async () => {
-            expect(await service.create(oceanUser)).toEqual(PEARL_USER_ID);
+            expect(await service.create(oceanUser)).toEqual(PEARL_USER_MONGO_ID);
         });
 
         test('it should return a user', async () => {

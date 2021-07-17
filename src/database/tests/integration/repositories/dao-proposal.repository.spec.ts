@@ -9,9 +9,11 @@ import { DaoProposalRepository } from '../../../repositories/dao-proposal.reposi
 import { DaoProposal } from '../../../schemas/dao-proposal.schema';
 
 const DAO_PROPOSAL_ID: string = nanoid();
+const DAO_PROPOSAL_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('DaoProposalRepository', () => {
     let daoProposal: DaoProposal = {
+        _id: DAO_PROPOSAL_MONGO_ID,
         id: DAO_PROPOSAL_ID,
         fundingRound: new Types.ObjectId(),
         project: new Types.ObjectId(),
@@ -57,7 +59,7 @@ describe('DaoProposalRepository', () => {
     describe('Given I have a daoProposal repository', () => {
         test('it should save a daoProposal', async () => {
             expect(await service.create(daoProposal)).toEqual(
-                DAO_PROPOSAL_ID
+                DAO_PROPOSAL_MONGO_ID
             );
         });
 
@@ -76,7 +78,7 @@ describe('DaoProposalRepository', () => {
                 category: dbDoaProposal.category,
             }).toEqual({
                 id: DAO_PROPOSAL_ID,
-                fundingRound: 2,
+                fundingRound: null,
                 project: null,
                 kpiRoi: 'kpiRoi',
                 oceanProtocolPortUrl: 'oceanProtocolPortLink.com',

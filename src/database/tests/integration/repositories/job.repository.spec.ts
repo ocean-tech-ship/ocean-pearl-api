@@ -9,9 +9,11 @@ import { JobRepository } from '../../../repositories/job.repository';
 import { Job } from '../../../schemas/job.schema';
 
 const JOB_ID: string = nanoid();
+const JOB_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('JobRepository', () => {
     let job: Job = <Job>{
+        _id: JOB_MONGO_ID,
         id: JOB_ID,
         title: 'Head of doing Stuff',
         description: 'Do some Stuff plz.',
@@ -44,7 +46,7 @@ describe('JobRepository', () => {
 
     describe('Given I have a job repository', () => {
         test('it should save a job', async () => {
-            expect(await service.create(job)).toEqual(JOB_ID);
+            expect(await service.create(job)).toEqual(JOB_MONGO_ID);
         });
 
         test('it should return a job', async () => {

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Types } from 'mongoose';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../database.module';
 import { nanoid } from '../../../functions/nano-id.function';
@@ -6,9 +7,11 @@ import { CompanyRepository } from '../../../repositories/company.repository';
 import { Company } from '../../../schemas/company.schema';
 
 const COMPANY_ID: string = nanoid();
+const COMPANY_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('CompanyRepository', () => {
     let company: Company = <Company>{
+        _id: COMPANY_MONGO_ID,
         id: COMPANY_ID,
         name: 'Test',
         email: 'Test.email@email.com',
@@ -40,7 +43,7 @@ describe('CompanyRepository', () => {
     describe('Given I have a company repository', () => {
         test('it should save a company', async () => {
             expect(await service.create(company)).toEqual(
-                COMPANY_ID
+                COMPANY_MONGO_ID
             );
         });
 

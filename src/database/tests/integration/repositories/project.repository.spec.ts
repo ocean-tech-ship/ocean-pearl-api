@@ -8,11 +8,12 @@ import { ProjectRepository } from '../../../repositories/project.repository';
 import { Project } from '../../../schemas/project.schema';
 import { SocialMedia } from '../../../schemas/social-media.schema';
 
-
 const PROJECT_ID: string = nanoid();
+const PROJECT_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('ProjectRepository', () => {
     let project: Project = <Project>{
+        _id: PROJECT_MONGO_ID,
         id: PROJECT_ID,
         title: 'Best project ever',
         description: 'Still the best project ever.',
@@ -43,7 +44,7 @@ describe('ProjectRepository', () => {
 
     describe('Given I have a project repository', () => {
         test('it should save a project', async () => {
-            expect(await service.create(project)).toEqual(PROJECT_ID);
+            expect(await service.create(project)).toEqual(PROJECT_MONGO_ID);
         });
 
         test('it should return a project', async () => {
