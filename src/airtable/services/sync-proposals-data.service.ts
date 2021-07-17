@@ -1,20 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, Interval } from '@nestjs/schedule';
-import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
-import { RoundRepository } from '../../database/repositories/round.repository';
-import { Round } from '../../database/schemas/round.schema';
-import { ProposalsProvider } from '../provider/proposals.provider';
+import { Cron } from '@nestjs/schedule';
 import { AxiosResponse } from 'axios';
-import { ProjectRepository } from '../../database/repositories/project.repository';
-import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
-import { Project } from '../../database/schemas/project.schema';
-import { StatesMap } from '../constants/states-map.constant';
-import { CategoryMap } from '../constants/category-map.constant';
-import { CategoryEnum } from '../../database/enums/category.enum';
-import { FundamentalMetricsMap } from '../constants/fundamental-metrics-map.constant';
-import { Deliverable } from '../../database/schemas/deliverable.schema';
-import { DeliverableRepository } from '../../database/repositories/deliverable.repository';
 import { Types } from 'mongoose';
+import { CategoryEnum } from '../../database/enums/category.enum';
+import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
+import { DeliverableRepository } from '../../database/repositories/deliverable.repository';
+import { ProjectRepository } from '../../database/repositories/project.repository';
+import { RoundRepository } from '../../database/repositories/round.repository';
+import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
+import { Deliverable } from '../../database/schemas/deliverable.schema';
+import { Project } from '../../database/schemas/project.schema';
+import { Round } from '../../database/schemas/round.schema';
+import { CategoryMap } from '../constants/category-map.constant';
+import { FundamentalMetricsMap } from '../constants/fundamental-metrics-map.constant';
+import { StatesMap } from '../constants/states-map.constant';
+import { ProposalsProvider } from '../provider/proposals.provider';
 
 const MAX_SYNC_ROUND = 7;
 
@@ -30,11 +30,10 @@ export class SyncProposalsDataService {
         private deliverableRepository: DeliverableRepository,
     ) {}
 
-    // @Cron('0 */30 * * * *', {
-    //     name: 'Round import',
-    //     timeZone: 'Europe/Berlin',
-    // })
-    @Interval(30000)
+    @Cron('0 */30 * * * *', {
+        name: 'Round import',
+        timeZone: 'Europe/Berlin',
+    })
     public async execute(): Promise<void> {
         this.logger.log('Start syncing Proposals Job.');
         const roundModel = this.roundRepository.getModel();

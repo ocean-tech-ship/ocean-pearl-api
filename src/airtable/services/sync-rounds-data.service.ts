@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, Interval } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
+import { AxiosResponse } from 'axios';
+import { CurrencyEnum } from '../../database/enums/currency.enum';
+import { FindQuery } from '../../database/interfaces/find-query.interface';
+import { RoundRepository } from '../../database/repositories/round.repository';
 import { Round } from '../../database/schemas/round.schema';
 import { RoundsProvider } from '../provider/rounds.provider';
-import { ProposalsProvider } from '../provider/proposals.provider';
-import { RoundRepository } from '../../database/repositories/round.repository';
-import { AxiosResponse } from 'axios';
-import { FindQuery } from '../../database/interfaces/find-query.interface';
 
 @Injectable()
 export class SyncRoundsDataService {
@@ -13,14 +13,13 @@ export class SyncRoundsDataService {
 
     public constructor(
         private roundsProvider: RoundsProvider,
-        private proposalsProvider: ProposalsProvider,
         private roundsRepository: RoundRepository,
     ) {}
 
-    // @Cron('0 0 0 * * *', {
-    //     name: 'Proposals import',
-    //     timeZone: 'Europe/Berlin',
-    // })
+    @Cron('0 0 0 * * *', {
+        name: 'Proposals import',
+        timeZone: 'Europe/Berlin',
+    })
     public async execute(): Promise<void> {
         this.logger.log('Start syncing Rounds Job.');
 
@@ -41,9 +40,13 @@ export class SyncRoundsDataService {
     private mapRound(round: any): Round {
         let mappedRound: Round = {
             round: round.name.split(' ')[1],
-            earmarked: round.Earmarked ?? 0,
-            maxGrant: round['Max Grant'],
-            availableFunding: round['Funding Available'],
+            earmarked: round.Earmarked ?? round['Earmarked USD'],
+            maxGrant: round['Max Grant'] ?? round['Max Grant USD'],
+            grantCurrency: round['Max Grant']
+                ? CurrencyEnum.Ocean
+                : CurrencyEnum.Usd,
+            availableFunding:
+                round['Funding Available'] ?? round['Funding Available USD'],
             submissionEndDate: new Date(round['Proposals Due By']),
             votingEndDate: new Date(round['Voting Ends']),
         } as Round;
@@ -64,16 +67,16 @@ export class SyncRoundsDataService {
                 round: round.round,
             },
         } as FindQuery;
-        const databaseRound: Round[] = await this.roundsRepository.getAll(
+        const databaseRounds: Round[] = await this.roundsRepository.getAll(
             findQuery,
         );
 
-        if (databaseRound.length === 0) {
+        if (databaseRounds.length === 0) {
             this.roundsRepository.create(round);
             return;
         }
 
-        round.id = databaseRound[0].id;
+        round.id = databaseRounds[0].id;
         this.roundsRepository.update(round);
     }
 }
