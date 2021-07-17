@@ -44,7 +44,7 @@ export class SyncProposalsDataService {
             .exec();
 
         for (let round of databaseRounds) {
-            if (round.round >= MAX_SYNC_ROUND) {
+            if (round.round > MAX_SYNC_ROUND) {
                 continue;
             }
 
@@ -56,12 +56,16 @@ export class SyncProposalsDataService {
             let proposals: any = proposalsResponse.data.records;
 
             for (let proposal of proposals) {
+                const proposalAirtableID = proposal.id;
                 proposal = proposal.fields;
                 const projectModel = this.projectRepository.getModel();
 
-                let project: Project = await projectModel.findOne({ title: proposal['Project Name'] }).exec();
+                let project: Project = await projectModel
+                    .findOne({ title: proposal['Project Name'].trim() })
+                    .exec();
                 let newProposal: DaoProposal = this.mapProposal(
                     proposal,
+                    proposalAirtableID,
                     round,
                 );
 
@@ -89,19 +93,16 @@ export class SyncProposalsDataService {
                         await this.proposalRepository.create(newProposal),
                     );
 
-                    this.projectRepository.update(project);
+                    await this.projectRepository.update(project);
                     continue;
                 }
 
                 let existingProposal: DaoProposal = await this.fetchExistingProposal(
                     project,
-                    round.round,
-                    proposal['Grant Category'].trim(),
-                    proposal['Overview']
+                    proposalAirtableID,
                 );
 
                 if (!existingProposal) {
-
                     let newDeliverable: Deliverable = this.mapDeliverable(
                         proposal,
                     );
@@ -131,8 +132,13 @@ export class SyncProposalsDataService {
         this.logger.log('Finish syncing Proposals Job.');
     }
 
-    private mapProposal(proposal: any, round: Round): DaoProposal {
+    private mapProposal(
+        proposal: any,
+        airtableId: string,
+        round: Round,
+    ): DaoProposal {
         return {
+            airtableId: airtableId,
             title: proposal['Project Name'].trim(),
             status: StatesMap[proposal['Proposal State']],
             fundingRound: round._id,
@@ -163,7 +169,6 @@ export class SyncProposalsDataService {
                 : 0,
             deliverables: [],
             createdAt: new Date(proposal['Created Date']),
-            updatedAt: new Date(proposal['Last Update']),
         } as DaoProposal;
     }
 
@@ -178,7 +183,6 @@ export class SyncProposalsDataService {
                 ? proposal['Team Name (from Login Email)'][0]
                 : proposal['Project Name'].trim(),
             createdAt: new Date(proposal['Created Date']),
-            updatedAt: new Date(proposal['Last Update']),
             daoProposals: [],
         } as Project;
     }
@@ -192,9 +196,7 @@ export class SyncProposalsDataService {
 
     private async fetchExistingProposal(
         project: Project,
-        round: number,
-        category: string,
-        description: string
+        airtableId: string,
     ): Promise<DaoProposal | null> {
         if (project.daoProposals.length === 0) {
             return null;
@@ -208,11 +210,8 @@ export class SyncProposalsDataService {
                     path: 'fundingRound',
                 })
                 .exec();
-            const proposalRound = databaseProposal.fundingRound as Round;
 
-            if (proposalRound.round === round 
-                && databaseProposal.category === CategoryMap[category]
-                && databaseProposal.description === description) {
+            if (databaseProposal.airtableId === airtableId) {
                 return databaseProposal;
             }
         }

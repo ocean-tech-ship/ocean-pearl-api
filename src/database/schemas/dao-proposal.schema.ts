@@ -17,6 +17,12 @@ export class DaoProposal {
 
     @Prop({
         type: String,
+        unique: true,
+    })
+    airtableId: string;
+
+    @Prop({
+        type: String,
         default: () => nanoid(),
         unique: true,
     })

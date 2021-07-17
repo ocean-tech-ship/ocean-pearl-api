@@ -35,7 +35,7 @@ export class DaoProposalRepository
                     path: 'fundingRound',
                     select: '-_id -__v',
                 })
-                .select('-_id -__v')
+                .select('-_id -__v -airtableId')
                 .exec();
         } catch (error: any) {
             throw error;
@@ -64,7 +64,7 @@ export class DaoProposalRepository
                     path: 'fundingRound',
                     select: '-_id -__v',
                 })
-                .select('-_id -__v')
+                .select('-_id -__v -airtableId')
                 .exec();
         } catch (error: any) {
             throw error;
@@ -97,7 +97,7 @@ export class DaoProposalRepository
                     path: 'fundingRound',
                     select: '-_id -__v',
                 })
-                .select('-_id -__v')
+                .select('-_id -__v -airtableId')
                 .exec();
         } catch (error: any) {
             throw error;

@@ -22,7 +22,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 })
                 .populate({
                     path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -kpiTargets',
+                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
@@ -52,7 +52,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 })
                 .populate({
                     path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -kpiTargets',
+                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
@@ -84,7 +84,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 })
                 .populate({
                     path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -kpiTargets',
+                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
