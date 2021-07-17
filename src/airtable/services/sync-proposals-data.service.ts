@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Cron, Interval } from '@nestjs/schedule';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
 import { RoundRepository } from '../../database/repositories/round.repository';
 import { Round } from '../../database/schemas/round.schema';
@@ -15,6 +15,8 @@ import { FundamentalMetricsMap } from '../constants/fundamental-metrics-map.cons
 import { Deliverable } from '../../database/schemas/deliverable.schema';
 import { DeliverableRepository } from '../../database/repositories/deliverable.repository';
 import { Types } from 'mongoose';
+
+const MAX_SYNC_ROUND = 7;
 
 @Injectable()
 export class SyncProposalsDataService {
@@ -32,6 +34,7 @@ export class SyncProposalsDataService {
     //     name: 'Round import',
     //     timeZone: 'Europe/Berlin',
     // })
+    @Interval(30000)
     public async execute(): Promise<void> {
         this.logger.log('Start syncing Proposals Job.');
         const roundModel = this.roundRepository.getModel();
@@ -41,6 +44,10 @@ export class SyncProposalsDataService {
             .exec();
 
         for (let round of databaseRounds) {
+            if (round.round >= MAX_SYNC_ROUND) {
+                continue;
+            }
+
             let proposalsResponse: AxiosResponse = await this.proposalsProvider.fetch(
                 {
                     Round: round.round,

@@ -30,12 +30,7 @@ export class SyncRoundsDataService {
         for (let round of airtbaleRounds) {
             round = round.fields;
 
-            const proposalsResponse: AxiosResponse = await this.proposalsProvider.fetch(
-                { Round: round.name.split(' ')[1] },
-            );
-            const proposal = proposalsResponse.data.records[0];
-
-            const newRound: Round = this.mapRound(round, proposal.fields);
+            const newRound: Round = this.mapRound(round);
 
             this.syncRound(newRound);
         }
@@ -43,25 +38,22 @@ export class SyncRoundsDataService {
         this.logger.log('Finish syncing Rounds Job.');
     }
 
-    private mapRound(round: any, proposal: any): Round {
+    private mapRound(round: any): Round {
         let mappedRound: Round = {
             round: round.name.split(' ')[1],
-            earmarked: round.Earmarked,
+            earmarked: round.Earmarked ?? 0,
             maxGrant: round['Max Grant'],
             availableFunding: round['Funding Available'],
             submissionEndDate: new Date(round['Proposals Due By']),
             votingEndDate: new Date(round['Voting Ends']),
-            votingStartDate: new Date(proposal['Voting Starts']),
         } as Round;
 
-        if (!proposal['Voting Starts']) {
-            const startDate: Date = new Date(round['Proposals Due By']);
+        const startDate: Date = new Date(round['Proposals Due By']);
 
-            startDate.setDate(startDate.getDate() + 1);
-            startDate.setUTCHours(0, 0, 0, 0);
+        startDate.setDate(startDate.getDate() + 1);
+        startDate.setUTCHours(0, 0, 0, 0);
 
-            mappedRound.votingStartDate = startDate;
-        }
+        mappedRound.votingStartDate = startDate;
 
         return mappedRound;
     }
