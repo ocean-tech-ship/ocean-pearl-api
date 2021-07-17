@@ -15,6 +15,12 @@ import { SyncRoundsDataService } from './services/sync-rounds-data.service';
         RoundsProvider,
         AirtableUrlBuilder,
     ],
-    exports: [ProposalsProvider, RoundsProvider],
+    exports: [
+        ProposalsProvider,
+        RoundsProvider,
+        SyncProposalsDataService,
+        SyncRoundsDataService,
+        AirtableUrlBuilder,
+    ],
 })
 export class AirtableModule {}
