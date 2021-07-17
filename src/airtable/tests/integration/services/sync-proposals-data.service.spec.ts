@@ -1,12 +1,16 @@
+import { HttpModule } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { AppModule } from '../../../../app.module';
+import { DatabaseModule } from '../../../../database/database.module';
+import { AirtableModule } from '../../../airtable.module';
 import { SyncProposalsDataService } from '../../../services/sync-proposals-data.service';
 
-describe('FetchAirtableDataService', () => {
+describe('SyncProposalsDataService', () => {
     let service: SyncProposalsDataService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [SyncProposalsDataService],
+            imports: [DatabaseModule, AppModule, AirtableModule, HttpModule],
         }).compile();
 
         service = module.get<SyncProposalsDataService>(
