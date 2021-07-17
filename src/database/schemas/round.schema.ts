@@ -47,7 +47,7 @@ export class Round {
     @Prop({
         type: String,
         enum: CurrencyEnum,
-        default: CurrencyEnum.Ocean,
+        default: CurrencyEnum.Usd,
     })
     grantCurrency: CurrencyEnum;
 
