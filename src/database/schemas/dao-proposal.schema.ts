@@ -8,6 +8,7 @@ import { Deliverable } from './deliverable.schema';
 import { KpiTarget } from './kpi-target.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Round } from './round.schema';
+import { StandingEnum } from '../enums/standing.enum';
 
 export type DaoProposalType = DaoProposal & Document;
 
@@ -107,6 +108,13 @@ export class DaoProposal {
     })
     @ApiProperty()
     category: string;
+
+    @Prop({
+        type: String,
+        enum: StandingEnum,
+        default: StandingEnum.Unreported,
+    })
+    standing: StandingEnum
 
     @Prop({
         type: String,
