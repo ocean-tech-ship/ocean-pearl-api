@@ -13,10 +13,18 @@ export class CalculateMetricsService {
     public async execute(): Promise<Metrics> {
         let totalVotesCount: number = 0;
         let totalRequestedFunding: number = 0;
-        const roundModel = await this.roundRepository.getModel();
+        const currentDate = new Date();
 
-        const latestRound = (await roundModel.find().sort({ round: -1 }).exec())[0];
-        const daoProposals = await this.getDaoProposalsByRoundService.execute(latestRound._id);
+        const currentRound = (await this.roundRepository.getAll({
+                find: {
+                    startDate: { $gt: currentDate},
+                    endDate: { $st: currentDate},
+                }
+            }))[0];
+        const nextRound = (await this.roundRepository.getAll({
+            find: { round: currentRound.round + 1} 
+        }))[0];
+        const daoProposals = await this.getDaoProposalsByRoundService.execute(currentRound._id);
 
         for (const proposal of daoProposals) {
             totalVotesCount += proposal.votes;
@@ -24,13 +32,19 @@ export class CalculateMetricsService {
         }
 
         return {
-            fundingRound: latestRound.round,
+            fundingRound: currentRound.round,
             totalDaoProposals: daoProposals.length,
-            endDate: new Date(latestRound.votingEndDate),
-            startDate: new Date(latestRound.votingStartDate),
-            submissionEndDate: new Date(latestRound.submissionEndDate),
+            startDate: currentRound.startDate 
+                ? new Date(currentRound.startDate) 
+                : null,
+            votingStartDate: new Date(currentRound.votingStartDate),
+            submissionEndDate: new Date(currentRound.submissionEndDate),
+            endDate: new Date(currentRound.votingEndDate),
+            nextRoundStartDate: nextRound?.startDate 
+                ? new Date(nextRound.startDate) 
+                : null,
             totalRequestedFunding: totalRequestedFunding,
             totalVotes: totalVotesCount,
-        };
+        } as Metrics;
     }
 }
