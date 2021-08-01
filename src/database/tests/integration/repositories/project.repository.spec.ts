@@ -21,17 +21,22 @@ describe('ProjectRepository', () => {
         category: CategoryEnum.CoreSoftware,
         logo: 'picture here pls',
         company: new Types.ObjectId(),
+        walletAddress: '0x967da4048cD07aB37855c090aAF366e4ce1b9F48',
+        paymentWalletsAddresses: [
+            '0x967da4048cD07aB37855c090aAF366e4ce1b9F42',
+            '0x967da4048cD07aB37855c090aAF366e4ce1b9F48'
+        ],
         teamName: 'TestTeam',
     };
 
     let service: ProjectRepository;
   
     beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
-        imports: [DatabaseModule, AppModule]
-      }).compile();
-  
-      service = module.get<ProjectRepository>(ProjectRepository);
+        const module: TestingModule = await Test.createTestingModule({
+            imports: [DatabaseModule, AppModule]
+        }).compile();
+    
+        service = module.get<ProjectRepository>(ProjectRepository);
     });
 
     afterAll(async () => {

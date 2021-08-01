@@ -21,7 +21,6 @@ describe('DaoProposalRepository', () => {
         oceanProtocolPortUrl: 'oceanProtocolPortLink.com',
         title: 'The Title of the Proposal',
         description: 'Here stands a description',
-        walletAddress: '0x967da4048cD07aB37855c090aAF366e4ce1b9F48',
         category: CategoryEnum.BuildAndIntegrate,
         votes: 100000,
         counterVotes: 20,
@@ -31,35 +30,34 @@ describe('DaoProposalRepository', () => {
         requestedGrantToken: 10000,
         grantedToken: 10000,
         fundamentalMetric: 'test',
-        paymentWalletsAddresses: [],
         ipfsHash: '',
         snapshotBlock: 123456789,
         voteUrl: '',
-        images: []
+        images: [],
     } as DaoProposal;
 
     let service: DaoProposalRepository;
-  
+
     beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
-        imports: [DatabaseModule, AppModule]
-      }).compile();
-  
-      service = module.get<DaoProposalRepository>(DaoProposalRepository);
+        const module: TestingModule = await Test.createTestingModule({
+            imports: [DatabaseModule, AppModule],
+        }).compile();
+
+        service = module.get<DaoProposalRepository>(DaoProposalRepository);
     });
 
     afterAll(async () => {
         await service.delete(DAO_PROPOSAL_ID);
     });
-  
+
     it('should be defined', () => {
-      expect(service).toBeDefined();
+        expect(service).toBeDefined();
     });
 
     describe('Given I have a daoProposal repository', () => {
         test('it should save a daoProposal', async () => {
             expect(await service.create(daoProposal)).toEqual(
-                DAO_PROPOSAL_MONGO_ID
+                DAO_PROPOSAL_MONGO_ID,
             );
         });
 
@@ -74,7 +72,6 @@ describe('DaoProposalRepository', () => {
                 oceanProtocolPortUrl: dbDoaProposal.oceanProtocolPortUrl,
                 title: dbDoaProposal.title,
                 description: dbDoaProposal.description,
-                walletAddress: dbDoaProposal.walletAddress,
                 category: dbDoaProposal.category,
             }).toEqual({
                 id: DAO_PROPOSAL_ID,
@@ -84,15 +81,12 @@ describe('DaoProposalRepository', () => {
                 oceanProtocolPortUrl: 'oceanProtocolPortLink.com',
                 title: 'The Title of the Proposal',
                 description: 'Here stands a description',
-                walletAddress: '0x967da4048cD07aB37855c090aAF366e4ce1b9F48',
                 category: CategoryEnum.BuildAndIntegrate,
             });
         });
 
         test('it should return all daoProposals', async () => {
-            expect((await service.getAll()).length).toBeGreaterThanOrEqual(
-                1
-            );
+            expect((await service.getAll()).length).toBeGreaterThanOrEqual(1);
         });
 
         test('it should update a daoProposal', async () => {
