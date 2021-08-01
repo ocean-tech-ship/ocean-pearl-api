@@ -10,7 +10,7 @@ export class GetProjectsService {
     ) {}
 
     public async execute(): Promise<Project[]> {
-        let query: FindQuery = {
+        const query: FindQuery = {
             sort: { createdAt: -1 },
         };
 

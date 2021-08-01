@@ -10,7 +10,7 @@ export class GetDaoProposalsService {
     ) {}
 
     public async execute(): Promise<DaoProposal[]> {
-        let query: FindQuery = {
+        const query: FindQuery = {
             sort: { fundingRound: -1 },
         };
 

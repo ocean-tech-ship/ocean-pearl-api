@@ -48,12 +48,12 @@ export class SyncProposalsDataService {
                 continue;
             }
 
-            let proposalsResponse: AxiosResponse = await this.proposalsProvider.fetch(
+            const proposalsResponse: AxiosResponse = await this.proposalsProvider.fetch(
                 {
                     Round: round.round,
                 },
             );
-            let proposals: any = proposalsResponse.data.records;
+            const proposals: any = proposalsResponse.data.records;
 
             for (let proposal of proposals) {
                 const {id : proposalAirtableID, fields: proposalFields } = proposal;
@@ -69,9 +69,9 @@ export class SyncProposalsDataService {
                 );
 
                 if (!project) {
-                    let newProject: Project = this.mapProject(proposalFields);
+                    const newProject: Project = this.mapProject(proposalFields);
 
-                    let newDeliverable: Deliverable = this.mapDeliverable(
+                    const newDeliverable: Deliverable = this.mapDeliverable(
                         proposalFields,
                     );
 
@@ -96,13 +96,13 @@ export class SyncProposalsDataService {
                     continue;
                 }
 
-                let existingProposal: DaoProposal = await this.fetchExistingProposal(
+                const existingProposal: DaoProposal = await this.fetchExistingProposal(
                     project,
                     proposalAirtableID,
                 );
 
                 if (!existingProposal) {
-                    let newDeliverable: Deliverable = this.mapDeliverable(
+                    const newDeliverable: Deliverable = this.mapDeliverable(
                         proposalFields,
                     );
 

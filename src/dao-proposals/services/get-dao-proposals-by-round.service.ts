@@ -12,7 +12,7 @@ export class GetDaoProposalsByRoundService
     ) {}
 
     public async execute(round: Types.ObjectId): Promise<DaoProposal[]> {
-        let query: FindQuery = {
+        const query: FindQuery = {
             find: { fundingRound: round },
         };
 
