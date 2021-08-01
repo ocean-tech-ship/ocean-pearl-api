@@ -7,7 +7,7 @@ import { Metrics } from '../interfaces/metrics.interface';
 export class CalculateMetricsService {
     constructor(
         private getDaoProposalsByRoundService: GetDaoProposalsByRoundService,
-        private roundRepository: RoundRepository
+        private roundRepository: RoundRepository,
     ) {}
 
     public async execute(): Promise<Metrics> {
@@ -15,16 +15,22 @@ export class CalculateMetricsService {
         let totalRequestedFunding: number = 0;
         const currentDate = new Date();
 
-        const currentRound = (await this.roundRepository.getAll({
-            find: {
-                startDate: { $lte: currentDate},
-                votingEndDate: { $gte: currentDate},
-            }
-        }))[0];
-        const nextRound = (await this.roundRepository.getAll({
-            find: { round: currentRound.round + 1} 
-        }))[0];
-        const daoProposals = await this.getDaoProposalsByRoundService.execute(currentRound._id);
+        const currentRound = (
+            await this.roundRepository.getAll({
+                find: {
+                    startDate: { $lte: currentDate },
+                    votingEndDate: { $gte: currentDate },
+                },
+            })
+        )[0];
+        const nextRound = (
+            await this.roundRepository.getAll({
+                find: { round: currentRound.round + 1 },
+            })
+        )[0];
+        const daoProposals = await this.getDaoProposalsByRoundService.execute(
+            currentRound._id,
+        );
 
         for (const proposal of daoProposals) {
             totalVotesCount += proposal.votes;
@@ -34,14 +40,14 @@ export class CalculateMetricsService {
         return {
             fundingRound: currentRound.round,
             totalDaoProposals: daoProposals.length,
-            startDate: currentRound?.startDate 
-                ? new Date(currentRound.startDate) 
+            startDate: currentRound?.startDate
+                ? new Date(currentRound.startDate)
                 : null,
             votingStartDate: new Date(currentRound.votingStartDate),
             submissionEndDate: new Date(currentRound.submissionEndDate),
             endDate: new Date(currentRound.votingEndDate),
-            nextRoundStartDate: nextRound?.startDate 
-                ? new Date(nextRound.startDate) 
+            nextRoundStartDate: nextRound?.startDate
+                ? new Date(nextRound.startDate)
                 : null,
             totalRequestedFunding: totalRequestedFunding,
             totalVotes: totalVotesCount,
