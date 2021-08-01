@@ -1,4 +1,4 @@
-export enum CurrencyEnum {
+export enum PaymentOptionEnum {
     Ocean = 'OCEAN',
     Usd = 'USD'
 }
