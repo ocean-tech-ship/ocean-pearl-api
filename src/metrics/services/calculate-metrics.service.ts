@@ -16,11 +16,11 @@ export class CalculateMetricsService {
         const currentDate = new Date();
 
         const currentRound = (await this.roundRepository.getAll({
-                find: {
-                    startDate: { $lte: currentDate},
-                    votingEndDate: { $gte: currentDate},
-                }
-            }))[0];
+            find: {
+                startDate: { $lte: currentDate},
+                votingEndDate: { $gte: currentDate},
+            }
+        }))[0];
         const nextRound = (await this.roundRepository.getAll({
             find: { round: currentRound.round + 1} 
         }))[0];
