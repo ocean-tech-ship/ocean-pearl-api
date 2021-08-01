@@ -10,7 +10,7 @@ export class Address {
         type: String,
         trim: true,
         lowercase: true,
-        maxLength: 256,
+        maxLength: 128,
     })
     street: string;
 

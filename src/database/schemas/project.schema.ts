@@ -36,6 +36,7 @@ export class Project {
     @Prop({
         type: String,
         trim: true,
+        maxLength: 4096,
     })
     @ApiProperty()
     description: string;
@@ -43,6 +44,7 @@ export class Project {
     @Prop({
         type: String,
         enum: CategoryEnum,
+        default: CategoryEnum.Other,
     })
     @ApiProperty()
     category: string;

@@ -30,7 +30,7 @@ export class Job {
         type: String,
         required: true,
         trim: true,
-        maxLength: 2048,
+        maxLength: 4096,
     })
     description: string;
 
@@ -64,21 +64,21 @@ export class Job {
     @Prop({
         type: Number,
         required: false,
-        max: 999999,
+        max: 999999999,
     })
     tokenAmount: number;
 
     @Prop({
         type: Number,
         min: 0,
-        max: 999999,
+        max: 9999999,
     })
     salaryFrom: number;
 
     @Prop({
         type: Number,
         min: 0,
-        max: 999999,
+        max: 9999999,
     })
     salaryTo: number;
 
