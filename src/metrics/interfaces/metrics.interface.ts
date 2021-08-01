@@ -1,9 +1,11 @@
 export interface Metrics {
     fundingRound: number;
     totalDaoProposals: number;
-    endDate: Date;
     startDate: Date;
     submissionEndDate: Date;
+    votingStartDate: Date;
+    endDate: Date;
+    nextRoundStart: Date;
     totalRequestedFunding: number;
     totalVotes: number;
 }
