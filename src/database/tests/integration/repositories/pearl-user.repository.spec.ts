@@ -8,6 +8,7 @@ import { PearlUserRepository } from '../../../repositories/pearl-user.repository
 import { PearlUser } from '../../../schemas/pearl-user.schema';
 import { SocialMedia } from '../../../schemas/social-media.schema';
 
+const faker = require('faker');
 const PEARL_USER_ID: string = nanoid();
 const PEARL_USER_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
@@ -16,8 +17,8 @@ describe('PearlUserRepository', () => {
         _id: PEARL_USER_MONGO_ID,
         id: PEARL_USER_ID,
         title: UserTitleEnum.Dr,
-        firstname: 'John',
-        lastname: 'Doe',
+        firstname: faker.name.firstName(),
+        lastname: faker.name.lastName(),
         age: 28,
         socialMedia: {} as SocialMedia,
     };

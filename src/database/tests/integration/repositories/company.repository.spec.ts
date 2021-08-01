@@ -6,6 +6,7 @@ import { nanoid } from '../../../functions/nano-id.function';
 import { CompanyRepository } from '../../../repositories/company.repository';
 import { Company } from '../../../schemas/company.schema';
 
+const faker = require('faker');
 const COMPANY_ID: string = nanoid();
 const COMPANY_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
@@ -13,9 +14,9 @@ describe('CompanyRepository', () => {
     let company: Company = <Company>{
         _id: COMPANY_MONGO_ID,
         id: COMPANY_ID,
-        name: 'Test',
-        email: 'Test.email@email.com',
-        phoneNumber: '123456789',
+        name: faker.company.companyName(),
+        email: faker.internet.email(),
+        phoneNumber: faker.phone.phoneNumber(),
         socialMedia: {},
         address: {},
         projects: [],
@@ -61,9 +62,9 @@ describe('CompanyRepository', () => {
                 jobs: dbCompany.jobs,
             }).toEqual({
                 id: COMPANY_ID,
-                name: 'Test',
-                email: 'test.email@email.com',
-                phoneNumber: '123456789',
+                name: company.name,
+                email: company.email,
+                phoneNumber: company.phoneNumber,
                 socialMedia: {},
                 address: {},
                 projects: [],
