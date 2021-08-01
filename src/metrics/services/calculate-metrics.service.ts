@@ -17,8 +17,8 @@ export class CalculateMetricsService {
 
         const currentRound = (await this.roundRepository.getAll({
                 find: {
-                    startDate: { $gt: currentDate},
-                    endDate: { $lt: currentDate},
+                    startDate: { $lte: currentDate},
+                    votingEndDate: { $gte: currentDate},
                 }
             }))[0];
         const nextRound = (await this.roundRepository.getAll({
@@ -34,7 +34,7 @@ export class CalculateMetricsService {
         return {
             fundingRound: currentRound.round,
             totalDaoProposals: daoProposals.length,
-            startDate: currentRound.startDate 
+            startDate: currentRound?.startDate 
                 ? new Date(currentRound.startDate) 
                 : null,
             votingStartDate: new Date(currentRound.votingStartDate),
