@@ -3,6 +3,7 @@ import { Cron } from '@nestjs/schedule';
 import { AxiosResponse } from 'axios';
 import { Types } from 'mongoose';
 import { CategoryEnum } from '../../database/enums/category.enum';
+import { StandingEnum } from '../../database/enums/standing.enum';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
 import { DeliverableRepository } from '../../database/repositories/deliverable.repository';
 import { ProjectRepository } from '../../database/repositories/project.repository';
@@ -16,7 +17,7 @@ import { FundamentalMetricsMap } from '../constants/fundamental-metrics-map.cons
 import { StatesMap } from '../constants/states-map.constant';
 import { ProposalsProvider } from '../provider/proposals.provider';
 
-const MAX_SYNC_ROUND = 7;
+const MAX_SYNC_ROUND = 8;
 
 @Injectable()
 export class SyncProposalsDataService {
@@ -35,7 +36,7 @@ export class SyncProposalsDataService {
         timeZone: 'Europe/Berlin',
     })
     public async execute(): Promise<void> {
-        this.logger.log('Start syncing Proposals Job.');
+        this.logger.log('Start syncing Proposals from Airtable Job.');
         const roundModel = this.roundRepository.getModel();
         const databaseRounds: Round[] = await roundModel
             .find()
@@ -55,24 +56,23 @@ export class SyncProposalsDataService {
             let proposals: any = proposalsResponse.data.records;
 
             for (let proposal of proposals) {
-                const proposalAirtableID = proposal.id;
-                proposal = proposal.fields;
+                const {id : proposalAirtableID, fields: proposalFields } = proposal;
                 const projectModel = this.projectRepository.getModel();
 
                 let project: Project = await projectModel
-                    .findOne({ title: proposal['Project Name'].trim() })
+                    .findOne({ title: proposalFields['Project Name'].trim() })
                     .exec();
                 let newProposal: DaoProposal = this.mapProposal(
-                    proposal,
+                    proposalFields,
                     proposalAirtableID,
                     round,
                 );
 
                 if (!project) {
-                    let newProject: Project = this.mapProject(proposal);
+                    let newProject: Project = this.mapProject(proposalFields);
 
                     let newDeliverable: Deliverable = this.mapDeliverable(
-                        proposal,
+                        proposalFields,
                     );
 
                     newProposal.project = await this.projectRepository.create(
@@ -103,7 +103,7 @@ export class SyncProposalsDataService {
 
                 if (!existingProposal) {
                     let newDeliverable: Deliverable = this.mapDeliverable(
-                        proposal,
+                        proposalFields,
                     );
 
                     newProposal.project = project._id;
@@ -128,7 +128,7 @@ export class SyncProposalsDataService {
             }
         }
 
-        this.logger.log('Finish syncing Proposals Job.');
+        this.logger.log('Finish syncing Proposals from Airtable Job.');
     }
 
     private mapProposal(
@@ -145,6 +145,9 @@ export class SyncProposalsDataService {
                 CategoryMap[proposal['Grant Category'].trim()] ??
                 CategoryEnum.Other,
             description: proposal['Overview'],
+            standing: proposal['Proposal Standing'] === 'Completed' 
+                ? StandingEnum.Completed
+                : StandingEnum.Unreported,
             fundamentalMetric:
                 FundamentalMetricsMap[proposal['Fundamental Metric']],
             requestedGrantToken: proposal['OCEAN Requested']
@@ -153,10 +156,6 @@ export class SyncProposalsDataService {
             grantedToken: proposal['OCEAN Granted']
                 ? (proposal['OCEAN Granted'] as number)
                 : 0,
-            walletAddress: proposal['Wallet Address'],
-            paymentWalletsAddresses: proposal['Payment Wallets']
-                ? proposal['Payment Wallets'].split('\n')
-                : [],
             oceanProtocolPortUrl: proposal['Proposal URL'] ?? '',
             snapshotBlock: proposal['Snapshot Block'],
             ipfsHash: proposal['ipfsHash'],
@@ -178,6 +177,10 @@ export class SyncProposalsDataService {
             category:
                 CategoryMap[proposal['Grant Category'].trim()] ??
                 CategoryEnum.Other,
+            walletAddress: proposal['Wallet Address'],
+            paymentWalletsAddresses: proposal['Payment Wallets']
+                ? proposal['Payment Wallets'].split('\n')
+                : [],
             teamName: proposal['Team Name (from Login Email)']
                 ? proposal['Team Name (from Login Email)'][0]
                 : proposal['Project Name'].trim(),
