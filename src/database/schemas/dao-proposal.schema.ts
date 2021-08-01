@@ -114,7 +114,7 @@ export class DaoProposal {
         enum: StandingEnum,
         default: StandingEnum.Unreported,
     })
-    standing: StandingEnum
+    standing: StandingEnum;
 
     @Prop({
         type: String,
