@@ -89,24 +89,6 @@ export class DaoProposal {
     @Prop({
         type: String,
         trim: true,
-        maxLength: 64,
-    })
-    @ApiProperty()
-    walletAddress: string;
-
-    @Prop([
-        {
-            type: String,
-            trim: true,
-            maxLength: 64,
-        },
-    ])
-    @ApiProperty()
-    paymentWalletsAddresses: string[];
-
-    @Prop({
-        type: String,
-        trim: true,
         maxLength: 256,
     })
     @ApiProperty()

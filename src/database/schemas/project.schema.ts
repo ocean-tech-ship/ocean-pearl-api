@@ -48,6 +48,24 @@ export class Project {
     category: string;
 
     @Prop({
+        type: String,
+        trim: true,
+        maxLength: 64,
+    })
+    @ApiProperty()
+    walletAddress: string;
+
+    @Prop([
+        {
+            type: String,
+            trim: true,
+            maxLength: 64,
+        },
+    ])
+    @ApiProperty()
+    paymentWalletsAddresses: string[];
+
+    @Prop({
         type: SocialMediaSchema,
     })
     @ApiProperty()
