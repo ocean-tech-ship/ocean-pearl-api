@@ -37,7 +37,7 @@ export class SyncRoundsDataService {
 
     private mapRound(round: any): Round {
         let mappedRound: Round = {
-            round: round['Round'].split(' ')[1],
+            round: round['Round'],
             earmarked: round['Earmarked'] ?? round['Earmarked USD'],
             maxGrant: round['Max Grant'] ?? round['Max Grant USD'],
             paymentOption: round['Max Grant']
