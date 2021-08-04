@@ -395,5 +395,7 @@ Temporary Items
 =======
 # Local
 enviroment/dev.env
+enviroment/stage.env
 enviroment/prod.env
+.env
 dist

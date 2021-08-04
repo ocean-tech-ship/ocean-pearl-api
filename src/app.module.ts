@@ -10,7 +10,11 @@ import { PagesModule } from './pages/pages.module';
 import { AirtableModule } from './airtable/airtable.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
-require('dotenv').config({ path: `./enviroment/${process.env.NODE_ENV}.env` });
+if (process.env.NODE_ENV === 'prod') {
+    require('dotenv').config();
+} else {
+    require('dotenv').config({ path: `./enviroment/${process.env.NODE_ENV}.env` });
+}
 
 @Module({
     imports: [
