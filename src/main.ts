@@ -14,7 +14,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     app.enableCors();
-    await app.listen(3001);
+    await app.listen(process.env.PORT || 3001);
     console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
