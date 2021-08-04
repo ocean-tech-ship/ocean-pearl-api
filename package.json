@@ -8,7 +8,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "nest start -p $PORT",
     "start:dev": "SET NODE_ENV=dev&&nest start --watch",
     "start:debug": "SET NODE_ENV=dev&&nest start --debug --watch",
     "start:stage": "SET NODE_ENV=stage&&node dist/main",
