@@ -1,6 +1,6 @@
 import { FilterQuery } from 'mongoose';
 
-export interface PaginationOptionsInterface {
+export interface PaginationOptions {
     page: number;
     limit: number;
     find?: FilterQuery<any>;

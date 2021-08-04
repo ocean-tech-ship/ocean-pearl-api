@@ -1,6 +1,6 @@
 import { FilterQuery } from 'mongoose';
 
-export interface FindQueryInterface {
+export interface FindQuery {
     find?: FilterQuery<any>;
     sort?: FilterQuery<any>;
 }

@@ -1,4 +1,4 @@
-export interface MongooseDeleteResponseInterface {
+export interface MongooseDeleteResponse {
     ok?: number,
     n?: number,
     deletedCount?: number 

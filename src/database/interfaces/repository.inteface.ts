@@ -1,4 +1,4 @@
-import { Document, Model } from "mongoose";
+import { Document, Model, Types } from "mongoose";
 
 export interface RepositoryInterface<T extends Document> {
     getByID(id: string): Promise<any>;
@@ -7,7 +7,7 @@ export interface RepositoryInterface<T extends Document> {
 
     update(model: T): Promise<boolean>;
 
-    create(model: T): Promise<string>;
+    create(model: T): Promise<Types.ObjectId>;
 
     delete(id: string): Promise<boolean>;
 
