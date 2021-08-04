@@ -17,7 +17,7 @@ import { FundamentalMetricsMap } from '../constants/fundamental-metrics-map.cons
 import { StatesMap } from '../constants/states-map.constant';
 import { ProposalsProvider } from '../provider/proposals.provider';
 
-const MAX_SYNC_ROUND = 7;
+const MAX_SYNC_ROUND = 8;
 
 @Injectable()
 export class SyncProposalsDataService {
