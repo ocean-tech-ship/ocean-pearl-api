@@ -156,6 +156,12 @@ export class SyncProposalsDataService {
             grantedToken: proposal['OCEAN Granted']
                 ? (proposal['OCEAN Granted'] as number)
                 : 0,
+            requestedGrantUsd: proposal['USD Requested']
+                ? (proposal['USD Requested'] as number)
+                : 0,
+            grantedUsd: proposal['USD Granted']
+                ? (proposal['USD Granted'] as number)
+                : 0,
             oceanProtocolPortUrl: proposal['Proposal URL'] ?? '',
             snapshotBlock: proposal['Snapshot Block'],
             ipfsHash: proposal['ipfsHash'],
