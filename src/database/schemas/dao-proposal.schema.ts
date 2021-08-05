@@ -79,6 +79,22 @@ export class DaoProposal {
     grantedToken: number;
 
     @Prop({
+        type: Number,
+        min: 0,
+        default: 0,
+    })
+    @ApiProperty()
+    requestedGrantUsd: number;
+
+    @Prop({
+        type: Number,
+        min: 0,
+        default: 0,
+    })
+    @ApiProperty()
+    grantedUsd: number;
+
+    @Prop({
         type: String,
         enum: DaoProposalStatusEnum,
         required: true,
