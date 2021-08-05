@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { GetDaoProposalsByRoundService } from '../../dao-proposals/services/get-dao-proposals-by-round.service';
+import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { RoundRepository } from '../../database/repositories/round.repository';
 import { Metrics } from '../interfaces/metrics.interface';
 
@@ -33,8 +35,11 @@ export class CalculateMetricsService {
         );
 
         for (const proposal of daoProposals) {
+            totalRequestedFunding +=
+                currentRound.paymentOption === PaymentOptionEnum.Ocean
+                    ? proposal.requestedGrantToken
+                    : proposal.requestedGrantUsd;
             totalVotesCount += proposal.votes;
-            totalRequestedFunding += proposal.requestedGrantToken;
         }
 
         return {
@@ -49,8 +54,9 @@ export class CalculateMetricsService {
             nextRoundStartDate: nextRound?.startDate
                 ? new Date(nextRound.startDate)
                 : null,
-            totalRequestedFunding: totalRequestedFunding,
+            totalRequestedFunding: Math.floor(totalRequestedFunding),
             totalVotes: totalVotesCount,
+            paymentOption: currentRound.paymentOption,
         } as Metrics;
     }
 }

@@ -1,3 +1,5 @@
+import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
+
 export interface Metrics {
     fundingRound: number;
     totalDaoProposals: number;
@@ -8,4 +10,5 @@ export interface Metrics {
     nextRoundStartDate?: Date;
     totalRequestedFunding: number;
     totalVotes: number;
+    paymentOption: PaymentOptionEnum;
 }
