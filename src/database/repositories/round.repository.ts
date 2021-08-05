@@ -19,7 +19,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
             return await this.model
                 .findOne({ id: id })
                 .lean()
-                .select('-_id -__v')
+                .select('-__v')
                 .exec();
         } catch (error: any) {
             throw error;
@@ -34,7 +34,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
                 .find(query?.find || {})
                 .sort(query?.sort || {})
                 .lean()
-                .select('-_id -__v')
+                .select('-__v')
                 .exec();
         } catch (error: any) {
             throw error;
@@ -51,7 +51,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
                 .skip((options.page - 1) * options.limit)
                 .limit(options.limit)
                 .lean()
-                .select('-_id -__v')
+                .select('-__v')
                 .exec();
         } catch (error: any) {
             throw error;
