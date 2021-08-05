@@ -144,6 +144,7 @@ export class SyncProposalsDataService {
             category:
                 CategoryMap[proposal['Grant Category'].trim()] ??
                 CategoryEnum.Other,
+            oneLiner: proposal['One Liner'],
             description: proposal['Overview'],
             standing: proposal['Proposal Standing'] === 'Completed' 
                 ? StandingEnum.Completed
