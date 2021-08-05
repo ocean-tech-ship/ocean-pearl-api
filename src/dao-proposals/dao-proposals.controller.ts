@@ -1,32 +1,43 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { PaginationOptions } from '../database/interfaces/pagination-options.interface';
+import { RoundRepository } from '../database/repositories/round.repository';
 import { DaoProposal } from '../database/schemas/dao-proposal.schema';
 import { GetDaoProposalByIdService } from './services/get-dao-proposal-by-id.service';
+import { GetDaoProposalsByRoundService } from './services/get-dao-proposals-by-round.service';
 import { GetDaoProposalsPaginatedService } from './services/get-dao-proposals-paginated.service';
-import { GetDaoProposalsService } from './services/get-dao-proposals.service';
 
 @Controller('dao-proposals')
 export class DaoProposalsController {
-
     public constructor(
-        private getDaoProposalsService: GetDaoProposalsService,
+        private getDaoProposalsByRoundService: GetDaoProposalsByRoundService,
         private getDaoProposalByIdService: GetDaoProposalByIdService,
-        private getDaoProposalsPaginatedService: GetDaoProposalsPaginatedService
+        private getDaoProposalsPaginatedService: GetDaoProposalsPaginatedService,
+        private roundRepository: RoundRepository,
     ) {}
 
     @Get()
     async getDaoProposals(): Promise<DaoProposal[]> {
         try {
-            return await this.getDaoProposalsService.execute();
+            const currentDate = new Date();
+            const currentRound = (
+                await this.roundRepository.getAll({
+                    find: {
+                        startDate: { $lte: currentDate },
+                        votingEndDate: { $gte: currentDate },
+                    },
+                })
+            )[0];
+
+            return await this.getDaoProposalsByRoundService.execute(currentRound._id);
         } catch (error: any) {
-            throw error
+            throw error;
         }
     }
 
     @Get('paginated/:page/:limit')
     async getDaoProposalsPaginated(
         @Param('page') page: string,
-        @Param('limit') limit: string
+        @Param('limit') limit: string,
     ): Promise<DaoProposal[]> {
         try {
             const options = {
@@ -41,9 +52,7 @@ export class DaoProposalsController {
     }
 
     @Get(':id')
-    async getDaoProposalById(
-        @Param('id') id: string
-    ): Promise<DaoProposal> {
+    async getDaoProposalById(@Param('id') id: string): Promise<DaoProposal> {
         try {
             return await this.getDaoProposalByIdService.execute(id);
         } catch (error: any) {
