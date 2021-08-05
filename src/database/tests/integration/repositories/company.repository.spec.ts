@@ -63,7 +63,7 @@ describe('CompanyRepository', () => {
             }).toEqual({
                 id: COMPANY_ID,
                 name: company.name,
-                email: company.email,
+                email: company.email.toLocaleLowerCase(),
                 phoneNumber: company.phoneNumber,
                 socialMedia: {},
                 address: {},

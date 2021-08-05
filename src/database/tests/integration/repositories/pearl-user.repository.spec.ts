@@ -59,8 +59,8 @@ describe('PearlUserRepository', () => {
             }).toEqual({
                 id: PEARL_USER_ID,
                 title: UserTitleEnum.Dr,
-                firstname: 'John',
-                lastname: 'Doe',
+                firstname: oceanUser.firstname,
+                lastname: oceanUser.lastname,
                 age: 28,
                 socialMedia: {},
             });
