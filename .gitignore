@@ -398,4 +398,6 @@ enviroment/dev.env
 enviroment/stage.env
 enviroment/prod.env
 .env
-dist
+/dist
+npm-debug.log
+.DS_Store
