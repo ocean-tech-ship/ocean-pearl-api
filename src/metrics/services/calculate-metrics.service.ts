@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Types } from 'mongoose';
 import { GetDaoProposalsByRoundService } from '../../dao-proposals/services/get-dao-proposals-by-round.service';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { RoundRepository } from '../../database/repositories/round.repository';
-import { Metrics } from '../interfaces/metrics.interface';
+import { Round } from '../../database/schemas/round.schema';
+import { Metrics, RoundMetrics } from '../interfaces/metrics.interface';
 
 @Injectable()
 export class CalculateMetricsService {
@@ -45,18 +45,24 @@ export class CalculateMetricsService {
         return {
             fundingRound: currentRound.round,
             totalDaoProposals: daoProposals.length,
-            startDate: currentRound?.startDate
-                ? new Date(currentRound.startDate)
-                : null,
-            votingStartDate: new Date(currentRound.votingStartDate),
-            submissionEndDate: new Date(currentRound.submissionEndDate),
-            endDate: new Date(currentRound.votingEndDate),
-            nextRoundStartDate: nextRound?.startDate
-                ? new Date(nextRound.startDate)
-                : null,
+            currentRound: this.mapRoundMetrics(currentRound),
+            nextRound: this.mapRoundMetrics(nextRound),
             totalRequestedFunding: Math.floor(totalRequestedFunding),
             totalVotes: totalVotesCount,
             paymentOption: currentRound.paymentOption,
         } as Metrics;
+    }
+
+    private mapRoundMetrics(round: Round): RoundMetrics {
+        return {
+            startDate: round?.startDate
+                ? new Date(round.startDate)
+                : null,
+            votingStartDate: round?.votingStartDate 
+                ? new Date(round.votingStartDate)
+                : null,
+            submissionEndDate: new Date(round.submissionEndDate),
+            endDate: new Date(round.votingEndDate),
+        }
     }
 }
