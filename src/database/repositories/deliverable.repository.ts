@@ -30,6 +30,7 @@ export class DeliverableRepository
             return await this.model
                 .find(query?.find || {})
                 .sort(query?.sort || {})
+                .limit(query?.limit || 0)
                 .lean()
                 .select('-_id -__v')
                 .exec();
