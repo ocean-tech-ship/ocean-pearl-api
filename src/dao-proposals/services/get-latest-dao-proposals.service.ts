@@ -1,34 +1,21 @@
 import { Injectable } from '@nestjs/common';
+import { FindQuery } from '../../database/interfaces/find-query.interface';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 
 @Injectable()
-export class GetLatestDaoProposalsService
-{
-    constructor(
-        private daoProposalRepository: DaoProposalRepository
-    ) {}
+export class GetLatestDaoProposalsService {
+    constructor(private daoProposalRepository: DaoProposalRepository) {}
 
     public async execute(): Promise<DaoProposal[]> {
-        return await this.daoProposalRepository
-            .getModel()
-            .find()
-            .sort({ fundingRound: -1 })
-            .limit(4)
-            .lean()
-            .populate({
-                path: 'project',
-                select: '-daoProposals -_id -__v',
-            })
-            .populate({
-                path: 'deliverables',
-                select: '-_id -__v',
-            })
-            .populate({
-                path: 'kpiTargets',
-                select: '-_id -__v',
-            })
-            .select('-_id -__v')
-            .exec();
+        const query: FindQuery = {
+            sort: {
+                createdAt: -1,
+            },
+        };
+
+        const daoProposals = await this.daoProposalRepository.getAll(query);
+
+        return daoProposals.splice(0, 4);
     }
 }
