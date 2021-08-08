@@ -12,10 +12,9 @@ export class GetLatestDaoProposalsService {
             sort: {
                 createdAt: -1,
             },
+            limit: 4
         };
 
-        const daoProposals = await this.daoProposalRepository.getAll(query);
-
-        return daoProposals.splice(0, 4);
+        return await this.daoProposalRepository.getAll(query);
     }
 }
