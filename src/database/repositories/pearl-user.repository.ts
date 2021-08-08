@@ -28,7 +28,9 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
     public async getAll(query?: FilterQuery<any>): Promise<PearlUser[]> {
         try {
             return await this.model
-                .find(query || {})
+                .find(query?.find || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
                 .lean();
         } catch (error: any) {
             throw error;

@@ -36,6 +36,8 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
         try {
             return await this.model
                 .find(query || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
                 .lean()
                 .populate({
                     path: 'jobs',
