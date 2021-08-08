@@ -13,8 +13,9 @@ export class CalculateMetricsService {
     ) {}
 
     public async execute(): Promise<Metrics> {
-        let totalVotesCount: number = 0;
-        let totalRequestedFunding: number = 0;
+        let totalVotesCount: number = 0,
+            totalRequestedFundingOcean: number = 0,
+            totalRequestedFundingUsd: number = 0;
         const currentDate = new Date();
 
         const currentRound = (
@@ -35,10 +36,8 @@ export class CalculateMetricsService {
         );
 
         for (const proposal of daoProposals) {
-            totalRequestedFunding +=
-                currentRound.paymentOption === PaymentOptionEnum.Ocean
-                    ? proposal.requestedGrantToken
-                    : proposal.requestedGrantUsd;
+            totalRequestedFundingOcean += proposal.requestedGrantToken
+            totalRequestedFundingUsd += proposal.requestedGrantUsd;
             totalVotesCount += proposal.votes;
         }
 
@@ -47,7 +46,8 @@ export class CalculateMetricsService {
             totalDaoProposals: daoProposals.length,
             currentRound: this.mapRoundMetrics(currentRound),
             nextRound: this.mapRoundMetrics(nextRound),
-            totalRequestedFunding: Math.floor(totalRequestedFunding),
+            totalRequestedFundingOcean: Math.floor(totalRequestedFundingOcean),
+            totalRequestedFundingUsd: Math.floor(totalRequestedFundingUsd),
             totalVotes: totalVotesCount,
             paymentOption: currentRound.paymentOption,
         } as Metrics;

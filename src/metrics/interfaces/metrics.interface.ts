@@ -5,7 +5,8 @@ export interface Metrics {
     totalDaoProposals: number;
     currentRound: RoundMetrics;
     nextRound: RoundMetrics;
-    totalRequestedFunding: number;
+    totalRequestedFundingOcean: number;
+    totalRequestedFundingUsd: number;
     totalVotes: number;
     paymentOption: PaymentOptionEnum;
 }
