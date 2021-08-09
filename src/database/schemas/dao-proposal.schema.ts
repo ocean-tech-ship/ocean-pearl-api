@@ -35,7 +35,9 @@ export class DaoProposal {
         ref: 'Round',
         required: true,
     })
-    @ApiProperty()
+    @ApiProperty({
+        type: Round,
+    })
     fundingRound: Round | Types.ObjectId;
 
     @Prop({
@@ -43,7 +45,9 @@ export class DaoProposal {
         ref: 'Project',
         required: true,
     })
-    @ApiProperty()
+    @ApiProperty({
+        type: Project,
+    })
     project: Project | Types.ObjectId;
 
     @Prop({
@@ -157,7 +161,10 @@ export class DaoProposal {
         ],
         default: void 0,
     })
-    @ApiProperty()
+    @ApiProperty({
+        type: Deliverable,
+        isArray: true,
+    })
     deliverables: Deliverable[] | Types.ObjectId[];
 
     @Prop({
@@ -169,7 +176,10 @@ export class DaoProposal {
         ],
         default: void 0,
     })
-    @ApiProperty()
+    @ApiProperty({
+        type: KpiTarget,
+        isArray: true,
+    })
     kpiTargets: KpiTarget[] | Types.ObjectId[];
 
     @Prop({

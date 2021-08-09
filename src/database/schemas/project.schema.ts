@@ -91,7 +91,6 @@ export class Project {
         type: Types.ObjectId,
         ref: 'Company',
     })
-    @ApiProperty()
     company: Company | Types.ObjectId;
 
     @Prop({
@@ -103,7 +102,10 @@ export class Project {
         ],
         default: void 0,
     })
-    @ApiProperty()
+    @ApiProperty({
+        type: DaoProposal,
+        isArray: true
+    })
     daoProposals: DaoProposal[] | Types.ObjectId[];
 
     @Prop({
@@ -115,7 +117,6 @@ export class Project {
         ],
         default: void 0,
     })
-    @ApiProperty()
     team: PearlUser[] | Types.ObjectId[];
 
     @Prop({
@@ -139,8 +140,10 @@ export class Project {
     @ApiProperty()
     featured: boolean;
 
+    @ApiProperty()
     createdAt: Date;
 
+    @ApiProperty()
     updatedAt: Date;
 }
 
