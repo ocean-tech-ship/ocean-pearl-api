@@ -18,7 +18,7 @@ export class CalculateMetricsService {
             totalRequestedFundingUsd: number = 0;
         const currentDate = new Date();
 
-        const currentRound = (
+        let currentRound = (
             await this.roundRepository.getAll({
                 find: {
                     startDate: { $lte: currentDate },
@@ -26,6 +26,20 @@ export class CalculateMetricsService {
                 },
             })
         )[0];
+
+        if (!currentRound) {
+            currentRound = (
+                await this.roundRepository.getAll({
+                    find: {
+                        votingEndDate: { $lte: currentDate },
+                    },
+                    sort: {
+                        votingEndDate: -1
+                    }
+                })
+            )[0]
+        }
+
         const nextRound = (
             await this.roundRepository.getAll({
                 find: { round: currentRound.round + 1 },
@@ -44,8 +58,8 @@ export class CalculateMetricsService {
         return {
             fundingRound: currentRound.round,
             totalDaoProposals: daoProposals.length,
-            currentRound: this.mapRoundMetrics(currentRound),
-            nextRound: this.mapRoundMetrics(nextRound),
+            currentRound: currentRound ? this.mapRoundMetrics(currentRound) : null,
+            nextRound: nextRound ? this.mapRoundMetrics(nextRound) : null ,
             totalRequestedFundingOcean: Math.floor(totalRequestedFundingOcean),
             totalRequestedFundingUsd: Math.floor(totalRequestedFundingUsd),
             totalVotes: totalVotesCount,
