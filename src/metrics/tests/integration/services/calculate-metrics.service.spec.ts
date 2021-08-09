@@ -4,7 +4,7 @@ import { DaoProposalsModule } from '../../../../dao-proposals/dao-proposals.modu
 import { DatabaseModule } from '../../../../database/database.module';
 import { CalculateMetricsService } from '../../../services/calculate-metrics.service';
 
-describe('DaoFeaturedProjectsService', () => {
+describe('CalculateMetricsService', () => {
   let service: CalculateMetricsService;
 
   beforeEach(async () => {
