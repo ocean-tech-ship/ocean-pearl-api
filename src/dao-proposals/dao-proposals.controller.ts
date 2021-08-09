@@ -19,7 +19,7 @@ export class DaoProposalsController {
     async getDaoProposals(): Promise<DaoProposal[]> {
         try {
             const currentDate = new Date();
-            const currentRound = (
+            let currentRound = (
                 await this.roundRepository.getAll({
                     find: {
                         startDate: { $lte: currentDate },
@@ -27,6 +27,19 @@ export class DaoProposalsController {
                     },
                 })
             )[0];
+
+            if (!currentRound) {
+                currentRound = (
+                    await this.roundRepository.getAll({
+                        find: {
+                            votingEndDate: { $lte: currentDate },
+                        },
+                        sort: {
+                            votingEndDate: -1
+                        }
+                    })
+                )[0]
+            }
 
             return await this.getDaoProposalsByRoundService.execute(currentRound._id);
         } catch (error: any) {
