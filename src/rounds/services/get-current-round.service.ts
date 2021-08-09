@@ -28,7 +28,7 @@ export class GetCurrentRoundService {
                     },
                     limit: 1,
                 })
-            )[0];
+            )[0]
         );
     }
 }
