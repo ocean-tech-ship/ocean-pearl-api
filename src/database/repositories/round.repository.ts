@@ -14,6 +14,22 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
         @InjectModel('Round') private model: Model<RoundType>
     ) {}
 
+    public async findOne(query: FindQuery): Promise<Round> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .select('-__v')
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getByID(id: string): Promise<Round> {
         try {
             return await this.model

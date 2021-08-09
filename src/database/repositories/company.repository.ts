@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
+import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
 import { Company, CompanyType } from '../schemas/company.schema';
@@ -11,6 +12,30 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
     constructor(
         @InjectModel('Company') private model: Model<CompanyType>
     ) {}
+
+    public async findOne(query: FindQuery): Promise<Company> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .populate({
+                    path: 'jobs',
+                    select: 'id',
+                })
+                .populate({
+                    path: 'projects',
+                    select: 'id',
+                })
+                .select('-_id -__v')
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
 
     public async getByID(id: string): Promise<Company> {
         try {

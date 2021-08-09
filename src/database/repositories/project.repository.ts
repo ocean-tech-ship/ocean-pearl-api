@@ -11,6 +11,40 @@ import { Project, ProjectType } from '../schemas/project.schema';
 export class ProjectRepository implements RepositoryInterface<ProjectType> {
     constructor(@InjectModel('Project') private model: Model<ProjectType>) {}
 
+    public async findOne(query: FindQuery): Promise<Project> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .populate({
+                    path: 'company',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'daoProposals',
+                    select:
+                        '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                    populate: {
+                        path: 'fundingRound',
+                        model: 'Round',
+                        select: '-_id -__v',
+                    },
+                })
+                .populate({
+                    path: 'team',
+                    select: '-_id -__v',
+                })
+                .select('-_id -__v')
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getByID(id: string, lean: boolean = true): Promise<Project> {
         try {
             return await this.model
@@ -22,7 +56,8 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 })
                 .populate({
                     path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                    select:
+                        '-project -_id -__v -deliverables -kpiTargets -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
@@ -52,7 +87,8 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 })
                 .populate({
                     path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                    select:
+                        '-project -_id -__v -deliverables -kpiTargets -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
@@ -84,7 +120,8 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 })
                 .populate({
                     path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                    select:
+                        '-project -_id -__v -deliverables -kpiTargets -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',

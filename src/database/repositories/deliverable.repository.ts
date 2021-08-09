@@ -13,6 +13,22 @@ export class DeliverableRepository
         @InjectModel('Deliverable') private model: Model<DeliverableType>,
     ) {}
 
+    public async findOne(query: FindQuery): Promise<Deliverable> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .select('-_id -__v')
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getByID(id: string): Promise<Deliverable> {
         try {
             return await this.model

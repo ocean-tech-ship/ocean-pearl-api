@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
+import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
 import {
@@ -15,11 +16,29 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
         @InjectModel('PearlUser') private model: Model<PearlUserType>
     ) {}
 
+    public async findOne(query: FindQuery): Promise<PearlUser> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .select('-_id -__v')
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getByID(id: string): Promise<PearlUser> {
         try {
             return await this.model
                 .findOne({ id: id })
-                .lean();
+                .lean()
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -29,7 +48,9 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
         try {
             return await this.model
                 .find(query || {})
-                .lean();
+                .lean()
+                .select('-_id -__v')
+                .exec();
         } catch (error: any) {
             throw error;
         }
