@@ -48,6 +48,8 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
         try {
             return await this.model
                 .find(query || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
                 .lean()
                 .select('-_id -__v')
                 .exec();

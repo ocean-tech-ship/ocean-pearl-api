@@ -49,6 +49,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
             return await this.model
                 .find(query?.find || {})
                 .sort(query?.sort || {})
+                .limit(query?.limit || 0)
                 .lean()
                 .select('-__v')
                 .exec();

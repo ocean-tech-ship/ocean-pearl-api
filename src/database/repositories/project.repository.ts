@@ -80,6 +80,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
             return await this.model
                 .find(query?.find || {})
                 .sort(query?.sort || {})
+                .limit(query?.limit || 0)
                 .lean()
                 .populate({
                     path: 'company',
