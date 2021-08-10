@@ -130,7 +130,6 @@ export class Project {
     @Prop({
         type: AddressSchema,
     })
-    @ApiProperty()
     address: Address;
 
     @Prop({
