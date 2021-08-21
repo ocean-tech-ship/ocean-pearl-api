@@ -30,6 +30,21 @@ export class JobRepository implements RepositoryInterface<JobType> {
         }
     }
 
+    public async findOneRaw(query: FindQuery): Promise<Job> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getByID(id: string): Promise<Job> {
         try {
             return await this.model

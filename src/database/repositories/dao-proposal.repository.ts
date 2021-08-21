@@ -46,6 +46,21 @@ export class DaoProposalRepository
         }
     }
 
+    public async findOneRaw(query: FindQuery): Promise<DaoProposal> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getByID(id: string): Promise<DaoProposal> {
         try {
             return await this.model
@@ -75,8 +90,6 @@ export class DaoProposalRepository
     }
 
     public async getAll(query?: FindQuery): Promise<DaoProposal[]> {
-        console.log(query);
-
         try {
             return await this.model
                 .find(query?.find || {})

@@ -32,6 +32,21 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
         }
     }
 
+    public async findOneRaw(query: FindQuery): Promise<PearlUser> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getByID(id: string): Promise<PearlUser> {
         try {
             return await this.model

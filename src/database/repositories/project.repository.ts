@@ -45,6 +45,21 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
+    public async findOneRaw(query: FindQuery): Promise<Project> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getByID(id: string, lean: boolean = true): Promise<Project> {
         try {
             return await this.model

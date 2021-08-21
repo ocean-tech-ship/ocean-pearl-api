@@ -37,6 +37,21 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
         }
     }
 
+    public async findOneRaw(query: FindQuery): Promise<Company> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getByID(id: string): Promise<Company> {
         try {
             return await this.model
