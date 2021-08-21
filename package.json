@@ -35,6 +35,8 @@
     "@nestjs/platform-express": "^7.6.15",
     "@nestjs/schedule": "^0.4.3",
     "@nestjs/swagger": "^4.8.2",
+    "@types/cookie-parser": "^1.4.2",
+    "cookie-parser": "^1.4.5",
     "dotenv": "^10.0.0",
     "eth-crypto": "^2.0.0",
     "faker": "^5.5.3",
