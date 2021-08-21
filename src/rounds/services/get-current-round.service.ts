@@ -16,9 +16,8 @@ export class GetCurrentRoundService {
             },
         });
 
-        return (
-            currentRound ??
-            (
+        if (!currentRound) {
+            currentRound = (
                 await this.roundRepository.getAll({
                     find: {
                         votingEndDate: { $gte: currentDate },
@@ -28,7 +27,9 @@ export class GetCurrentRoundService {
                     },
                     limit: 1,
                 })
-            )[0]
-        );
+              )[0];
+        }
+
+        return currentRound;
     }
 }
