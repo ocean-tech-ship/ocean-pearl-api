@@ -43,7 +43,7 @@ describe('MissmatchedProposalStrategy', () => {
         ).resolves.toBeTruthy();
     });
 
-    it('should be not be able to handle', () => {
+    it('should not be able to handle', () => {
         expect(
             service.canHandle(
                 { daoProposals: [new Types.ObjectId()] } as Project,

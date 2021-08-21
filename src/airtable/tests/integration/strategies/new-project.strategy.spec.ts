@@ -25,7 +25,7 @@ describe('NewProjectStrategy', () => {
         expect(service.canHandle(null, null)).resolves.toBeTruthy();
     });
 
-    it('should be not be able to handle', () => {
+    it('should not be able to handle', () => {
         expect(
             service.canHandle({} as Project, {} as DaoProposal),
         ).resolves.toBeFalsy();
