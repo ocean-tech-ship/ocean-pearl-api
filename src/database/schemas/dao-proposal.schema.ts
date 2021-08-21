@@ -153,6 +153,14 @@ export class DaoProposal {
     oceanProtocolPortUrl: string;
 
     @Prop({
+        type: String,
+        trim: true,
+        maxLength: 64,
+    })
+    @ApiProperty()
+    walletAddress: string;
+
+    @Prop({
         type: [
             {
                 type: Types.ObjectId,
