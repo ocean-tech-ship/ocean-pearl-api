@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { UserTitleEnum } from '../enums/user-title.enum';
 import { nanoid } from '../functions/nano-id.function';
@@ -16,12 +17,14 @@ export class PearlUser {
         default: () => nanoid(),
         unique: true,
     })
+    @ApiProperty()
     id: string;
 
     @Prop({
         type: String,
         enum: UserTitleEnum,
     })
+    @ApiProperty()
     title: UserTitleEnum;
 
     @Prop({
@@ -30,6 +33,7 @@ export class PearlUser {
         trim: true,
         maxLength: 64,
     })
+    @ApiProperty()
     firstname: string;
 
     @Prop({
@@ -37,6 +41,7 @@ export class PearlUser {
         trim: true,
         maxLength: 64,
     })
+    @ApiProperty()
     lastname: string;
 
     @Prop({
@@ -45,22 +50,34 @@ export class PearlUser {
         max: 128,
         min: 0,
     })
+    @ApiProperty()
     age: number;
 
     @Prop({
         type: String,
     })
+    @ApiProperty()
     userImage: string;
 
     @Prop({
         type: Date,
     })
+    @ApiProperty()
     joinDate: Date;
 
     @Prop({
         type: Date,
     })
+    @ApiProperty()
     activeUntil: Date;
+
+    @Prop({
+        type: String,
+        trim: true,
+        maxLength: 64,
+    })
+    @ApiProperty()
+    walletAddress: string;
 
     @Prop({
         type: AddressSchema,
@@ -70,6 +87,7 @@ export class PearlUser {
     @Prop({
         type: SocialMediaSchema,
     })
+    @ApiProperty()
     socialMedia: SocialMedia;
 }
 
