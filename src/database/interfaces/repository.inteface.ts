@@ -8,6 +8,8 @@ export interface RepositoryInterface<T extends Document> {
 
     findOne(query: FindQuery): Promise<any>;
 
+    findOneRaw(query: FindQuery): Promise<any>;
+
     update(model: T): Promise<boolean>;
 
     create(model: T): Promise<Types.ObjectId>;
