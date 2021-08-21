@@ -1,8 +1,10 @@
-import { VerifyLoginService } from '../../services/verify-login.service';
-import { createIdentity, sign, hash } from 'eth-crypto';
+import { Test, TestingModule } from '@nestjs/testing';
+import { VerifyLoginService } from './verify-login.service';
+import { createIdentity, hash, sign } from 'eth-crypto';
 
 describe('VerifyLoginService', () => {
     let service: VerifyLoginService;
+
     let identity: {
         privateKey: string;
         publicKey: string;
@@ -13,13 +15,22 @@ describe('VerifyLoginService', () => {
     let plainSignature: string;
     let signature: string;
 
-    beforeAll(() => {
-        service = new VerifyLoginService();
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            providers: [VerifyLoginService],
+        }).compile();
+
+        service = module.get<VerifyLoginService>(VerifyLoginService);
+
         identity = createIdentity();
 
         now = Date.now();
         plainSignature = service.constructPlainSignature(now);
         signature = sign(identity.privateKey, hash.keccak256(plainSignature));
+    });
+
+    it('should be defined', () => {
+        expect(service).toBeDefined();
     });
 
     it('valid signature', () => {
