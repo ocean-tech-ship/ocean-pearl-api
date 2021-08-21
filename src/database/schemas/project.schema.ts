@@ -49,13 +49,13 @@ export class Project {
     @ApiProperty()
     category: string;
 
-    @Prop({
+    @Prop([{
         type: String,
         trim: true,
         maxLength: 64,
-    })
+    }])
     @ApiProperty()
-    walletAddress: string;
+    associatedAddresses: string[];
 
     @Prop([
         {
@@ -126,11 +126,6 @@ export class Project {
     })
     @ApiProperty()
     teamName: string;
-
-    @Prop({
-        type: AddressSchema,
-    })
-    address: Address;
 
     @Prop({
         type: Boolean,
