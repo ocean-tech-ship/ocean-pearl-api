@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
+import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
 import { Job, JobType } from '../schemas/job.schema';
@@ -8,6 +9,41 @@ import { Job, JobType } from '../schemas/job.schema';
 @Injectable()
 export class JobRepository implements RepositoryInterface<JobType> {
     constructor(@InjectModel('Job') private model: Model<JobType>) {}
+
+    public async findOne(query: FindQuery): Promise<Job> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .populate({
+                    path: 'company',
+                    select: 'id',
+                })
+                .select('-_id -__v')
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    public async findOneRaw(query: FindQuery): Promise<Job> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
 
     public async getByID(id: string): Promise<Job> {
         try {

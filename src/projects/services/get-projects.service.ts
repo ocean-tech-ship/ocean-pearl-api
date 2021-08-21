@@ -11,7 +11,7 @@ export class GetProjectsService {
 
     public async execute(): Promise<Project[]> {
         const query: FindQuery = {
-            sort: { createdAt: -1 },
+            sort: { updatedAt: -1 },
         };
 
         return await this.projectRepository.getAll(query);
