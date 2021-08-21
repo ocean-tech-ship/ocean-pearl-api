@@ -19,6 +19,9 @@ export class GetFilteredDaoProposalsService {
     ): Promise<DaoProposal[]> {
         let query: FindQuery = {
             find: {},
+            sort: {
+                createdAt: -1
+            }
         };
 
         for (const [key, value] of Object.entries(proposalsFilterQuery)) {
@@ -28,11 +31,12 @@ export class GetFilteredDaoProposalsService {
 
             if (key === 'round') {
                 const round =
-                    value === 0
+                    value === '0'
                         ? await this.getCurrentRoundService.execute()
                         : await this.roundRepository.findOne({
                               find: { round: value },
                           });
+
                 query.find.fundingRound = round._id;
 
                 continue;
