@@ -10,6 +10,8 @@ import { PagesModule } from './pages/pages.module';
 import { AirtableModule } from './airtable/airtable.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AccountModule } from './account/account.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from "@nestjs/config";
 
 if (process.env.NODE_ENV === 'production') {
     require('dotenv').config();
@@ -19,6 +21,12 @@ if (process.env.NODE_ENV === 'production') {
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            envFilePath: [
+                `./${process.env.NODE_ENV}.env`,
+                `./enviroment/${process.env.NODE_ENV}.env`,
+            ],
+        }),
         MongooseModule.forRoot(process.env.MONGO_URL as string, {
             useCreateIndex: true,
             useNewUrlParser: true,
@@ -34,6 +42,7 @@ if (process.env.NODE_ENV === 'production') {
         PagesModule,
         AirtableModule,
         AccountModule,
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],
