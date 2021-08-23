@@ -14,6 +14,53 @@ export class DaoProposalRepository
         @InjectModel('DaoProposal') private model: Model<DaoProposalType>,
     ) {}
 
+    public async findOne(query: FindQuery): Promise<DaoProposal> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .populate({
+                    path: 'project',
+                    select: '-daoProposals -_id -__v',
+                })
+                .populate({
+                    path: 'deliverables',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'kpiTargets',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'fundingRound',
+                    select: '-_id -__v',
+                })
+                .select('-_id -__v -airtableId')
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    public async findOneRaw(query: FindQuery): Promise<DaoProposal> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            return await this.model
+                .findOne(query.find)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getByID(id: string): Promise<DaoProposal> {
         try {
             return await this.model

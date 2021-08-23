@@ -9,6 +9,7 @@ import { MetricsModule } from './metrics/metrics.module';
 import { PagesModule } from './pages/pages.module';
 import { AirtableModule } from './airtable/airtable.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { RoundsModule } from './rounds/rounds.module';
 
 if (process.env.NODE_ENV === 'production') {
     require('dotenv').config();
@@ -32,6 +33,7 @@ if (process.env.NODE_ENV === 'production') {
         MetricsModule,
         PagesModule,
         AirtableModule,
+        RoundsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

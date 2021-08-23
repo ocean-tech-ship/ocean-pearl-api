@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { PaymentOptionEnum } from '../enums/payment-option.enum';
 import { nanoid } from '../functions/nano-id.function';
@@ -14,6 +15,7 @@ export class Round {
         default: () => nanoid(),
         unique: true,
     })
+    @ApiProperty()
     id: string;
 
     @Prop({
@@ -21,6 +23,7 @@ export class Round {
         min: 0,
         unique: true,
     })
+    @ApiProperty()
     round: number;
 
     @Prop({
@@ -28,6 +31,7 @@ export class Round {
         min: 0,
         default: 0,
     })
+    @ApiProperty()
     maxGrant: number;
 
     @Prop({
@@ -35,6 +39,7 @@ export class Round {
         min: 0,
         default: 0,
     })
+    @ApiProperty()
     earmarked: number;
 
     @Prop({
@@ -42,6 +47,7 @@ export class Round {
         min: 0,
         default: 0,
     })
+    @ApiProperty()
     availableFunding: number;
 
     @Prop({
@@ -49,29 +55,36 @@ export class Round {
         enum: PaymentOptionEnum,
         default: PaymentOptionEnum.Usd,
     })
+    @ApiProperty({
+        enum: PaymentOptionEnum,
+    })
     paymentOption: PaymentOptionEnum;
 
     @Prop({
         type: Date,
     })
+    @ApiProperty()
     startDate: Date;
 
     @Prop({
         type: Date,
         required: true,
     })
+    @ApiProperty()
     submissionEndDate: Date;
 
     @Prop({
         type: Date,
         required: true,
     })
+    @ApiProperty()
     votingStartDate: Date;
 
     @Prop({
         type: Date,
         required: true,
     })
+    @ApiProperty()
     votingEndDate: Date;
 }
 

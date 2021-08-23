@@ -21,7 +21,7 @@ describe('ProjectRepository', () => {
         category: CategoryEnum.CoreSoftware,
         logo: 'picture here pls',
         company: new Types.ObjectId(),
-        walletAddress: '0x967da4048cD07aB37855c090aAF366e4ce1b9F48',
+        associatedAddresses: ['0x967da4048cD07aB37855c090aAF366e4ce1b9F48'],
         paymentWalletsAddresses: [
             '0x967da4048cD07aB37855c090aAF366e4ce1b9F42',
             '0x967da4048cD07aB37855c090aAF366e4ce1b9F48'
