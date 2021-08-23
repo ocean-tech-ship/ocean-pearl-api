@@ -46,11 +46,21 @@ export class NewProposalStrategy implements StrategyInterface {
             await this.proposalRepository.create(newProposal),
         );
 
-        if (!project.associatedAddresses.includes(newProposal.walletAddress)) {
-            project.associatedAddresses.unshift(newProposal.walletAddress);
+        if (
+            !project.associatedAddresses.includes(
+                newProposal.walletAddress.toLowerCase(),
+            )
+        ) {
+            project.associatedAddresses.unshift(
+                newProposal.walletAddress.toLowerCase(),
+            );
         }
 
-        for (const address of airtableData['Payment Wallets'].split('\n')) {
+        const paymentWallets = airtableData['Payment Wallets']
+            .split('\n')
+            .map((address) => address.toLowerCase());
+
+        for (const address of paymentWallets) {
             if (!project.paymentWalletsAddresses.includes(address)) {
                 project.paymentWalletsAddresses.unshift(address);
             }

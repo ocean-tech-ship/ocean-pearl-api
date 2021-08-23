@@ -28,7 +28,7 @@ export class DaoProposalMapper {
             standing:
                 StandingMap[aritableData['Proposal Standing']] ??
                 StandingEnum.Unreported,
-            walletAddress: aritableData['Wallet Address'],
+            walletAddress: aritableData['Wallet Address'].toLowerCase(),
             fundamentalMetric:
                 FundamentalMetricsMap[aritableData['Fundamental Metric']],
             requestedGrantToken: aritableData['OCEAN Requested']

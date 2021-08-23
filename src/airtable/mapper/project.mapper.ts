@@ -12,12 +12,14 @@ export class ProjectMapper {
             category:
                 CategoryMap[airtableData['Grant Category'].trim()] ??
                 CategoryEnum.Other,
-            associatedAddresses: [airtableData['Wallet Address']],
+            associatedAddresses: [airtableData['Wallet Address'].toLowerCase()],
             paymentWalletsAddresses: airtableData['Payment Wallets']
-                ? airtableData['Payment Wallets'].split('\n')
+                ? airtableData['Payment Wallets']
+                      .split('\n')
+                      .map((address) => address.toLowerCase())
                 : [],
             teamName: airtableData['Team Name (from Login Email)']
-                ? airtableData['Team Name (from Login Email)']
+                ? airtableData['Team Name (from Login Email)'][0]
                 : airtableData['Project Name'].trim(),
             createdAt: new Date(airtableData['Created Date']),
             daoProposals: [],
