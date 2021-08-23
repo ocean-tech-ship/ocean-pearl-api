@@ -15,6 +15,8 @@ import { KpiTargetSchema } from './schemas/kpi-target.schema';
 import { PearlUserSchema } from './schemas/pearl-user.schema';
 import { ProjectSchema } from './schemas/project.schema';
 import { RoundSchema } from './schemas/round.schema';
+import { SessionSchema } from './schemas/session.schema';
+import { SessionRepository } from './repositories/session.repository';
 
 @Module({
     imports: [
@@ -27,6 +29,7 @@ import { RoundSchema } from './schemas/round.schema';
             { name: 'PearlUser', schema: PearlUserSchema },
             { name: 'Project', schema: ProjectSchema },
             { name: 'Round', schema: RoundSchema },
+            { name: 'Session', schema: SessionSchema },
         ]),
     ],
     providers: [
@@ -37,6 +40,7 @@ import { RoundSchema } from './schemas/round.schema';
         ProjectRepository,
         RoundRepository,
         DeliverableRepository,
+        SessionRepository,
     ],
     exports: [
         CompanyRepository,
@@ -46,6 +50,7 @@ import { RoundSchema } from './schemas/round.schema';
         ProjectRepository,
         RoundRepository,
         DeliverableRepository,
+        SessionRepository,
     ],
 })
 export class DatabaseModule {}
