@@ -42,7 +42,7 @@ describe('SessionRepository', () => {
 
         expect(
             (await service.getByWalletAddress(identity.address)).length,
-        ).toBeGreaterThan(1);
+        ).toBeGreaterThanOrEqual(1);
 
         expect(
             (
@@ -51,7 +51,7 @@ describe('SessionRepository', () => {
                     session.hashedToken,
                 )
             ).hashedToken,
-        ).toBe(session.hash);
+        ).toBe(session.hashedToken);
     });
 
     it('should be deleted', async () => {
