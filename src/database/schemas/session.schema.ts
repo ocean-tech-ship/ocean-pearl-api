@@ -26,6 +26,7 @@ export class Session {
 
     @Prop({
         type: String,
+        unique: true,
         trim: true,
         maxLength: 60,
     })
