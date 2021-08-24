@@ -397,6 +397,7 @@ Temporary Items
 enviroment/dev.env
 enviroment/stage.env
 enviroment/prod.env
+enviroment/test.env
 .env
 /dist
 npm-debug.log
