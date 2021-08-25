@@ -20,6 +20,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
         super({
             secretOrKey: configService.get<string>('JWT_REFRESH_SECRET'),
             ignoreExpiration: false,
+            passReqToCallback: true,
             jwtFromRequest: ExtractJwt.fromExtractors([
                 (request: Request) => {
                     return request?.cookies?.[AuthService.SESSION_NAME_REFRESH];
