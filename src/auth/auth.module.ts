@@ -7,10 +7,12 @@ import { AuthController } from './auth.controller';
 import { ConfigModule } from '@nestjs/config';
 import { JwtAccessStrategy } from './jwt-access.strategy';
 import { JwtRefreshStrategy } from './jwt-refresh.strategy';
+import { DatabaseModule } from '../database/database.module';
 
 @Module({
     imports: [
         ConfigModule,
+        DatabaseModule,
         PassportModule.register({
             defaultStrategy: 'jwt-access',
             property: 'user',
