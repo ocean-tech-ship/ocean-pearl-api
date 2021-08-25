@@ -14,7 +14,9 @@ export class VerifyLoginService {
 
     /** Verifies the ethereum based signature from a login request */
     public verifySignature(request: LoginRequest): boolean {
-        const plainSignature = this.constructPlainSignature(request.timestamp);
+        const plainSignature = this.constructPlainSignature(
+            new Date(request.timestamp),
+        );
 
         const recoveredAddress = recover(
             request.signature,
@@ -26,7 +28,7 @@ export class VerifyLoginService {
 
     /** Verifies that the login request is only valid for a specific time range */
     public verifyTimestamp(request: LoginRequest): boolean {
-        const timestamp = request.timestamp.getTime();
+        const timestamp = new Date(request.timestamp).getTime();
         const now = Date.now();
 
         return (
