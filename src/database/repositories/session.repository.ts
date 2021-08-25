@@ -51,13 +51,13 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         }
     }
 
-    public async deleteSession(
+    public async deleteByWalletAddressAndCreatedAt(
         walletAddress: string,
-        hashedToken: string,
+        createdAt: Date,
     ): Promise<boolean> {
         try {
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                { walletAddress: walletAddress, hashedToken: hashedToken },
+                { walletAddress: walletAddress, createdAt: createdAt },
             );
 
             return response.deletedCount === 1;

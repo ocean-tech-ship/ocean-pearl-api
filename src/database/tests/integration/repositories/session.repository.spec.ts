@@ -56,7 +56,8 @@ describe('SessionRepository', () => {
     });
 
     it('should be deleted', async () => {
-        const session: Session | any = {
+        const session: Session = <Session>{
+            createdAt: new Date(),
             walletAddress: identity.address,
             hashedToken: 'HASHED_TOKEN_2',
         };
@@ -64,9 +65,9 @@ describe('SessionRepository', () => {
         await service.create(session);
 
         expect(
-            await service.deleteSession(
+            await service.deleteByWalletAddressAndCreatedAt(
                 session.walletAddress,
-                session.hashedToken,
+                session.createdAt,
             ),
         ).toBeTruthy();
     });
