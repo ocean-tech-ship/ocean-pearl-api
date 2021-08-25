@@ -28,8 +28,8 @@ export class VerifyLoginService {
     public verifyTimestamp(request: LoginRequest): boolean {
         const now = Date.now();
         return (
-            now > request.timestamp &&
-            now < request.timestamp + VerifyLoginService.TIMESTAMP_TTL
+            now >= request.timestamp &&
+            now <= request.timestamp + VerifyLoginService.TIMESTAMP_TTL
         );
     }
 }

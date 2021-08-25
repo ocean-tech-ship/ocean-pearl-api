@@ -33,7 +33,7 @@ describe('VerifyLoginService', () => {
         expect(service).toBeDefined();
     });
 
-    it('valid signature', () => {
+    it('signature should be valid', () => {
         expect(
             service.verifySignature({
                 wallet: identity.address,
@@ -43,7 +43,7 @@ describe('VerifyLoginService', () => {
         ).toBeTruthy();
     });
 
-    it('manipulated timestamp', () => {
+    it('timestamp should be manipulated', () => {
         expect(
             service.verifySignature({
                 wallet: identity.address,
@@ -53,7 +53,7 @@ describe('VerifyLoginService', () => {
         ).toBeFalsy();
     });
 
-    it('manipulated wallet address', () => {
+    it('wallet address should be manipulated', () => {
         expect(
             service.verifySignature({
                 wallet: createIdentity().address,
@@ -63,7 +63,7 @@ describe('VerifyLoginService', () => {
         ).toBeFalsy();
     });
 
-    it('manipulated signature', () => {
+    it('signature should be manipulated', () => {
         expect(
             service.verifySignature({
                 wallet: identity.address,
@@ -74,5 +74,33 @@ describe('VerifyLoginService', () => {
                 ),
             }),
         ).toBeFalsy();
+    });
+
+    it('timestamp should be outdated', () => {
+        const timestamp = Date.now() - VerifyLoginService.TIMESTAMP_TTL - 1;
+        const plainSignature = service.constructPlainSignature(timestamp);
+
+        const signature = sign(
+            identity.privateKey,
+            hash.keccak256(plainSignature),
+        );
+
+        expect(
+            service.verifyTimestamp({
+                wallet: identity.address,
+                timestamp,
+                signature,
+            }),
+        ).toBeFalsy();
+    });
+
+    it('timestamp should be valid', () => {
+        expect(
+            service.verifyTimestamp({
+                wallet: identity.address,
+                timestamp: now,
+                signature: signature,
+            }),
+        ).toBeTruthy();
     });
 });
