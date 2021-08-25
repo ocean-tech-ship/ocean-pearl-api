@@ -28,6 +28,7 @@ export class JwtAccessStrategy extends PassportStrategy(
             throw new UnauthorizedException();
         }
 
+        // We might fetch additional user data for the AuthenticatedUser object
         return payload;
     }
 }
