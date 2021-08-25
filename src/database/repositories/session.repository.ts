@@ -20,15 +20,15 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         }
     }
 
-    public async getByWalletAddressAndHashedToken(
+    public async getByWalletAddressAndCreatedAt(
         walletAddress: string,
-        hashedToken: string,
+        createdAt: Date,
     ): Promise<Session> {
         try {
             return await this.model
                 .findOne({
                     walletAddress: walletAddress,
-                    hashedToken: hashedToken,
+                    createdAt: createdAt,
                 })
                 .lean()
                 .exec();

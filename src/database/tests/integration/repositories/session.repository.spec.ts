@@ -36,6 +36,7 @@ describe('SessionRepository', () => {
         const session: Session | any = {
             walletAddress: identity.address,
             hashedToken: 'HASHED_TOKEN',
+            createdAt: new Date(),
         };
 
         await service.create(session);
@@ -46,9 +47,9 @@ describe('SessionRepository', () => {
 
         expect(
             (
-                await service.getByWalletAddressAndHashedToken(
+                await service.getByWalletAddressAndCreatedAt(
                     session.walletAddress,
-                    session.hashedToken,
+                    session.createdAt,
                 )
             ).hashedToken,
         ).toBe(session.hashedToken);
