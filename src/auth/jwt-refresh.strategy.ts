@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { SessionRepository } from '../database/repositories/session.repository';
 import { Request } from 'express';
 import { AuthService } from './auth.service';
-import { AuthenticatedUser, RefreshJwtPayload } from './auth.interface';
+import { RefreshJwtPayload } from './auth.interface';
 import { compare } from 'bcrypt';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
     async validate(
         request: Request,
         payload: RefreshJwtPayload,
-    ): Promise<AuthenticatedUser> {
+    ): Promise<RefreshJwtPayload> {
         const token = request?.cookies?.[AuthService.SESSION_NAME_REFRESH];
 
         const session = await this.sessionRepository.getByWalletAddressAndCreatedAt(
@@ -40,7 +40,8 @@ export class JwtRefreshStrategy extends PassportStrategy(
         );
 
         if (session && (await compare(token, session.hashedToken))) {
-            return { wallet: payload.wallet };
+            // We will just return the plain payload for refresh strategies
+            return payload;
         }
 
         throw new UnauthorizedException();
