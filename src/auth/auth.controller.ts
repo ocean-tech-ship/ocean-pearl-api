@@ -75,20 +75,17 @@ export class AuthController {
     async refresh(@Req() req: Request, @Res() res: Response) {
         const user = req.user as RefreshJwtPayload;
 
-        // Delete previous refresh token
-        await this.sessionRepository.deleteByWalletAddressAndCreatedAt(
+        const session = await this.sessionRepository.getByWalletAddressAndCreatedAt(
             user.wallet,
             user.createdAt,
         );
 
-        this.authService.createAccessToken(user, res);
-        const refreshToken = this.authService.createRefreshToken(user, res);
+        // Reset timeout timer
+        session.updatedAt = new Date();
+        await this.sessionRepository.update(session);
 
-        await this.sessionRepository.create(<Session>{
-            createdAt: refreshToken.payload.createdAt,
-            walletAddress: refreshToken.payload.wallet,
-            hashedToken: await hash(refreshToken.jwt, 10),
-        });
+        this.authService.createAccessToken(user, res);
+        this.authService.renewRefreshToken(session, res);
 
         res.status(HttpStatus.OK).send();
     }

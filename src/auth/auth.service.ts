@@ -9,6 +9,7 @@ import {
 import { VerifyLoginService } from './verify-login/verify-login.service';
 import { CookieOptions, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { Session } from '../database/schemas/session.schema';
 
 @Injectable()
 export class AuthService {
@@ -48,9 +49,20 @@ export class AuthService {
         user: AuthenticatedUser,
         res: Response,
     ): JwtToken<RefreshJwtPayload> {
-        const payload: RefreshJwtPayload = {
-            wallet: user.wallet,
+        const session: Session = <Session>{
+            walletAddress: user.wallet,
             createdAt: new Date(),
+        };
+        return this.renewRefreshToken(session, res);
+    }
+
+    public renewRefreshToken(
+        session: Session,
+        res: Response,
+    ): JwtToken<RefreshJwtPayload> {
+        const payload: RefreshJwtPayload = {
+            wallet: session.walletAddress,
+            createdAt: session.createdAt,
         };
 
         const secret = this.configService.get<string>('JWT_REFRESH_SECRET');

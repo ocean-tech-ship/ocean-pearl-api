@@ -70,8 +70,20 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         throw new Error('Method not implemented.');
     }
 
-    update(model: Session): Promise<boolean> {
-        throw new Error('Method not implemented.');
+    async update(model: Session): Promise<boolean> {
+        try {
+            const response: SessionType = await this.model.findOneAndUpdate(
+                {
+                    walletAddress: model.walletAddress,
+                    createdAt: model.createdAt,
+                },
+                model,
+            );
+
+            return response !== null;
+        } catch (error: any) {
+            throw error;
+        }
     }
 
     public async create(model: Session): Promise<Types.ObjectId> {

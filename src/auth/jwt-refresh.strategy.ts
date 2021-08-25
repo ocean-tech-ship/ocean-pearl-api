@@ -7,6 +7,7 @@ import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { RefreshJwtPayload } from './auth.interface';
 import { compare } from 'bcrypt';
+import { Session } from '../database/schemas/session.schema';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
@@ -41,10 +42,24 @@ export class JwtRefreshStrategy extends PassportStrategy(
         );
 
         if (session && (await compare(token, session.hashedToken))) {
-            // We will just return the plain payload for refresh strategies
-            return payload;
+            if (this._validateTimeout(session)) {
+                // We will just return the plain payload for refresh strategies
+                return payload;
+            }
+
+            // session timeout detected - delete refresh token manually
+            await this.sessionRepository.deleteByWalletAddressAndCreatedAt(
+                payload.wallet,
+                payload.createdAt,
+            );
         }
 
         throw new UnauthorizedException();
+    }
+
+    _validateTimeout(session: Session): boolean {
+        const lifetime = this.configService.get<string>('JWT_REFRESH_LIFETIME');
+        const updatedAt = new Date(session.updatedAt).getTime();
+        return Date.now() < updatedAt + Number(lifetime);
     }
 }

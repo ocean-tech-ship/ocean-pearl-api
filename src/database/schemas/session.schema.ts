@@ -18,11 +18,17 @@ export class Session {
 
     @Prop({
         type: Date,
-        default: new Date(Date.now()),
-        expires: '1w',
+        unique: true,
     })
     @ApiProperty()
     createdAt: Date;
+
+    @Prop({
+        type: Date,
+        expires: '1w',
+    })
+    @ApiProperty()
+    updatedAt: Date;
 
     @Prop({
         type: String,
