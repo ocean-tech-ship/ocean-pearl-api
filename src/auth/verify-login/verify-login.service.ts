@@ -7,8 +7,8 @@ export class VerifyLoginService {
     public static readonly TIMESTAMP_TTL = 1000 * 60 * 15; // 15min
 
     /* Reconstructs plaintext message for the login request */
-    public constructPlainSignature(timestamp: number): string {
-        const payload = `oceanpearl.io - login @ ${timestamp}`;
+    public constructPlainSignature(timestamp: Date): string {
+        const payload = `oceanpearl.io - login @ ${timestamp.toISOString()}`;
         return `\x19Ethereum Signed Message:\n${payload.length}${payload}`;
     }
 
@@ -26,10 +26,12 @@ export class VerifyLoginService {
 
     /** Verifies that the login request is only valid for a specific time range */
     public verifyTimestamp(request: LoginRequest): boolean {
+        const timestamp = request.timestamp.getTime();
         const now = Date.now();
+
         return (
-            now >= request.timestamp &&
-            now <= request.timestamp + VerifyLoginService.TIMESTAMP_TTL
+            now >= timestamp &&
+            now <= timestamp + VerifyLoginService.TIMESTAMP_TTL
         );
     }
 }

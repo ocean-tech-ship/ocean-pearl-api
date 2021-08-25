@@ -25,7 +25,7 @@ describe('VerifyLoginService', () => {
         identity = createIdentity();
 
         now = Date.now();
-        plainSignature = service.constructPlainSignature(now);
+        plainSignature = service.constructPlainSignature(new Date(now));
         signature = sign(identity.privateKey, hash.keccak256(plainSignature));
     });
 
@@ -37,7 +37,7 @@ describe('VerifyLoginService', () => {
         expect(
             service.verifySignature({
                 wallet: identity.address,
-                timestamp: now,
+                timestamp: new Date(now),
                 signature,
             }),
         ).toBeTruthy();
@@ -47,7 +47,7 @@ describe('VerifyLoginService', () => {
         expect(
             service.verifySignature({
                 wallet: identity.address,
-                timestamp: now - 1,
+                timestamp: new Date(now - 1),
                 signature,
             }),
         ).toBeFalsy();
@@ -57,7 +57,7 @@ describe('VerifyLoginService', () => {
         expect(
             service.verifySignature({
                 wallet: createIdentity().address,
-                timestamp: now,
+                timestamp: new Date(now),
                 signature,
             }),
         ).toBeFalsy();
@@ -67,7 +67,7 @@ describe('VerifyLoginService', () => {
         expect(
             service.verifySignature({
                 wallet: identity.address,
-                timestamp: now,
+                timestamp: new Date(now),
                 signature: sign(
                     identity.privateKey,
                     hash.keccak256('manipulated'),
@@ -77,7 +77,7 @@ describe('VerifyLoginService', () => {
     });
 
     it('timestamp should be outdated', () => {
-        const timestamp = Date.now() - VerifyLoginService.TIMESTAMP_TTL - 1;
+        const timestamp = new Date(now - VerifyLoginService.TIMESTAMP_TTL - 1);
         const plainSignature = service.constructPlainSignature(timestamp);
 
         const signature = sign(
@@ -98,7 +98,7 @@ describe('VerifyLoginService', () => {
         expect(
             service.verifyTimestamp({
                 wallet: identity.address,
-                timestamp: now,
+                timestamp: new Date(now),
                 signature: signature,
             }),
         ).toBeTruthy();

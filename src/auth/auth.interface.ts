@@ -19,6 +19,6 @@ export interface AuthenticatedUser {
 
 export interface LoginRequest {
     wallet: string;
-    timestamp: number;
+    timestamp: Date;
     signature: string;
 }
