@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AuthenticatedUser, JwtPayload } from './auth.interface';
+import {
+    AccessJwtPayload,
+    AuthenticatedUser,
+    JwtToken,
+    RefreshJwtPayload,
+} from './auth.interface';
 import { VerifyLoginService } from './verify-login/verify-login.service';
-import { Response } from 'express';
+import { CookieOptions, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -13,31 +18,70 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) {}
 
-    public static readonly SESSION_NAME = 'session';
-    public static readonly SESSION_SHADOW_NAME = 'session-shadow';
+    public static readonly SESSION_NAME_ACCESS = 'token-access';
+    public static readonly SESSION_NAME_REFRESH = 'token-refresh';
 
-    public applyJwtCookies(user: AuthenticatedUser, res: Response) {
-        const payload: JwtPayload = { wallet: user.wallet };
+    public createAccessToken(
+        user: AuthenticatedUser,
+        res: Response,
+    ): JwtToken<AccessJwtPayload> {
+        const payload: AccessJwtPayload = { wallet: user.wallet };
 
-        const lifetime = Number(this.configService.get('JWT_LIFETIME'));
-        const expireDate = new Date(Date.now() + lifetime);
+        const secret = this.configService.get<string>('JWT_ACCESS_SECRET');
+        const lifetime = this.configService.get<string>('JWT_ACCESS_LIFETIME');
 
-        const accessToken = this.jwtService.sign(payload);
-
-        // TODO: other options
-        res.cookie(AuthService.SESSION_NAME, accessToken, {
-            expires: expireDate,
+        const jwt = this.jwtService.sign(payload, {
+            secret: secret,
+            expiresIn: lifetime,
         });
 
-        // TODO: other options
-        res.cookie(AuthService.SESSION_SHADOW_NAME, String(expireDate), {
-            expires: expireDate,
+        res.cookie(
+            AuthService.SESSION_NAME_ACCESS,
+            jwt,
+            this.createCookieOptions(Number(lifetime)),
+        );
+
+        return { payload, jwt };
+    }
+
+    public createRefreshToken(
+        user: AuthenticatedUser,
+        res: Response,
+    ): JwtToken<RefreshJwtPayload> {
+        const payload: RefreshJwtPayload = {
+            wallet: user.wallet,
+            createdAt: new Date(),
+        };
+
+        const secret = this.configService.get<string>('JWT_REFRESH_SECRET');
+        const lifetime = this.configService.get<string>('JWT_REFRESH_LIFETIME');
+
+        const jwt = this.jwtService.sign(payload, {
+            secret: secret,
+            expiresIn: lifetime,
         });
+
+        res.cookie(
+            AuthService.SESSION_NAME_REFRESH,
+            jwt,
+            this.createCookieOptions(Number(lifetime)),
+        );
+
+        return { payload, jwt };
     }
 
     public clearJwtCookies(res: Response) {
-        // TODO: other options
-        res.clearCookie(AuthService.SESSION_NAME);
-        res.clearCookie(AuthService.SESSION_SHADOW_NAME);
+        res.clearCookie(AuthService.SESSION_NAME_ACCESS);
+        res.clearCookie(AuthService.SESSION_NAME_REFRESH);
+    }
+
+    private createCookieOptions(lifetime: number): CookieOptions {
+        return {
+            expires: new Date(Date.now() + lifetime),
+            httpOnly: true,
+            secure: this.configService.get<boolean>('JWT_HTTPS'),
+            sameSite: 'strict',
+            path: '/',
+        };
     }
 }
