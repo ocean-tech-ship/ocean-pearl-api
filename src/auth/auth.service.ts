@@ -71,15 +71,23 @@ export class AuthService {
     }
 
     public clearJwtCookies(res: Response) {
-        res.clearCookie(AuthService.SESSION_NAME_ACCESS);
-        res.clearCookie(AuthService.SESSION_NAME_REFRESH);
+        res.clearCookie(
+            AuthService.SESSION_NAME_ACCESS,
+            this.createCookieOptions(-1),
+        );
+        res.clearCookie(
+            AuthService.SESSION_NAME_REFRESH,
+            this.createCookieOptions(-1),
+        );
     }
 
     private createCookieOptions(lifetime: number): CookieOptions {
         return {
-            expires: new Date(Date.now() + lifetime),
+            expires: lifetime < 1 ? null : new Date(Date.now() + lifetime),
             httpOnly: true,
-            secure: this.configService.get<boolean>('JWT_HTTPS'),
+            secure:
+                this.configService.get<string>('JWT_HTTPS').toLowerCase() ===
+                'true',
             sameSite: 'strict',
             path: '/',
         };
