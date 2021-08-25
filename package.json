@@ -36,6 +36,7 @@
     "@nestjs/schedule": "^0.4.3",
     "@nestjs/swagger": "^4.8.2",
     "@types/cookie-parser": "^1.4.2",
+    "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
     "dotenv": "^10.0.0",
     "eth-crypto": "^2.0.0",
