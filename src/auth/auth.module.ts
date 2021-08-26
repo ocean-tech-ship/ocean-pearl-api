@@ -27,6 +27,6 @@ import { DatabaseModule } from '../database/database.module';
         JwtAccessStrategy,
         JwtRefreshStrategy,
     ],
-    exports: [PassportModule, JwtModule],
+    exports: [PassportModule, JwtModule, VerifyLoginService, AuthService],
 })
 export class AuthModule {}

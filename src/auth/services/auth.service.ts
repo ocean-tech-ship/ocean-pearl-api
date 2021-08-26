@@ -24,7 +24,7 @@ export class AuthService {
 
     public createAccessToken(
         user: AuthenticatedUser,
-        res: Response,
+        res?: Response,
     ): JwtToken<AccessJwtPayload> {
         const payload: AccessJwtPayload = { wallet: user.wallet };
 
@@ -36,7 +36,7 @@ export class AuthService {
             expiresIn: lifetime,
         });
 
-        res.cookie(
+        res?.cookie(
             AuthService.SESSION_NAME_ACCESS,
             jwt,
             this.createCookieOptions(Number(lifetime)),
@@ -47,7 +47,7 @@ export class AuthService {
 
     public createRefreshToken(
         user: AuthenticatedUser,
-        res: Response,
+        res?: Response,
     ): JwtToken<RefreshJwtPayload> {
         const session: Session = <Session>{
             walletAddress: user.wallet,
@@ -58,7 +58,7 @@ export class AuthService {
 
     public renewRefreshToken(
         session: Session,
-        res: Response,
+        res?: Response,
     ): JwtToken<RefreshJwtPayload> {
         const payload: RefreshJwtPayload = {
             wallet: session.walletAddress,
@@ -73,7 +73,7 @@ export class AuthService {
             expiresIn: lifetime,
         });
 
-        res.cookie(
+        res?.cookie(
             AuthService.SESSION_NAME_REFRESH,
             jwt,
             this.createCookieOptions(Number(lifetime)),
