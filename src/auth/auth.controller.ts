@@ -21,7 +21,16 @@ import { SessionRepository } from '../database/repositories/session.repository';
 import { hash } from 'bcrypt';
 import { Session } from '../database/schemas/session.schema';
 import { I18nHttpException } from '../util/i18n-http.exception';
+import {
+    ApiBody,
+    ApiCreatedResponse,
+    ApiOkResponse,
+    ApiTags,
+    ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { LoginRequestDto } from './dtos/auth.dto';
 
+@ApiTags('authentication')
 @Controller('auth')
 export class AuthController {
     constructor(
@@ -31,6 +40,16 @@ export class AuthController {
     ) {}
 
     @Post('login')
+    @ApiCreatedResponse({
+        description: 'Login via any supported crypto wallet',
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Invalid wallet signature or outdated request',
+    })
+    @ApiBody({
+        required: true,
+        type: LoginRequestDto,
+    })
     async login(@Body() request: LoginRequest, @Res() res: Response) {
         if (!this.verifyLoginService.verifySignature(request)) {
             this.authService.clearJwtCookies(res);
@@ -72,6 +91,12 @@ export class AuthController {
 
     @UseGuards(JwtRefreshGuard)
     @Post('refresh')
+    @ApiOkResponse({
+        description: 'Renews jwt access- and refresh-token',
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Invalid or outdated refresh token',
+    })
     async refresh(@Req() req: Request, @Res() res: Response) {
         const user = req.user as RefreshJwtPayload;
 
@@ -92,6 +117,9 @@ export class AuthController {
 
     @Post('logout')
     @UseGuards(JwtRefreshGuard)
+    @ApiOkResponse({
+        description: 'Clears cookies and invalidates jwt refresh token',
+    })
     async logout(@Req() req: Request, @Res() res: Response) {
         const user = req.user as RefreshJwtPayload;
 
