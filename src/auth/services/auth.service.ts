@@ -19,8 +19,8 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) {}
 
-    public static readonly SESSION_NAME_ACCESS = 'token-access';
-    public static readonly SESSION_NAME_REFRESH = 'token-refresh';
+    public static readonly SESSION_NAME_ACCESS = 'access-token';
+    public static readonly SESSION_NAME_REFRESH = 'refresh-token';
 
     public createAccessToken(
         user: AuthenticatedUser,
