@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Schema({ _id: false })
 export class SocialMedia {
@@ -8,6 +9,7 @@ export class SocialMedia {
         trim: true,
         lowercase: true,
     })
+    @ApiProperty()
     website: string;
 
     @Prop({
@@ -16,6 +18,7 @@ export class SocialMedia {
         trim: true,
         lowercase: true,
     })
+    @ApiProperty()
     github: string;
 
     @Prop({
@@ -24,6 +27,7 @@ export class SocialMedia {
         trim: true,
         lowercase: true,
     })
+    @ApiProperty()
     twitter: string;
 
     @Prop({
@@ -32,6 +36,7 @@ export class SocialMedia {
         trim: true,
         lowercase: true,
     })
+    @ApiProperty()
     linkedIn: string;
 
     @Prop({
@@ -40,6 +45,7 @@ export class SocialMedia {
         trim: true,
         lowercase: true,
     })
+    @ApiProperty()
     reddit: string;
 
     @Prop({
@@ -48,6 +54,7 @@ export class SocialMedia {
         trim: true,
         lowercase: true,
     })
+    @ApiProperty()
     telegram: string;
 
     @Prop({
@@ -56,6 +63,7 @@ export class SocialMedia {
         trim: true,
         lowercase: true,
     })
+    @ApiProperty()
     facebook: string;
 
     @Prop({
@@ -64,6 +72,7 @@ export class SocialMedia {
         trim: true,
         lowercase: true,
     })
+    @ApiProperty()
     discord: string;
 }
 
