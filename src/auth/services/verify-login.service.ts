@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { recover, hash } from 'eth-crypto';
-import { LoginRequest } from '../auth.interface';
+import { LoginRequest } from '../interfaces/auth.interface';
 
 @Injectable()
 export class VerifyLoginService {

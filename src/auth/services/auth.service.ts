@@ -5,11 +5,11 @@ import {
     AuthenticatedUser,
     JwtToken,
     RefreshJwtPayload,
-} from './auth.interface';
-import { VerifyLoginService } from './verify-login/verify-login.service';
+} from '../interfaces/auth.interface';
+import { VerifyLoginService } from './verify-login.service';
 import { CookieOptions, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { Session } from '../database/schemas/session.schema';
+import { Session } from '../../database/schemas/session.schema';
 
 @Injectable()
 export class AuthService {

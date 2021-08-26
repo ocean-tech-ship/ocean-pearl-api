@@ -8,15 +8,15 @@ import {
     UnauthorizedException,
     UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import {
     AuthenticatedUser,
     LoginRequest,
     RefreshJwtPayload,
-} from './auth.interface';
+} from './interfaces/auth.interface';
 import { Request, Response } from 'express';
-import { VerifyLoginService } from './verify-login/verify-login.service';
-import JwtRefreshGuard from './jwt-refresh.guard';
+import { VerifyLoginService } from './services/verify-login.service';
+import JwtRefreshGuard from './guards/jwt-refresh.guard';
 import { SessionRepository } from '../database/repositories/session.repository';
 import { hash } from 'bcrypt';
 import { Session } from '../database/schemas/session.schema';

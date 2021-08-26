@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { VerifyLoginService } from './verify-login.service';
+import { VerifyLoginService } from '../../services/verify-login.service';
 import { createIdentity, hash, sign } from 'eth-crypto';
 
 describe('VerifyLoginService', () => {
