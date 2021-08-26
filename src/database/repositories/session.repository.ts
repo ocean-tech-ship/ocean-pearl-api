@@ -4,6 +4,7 @@ import { Session, SessionType } from '../schemas/session.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
+import { FindQuery } from '../interfaces/find-query.interface';
 
 @Injectable()
 export class SessionRepository implements RepositoryInterface<SessionType> {
@@ -106,5 +107,13 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
 
     public getModel(): Model<SessionType> {
         return this.model;
+    }
+
+    findOne(query: FindQuery): Promise<any> {
+        throw new Error('Method not implemented.');
+    }
+
+    findOneRaw(query: FindQuery): Promise<any> {
+        throw new Error('Method not implemented.');
     }
 }
