@@ -49,13 +49,13 @@ export class Project {
     @ApiProperty()
     category: string;
 
-    @Prop({
+    @Prop([{
         type: String,
         trim: true,
         maxLength: 64,
-    })
+    }])
     @ApiProperty()
-    walletAddress: string;
+    associatedAddresses: string[];
 
     @Prop([
         {
@@ -91,7 +91,6 @@ export class Project {
         type: Types.ObjectId,
         ref: 'Company',
     })
-    @ApiProperty()
     company: Company | Types.ObjectId;
 
     @Prop({
@@ -103,7 +102,10 @@ export class Project {
         ],
         default: void 0,
     })
-    @ApiProperty()
+    @ApiProperty({
+        type: DaoProposal,
+        isArray: true
+    })
     daoProposals: DaoProposal[] | Types.ObjectId[];
 
     @Prop({
@@ -115,7 +117,6 @@ export class Project {
         ],
         default: void 0,
     })
-    @ApiProperty()
     team: PearlUser[] | Types.ObjectId[];
 
     @Prop({
@@ -127,20 +128,16 @@ export class Project {
     teamName: string;
 
     @Prop({
-        type: AddressSchema,
-    })
-    @ApiProperty()
-    address: Address;
-
-    @Prop({
         type: Boolean,
         default: false,
     })
     @ApiProperty()
     featured: boolean;
 
+    @ApiProperty()
     createdAt: Date;
 
+    @ApiProperty()
     updatedAt: Date;
 }
 
