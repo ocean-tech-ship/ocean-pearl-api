@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { CategoryEnum } from '../enums/category.enum';
 import { nanoid } from '../functions/nano-id.function';
-import { Address, AddressSchema } from './address.schema';
+import { Picture } from '../models/picture.model';
 import { Company } from './company.schema';
-import { SocialMedia, SocialMediaSchema } from './social-media.schema';
-import { ApiProperty } from '@nestjs/swagger';
 import { DaoProposal } from './dao-proposal.schema';
 import { PearlUser } from './pearl-user.schema';
+import { SocialMedia, SocialMediaSchema } from './social-media.schema';
 
 export type ProjectType = Project & Document;
 
@@ -79,13 +79,14 @@ export class Project {
     @ApiProperty()
     logo: string;
 
-    @Prop([
+    @Prop(
         {
-            type: String,
+            type: Picture,
+            isArray: true
         },
-    ])
+    )
     @ApiProperty()
-    pictures: string[];
+    pictures: Picture[];
 
     @Prop({
         type: Types.ObjectId,
