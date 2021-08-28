@@ -401,3 +401,4 @@ enviroment/prod.env
 /dist
 npm-debug.log
 .DS_Store
+.vscode
