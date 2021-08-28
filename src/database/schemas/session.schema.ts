@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { ApiProperty } from '@nestjs/swagger';
 
 export type SessionType = Session & Document;
 
@@ -13,21 +12,18 @@ export class Session {
         trim: true,
         maxLength: 64,
     })
-    @ApiProperty()
     walletAddress: string;
 
     @Prop({
         type: Date,
         unique: true,
     })
-    @ApiProperty()
     createdAt: Date;
 
     @Prop({
         type: Date,
         expires: '1w',
     })
-    @ApiProperty()
     updatedAt: Date;
 
     @Prop({
@@ -36,7 +32,6 @@ export class Session {
         trim: true,
         maxLength: 60,
     })
-    @ApiProperty()
     hashedToken: string;
 }
 
