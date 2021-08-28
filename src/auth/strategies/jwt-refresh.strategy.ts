@@ -36,10 +36,12 @@ export class JwtRefreshStrategy extends PassportStrategy(
     ): Promise<RefreshJwtPayload> {
         const token = request?.cookies?.[AuthService.SESSION_NAME_REFRESH];
 
-        const session = await this.sessionRepository.getByWalletAddressAndCreatedAt(
-            payload.wallet,
-            payload.createdAt,
-        );
+        const session = await this.sessionRepository.findOne({
+            find: {
+                walletAddress: payload.wallet,
+                createdAt: payload.createdAt,
+            },
+        });
 
         if (session && (await compare(token, session.hashedToken))) {
             if (this._validateTimeout(session)) {

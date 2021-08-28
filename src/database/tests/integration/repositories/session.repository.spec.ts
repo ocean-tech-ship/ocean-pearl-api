@@ -42,15 +42,21 @@ describe('SessionRepository', () => {
         await service.create(session);
 
         expect(
-            (await service.getByWalletAddress(identity.address)).length,
+            (
+                await service.getAll({
+                    find: { walletAddress: identity.address },
+                })
+            ).length,
         ).toBeGreaterThanOrEqual(1);
 
         expect(
             (
-                await service.getByWalletAddressAndCreatedAt(
-                    session.walletAddress,
-                    session.createdAt,
-                )
+                await service.findOne({
+                    find: {
+                        walletAddress: session.walletAddress,
+                        createdAt: session.createdAt,
+                    },
+                })
             ).hashedToken,
         ).toBe(session.hashedToken);
     });

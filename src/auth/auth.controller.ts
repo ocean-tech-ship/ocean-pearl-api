@@ -100,10 +100,12 @@ export class AuthController {
     async refresh(@Req() req: Request, @Res() res: Response) {
         const user = req.user as RefreshJwtPayload;
 
-        const session = await this.sessionRepository.getByWalletAddressAndCreatedAt(
-            user.wallet,
-            user.createdAt,
-        );
+        const session = await this.sessionRepository.findOne({
+            find: {
+                walletAddress: user.wallet,
+                createdAt: user.createdAt,
+            },
+        });
 
         // Reset timeout timer
         session.updatedAt = new Date();
