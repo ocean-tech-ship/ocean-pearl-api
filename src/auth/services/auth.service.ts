@@ -76,7 +76,7 @@ export class AuthService {
         res?.cookie(
             AuthService.SESSION_NAME_REFRESH,
             jwt,
-            this.createCookieOptions(Number(lifetime)),
+            this.createCookieOptions(Number(lifetime), '/auth/refresh'),
         );
 
         return { payload, jwt };
@@ -89,11 +89,14 @@ export class AuthService {
         );
         res.clearCookie(
             AuthService.SESSION_NAME_REFRESH,
-            this.createCookieOptions(-1),
+            this.createCookieOptions(-1, '/auth/refresh'),
         );
     }
 
-    private createCookieOptions(lifetime: number): CookieOptions {
+    private createCookieOptions(
+        lifetime: number,
+        path?: string,
+    ): CookieOptions {
         return {
             expires: lifetime < 1 ? null : new Date(Date.now() + lifetime),
             httpOnly: true,
@@ -101,7 +104,7 @@ export class AuthService {
                 this.configService.get<string>('JWT_HTTPS').toLowerCase() ===
                 'true',
             sameSite: 'strict',
-            path: '/',
+            path: path || '/',
         };
     }
 }
