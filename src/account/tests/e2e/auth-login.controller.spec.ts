@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from '../../auth.controller';
-import { LoginRequest } from '../../interfaces/auth.interface';
+import { AuthController } from '../../controllers/auth.controller';
+import { LoginRequest } from '../../../auth/interfaces/auth.interface';
 import { createIdentity, hash, sign } from 'eth-crypto';
-import { VerifyLoginService } from '../../services/verify-login.service';
+import { VerifyLoginService } from '../../../auth/services/verify-login.service';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AuthService } from '../../services/auth.service';
-import { AuthModule } from '../../auth.module';
+import { AuthService } from '../../../auth/services/auth.service';
+import { AuthModule } from '../../../auth/auth.module';
 import { DatabaseModule } from '../../../database/database.module';
 import { AppModule } from '../../../app.module';
 import { SessionRepository } from '../../../database/repositories/session.repository';

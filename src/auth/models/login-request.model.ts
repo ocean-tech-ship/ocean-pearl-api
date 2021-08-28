@@ -1,7 +1,6 @@
-import { LoginRequest } from '../interfaces/auth.interface';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class LoginRequestDto implements LoginRequest {
+export class LoginRequest {
     @ApiProperty()
     signature: string;
 

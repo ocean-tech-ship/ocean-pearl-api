@@ -3,7 +3,6 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './services/auth.service';
 import { VerifyLoginService } from './services/verify-login.service';
-import { AuthController } from './auth.controller';
 import { ConfigModule } from '@nestjs/config';
 import { JwtAccessStrategy } from './strategies/jwt-access.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
@@ -20,7 +19,6 @@ import { DatabaseModule } from '../database/database.module';
         }),
         JwtModule.register({}),
     ],
-    controllers: [AuthController],
     providers: [
         AuthService,
         VerifyLoginService,

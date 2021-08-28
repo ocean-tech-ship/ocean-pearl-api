@@ -8,18 +8,17 @@ import {
     UnauthorizedException,
     UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './services/auth.service';
+import { AuthService } from '../../auth/services/auth.service';
 import {
     AuthenticatedUser,
-    LoginRequest,
     RefreshJwtPayload,
-} from './interfaces/auth.interface';
+} from '../../auth/interfaces/auth.interface';
 import { Request, Response } from 'express';
-import { VerifyLoginService } from './services/verify-login.service';
-import JwtRefreshGuard from './guards/jwt-refresh.guard';
-import { SessionRepository } from '../database/repositories/session.repository';
+import { VerifyLoginService } from '../../auth/services/verify-login.service';
+import JwtRefreshGuard from '../../auth/guards/jwt-refresh.guard';
+import { SessionRepository } from '../../database/repositories/session.repository';
 import { hash } from 'bcrypt';
-import { Session } from '../database/schemas/session.schema';
+import { Session } from '../../database/schemas/session.schema';
 import {
     ApiBody,
     ApiCreatedResponse,
@@ -27,10 +26,10 @@ import {
     ApiTags,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { LoginRequestDto } from './dtos/auth.dto';
+import { LoginRequest } from '../../auth/models/login-request.model';
 
-@ApiTags('authentication')
-@Controller('auth')
+@ApiTags('account')
+@Controller('account')
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
@@ -47,7 +46,7 @@ export class AuthController {
     })
     @ApiBody({
         required: true,
-        type: LoginRequestDto,
+        type: LoginRequest,
     })
     async login(@Body() request: LoginRequest, @Res() res: Response) {
         if (!this.verifyLoginService.verifySignature(request)) {

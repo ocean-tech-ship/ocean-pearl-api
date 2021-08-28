@@ -1,14 +1,17 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { AuthController } from '../../auth.controller';
-import { AuthService } from '../../services/auth.service';
+import { AuthController } from '../../controllers/auth.controller';
+import { AuthService } from '../../../auth/services/auth.service';
 import { SessionRepository } from '../../../database/repositories/session.repository';
 import { Session } from '../../../database/schemas/session.schema';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthModule } from '../../auth.module';
+import { AuthModule } from '../../../auth/auth.module';
 import { DatabaseModule } from '../../../database/database.module';
 import { AppModule } from '../../../app.module';
 import { createIdentity } from 'eth-crypto';
-import { JwtToken, RefreshJwtPayload } from '../../interfaces/auth.interface';
+import {
+    JwtToken,
+    RefreshJwtPayload,
+} from '../../../auth/interfaces/auth.interface';
 import { hash } from 'bcrypt';
 import * as request from 'supertest';
 import { ConfigModule } from '@nestjs/config';

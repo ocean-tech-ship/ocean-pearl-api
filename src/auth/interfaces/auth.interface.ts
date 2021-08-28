@@ -16,9 +16,3 @@ export interface JwtToken<Payload> {
 export interface AuthenticatedUser {
     wallet: string;
 }
-
-export interface LoginRequest {
-    wallet: string;
-    timestamp: Date;
-    signature: string;
-}
