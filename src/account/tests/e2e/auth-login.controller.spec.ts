@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../../controllers/auth.controller';
-import { LoginRequest } from '../../../auth/interfaces/auth.interface';
 import { createIdentity, hash, sign } from 'eth-crypto';
 import { VerifyLoginService } from '../../../auth/services/verify-login.service';
 import { HttpStatus, INestApplication } from '@nestjs/common';
@@ -10,6 +9,7 @@ import { AuthModule } from '../../../auth/auth.module';
 import { DatabaseModule } from '../../../database/database.module';
 import { AppModule } from '../../../app.module';
 import { SessionRepository } from '../../../database/repositories/session.repository';
+import { LoginRequest } from '../../../auth/models/login-request.model';
 
 describe('AuthLoginController', () => {
     let app: INestApplication;
@@ -68,7 +68,7 @@ describe('AuthLoginController', () => {
     describe('when login with valid data', () => {
         it('should generate session with jwt cookies', async () => {
             const response = await request(app.getHttpServer())
-                .post('/auth/login')
+                .post('/account/login')
                 .send(loginRequest);
 
             expect(response.status).toBe(HttpStatus.CREATED);
@@ -95,7 +95,7 @@ describe('AuthLoginController', () => {
     describe('when login with invalid data', () => {
         it('should throw unauthorized for signature', async () => {
             request(app.getHttpServer())
-                .post('/auth/login')
+                .post('/account/login')
                 .send(<LoginRequest>{
                     wallet: identity.address,
                     timestamp: loginRequest.timestamp,
@@ -106,7 +106,7 @@ describe('AuthLoginController', () => {
 
         it('should throw unauthorized for wallet', async () => {
             request(app.getHttpServer())
-                .post('/auth/login')
+                .post('/account/login')
                 .send(<LoginRequest>{
                     wallet: createIdentity().address,
                     timestamp: loginRequest.timestamp,
@@ -117,7 +117,7 @@ describe('AuthLoginController', () => {
 
         it('should throw unauthorized for timestamp', async () => {
             request(app.getHttpServer())
-                .post('/auth/login')
+                .post('/account/login')
                 .send(<LoginRequest>{
                     wallet: loginRequest.wallet,
                     timestamp: new Date(),
@@ -132,7 +132,7 @@ describe('AuthLoginController', () => {
             );
 
             request(app.getHttpServer())
-                .post('/auth/login')
+                .post('/account/login')
                 .send(<LoginRequest>{
                     wallet: identity.address,
                     timestamp: timestamp,

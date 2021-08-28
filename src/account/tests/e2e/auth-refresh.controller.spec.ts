@@ -67,7 +67,7 @@ describe('AuthRefreshController', () => {
     describe('when refresh with valid data', () => {
         it('should renew refresh & access token', async () => {
             const response = await request(app.getHttpServer())
-                .post('/auth/refresh')
+                .post('/account/refresh')
                 .set(
                     'Cookie',
                     `${AuthService.SESSION_NAME_REFRESH}=${token.jwt}`,
@@ -100,13 +100,13 @@ describe('AuthRefreshController', () => {
     describe('when refresh with invalid data', () => {
         it('should throw unauthorized without cookie', () => {
             request(app.getHttpServer())
-                .post('/auth/refresh')
+                .post('/account/refresh')
                 .expect(HttpStatus.UNAUTHORIZED);
         });
 
         it('should throw unauthorized for manipulation', () => {
             request(app.getHttpServer())
-                .post('/auth/refresh')
+                .post('/account/refresh')
                 .set(
                     'Cookie',
                     `${AuthService.SESSION_NAME_REFRESH}=manipulation`,
@@ -118,7 +118,7 @@ describe('AuthRefreshController', () => {
             await repository.deleteByWalletAddress(session.walletAddress);
 
             request(app.getHttpServer())
-                .post('/auth/refresh')
+                .post('/account/refresh')
                 .set(
                     'Cookie',
                     `${AuthService.SESSION_NAME_REFRESH}=${token.jwt}`,

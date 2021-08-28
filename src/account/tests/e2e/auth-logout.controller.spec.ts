@@ -67,7 +67,7 @@ describe('AuthLogoutController', () => {
     describe('when logout with valid session', () => {
         it('should invalidate refresh token and clear cookies', async () => {
             const response = await request(app.getHttpServer())
-                .post('/auth/logout')
+                .post('/account/logout')
                 .set(
                     'Cookie',
                     `${AuthService.SESSION_NAME_REFRESH}=${token.jwt}`,
@@ -97,7 +97,7 @@ describe('AuthLogoutController', () => {
     describe('when logout at any other state', async () => {
         it('should be ok', () => {
             request(app.getHttpServer())
-                .post('/auth/logout')
+                .post('/account/logout')
                 .expect(HttpStatus.OK);
         });
     });
