@@ -20,7 +20,6 @@ import JwtRefreshGuard from './guards/jwt-refresh.guard';
 import { SessionRepository } from '../database/repositories/session.repository';
 import { hash } from 'bcrypt';
 import { Session } from '../database/schemas/session.schema';
-import { I18nHttpException } from '../util/i18n-http.exception';
 import {
     ApiBody,
     ApiCreatedResponse,
@@ -53,26 +52,12 @@ export class AuthController {
     async login(@Body() request: LoginRequest, @Res() res: Response) {
         if (!this.verifyLoginService.verifySignature(request)) {
             this.authService.clearJwtCookies(res);
-
-            throw new I18nHttpException(
-                new UnauthorizedException(
-                    'Unauthorized',
-                    'Invalid wallet signature',
-                ),
-                'auth.error.signature',
-            );
+            throw new UnauthorizedException('Invalid wallet signature');
         }
 
         if (!this.verifyLoginService.verifyTimestamp(request)) {
             this.authService.clearJwtCookies(res);
-
-            throw new I18nHttpException(
-                new UnauthorizedException(
-                    'Unauthorized',
-                    'The signed request timed out',
-                ),
-                'auth.error.timestamp',
-            );
+            throw new UnauthorizedException('The signed request timed out');
         }
 
         const user: AuthenticatedUser = { wallet: request.wallet };

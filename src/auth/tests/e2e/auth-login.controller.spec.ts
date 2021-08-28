@@ -73,8 +73,6 @@ describe('AuthLoginController', () => {
 
             expect(response.status).toBe(HttpStatus.CREATED);
 
-            console.log('cookie', response.get('Set-Cookie'));
-
             const cookies = response
                 .get('Set-Cookie')
                 .map((el) => el.split('=')[0]);
@@ -85,7 +83,11 @@ describe('AuthLoginController', () => {
             ).toBeTruthy();
 
             expect(
-                (await repository.getByWalletAddress(identity.address)).length,
+                (
+                    await repository.getAll({
+                        find: { walletAddress: identity.address },
+                    })
+                ).length,
             ).toBeGreaterThanOrEqual(1);
         });
     });

@@ -82,8 +82,11 @@ describe('AuthLogoutController', () => {
             }
 
             expect(
-                (await repository.getByWalletAddress(session.walletAddress))
-                    .length,
+                (
+                    await repository.getAll({
+                        find: { walletAddress: session.walletAddress },
+                    })
+                ).length,
             ).toBe(0);
         });
     });

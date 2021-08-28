@@ -81,10 +81,12 @@ describe('AuthRefreshController', () => {
                     cookies.includes(AuthService.SESSION_NAME_REFRESH),
             ).toBeTruthy();
 
-            const updatedSession = await repository.getByWalletAddressAndCreatedAt(
-                session.walletAddress,
-                session.createdAt,
-            );
+            const updatedSession = await repository.findOne({
+                find: {
+                    walletAddress: session.walletAddress,
+                    createdAt: session.createdAt,
+                },
+            });
 
             expect(updatedSession.updatedAt.getTime()).toBeGreaterThan(
                 session.updatedAt.getTime(),
