@@ -24,6 +24,7 @@ if (process.env.NODE_ENV === 'production') {
     imports: [
         ConfigModule.forRoot({
             envFilePath: [
+                '.env',
                 `./${process.env.NODE_ENV}.env`,
                 `./enviroment/${process.env.NODE_ENV}.env`,
             ],
