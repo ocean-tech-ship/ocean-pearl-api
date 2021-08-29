@@ -9,10 +9,7 @@ import {
     UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '../../auth/services/auth.service';
-import {
-    AuthenticatedUser,
-    RefreshJwtPayload,
-} from '../../auth/interfaces/auth.interface';
+import { RefreshJwtPayload } from '../../auth/interfaces/auth.interface';
 import { Request, Response } from 'express';
 import { VerifyLoginService } from '../../auth/services/verify-login.service';
 import JwtRefreshGuard from '../../auth/guards/jwt-refresh.guard';
@@ -27,6 +24,7 @@ import {
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { LoginRequest } from '../../auth/models/login-request.model';
+import { AuthenticatedUser } from '../../auth/models/authenticated-user.model';
 
 @ApiTags('account')
 @Controller('account')
@@ -40,6 +38,7 @@ export class AuthController {
     @Post('login')
     @ApiCreatedResponse({
         description: 'Login via any supported crypto wallet',
+        type: AuthenticatedUser,
     })
     @ApiUnauthorizedResponse({
         description: 'Invalid wallet signature or outdated request',
@@ -70,7 +69,7 @@ export class AuthController {
             hashedToken: await hash(refreshToken.jwt, 10),
         });
 
-        res.status(HttpStatus.CREATED).send();
+        res.status(HttpStatus.CREATED).send(user);
     }
 
     @UseGuards(JwtRefreshGuard)

@@ -1,8 +1,8 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-import { AuthenticatedUser } from '../../auth/interfaces/auth.interface';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthenticatedUser } from '../../auth/models/authenticated-user.model';
 
 @ApiTags('account')
 @Controller('account')
@@ -11,8 +11,10 @@ export class AccountController {
     @UseGuards(AuthGuard())
     getProjects(@Req() req: Request) {
         const user = req.user as AuthenticatedUser;
+        // TODO: fill with attached projects
         return {
             wallet: user.wallet,
+            projects: [],
         };
     }
 }

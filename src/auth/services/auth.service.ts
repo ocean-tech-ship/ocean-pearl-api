@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
     AccessJwtPayload,
-    AuthenticatedUser,
     JwtToken,
     RefreshJwtPayload,
 } from '../interfaces/auth.interface';
@@ -10,6 +9,7 @@ import { VerifyLoginService } from './verify-login.service';
 import { CookieOptions, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { Session } from '../../database/schemas/session.schema';
+import { AuthenticatedUser } from '../models/authenticated-user.model';
 
 @Injectable()
 export class AuthService {
