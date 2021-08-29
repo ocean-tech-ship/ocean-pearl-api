@@ -10,6 +10,7 @@ import { PagesModule } from './pages/pages.module';
 import { AirtableModule } from './airtable/airtable.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RoundsModule } from './rounds/rounds.module';
+import { AwsModule } from './aws/aws.module';
 import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
@@ -44,6 +45,7 @@ if (process.env.NODE_ENV === 'production') {
         PagesModule,
         AirtableModule,
         RoundsModule,
+        AwsModule,
         AccountModule,
         AuthModule,
     ],

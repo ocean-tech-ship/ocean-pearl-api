@@ -402,3 +402,4 @@ enviroment/test.env
 /dist
 npm-debug.log
 .DS_Store
+.vscode
