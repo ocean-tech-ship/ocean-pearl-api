@@ -76,6 +76,7 @@ export class AuthController {
     @Post('refresh')
     @ApiOkResponse({
         description: 'Renews jwt access- and refresh-token',
+        type: AuthenticatedUser,
     })
     @ApiUnauthorizedResponse({
         description: 'Invalid or outdated refresh token',
@@ -97,7 +98,9 @@ export class AuthController {
         this.authService.createAccessToken(user, res);
         this.authService.renewRefreshToken(session, res);
 
-        res.status(HttpStatus.OK).send();
+        res.status(HttpStatus.OK).send(<AuthenticatedUser>{
+            wallet: user.wallet,
+        });
     }
 
     @Post('logout')
