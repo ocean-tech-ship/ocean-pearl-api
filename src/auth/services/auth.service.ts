@@ -76,7 +76,7 @@ export class AuthService {
         res?.cookie(
             AuthService.SESSION_NAME_REFRESH,
             jwt,
-            this.createCookieOptions(Number(lifetime), '/management'),
+            this.createCookieOptions(Number(lifetime)),
         );
 
         return { payload, jwt };
@@ -89,7 +89,7 @@ export class AuthService {
         );
         res.clearCookie(
             AuthService.SESSION_NAME_REFRESH,
-            this.createCookieOptions(-1, '/management'),
+            this.createCookieOptions(-1),
         );
     }
 

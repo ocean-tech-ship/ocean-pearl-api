@@ -16,6 +16,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
 ) {
     constructor(
         private readonly configService: ConfigService,
+        private readonly authService: AuthService,
         private readonly sessionRepository: SessionRepository,
     ) {
         super({
@@ -24,6 +25,9 @@ export class JwtRefreshStrategy extends PassportStrategy(
             passReqToCallback: true,
             jwtFromRequest: ExtractJwt.fromExtractors([
                 (request: Request) => {
+                    // We clear all auth cookies for unauthorized cases
+                    this.authService.clearJwtCookies(request.res);
+
                     return request?.cookies?.[AuthService.SESSION_NAME_REFRESH];
                 },
             ]),
