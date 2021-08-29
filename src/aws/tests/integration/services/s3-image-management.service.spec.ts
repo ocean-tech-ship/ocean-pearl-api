@@ -6,7 +6,7 @@ describe('S3ImageManagementService', () => {
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            imports: [],
+            imports: [S3ImageManagementService],
         }).compile();
 
         service = module.get<S3ImageManagementService>(S3ImageManagementService);

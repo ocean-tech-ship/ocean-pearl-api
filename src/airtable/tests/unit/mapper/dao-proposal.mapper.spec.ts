@@ -4,7 +4,6 @@ import { CategoryEnum } from '../../../../database/enums/category.enum';
 import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-status.enum';
 import { FundamentalMetricEnum } from '../../../../database/enums/fundamental-metric.enum';
 import { StandingEnum } from '../../../../database/enums/standing.enum';
-import { DaoProposal } from '../../../../database/schemas/dao-proposal.schema';
 import { DaoProposalMapper } from '../../../mapper/dao-proposal.mapper';
 
 const faker = require('faker');
@@ -18,7 +17,7 @@ let airtableData = {
     'One Liner': 'Test Project One Liner',
     'Overview': 'Test Project Overview',
     'Proposal Standing': 'Completed',
-    'Wallet Address': faker.datatype.hexaDecimal(64),
+    'Wallet Address': faker.datatype.hexaDecimal(42),
     'Fundamental Metric': 'MVP Launch',
     'OCEAN Requested': '10000',
     'OCEAN Granted': '10000',
@@ -69,7 +68,7 @@ describe('DaoProposalMapper', () => {
             status: DaoProposalStatusEnum.Running,
             title: 'Test',
             votes: 4200000,
-            walletAddress: airtableData['Wallet Address'],
+            walletAddress: airtableData['Wallet Address'].toLowerCase(),
         });
     });
 
