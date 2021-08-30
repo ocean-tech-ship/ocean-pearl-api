@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
@@ -6,25 +6,18 @@ import { Request } from 'express';
 import { AuthService } from '../services/auth.service';
 import { AuthenticatedUser } from '../models/authenticated-user.model';
 import { JwtTokenPayload } from '../interfaces/auth.interface';
-import { SessionRepository } from '../../database/repositories/session.repository';
-import { compare } from 'bcrypt';
 
+/* Note: this strategy does not validate expiration (db & timestamp) */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-    constructor(
-        private readonly configService: ConfigService,
-        private readonly authService: AuthService,
-        private readonly sessionRepository: SessionRepository,
-    ) {
+    constructor(private readonly configService: ConfigService) {
         super({
-            ignoreExpiration: false,
+            ignoreExpiration: true,
             passReqToCallback: true,
             secretOrKey: configService.get<string>('JWT_SECRET'),
+
             jwtFromRequest: ExtractJwt.fromExtractors([
                 (request: Request) => {
-                    // Clear session token for unauthorized cases
-                    this.authService.clearToken(request.res);
-
                     return request?.cookies?.[AuthService.SESSION_NAME];
                 },
             ]),
@@ -35,29 +28,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         request: Request,
         payload: JwtTokenPayload,
     ): Promise<AuthenticatedUser> {
-        const token = request?.cookies?.[AuthService.SESSION_NAME];
-
-        const session = await this.sessionRepository.findOne({
-            find: {
-                walletAddress: payload.wallet,
-                createdAt: payload.createdAt,
-            },
-        });
-
-        if (session && (await compare(token, session.hashedToken))) {
-            // Refresh the session
-            session.updatedAt = new Date();
-            await this.sessionRepository.update(session);
-
-            this.authService.createToken(
-                { wallet: payload.wallet, createdAt: payload.createdAt },
-                request.res,
-            );
-
-            // We might fetch additional user data for the AuthenticatedUser object
-            return <AuthenticatedUser>payload;
-        }
-
-        throw new UnauthorizedException();
+        return { wallet: payload.wallet, createdAt: payload.createdAt };
     }
 }

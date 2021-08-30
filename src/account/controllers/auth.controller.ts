@@ -74,7 +74,7 @@ export class AuthController {
     }
 
     @Post('logout')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard('jwt'))
     @ApiOkResponse({
         description: 'Clears and invalidates the session',
     })

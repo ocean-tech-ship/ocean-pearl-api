@@ -4,8 +4,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './services/auth.service';
 import { VerifyLoginService } from './services/verify-login.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { DatabaseModule } from '../database/database.module';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
     imports: [
@@ -14,7 +15,7 @@ import { DatabaseModule } from '../database/database.module';
         PassportModule.register({
             property: 'user',
             session: false,
-            defaultStrategy: 'jwt',
+            defaultStrategy: 'jwt-refresh',
         }),
         JwtModule.registerAsync({
             imports: [ConfigModule],
@@ -27,7 +28,12 @@ import { DatabaseModule } from '../database/database.module';
             }),
         }),
     ],
-    providers: [AuthService, VerifyLoginService, JwtStrategy],
+    providers: [
+        AuthService,
+        VerifyLoginService,
+        JwtStrategy,
+        JwtRefreshStrategy,
+    ],
     exports: [PassportModule, JwtModule, VerifyLoginService, AuthService],
 })
 export class AuthModule {}
