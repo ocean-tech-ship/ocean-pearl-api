@@ -9,10 +9,8 @@ import {
     UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '../../auth/services/auth.service';
-import { RefreshJwtPayload } from '../../auth/interfaces/auth.interface';
 import { Request, Response } from 'express';
 import { VerifyLoginService } from '../../auth/services/verify-login.service';
-import JwtRefreshGuard from '../../auth/guards/jwt-refresh.guard';
 import { SessionRepository } from '../../database/repositories/session.repository';
 import { hash } from 'bcrypt';
 import { Session } from '../../database/schemas/session.schema';
@@ -25,6 +23,7 @@ import {
 } from '@nestjs/swagger';
 import { LoginRequest } from '../../auth/models/login-request.model';
 import { AuthenticatedUser } from '../../auth/models/authenticated-user.model';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('account')
 @Controller('account')
@@ -49,74 +48,45 @@ export class AuthController {
     })
     async login(@Body() request: LoginRequest, @Res() res: Response) {
         if (!this.verifyLoginService.verifySignature(request)) {
-            this.authService.clearJwtCookies(res);
+            this.authService.clearToken(res);
             throw new UnauthorizedException('Invalid wallet signature');
         }
 
         if (!this.verifyLoginService.verifyTimestamp(request)) {
-            this.authService.clearJwtCookies(res);
+            this.authService.clearToken(res);
             throw new UnauthorizedException('The signed request timed out');
         }
 
-        const user: AuthenticatedUser = { wallet: request.wallet };
+        const user: AuthenticatedUser = {
+            wallet: request.wallet,
+            createdAt: new Date(),
+        };
 
-        this.authService.createAccessToken(user, res);
-        const refreshToken = this.authService.createRefreshToken(user, res);
+        const token = this.authService.createToken(user, res);
 
         await this.sessionRepository.create(<Session>{
-            createdAt: refreshToken.payload.createdAt,
-            walletAddress: refreshToken.payload.wallet,
-            hashedToken: await hash(refreshToken.jwt, 10),
+            walletAddress: user.wallet,
+            createdAt: user.createdAt,
+            hashedToken: await hash(token.jwt, 10),
         });
 
         res.status(HttpStatus.CREATED).send(user);
     }
 
-    @UseGuards(JwtRefreshGuard)
-    @Post('refresh')
-    @ApiOkResponse({
-        description: 'Renews jwt access- and refresh-token',
-        type: AuthenticatedUser,
-    })
-    @ApiUnauthorizedResponse({
-        description: 'Invalid or outdated refresh token',
-    })
-    async refresh(@Req() req: Request, @Res() res: Response) {
-        const user = req.user as RefreshJwtPayload;
-
-        const session = await this.sessionRepository.findOne({
-            find: {
-                walletAddress: user.wallet,
-                createdAt: user.createdAt,
-            },
-        });
-
-        // Reset timeout timer
-        session.updatedAt = new Date();
-        await this.sessionRepository.update(session);
-
-        this.authService.createAccessToken(user, res);
-        this.authService.renewRefreshToken(session, res);
-
-        res.status(HttpStatus.OK).send(<AuthenticatedUser>{
-            wallet: user.wallet,
-        });
-    }
-
     @Post('logout')
-    @UseGuards(JwtRefreshGuard)
+    @UseGuards(AuthGuard())
     @ApiOkResponse({
-        description: 'Clears cookies and invalidates jwt refresh token',
+        description: 'Clears and invalidates the session',
     })
     async logout(@Req() req: Request, @Res() res: Response) {
-        const user = req.user as RefreshJwtPayload;
+        const user = req.user as AuthenticatedUser;
 
         await this.sessionRepository.deleteByWalletAddressAndCreatedAt(
             user.wallet,
             user.createdAt,
         );
 
-        this.authService.clearJwtCookies(res);
+        this.authService.clearToken(res);
 
         res.status(HttpStatus.OK).send();
     }

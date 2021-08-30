@@ -2,10 +2,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { AuthController } from '../../controllers/auth.controller';
 import { AuthService } from '../../../auth/services/auth.service';
 import { SessionRepository } from '../../../database/repositories/session.repository';
-import {
-    JwtToken,
-    RefreshJwtPayload,
-} from '../../../auth/interfaces/auth.interface';
+import { JwtToken } from '../../../auth/interfaces/auth.interface';
 import { Session } from '../../../database/schemas/session.schema';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
@@ -24,7 +21,7 @@ describe('AuthLogoutController', () => {
     let service: AuthService;
     let repository: SessionRepository;
 
-    let token: JwtToken<RefreshJwtPayload>;
+    let token: JwtToken;
     let session: Session;
 
     beforeEach(async () => {
@@ -42,8 +39,9 @@ describe('AuthLogoutController', () => {
         service = module.get<AuthService>(AuthService);
         repository = module.get<SessionRepository>(SessionRepository);
 
-        token = service.createRefreshToken({
+        token = service.createToken({
             wallet: createIdentity().address,
+            createdAt: new Date(),
         });
 
         await repository.create(
@@ -68,19 +66,13 @@ describe('AuthLogoutController', () => {
         it('should invalidate refresh token and clear cookies', async () => {
             const response = await request(app.getHttpServer())
                 .post('/account/logout')
-                .set(
-                    'Cookie',
-                    `${AuthService.SESSION_NAME_REFRESH}=${token.jwt}`,
-                );
+                .set('Cookie', `${AuthService.SESSION_NAME}=${token.jwt}`);
 
             expect(response.status).toBe(HttpStatus.OK);
 
             for (const cookie of response.get('Set-Cookie')) {
                 expect(
-                    cookie.startsWith(`${AuthService.SESSION_NAME_ACCESS}=;`) ||
-                        cookie.startsWith(
-                            `${AuthService.SESSION_NAME_REFRESH}=;`,
-                        ),
+                    cookie.startsWith(`${AuthService.SESSION_NAME}=;`),
                 ).toBeTruthy();
             }
 
@@ -94,8 +86,8 @@ describe('AuthLogoutController', () => {
         });
     });
 
-    describe('when logout at any other state', async () => {
-        it('should be ok', () => {
+    describe('when logout at any other state', () => {
+        it('should be ok', async () => {
             request(app.getHttpServer())
                 .post('/account/logout')
                 .expect(HttpStatus.OK);

@@ -77,10 +77,7 @@ describe('AuthLoginController', () => {
                 .get('Set-Cookie')
                 .map((el) => el.split('=')[0]);
 
-            expect(
-                cookies.includes(AuthService.SESSION_NAME_ACCESS) &&
-                    cookies.includes(AuthService.SESSION_NAME_REFRESH),
-            ).toBeTruthy();
+            expect(cookies.includes(AuthService.SESSION_NAME)).toBeTruthy();
 
             expect(
                 (
