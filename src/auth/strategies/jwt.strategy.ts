@@ -23,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             jwtFromRequest: ExtractJwt.fromExtractors([
                 (request: Request) => {
                     // Clear session token for unauthorized cases
-                    //this.authService.clearToken(request.res);
+                    this.authService.clearToken(request.res);
 
                     return request?.cookies?.[AuthService.SESSION_NAME];
                 },
@@ -48,6 +48,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             // Refresh the session
             session.updatedAt = new Date();
             await this.sessionRepository.update(session);
+
+            this.authService.createToken(
+                { wallet: payload.wallet, createdAt: payload.createdAt },
+                request.res,
+            );
 
             // We might fetch additional user data for the AuthenticatedUser object
             return <AuthenticatedUser>payload;
