@@ -52,9 +52,14 @@ export class AuthService {
         lifetime?: number,
     ): CookieOptions {
         return {
-            maxAge:
-                lifetime ||
-                Number(this.configService.get<string>('JWT_LIFETIME')) / 1000,
+            expires: lifetime
+                ? new Date(lifetime)
+                : new Date(
+                      Date.now() +
+                          Number(
+                              this.configService.get<string>('JWT_LIFETIME'),
+                          ),
+                  ),
             httpOnly: httpOnly,
             secure:
                 this.configService.get<string>('JWT_HTTPS').toLowerCase() ===
