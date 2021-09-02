@@ -8,12 +8,7 @@ import {
     UnauthorizedException,
     UseGuards,
 } from '@nestjs/common';
-import { AuthService } from '../../auth/services/auth.service';
-import { Request, Response } from 'express';
-import { VerifyLoginService } from '../../auth/services/verify-login.service';
-import { SessionRepository } from '../../database/repositories/session.repository';
-import { hash } from 'bcrypt';
-import { Session } from '../../database/schemas/session.schema';
+import { AuthGuard } from '@nestjs/passport';
 import {
     ApiBody,
     ApiCreatedResponse,
@@ -21,9 +16,14 @@ import {
     ApiTags,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { LoginRequest } from '../../auth/models/login-request.model';
+import { hash } from 'bcrypt';
+import { Request, Response } from 'express';
 import { AuthenticatedUser } from '../../auth/models/authenticated-user.model';
-import { AuthGuard } from '@nestjs/passport';
+import { LoginRequest } from '../../auth/models/login-request.model';
+import { AuthService } from '../../auth/services/auth.service';
+import { VerifyLoginService } from '../../auth/services/verify-login.service';
+import { SessionRepository } from '../../database/repositories/session.repository';
+import { Session } from '../../database/schemas/session.schema';
 
 @ApiTags('account')
 @Controller('account')
