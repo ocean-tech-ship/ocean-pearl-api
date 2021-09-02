@@ -57,7 +57,7 @@ export class S3ImageManagementService {
         }
     }
 
-    private async deleteFileOnS3(picture: Picture): Promise<void> {
+    public async deleteFileOnS3(picture: Picture): Promise<void> {
         const command = new DeleteObjectCommand({
             Bucket: process.env.S3_BUCKET,
             Key: `${s3Path}${picture.key}.${picture.fileExtension}`,
