@@ -36,6 +36,14 @@ export class Project {
     @Prop({
         type: String,
         trim: true,
+        maxLength: 2048,
+    })
+    @ApiProperty()
+    oneLiner: string;
+
+    @Prop({
+        type: String,
+        trim: true,
         maxLength: 4096,
     })
     @ApiProperty()
@@ -57,6 +65,14 @@ export class Project {
     @ApiProperty()
     associatedAddresses: string[];
 
+    @Prop([{
+        type: String,
+        trim: true,
+        maxLength: 64,
+    }])
+    @ApiProperty()
+    accessAddresses: string[];
+
     @Prop([
         {
             type: String,
@@ -74,10 +90,10 @@ export class Project {
     socialMedia: SocialMedia;
 
     @Prop({
-        type: String,
+        type: Picture,
     })
     @ApiProperty()
-    logo: string;
+    logo: Picture;
 
     @Prop(
         {
