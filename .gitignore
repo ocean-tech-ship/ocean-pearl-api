@@ -394,10 +394,7 @@ Temporary Items
 
 =======
 # Local
-enviroment/dev.env
-enviroment/stage.env
-enviroment/prod.env
-enviroment/test.env
+environment/*.env
 .env
 /dist
 npm-debug.log

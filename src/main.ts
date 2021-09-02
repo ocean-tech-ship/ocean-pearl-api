@@ -4,6 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
+import { AssociatedProject } from './account/models/associated-project.model';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -12,8 +13,11 @@ async function bootstrap() {
         .setTitle('Ocean Pearl API')
         .setDescription('Public API endpoint of the Ocean-Pearl project')
         .setVersion('1.0')
+        .addCookieAuth()
         .build();
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app, config, {
+        extraModels: [AssociatedProject],
+    });
     SwaggerModule.setup('api', app, document);
 
     const configService = app.get(ConfigService);
