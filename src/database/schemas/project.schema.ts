@@ -98,7 +98,8 @@ export class Project {
     @Prop(
         {
             type: Picture,
-            isArray: true
+            isArray: true,
+            default: void 0,
         },
     )
     @ApiProperty()
