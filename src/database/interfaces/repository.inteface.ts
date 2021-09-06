@@ -1,4 +1,4 @@
-import { Document, Model, Types } from "mongoose";
+import { Document, Model, Types } from 'mongoose';
 import { FindQuery } from './find-query.interface';
 
 export interface RepositoryInterface<T extends Document> {
