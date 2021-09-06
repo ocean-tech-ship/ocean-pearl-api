@@ -1,11 +1,21 @@
-import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Put,
+    Req,
+    UploadedFiles,
+    UseGuards,
+    UseInterceptors,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import {
     ApiBody,
     ApiOkResponse,
     ApiTags,
     ApiUnauthorizedResponse,
-    getSchemaPath
+    getSchemaPath,
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthenticatedUser } from '../../auth/models/authenticated-user.model';
@@ -13,15 +23,15 @@ import { ProjectGuard } from '../guards/project.guard';
 import { AssociatedProject } from '../models/associated-project.model';
 import { UpdatedProject } from '../models/updated-project.model';
 import { GetAssociatedProjectsService } from '../services/get-associated-projects.service';
-import { UpdateProjectService } from '../services/update-project.servce';
+import { UpdateProjectService } from '../services/update-project.service';
 
 @ApiTags('account')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt-refresh'))
 @Controller('account')
 export class AccountController {
     public constructor(
         private getAssociatedProjectsService: GetAssociatedProjectsService,
-        private updateProjectService: UpdateProjectService
+        private updateProjectService: UpdateProjectService,
     ) {}
 
     @Get()
@@ -58,18 +68,45 @@ export class AccountController {
         };
     }
 
-    @Put('/project')
+    @Put('/project/:id')
     @ApiBody({
         type: UpdatedProject,
     })
     @ApiOkResponse({ description: 'Ok.' })
     @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
     @UseGuards(ProjectGuard)
+    @UseInterceptors(
+        FileFieldsInterceptor([
+            { name: 'logo', maxCount: 1 },
+            { name: 'newPictures', maxCount: 1 },
+        ], {
+            limits: {
+                fileSize: 4000000
+            }
+        }),
+    )
     public async updateProject(
-        @Body('project') project: UpdatedProject,
-    ): Promise<void> {
+        @Req() request: Request,
+        @UploadedFiles()
+        files: {
+            logo?: Express.Multer.File;
+            newPictures?: Express.Multer.File[];
+        },
+        @Body() project: UpdatedProject,
+    ): Promise<AssociatedProject[]> {
         try {
-            this.updateProjectService.execute(project);
+            project.logo = files.logo;
+            project.newPictures = files.newPictures;
+
+            await this.updateProjectService.execute(project);
+
+            const user = request.user as AuthenticatedUser;
+
+            const projects = await this.getAssociatedProjectsService.execute(
+                user.wallet,
+            );
+
+            return projects;
         } catch (error) {
             throw error;
         }
