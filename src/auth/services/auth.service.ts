@@ -62,7 +62,7 @@ export class AuthService {
             secure:
                 this.configService.get<string>('JWT_HTTPS').toLowerCase() ===
                 'true',
-            sameSite: 'strict',
+            sameSite: 'none',
             path: '/',
         };
     }
