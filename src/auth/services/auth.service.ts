@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { JwtToken, JwtTokenPayload } from '../interfaces/auth.interface';
-import { VerifyLoginService } from './verify-login.service';
-import { CookieOptions, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { CookieOptions, Response } from 'express';
+import { JwtToken, JwtTokenPayload } from '../interfaces/auth.interface';
 import { AuthenticatedUser } from '../models/authenticated-user.model';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly configService: ConfigService,
-        private readonly verifyLoginService: VerifyLoginService,
         private readonly jwtService: JwtService,
     ) {}
 
