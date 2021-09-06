@@ -32,9 +32,11 @@ describe('ProjectMapper', () => {
 
     it('should map correctly', () => {
         expect(service.map(airtableData)).toEqual({
+            accessAddresses: [airtableData['Wallet Address'].toLowerCase()],
             category: CategoryEnum.DAO,
             createdAt: airtableData['Created Date'],
             description: 'Test Project One Liner',
+            oneLiner: "Test Project One Liner",
             title: 'Test',
             associatedAddresses: [airtableData['Wallet Address'].toLowerCase()],
             paymentWalletsAddresses: [
