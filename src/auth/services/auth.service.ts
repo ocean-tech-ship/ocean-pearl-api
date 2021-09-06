@@ -47,12 +47,12 @@ export class AuthService {
 
     private createCookieOptions(
         httpOnly: boolean,
-        lifetime?: number,
+        timeToLive?: number,
     ): CookieOptions {
         return {
             maxAge:
-                lifetime ||
-                Number(this.configService.get<string>('JWT_LIFETIME')) / 1000,
+                timeToLive ||
+                Number(this.configService.get<string>('JWT_TIME_TO_LIVE')) / 1000,
             httpOnly: httpOnly,
             secure:
                 this.configService.get<string>('JWT_HTTPS').toLowerCase() ===
