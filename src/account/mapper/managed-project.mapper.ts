@@ -24,12 +24,12 @@ export class ManagedProjectMapper {
             teamName: project.teamName,
         } as AssociatedProject;
 
-        mappedProject.pictures = project.pictures.map((picture: Picture) => {
+        mappedProject.pictures = project.pictures?.map((picture: Picture) => {
             return {
                 key: picture.key,
                 url: picture.url,
             };
-        });
+        }) ?? [];
 
         return mappedProject;
     }
