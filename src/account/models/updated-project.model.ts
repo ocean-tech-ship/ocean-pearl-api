@@ -1,58 +1,39 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
     IsArray,
+    IsBooleanString,
     IsEnum,
-    IsNotEmpty,
     IsObject,
     IsOptional,
     IsString,
 } from 'class-validator';
-import { FileExtensionsEnum } from '../../aws/s3/enums/file-extensions.enum';
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { SocialMedia } from '../../database/schemas/social-media.schema';
-
-export class NewPictures {
-    @ApiProperty()
-    @IsNotEmpty()
-    data: string;
-
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty()
-    fileName: string;
-
-    @ApiProperty({
-        enum: FileExtensionsEnum,
-        enumName: 'FileExtension',
-        default: FileExtensionsEnum.Jpg,
-    })
-    @IsEnum(FileExtensionsEnum)
-    @IsNotEmpty()
-    fileExtension;
-}
 
 export class UpdatedProject {
     @ApiProperty({
         default: 'someId',
     })
-    @IsString()
     id: string;
 
     @ApiProperty({
         default: 'Ocean Pearl',
     })
+    @IsOptional()
     @IsString()
     title: string;
 
     @ApiProperty({
-        default: 'Add your one liner.',
+        default: 'Add your description.',
     })
+    @IsOptional()
     @IsString()
     description: string;
 
     @ApiProperty({
-        default: 'Add your description.',
+        default: 'Add your one liner.',
     })
+    @IsOptional()
     @IsString()
     oneLiner: string;
 
@@ -77,25 +58,30 @@ export class UpdatedProject {
     @IsObject()
     socialMedia: SocialMedia;
 
-    @ApiProperty({
-        type: NewPictures,
-    })
+    @ApiProperty()
+    @IsOptional()
     @IsObject()
-    logo: NewPictures;
+    logo: Express.Multer.File;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsBooleanString()
+    deleteLogo: boolean;
 
     @ApiProperty({
         type: String,
         isArray: true,
     })
+    @IsOptional()
     @IsArray()
     deletedPictures: string[];
 
     @ApiProperty({
-        type: NewPictures,
         isArray: true,
     })
+    @IsOptional()
     @IsArray()
-    newPictures: NewPictures[];
+    newPictures: Express.Multer.File[];
 
     @ApiProperty({
         default: 'Ocean Pearl',
