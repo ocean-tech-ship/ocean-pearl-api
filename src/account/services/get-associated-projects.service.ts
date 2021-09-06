@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { Project } from '../../database/schemas/project.schema';
-import { ManagedProjectMapper } from '../mapper/managed-project.builder';
+import { ManagedProjectMapper } from '../mapper/managed-project.mapper';
 import { AssociatedProject } from '../models/associated-project.model';
 
 @Injectable()
