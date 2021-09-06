@@ -18,7 +18,7 @@ import { ConfigModule } from '@nestjs/config';
 if (process.env.NODE_ENV === 'production') {
     require('dotenv').config();
 } else {
-    require('dotenv').config({ path: `./enviroment/${process.env.NODE_ENV}.env` });
+    require('dotenv').config({ path: `./environment/${process.env.NODE_ENV}.env` });
 }
 
 @Module({
@@ -26,8 +26,7 @@ if (process.env.NODE_ENV === 'production') {
         ConfigModule.forRoot({
             envFilePath: [
                 '.env',
-                `./${process.env.NODE_ENV}.env`,
-                `./enviroment/${process.env.NODE_ENV}.env`,
+                `./environment/${process.env.NODE_ENV}.env`,
             ],
         }),
         MongooseModule.forRoot(process.env.MONGO_URL as string, {

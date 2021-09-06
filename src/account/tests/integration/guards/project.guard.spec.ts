@@ -1,20 +1,17 @@
-import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
-import { AuthModule } from '../../../auth.module';
-import { AuthService } from '../../../services/auth.service';
+import { ProjectGuard } from '../../../guards/project.guard';
 
-describe('AuthService', () => {
-    let service: AuthService;
+describe('ProjectGuard', () => {
+    let service: ProjectGuard;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            imports: [AuthModule, DatabaseModule, AppModule],
-            providers: [ConfigService],
+            imports: [DatabaseModule, AppModule],
         }).compile();
 
-        service = module.get<AuthService>(AuthService);
+        service = module.get<ProjectGuard>(ProjectGuard);
     });
 
     it('should be defined', () => {

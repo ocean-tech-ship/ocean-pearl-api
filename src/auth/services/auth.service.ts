@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { JwtToken, JwtTokenPayload } from '../interfaces/auth.interface';
-import { VerifyLoginService } from './verify-login.service';
-import { CookieOptions, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { CookieOptions, Response } from 'express';
+import { JwtToken, JwtTokenPayload } from '../interfaces/auth.interface';
 import { AuthenticatedUser } from '../models/authenticated-user.model';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly configService: ConfigService,
-        private readonly verifyLoginService: VerifyLoginService,
         private readonly jwtService: JwtService,
     ) {}
 
@@ -49,15 +47,15 @@ export class AuthService {
 
     private createCookieOptions(
         httpOnly: boolean,
-        lifetime?: number,
+        timeToLive?: number,
     ): CookieOptions {
         return {
-            expires: lifetime
-                ? new Date(lifetime)
+            expires: timeToLive
+                ? new Date(timeToLive)
                 : new Date(
                       Date.now() +
                           Number(
-                              this.configService.get<string>('JWT_LIFETIME'),
+                              this.configService.get<string>('JWT_TIME_TO_LIVE'),
                           ),
                   ),
             httpOnly: httpOnly,

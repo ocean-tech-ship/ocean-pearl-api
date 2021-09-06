@@ -1,14 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { Request } from 'express';
-import { AuthService } from '../services/auth.service';
-import { AuthenticatedUser } from '../models/authenticated-user.model';
-import { JwtTokenPayload } from '../interfaces/auth.interface';
-import { SessionRepository } from '../../database/repositories/session.repository';
+import { PassportStrategy } from '@nestjs/passport';
 import { compare } from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { SessionRepository } from '../../database/repositories/session.repository';
+import { JwtTokenPayload } from '../interfaces/auth.interface';
+import { AuthenticatedUser } from '../models/authenticated-user.model';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
@@ -17,7 +16,6 @@ export class JwtRefreshStrategy extends PassportStrategy(
 ) {
     constructor(
         private readonly configService: ConfigService,
-        private readonly jwtService: JwtService,
         private readonly authService: AuthService,
         private readonly sessionRepository: SessionRepository,
     ) {

@@ -71,7 +71,6 @@ describe('AuthLogoutController', () => {
             expect(response.status).toBe(HttpStatus.OK);
 
             for (const cookie of response.get('Set-Cookie')) {
-                console.log(cookie);
                 expect(
                     cookie.startsWith(`${AuthService.SESSION_NAME}=;`) ||
                         cookie.startsWith(
