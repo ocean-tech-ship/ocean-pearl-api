@@ -13,8 +13,12 @@ export class GetAssociatedProjectsService {
 
     public async execute(walletAddress: string): Promise<AssociatedProject[]> {
         const associatedProjects = await this.projectRepository.getAll({
-            find: { accessAddresses: walletAddress },
+            find: { accessAddresses: walletAddress.toLocaleLowerCase() },
         });
+
+        if (!associatedProjects) {
+            return [];
+        }
 
         const mappedProjects = associatedProjects.map((project: Project) => {
             return this.managedProjectMapper.map(project);
