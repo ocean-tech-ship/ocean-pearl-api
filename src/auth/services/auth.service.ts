@@ -50,9 +50,14 @@ export class AuthService {
         timeToLive?: number,
     ): CookieOptions {
         return {
-            maxAge:
-                timeToLive ||
-                Number(this.configService.get<string>('JWT_TIME_TO_LIVE')) / 1000,
+            expires: timeToLive
+                ? new Date(timeToLive)
+                : new Date(
+                      Date.now() +
+                          Number(
+                              this.configService.get<string>('JWT_TIME_TO_LIVE'),
+                          ),
+                  ),
             httpOnly: httpOnly,
             secure:
                 this.configService.get<string>('JWT_HTTPS').toLowerCase() ===
