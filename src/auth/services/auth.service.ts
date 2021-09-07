@@ -64,9 +64,8 @@ export class AuthService {
             secure:
                 this.configService.get<string>('JWT_HTTPS').toLowerCase() ===
                 'true',
-            sameSite: 'none',
+            sameSite: 'strict',
             path: '/',
-            domain: this.configService.get<string>('COOKIE_DOMAIN'),
         };
     }
 }
