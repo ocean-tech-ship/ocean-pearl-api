@@ -227,9 +227,13 @@ export class DaoProposal {
     voteUrl: string;
 
     @Prop({
-            type: Picture,
-            isArray: true,
-        })
+        type: [
+            {
+                type: Picture,
+            },
+        ],
+        default: void 0,
+    })
     @ApiProperty()
     pictures: Picture[];
 

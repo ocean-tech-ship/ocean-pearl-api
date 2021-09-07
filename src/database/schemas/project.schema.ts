@@ -95,13 +95,14 @@ export class Project {
     @ApiProperty()
     logo: Picture;
 
-    @Prop(
-        {
-            type: Picture,
-            isArray: true,
-            default: void 0,
-        },
-    )
+    @Prop({
+        type: [
+            {
+                type: Picture,
+            }
+        ],
+        default: void 0,
+    })
     @ApiProperty()
     pictures: Picture[];
 
