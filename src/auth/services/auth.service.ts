@@ -55,7 +55,9 @@ export class AuthService {
                 : new Date(
                       Date.now() +
                           Number(
-                              this.configService.get<string>('JWT_TIME_TO_LIVE'),
+                              this.configService.get<string>(
+                                  'JWT_TIME_TO_LIVE',
+                              ),
                           ),
                   ),
             httpOnly: httpOnly,
@@ -64,7 +66,6 @@ export class AuthService {
                 'true',
             sameSite: 'none',
             path: '/',
-            domain: this.configService.get<string>('COOKIE_DOMAIN')
         };
     }
 }
