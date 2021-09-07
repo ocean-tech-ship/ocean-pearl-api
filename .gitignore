@@ -394,10 +394,9 @@ Temporary Items
 
 =======
 # Local
-enviroment/dev.env
-enviroment/stage.env
-enviroment/prod.env
+environment/*.env
 .env
 /dist
 npm-debug.log
 .DS_Store
+.vscode

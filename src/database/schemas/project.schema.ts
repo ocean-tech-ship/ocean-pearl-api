@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { CategoryEnum } from '../enums/category.enum';
 import { nanoid } from '../functions/nano-id.function';
-import { Address, AddressSchema } from './address.schema';
+import { Picture, PictureSchema } from './picture.schema';
 import { Company } from './company.schema';
-import { SocialMedia, SocialMediaSchema } from './social-media.schema';
-import { ApiProperty } from '@nestjs/swagger';
 import { DaoProposal } from './dao-proposal.schema';
 import { PearlUser } from './pearl-user.schema';
+import { SocialMedia, SocialMediaSchema } from './social-media.schema';
 
 export type ProjectType = Project & Document;
 
@@ -36,6 +36,14 @@ export class Project {
     @Prop({
         type: String,
         trim: true,
+        maxLength: 2048,
+    })
+    @ApiProperty()
+    oneLiner: string;
+
+    @Prop({
+        type: String,
+        trim: true,
         maxLength: 4096,
     })
     @ApiProperty()
@@ -57,6 +65,14 @@ export class Project {
     @ApiProperty()
     associatedAddresses: string[];
 
+    @Prop([{
+        type: String,
+        trim: true,
+        maxLength: 64,
+    }])
+    @ApiProperty()
+    accessAddresses: string[];
+
     @Prop([
         {
             type: String,
@@ -74,18 +90,17 @@ export class Project {
     socialMedia: SocialMedia;
 
     @Prop({
-        type: String,
+        type: Picture,
     })
     @ApiProperty()
-    logo: string;
+    logo: Picture;
 
-    @Prop([
-        {
-            type: String,
-        },
-    ])
+    @Prop({
+        type: [PictureSchema],
+        default: [],
+    })
     @ApiProperty()
-    pictures: string[];
+    pictures: Picture[];
 
     @Prop({
         type: Types.ObjectId,

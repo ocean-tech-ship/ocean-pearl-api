@@ -56,6 +56,16 @@ export class NewProposalStrategy implements StrategyInterface {
             );
         }
 
+        if (
+            !project.accessAddresses.includes(
+                newProposal.walletAddress.toLowerCase(),
+            )
+        ) {
+            project.accessAddresses.unshift(
+                newProposal.walletAddress.toLowerCase(),
+            );
+        }
+
         const paymentWallets = airtableData['Payment Wallets']
             .split('\n')
             .map((address) => address.toLowerCase());

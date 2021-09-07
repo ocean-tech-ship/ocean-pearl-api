@@ -8,10 +8,10 @@ let airtableData = {
     'Project Name': 'Test',
     'Grant Category': 'DAO',
     'One Liner': 'Test Project One Liner',
-    'Wallet Address': faker.datatype.hexaDecimal(64),
+    'Wallet Address': faker.datatype.hexaDecimal(42),
     'Payment Wallets':
-        '0xddede3ad5Ad1B9554cCE67b1F5AccAcCbf2ea37Ec75ad6Ad2Fa0Cf3EC520320e\n0x5cD036ADE2aC359Facf197c7e3aa9CEE477f3B04a27b7e2CBF7dEA519Ceeac1E\n0xc6db676ABB0CCb2cdE3e77cafF27DAed5D5e875b5FbcEfE6F8402729b313E20A',
-    'Team Name (from Login Email)': faker.company.companyName(),
+        '0xddede3ad5Ad1B9554cCE67b1F5AccAcCbf2ea37Ec7\n0x5cD036ADE2aC359Facf197c7e3aa9CEE477f3B04a2\n0xc6db676ABB0CCb2cdE3e77cafF27DAed5D5e875b5F',
+    'Team Name (from Login Email)': [faker.company.companyName()],
     'Created Date': faker.date.past(),
 };
 
@@ -32,17 +32,19 @@ describe('ProjectMapper', () => {
 
     it('should map correctly', () => {
         expect(service.map(airtableData)).toEqual({
+            accessAddresses: [airtableData['Wallet Address'].toLowerCase()],
             category: CategoryEnum.DAO,
             createdAt: airtableData['Created Date'],
-            description: "Test Project One Liner",
+            description: 'Test Project One Liner',
+            oneLiner: "Test Project One Liner",
             title: 'Test',
-            associatedAddresses: [airtableData['Wallet Address']],
+            associatedAddresses: [airtableData['Wallet Address'].toLowerCase()],
             paymentWalletsAddresses: [
-                '0xddede3ad5Ad1B9554cCE67b1F5AccAcCbf2ea37Ec75ad6Ad2Fa0Cf3EC520320e',
-                '0x5cD036ADE2aC359Facf197c7e3aa9CEE477f3B04a27b7e2CBF7dEA519Ceeac1E',
-                '0xc6db676ABB0CCb2cdE3e77cafF27DAed5D5e875b5FbcEfE6F8402729b313E20A',
+                '0xddede3ad5Ad1B9554cCE67b1F5AccAcCbf2ea37Ec7'.toLowerCase(),
+                '0x5cD036ADE2aC359Facf197c7e3aa9CEE477f3B04a2'.toLowerCase(),
+                '0xc6db676ABB0CCb2cdE3e77cafF27DAed5D5e875b5F'.toLowerCase(),
             ],
-            teamName: airtableData['Team Name (from Login Email)'],
+            teamName: airtableData['Team Name (from Login Email)'][0],
             daoProposals: [],
         });
     });

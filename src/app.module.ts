@@ -10,15 +10,25 @@ import { PagesModule } from './pages/pages.module';
 import { AirtableModule } from './airtable/airtable.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RoundsModule } from './rounds/rounds.module';
+import { AwsModule } from './aws/aws.module';
+import { AccountModule } from './account/account.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 if (process.env.NODE_ENV === 'production') {
     require('dotenv').config();
 } else {
-    require('dotenv').config({ path: `./enviroment/${process.env.NODE_ENV}.env` });
+    require('dotenv').config({ path: `./environment/${process.env.NODE_ENV}.env` });
 }
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            envFilePath: [
+                '.env',
+                `./environment/${process.env.NODE_ENV}.env`,
+            ],
+        }),
         MongooseModule.forRoot(process.env.MONGO_URL as string, {
             useCreateIndex: true,
             useNewUrlParser: true,
@@ -34,6 +44,9 @@ if (process.env.NODE_ENV === 'production') {
         PagesModule,
         AirtableModule,
         RoundsModule,
+        AwsModule,
+        AccountModule,
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],

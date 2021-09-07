@@ -33,7 +33,7 @@ export class DaoProposalsController {
     @Get('')
     @ApiResponse({ status: 400, description: 'Bad Request.' })
     @ApiOkResponse({
-        description: 'OK.',
+        description: 'Ok.',
         schema: {
             properties: {
                 daoProposals: {

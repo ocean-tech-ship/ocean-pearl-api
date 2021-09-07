@@ -4,10 +4,13 @@ import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../database.module';
 import { CategoryEnum } from '../../../enums/category.enum';
 import { DaoProposalStatusEnum } from '../../../enums/dao-proposal-status.enum';
+import { FundamentalMetricEnum } from '../../../enums/fundamental-metric.enum';
+import { StandingEnum } from '../../../enums/standing.enum';
 import { nanoid } from '../../../functions/nano-id.function';
 import { DaoProposalRepository } from '../../../repositories/dao-proposal.repository';
 import { DaoProposal } from '../../../schemas/dao-proposal.schema';
 
+const faker = require('faker');
 const DAO_PROPOSAL_ID: string = nanoid();
 const DAO_PROPOSAL_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
@@ -16,12 +19,14 @@ describe('DaoProposalRepository', () => {
         _id: DAO_PROPOSAL_MONGO_ID,
         id: DAO_PROPOSAL_ID,
         fundingRound: new Types.ObjectId(),
+        standing: StandingEnum.InProgress,
         project: new Types.ObjectId(),
         kpiRoi: 'kpiRoi',
         oceanProtocolPortUrl: 'oceanProtocolPortLink.com',
         title: 'The Title of the Proposal',
         description: 'Here stands a description',
         category: CategoryEnum.BuildAndIntegrate,
+        walletAddress: faker.datatype.hexaDecimal(42).toLowerCase(),
         votes: 100000,
         counterVotes: 20,
         status: DaoProposalStatusEnum.Running,
@@ -29,11 +34,13 @@ describe('DaoProposalRepository', () => {
         kpiTargets: [new Types.ObjectId()],
         requestedGrantToken: 10000,
         grantedToken: 10000,
-        fundamentalMetric: 'test',
+        requestedGrantUsd: 8400,
+        grantedUsd: 8400,
+        fundamentalMetric: FundamentalMetricEnum.MvpLaunch,
         ipfsHash: '',
         snapshotBlock: 123456789,
         voteUrl: '',
-        images: [],
+        pictures: [],
     } as DaoProposal;
 
     let service: DaoProposalRepository;

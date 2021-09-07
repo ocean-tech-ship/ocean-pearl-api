@@ -9,10 +9,12 @@ export class ProjectMapper {
         return {
             title: airtableData['Project Name'].trim(),
             description: airtableData['One Liner'],
+            oneLiner: airtableData['One Liner'],
             category:
                 CategoryMap[airtableData['Grant Category'].trim()] ??
                 CategoryEnum.Other,
             associatedAddresses: [airtableData['Wallet Address'].toLowerCase()],
+            accessAddresses: [airtableData['Wallet Address'].toLowerCase()],
             paymentWalletsAddresses: airtableData['Payment Wallets']
                 ? airtableData['Payment Wallets']
                       .split('\n')

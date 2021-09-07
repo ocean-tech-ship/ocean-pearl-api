@@ -4,6 +4,7 @@ import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../database.module';
 import { CategoryEnum } from '../../../enums/category.enum';
 import { nanoid } from '../../../functions/nano-id.function';
+import { Picture } from '../../../schemas/picture.schema';
 import { ProjectRepository } from '../../../repositories/project.repository';
 import { Project } from '../../../schemas/project.schema';
 import { SocialMedia } from '../../../schemas/social-media.schema';
@@ -17,9 +18,10 @@ describe('ProjectRepository', () => {
         id: PROJECT_ID,
         title: 'Best project ever',
         description: 'Still the best project ever.',
+        oneLiner: 'Best project as one liner',
         socialMedia: {} as SocialMedia,
         category: CategoryEnum.CoreSoftware,
-        logo: 'picture here pls',
+        logo: {} as Picture,
         company: new Types.ObjectId(),
         associatedAddresses: ['0x967da4048cD07aB37855c090aAF366e4ce1b9F48'],
         paymentWalletsAddresses: [
@@ -68,7 +70,7 @@ describe('ProjectRepository', () => {
                 title: 'Best project ever',
                 description: 'Still the best project ever.',
                 socialMedia: {},
-                logo: 'picture here pls',
+                logo: undefined,
                 company: null,
                 category: CategoryEnum.CoreSoftware,
             });
