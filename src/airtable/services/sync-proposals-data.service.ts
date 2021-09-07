@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, Interval } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { AxiosResponse } from 'axios';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
 import { ProjectRepository } from '../../database/repositories/project.repository';
@@ -24,11 +24,10 @@ export class SyncProposalsDataService {
         private strategyCollection: StrategyCollection,
     ) {}
 
-    // @Cron('0 */30 * * * *', {
-    //     name: 'Round import',
-    //     timeZone: 'Europe/Berlin',
-    // })
-    @Interval(40000)
+    @Cron('0 */30 * * * *', {
+        name: 'Round import',
+        timeZone: 'Europe/Berlin',
+    })
     public async execute(): Promise<void> {
         this.logger.log('Start syncing Proposals from Airtable Job.');
         const databaseRounds: Round[] = await this.roundRepository.getAll({
