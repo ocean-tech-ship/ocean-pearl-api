@@ -4,7 +4,7 @@ import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../database.module';
 import { CategoryEnum } from '../../../enums/category.enum';
 import { nanoid } from '../../../functions/nano-id.function';
-import { Picture } from '../../../models/picture.model';
+import { Picture } from '../../../schemas/picture.schema';
 import { ProjectRepository } from '../../../repositories/project.repository';
 import { Project } from '../../../schemas/project.schema';
 import { SocialMedia } from '../../../schemas/social-media.schema';

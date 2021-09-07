@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Picture } from '../../database/models/picture.model';
+import { Picture } from '../../database/schemas/picture.schema';
 import { Project } from '../../database/schemas/project.schema';
 import { AssociatedProject } from '../models/associated-project.model';
 

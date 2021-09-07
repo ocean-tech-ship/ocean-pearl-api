@@ -1,8 +1,8 @@
-import { DeleteObjectCommand, DeleteObjectCommandInput, PutObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, DeleteObjectCommandInput, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { nanoid } from '../../../database/functions/nano-id.function';
-import { Picture } from '../../../database/models/picture.model';
+import { Picture } from '../../../database/schemas/picture.schema';
 import { FileExtensionsMap } from '../constants/file-extensions-map.const';
 import { MimeTypesMap } from '../constants/mime-types-map.const';
 import { FileExtensionsEnum } from '../enums/file-extensions.enum';

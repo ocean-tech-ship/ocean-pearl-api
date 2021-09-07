@@ -9,7 +9,7 @@ import { KpiTarget } from './kpi-target.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Round } from './round.schema';
 import { StandingEnum } from '../enums/standing.enum';
-import { Picture } from '../models/picture.model';
+import { Picture, PictureSchema } from './picture.schema';
 
 export type DaoProposalType = DaoProposal & Document;
 
@@ -227,12 +227,8 @@ export class DaoProposal {
     voteUrl: string;
 
     @Prop({
-        type: [
-            {
-                type: Picture,
-            },
-        ],
-        default: void 0,
+        type: [PictureSchema],
+        default: [],
     })
     @ApiProperty()
     pictures: Picture[];

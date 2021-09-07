@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { CategoryEnum } from '../enums/category.enum';
 import { nanoid } from '../functions/nano-id.function';
-import { Picture } from '../models/picture.model';
+import { Picture, PictureSchema } from './picture.schema';
 import { Company } from './company.schema';
 import { DaoProposal } from './dao-proposal.schema';
 import { PearlUser } from './pearl-user.schema';
@@ -96,12 +96,8 @@ export class Project {
     logo: Picture;
 
     @Prop({
-        type: [
-            {
-                type: Picture,
-            }
-        ],
-        default: void 0,
+        type: [PictureSchema],
+        default: [],
     })
     @ApiProperty()
     pictures: Picture[];
