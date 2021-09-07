@@ -66,6 +66,7 @@ export class AuthService {
                 'true',
             sameSite: 'none',
             path: '/',
+            domain: this.configService.get<string>('COOKIE_DOMAIN'),
         };
     }
 }
