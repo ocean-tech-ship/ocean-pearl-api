@@ -7,4 +7,5 @@ export enum FundamentalMetricEnum {
     MarketWau = 'marketWau',
     D90Retention = 'd90Retention',
     MvpLaunch = 'mvpLaunch',
+    Other = 'other'
 }
