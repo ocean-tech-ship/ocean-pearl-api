@@ -10,6 +10,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Round } from './round.schema';
 import { StandingEnum } from '../enums/standing.enum';
 import { Picture, PictureSchema } from './picture.schema';
+import { FundamentalMetricEnum } from '../enums/fundamental-metric.enum';
 
 export type DaoProposalType = DaoProposal & Document;
 
@@ -103,7 +104,7 @@ export class DaoProposal {
         type: String,
         enum: DaoProposalStatusEnum,
         required: true,
-        default: DaoProposalStatusEnum.Running,
+        default: DaoProposalStatusEnum.Unknown,
     })
     @ApiProperty()
     status: DaoProposalStatusEnum;
@@ -201,7 +202,7 @@ export class DaoProposal {
     @Prop({
         type: String,
         trim: true,
-        required: true,
+        default: FundamentalMetricEnum.Other,
     })
     @ApiProperty()
     fundamentalMetric: string;

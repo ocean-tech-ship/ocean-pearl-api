@@ -90,7 +90,7 @@ export class Project {
     socialMedia: SocialMedia;
 
     @Prop({
-        type: Picture,
+        type: PictureSchema,
     })
     @ApiProperty()
     logo: Picture;
