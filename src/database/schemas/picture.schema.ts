@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { FileExtensionsEnum } from '../../aws/s3/enums/file-extensions.enum';
 
-@Schema()
+@Schema({ _id: false })
 export class Picture {
 
     @Prop({
