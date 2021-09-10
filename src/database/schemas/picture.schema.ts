@@ -7,7 +7,7 @@ export class Picture {
 
     @Prop({
         type: String,
-        maxLength: 16,
+        maxLength: 32,
         required: true,
     })
     @ApiProperty()
