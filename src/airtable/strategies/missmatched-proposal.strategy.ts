@@ -43,27 +43,30 @@ export class MissmatchedProposalStrategy implements StrategyInterface {
         const oldProject = await this.projectRepository.findOneRaw({
             find: { _id: proposal.project },
         });
-        oldProject.daoProposals = oldProject.daoProposals as Types.ObjectId[];
 
-        for (const [
-            index,
-            linkedProposalId,
-        ] of oldProject.daoProposals.entries()) {
-            const linkedProposal = await this.proposalRepository.findOneRaw({
-                find: { _id: linkedProposalId },
-            });
+        if (oldProject) {
+            oldProject.daoProposals = oldProject.daoProposals as Types.ObjectId[];
 
-            if (linkedProposal.airtableId !== proposal.airtableId) {
-                oldProject.daoProposals.splice(index, 1);
+            for (const [
+                index,
+                linkedProposalId,
+            ] of oldProject.daoProposals.entries()) {
+                const linkedProposal = await this.proposalRepository.findOneRaw({
+                    find: { _id: linkedProposalId },
+                });
+
+                if (linkedProposal.airtableId !== proposal.airtableId) {
+                    oldProject.daoProposals.splice(index, 1);
+                }
+            }
+
+            if (oldProject.daoProposals.length === 0) {
+                await this.projectRepository.delete(oldProject.id);
+            } else {
+                await this.projectRepository.update(oldProject);
             }
         }
-
-        if (oldProject.daoProposals.length === 0) {
-            await this.projectRepository.delete(oldProject.id);
-        } else {
-            await this.projectRepository.update(oldProject);
-        }
-
+        
         newProposal._id = proposal._id;
         newProposal.id = proposal.id;
         proposal.deliverables = proposal.deliverables as Types.ObjectId[];
