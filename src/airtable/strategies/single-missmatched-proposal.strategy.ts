@@ -56,8 +56,11 @@ export class SingleMissmatchedProposalStrategy implements StrategyInterface {
 
         const newProject: Project = this.projectMapper.map(airtableData);
 
-        project.daoProposals = project.daoProposals as Types.ObjectId[];
-        project.daoProposals.push(proposal._id);
+        newProject.daoProposals = newProject.daoProposals as Types.ObjectId[];
+        newProject.daoProposals.push(proposal._id);
+        newProject.logo = oldProject.logo;
+        newProject.pictures = oldProject.pictures;
+        newProject.description = oldProject.description;
 
         newProposal.project = await this.projectRepository.create(newProject);
         newProposal.id = proposal.id;

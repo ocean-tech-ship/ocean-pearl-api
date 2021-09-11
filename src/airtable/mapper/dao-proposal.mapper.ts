@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { CategoryEnum } from '../../database/enums/category.enum';
+import { FundamentalMetricEnum } from '../../database/enums/fundamental-metric.enum';
 import { StandingEnum } from '../../database/enums/standing.enum';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { CategoryMap } from '../constants/category-map.constant';
@@ -30,7 +31,8 @@ export class DaoProposalMapper {
                 StandingEnum.Unreported,
             walletAddress: aritableData['Wallet Address'].toLowerCase(),
             fundamentalMetric:
-                FundamentalMetricsMap[aritableData['Fundamental Metric']],
+                FundamentalMetricsMap[aritableData['Fundamental Metric']] ??
+                FundamentalMetricEnum.Other,
             requestedGrantToken: aritableData['OCEAN Requested']
                 ? parseInt(aritableData['OCEAN Requested'])
                 : 0,

@@ -67,8 +67,10 @@ export class NewProposalStrategy implements StrategyInterface {
         }
 
         const paymentWallets = airtableData['Payment Wallets']
-            .split('\n')
-            .map((address) => address.toLowerCase());
+        ? airtableData['Payment Wallets']
+              .split('\n')
+              .map((address) => address.toLowerCase())
+        : [];
 
         for (const address of paymentWallets) {
             if (!project.paymentWalletsAddresses.includes(address)) {

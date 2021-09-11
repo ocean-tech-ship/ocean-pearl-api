@@ -9,4 +9,5 @@ export const StatesMap = {
     'Rejected': DaoProposalStatusEnum.Rejected,
     'Received': DaoProposalStatusEnum.Received,
     'Ended': DaoProposalStatusEnum.Ended,
+    'Down Voted': DaoProposalStatusEnum.DownVoted,
 };

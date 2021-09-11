@@ -9,4 +9,5 @@ export const FundamentalMetricsMap = {
     'Market WAU': FundamentalMetricEnum.MarketWau,
     'D90 Retention': FundamentalMetricEnum.D90Retention,
     'MVP Launch': FundamentalMetricEnum.MvpLaunch,
+    'Other': FundamentalMetricEnum.Other,
 };
