@@ -2,17 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
 import { ProjectsModule } from '../../../projects.module';
-import { GetProjectsService } from '../../../services/get-projects.service';
+import { GetFilteredProjectsService } from '../../../services/get-filtered-projects.service';
 
-describe('GetProjectsService', () => {
-  let service: GetProjectsService;
+describe('GetFilteredProjectsService', () => {
+  let service: GetFilteredProjectsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [DatabaseModule, ProjectsModule, AppModule]
     }).compile();
 
-    service = module.get<GetProjectsService>(GetProjectsService);
+    service = module.get<GetFilteredProjectsService>(GetFilteredProjectsService);
   });
 
   it('should be defined', () => {
