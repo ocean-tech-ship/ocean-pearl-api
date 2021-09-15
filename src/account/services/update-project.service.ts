@@ -20,6 +20,11 @@ export class UpdateProjectService {
         dbProject.description =
             updatedProject.description ?? dbProject.description;
 
+        dbProject.category = updatedProject.category ?? dbProject.category;
+
+        dbProject.socialMedia =
+            updatedProject.socialMedia ?? dbProject.socialMedia;
+
         if (updatedProject.deletedPictures) {
             for (const pictureKey of updatedProject.deletedPictures) {
                 for (const [index, dbPicture] of dbProject.pictures.entries()) {
