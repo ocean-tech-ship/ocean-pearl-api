@@ -51,16 +51,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model
-                .findOne(query.find)
-                .lean()
-                .exec();
+            return await this.model.findOne(query.find).lean().exec();
         } catch (error: any) {
             throw error;
         }
     }
 
-    public async getByID(id: string, lean: boolean = true): Promise<Project> {
+    public async getByID(id: string): Promise<Project> {
         try {
             return await this.model
                 .findOne({ id: id })
@@ -178,13 +175,33 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async delete(id: string): Promise<boolean> {
+    public async delete(query): Promise<boolean> {
         try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                { id: id },
+                query.find,
             );
 
             return response.deletedCount === 1;
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    public async deleteMany(query: FindQuery): Promise<boolean> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            const response: MongooseDeleteResponse = await this.model.deleteMany(
+                query.find,
+            );
+
+            return response.deletedCount > 0;
         } catch (error: any) {
             throw error;
         }
