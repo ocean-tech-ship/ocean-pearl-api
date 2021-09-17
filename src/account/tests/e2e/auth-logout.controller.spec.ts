@@ -55,7 +55,9 @@ describe('AuthLogoutController', () => {
     });
 
     afterEach(async () => {
-        await repository.deleteByWalletAddress(session.walletAddress);
+        await repository.deleteMany({
+            find: { walletAddress: session.walletAddress },
+        });
     });
 
     it('should be defined', () => {
