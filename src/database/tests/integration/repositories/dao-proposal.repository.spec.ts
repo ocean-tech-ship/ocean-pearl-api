@@ -54,7 +54,7 @@ describe('DaoProposalRepository', () => {
     });
 
     afterAll(async () => {
-        await service.delete(DAO_PROPOSAL_ID);
+        await service.delete({ find: { _id: DAO_PROPOSAL_ID } });
     });
 
     it('should be defined', () => {
@@ -103,7 +103,9 @@ describe('DaoProposalRepository', () => {
         });
 
         test('it should delete a daoProposal', async () => {
-            expect(await service.delete(daoProposal.id)).toBeTruthy();
+            expect(
+                await service.delete({ find: { id: daoProposal.id } }),
+            ).toBeTruthy();
         });
     });
 });
