@@ -4,16 +4,12 @@ import { FilterQuery, Model, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
-import {
-    PearlUser,
-    PearlUserType,
-} from '../schemas/pearl-user.schema';
+import { PearlUser, PearlUserType } from '../schemas/pearl-user.schema';
 
 @Injectable()
 export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
-
     constructor(
-        @InjectModel('PearlUser') private model: Model<PearlUserType>
+        @InjectModel('PearlUser') private model: Model<PearlUserType>,
     ) {}
 
     public async findOne(query: FindQuery): Promise<PearlUser> {
@@ -38,10 +34,7 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model
-                .findOne(query.find)
-                .lean()
-                .exec();
+            return await this.model.findOne(query.find).lean().exec();
         } catch (error: any) {
             throw error;
         }
@@ -75,8 +68,10 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
 
     public async update(model: PearlUser): Promise<boolean> {
         try {
-            const response: PearlUser =
-                await this.model.findOneAndUpdate({ id: model.id }, model);
+            const response: PearlUser = await this.model.findOneAndUpdate(
+                { id: model.id },
+                model,
+            );
 
             return response !== null;
         } catch (error: any) {
@@ -94,12 +89,33 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
         }
     }
 
-    public async delete(id: string): Promise<boolean> {
+    public async delete(query: FindQuery): Promise<boolean> {
         try {
-            const response: MongooseDeleteResponse =
-                await this.model.deleteOne({ id: id });
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            const response: MongooseDeleteResponse = await this.model.deleteOne(
+                query.find,
+            );
 
             return response.deletedCount === 1;
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    public async deleteMany(query: FindQuery): Promise<boolean> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            const response: MongooseDeleteResponse = await this.model.deleteMany(
+                query.find,
+            );
+
+            return response.deletedCount > 0;
         } catch (error: any) {
             throw error;
         }

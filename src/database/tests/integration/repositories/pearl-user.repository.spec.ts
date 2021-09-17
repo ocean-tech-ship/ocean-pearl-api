@@ -24,26 +24,28 @@ describe('PearlUserRepository', () => {
     };
 
     let service: PearlUserRepository;
-  
+
     beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
-        imports: [DatabaseModule, AppModule]
-      }).compile();
-  
-      service = module.get<PearlUserRepository>(PearlUserRepository);
+        const module: TestingModule = await Test.createTestingModule({
+            imports: [DatabaseModule, AppModule],
+        }).compile();
+
+        service = module.get<PearlUserRepository>(PearlUserRepository);
     });
 
     afterAll(async () => {
-        await service.delete(PEARL_USER_ID);
+        await service.delete({ find: { _id: PEARL_USER_ID } });
     });
-  
+
     it('should be defined', () => {
-      expect(service).toBeDefined();
+        expect(service).toBeDefined();
     });
 
     describe('Given I have a ocean user repository', () => {
         test('it should save a user', async () => {
-            expect(await service.create(oceanUser)).toEqual(PEARL_USER_MONGO_ID);
+            expect(await service.create(oceanUser)).toEqual(
+                PEARL_USER_MONGO_ID,
+            );
         });
 
         test('it should return a user', async () => {
@@ -67,9 +69,7 @@ describe('PearlUserRepository', () => {
         });
 
         test('it should return all users', async () => {
-            expect((await service.getAll()).length).toBeGreaterThanOrEqual(
-                1
-            );
+            expect((await service.getAll()).length).toBeGreaterThanOrEqual(1);
         });
 
         test('it should update a user', async () => {
@@ -79,7 +79,9 @@ describe('PearlUserRepository', () => {
         });
 
         test('it should delete a user', async () => {
-            expect(await service.delete(oceanUser.id)).toBeTruthy();
+            expect(
+                await service.delete({ find: { id: oceanUser.id } }),
+            ).toBeTruthy();
         });
     });
 });
