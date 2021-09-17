@@ -27,21 +27,21 @@ describe('JobRepository', () => {
     };
 
     let service: JobRepository;
-  
+
     beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
-        imports: [DatabaseModule, AppModule]
-      }).compile();
-  
-      service = module.get<JobRepository>(JobRepository);
+        const module: TestingModule = await Test.createTestingModule({
+            imports: [DatabaseModule, AppModule],
+        }).compile();
+
+        service = module.get<JobRepository>(JobRepository);
     });
 
     afterAll(async () => {
-        await service.delete(JOB_ID);
+        await service.delete({ find: { _id: JOB_ID } });
     });
-  
+
     it('should be defined', () => {
-      expect(service).toBeDefined();
+        expect(service).toBeDefined();
     });
 
     describe('Given I have a job repository', () => {
@@ -78,9 +78,7 @@ describe('JobRepository', () => {
         });
 
         test('it should return all jobs', async () => {
-            expect((await service.getAll()).length).toBeGreaterThanOrEqual(
-                1
-            );
+            expect((await service.getAll()).length).toBeGreaterThanOrEqual(1);
         });
 
         test('it should update a job', async () => {
@@ -90,7 +88,9 @@ describe('JobRepository', () => {
         });
 
         test('it should delete a job', async () => {
-            expect(await service.delete(job.id)).toBeTruthy();
+            expect(
+                await service.delete({ find: { id: job.id } }),
+            ).toBeTruthy();
         });
     });
 });
