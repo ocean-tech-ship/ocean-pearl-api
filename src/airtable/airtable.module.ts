@@ -1,4 +1,5 @@
 import { HttpModule, Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '../database/database.module';
 import { AirtableUrlBuilder } from './builder/airtable-url.builder';
 import { DaoProposalMapper } from './mapper/dao-proposal.mapper';
@@ -32,6 +33,7 @@ import { UpdateProposalStrategy } from './strategies/update-proposal.strategy';
         SingleMissmatchedProposalStrategy,
         StrategyCollection,
         UpdateProposalStrategy,
+        ConfigService,
     ],
     exports: [
         ProposalsProvider,
