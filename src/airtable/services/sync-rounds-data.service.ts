@@ -43,11 +43,16 @@ export class SyncRoundsDataService {
             paymentOption: round['Max Grant']
                 ? PaymentOptionEnum.Ocean
                 : PaymentOptionEnum.Usd,
-            availableFunding:
-                round['Funding Available'] ?? round['Funding Available USD'],
-            startDate: round['Start Date'] ? new Date(round['Start Date']) : null,
+            availableFundingOcean: round['Funding Available'] ?? 0,
+            availableFundingUsd: round['Funding Available USD'] ?? 0,
+            usdConversionRate: round['OCEAN Price'] ?? 0,
+            startDate: round['Start Date']
+                ? new Date(round['Start Date'])
+                : null,
             submissionEndDate: new Date(round['Proposals Due By']),
-            votingStartDate: round['Voting Starts'] ? new Date(round['Voting Starts']) : null,
+            votingStartDate: round['Voting Starts']
+                ? new Date(round['Voting Starts'])
+                : null,
             votingEndDate: new Date(round['Voting Ends']),
         } as Round;
 
@@ -69,16 +74,11 @@ export class SyncRoundsDataService {
                 round: round.round,
             },
         } as FindQuery;
-        const databaseRounds: Round[] = await this.roundsRepository.getAll(
+        const databaseRound: Round = await this.roundsRepository.findOne(
             findQuery,
         );
 
-        if (databaseRounds.length === 0) {
-            this.roundsRepository.create(round);
-            return;
-        }
-
-        round.id = databaseRounds[0].id;
+        round.id = databaseRound?.id ?? undefined;
         this.roundsRepository.update(round);
     }
 }
