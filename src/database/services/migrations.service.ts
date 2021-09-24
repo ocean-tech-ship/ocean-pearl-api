@@ -47,6 +47,8 @@ export class MigrationService implements OnModuleInit {
                     } as Migration,
                     { upsert: true },
                 );
+
+                this.logger.log(`Migration ${migration.getVersion()} finished.`);
             }
         } catch (error) {
             throw error;
@@ -79,6 +81,8 @@ export class MigrationService implements OnModuleInit {
                     version: migration.getVersion(),
                     status: MigrationStatusEnum.Down,
                 } as Migration);
+
+                this.logger.log(`Migration ${migration.getVersion()} finished.`);
             }
         } catch (error) {
             throw error;
