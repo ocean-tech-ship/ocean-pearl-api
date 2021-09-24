@@ -48,7 +48,15 @@ export class Round {
         default: 0,
     })
     @ApiProperty()
-    availableFunding: number;
+    availableFundingOcean: number;
+
+    @Prop({
+        type: Number,
+        min: 0,
+        default: 0,
+    })
+    @ApiProperty()
+    availableFundingUsd: number;
 
     @Prop({
         type: String,
@@ -59,6 +67,12 @@ export class Round {
         enum: PaymentOptionEnum,
     })
     paymentOption: PaymentOptionEnum;
+
+    @Prop({
+        type: Number,
+        min: 0,
+    })
+    usdConversionRate: Number;
 
     @Prop({
         type: Date,
