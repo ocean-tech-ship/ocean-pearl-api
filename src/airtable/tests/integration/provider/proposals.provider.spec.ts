@@ -1,4 +1,5 @@
 import { HttpModule } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
@@ -11,6 +12,7 @@ describe('ProposalsProvider', () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [DatabaseModule, AirtableModule, HttpModule, AppModule],
+            providers: [ConfigService],
         }).compile();
 
         service = module.get<ProposalsProvider>(ProposalsProvider);

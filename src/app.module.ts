@@ -1,40 +1,37 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
+import { AccountModule } from './account/account.module';
+import { AirtableModule } from './airtable/airtable.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DatabaseModule } from './database/database.module';
-import { ProjectsModule } from './projects/projects.module';
+import { AuthModule } from './auth/auth.module';
+import { AwsModule } from './aws/aws.module';
 import { DaoProposalsModule } from './dao-proposals/dao-proposals.module';
+import { DatabaseModule } from './database/database.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { PagesModule } from './pages/pages.module';
-import { AirtableModule } from './airtable/airtable.module';
-import { ScheduleModule } from '@nestjs/schedule';
+import { ProjectsModule } from './projects/projects.module';
 import { RoundsModule } from './rounds/rounds.module';
-import { AwsModule } from './aws/aws.module';
-import { AccountModule } from './account/account.module';
-import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
-
-if (process.env.NODE_ENV === 'production') {
-    require('dotenv').config();
-} else {
-    require('dotenv').config({ path: `./environment/${process.env.NODE_ENV}.env` });
-}
 
 @Module({
     imports: [
         ConfigModule.forRoot({
-            envFilePath: [
-                '.env',
-                `./environment/${process.env.NODE_ENV}.env`,
-            ],
+            envFilePath: [`./environment/${process.env.NODE_ENV}.env`, '.env'],
+            cache: true,
         }),
-        MongooseModule.forRoot(process.env.MONGO_URL as string, {
-            useCreateIndex: true,
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            bufferCommands: false,
-            bufferMaxEntries: 0,
+        MongooseModule.forRootAsync({
+            imports: [ConfigModule],
+            useFactory: async (configService: ConfigService) => ({
+                uri: configService.get<string>('MONGO_URL'),
+                useCreateIndex: true,
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                bufferCommands: false,
+                bufferMaxEntries: 0,
+            }),
+            inject: [ConfigService],
         }),
         ScheduleModule.forRoot(),
         DatabaseModule,
