@@ -21,6 +21,17 @@ jobs:
       JWT_SECRET: hard!to-guess_Secret
       JWT_TIME_TO_LIVE: 604800000
 
+    services:
+      mongodb:
+        image: mongo
+        options: >-
+          --health-cmd mongo
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
+
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v2.3.4
@@ -39,11 +50,6 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-
-      - name: Start MongoDB 🔧
-        uses: supercharge/mongodb-github-action@1.6.0
-        with:
-          mongodb-version: ${{ matrix.mongodb }}
           
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
