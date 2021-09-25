@@ -13,7 +13,7 @@ jobs:
         
     env:
       ORIGIN: http://localhost:3000
-      MONGO_URL: mongodb+srv://ci:local@0.0.0.0:27017/test
+      MONGO_URL: mongodb+srv://ci:local@127.0.0.1:27017/test
       AIRTABLE_URL: airtableUrl
       AIRTABLE_API_KEY: airtableKey
       JWT_HTTPS: false
