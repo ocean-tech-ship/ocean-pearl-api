@@ -23,14 +23,20 @@ import { RoundsModule } from './rounds/rounds.module';
         }),
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
-            useFactory: async (configService: ConfigService) => ({
-                uri: configService.get<string>('MONGO_URL'),
-                useCreateIndex: true,
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                bufferCommands: false,
-                bufferMaxEntries: 0,
-            }),
+            useFactory: async (configService: ConfigService) => {
+                console.log(
+                    'MONGO_URL = ',
+                    configService.get<string>('MONGO_URL'),
+                );
+                return {
+                    uri: configService.get<string>('MONGO_URL'),
+                    useCreateIndex: true,
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true,
+                    bufferCommands: false,
+                    bufferMaxEntries: 0,
+                };
+            },
             inject: [ConfigService],
         }),
         ScheduleModule.forRoot(),
