@@ -10,31 +10,17 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node: [12]
+        mongodb: [4.4]
         
     env:
       ORIGIN: http://localhost:3000
-      MONGO_URL: mongodb+srv://ci:local@127.0.0.1:27017/test
+      MONGO_URL: mongodb://localhost:27017/test
       AIRTABLE_URL: airtableUrl
       AIRTABLE_API_KEY: airtableKey
       JWT_HTTPS: false
       JWT_SECRET: hard!to-guess_Secret
       JWT_TIME_TO_LIVE: 604800000
-      
-    services:
-      mongodb:
-        image: mongo
-        env:
-          MONGO_INITDB_ROOT_USERNAME: ci
-          MONGO_INITDB_ROOT_PASSWORD: local
-          MONGO_INITDB_DATABASE: test
-        options: >-
-          --health-cmd mongo
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 27017:27017
-          
+
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v2.3.4
@@ -53,6 +39,11 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+
+      - name: Start MongoDB 🔧
+        uses: supercharge/mongodb-github-action@1.6.0
+        with:
+          mongodb-version: ${{ matrix.mongodb }}
           
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
