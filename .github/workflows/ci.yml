@@ -55,11 +55,7 @@ jobs:
         run: npm ci
         
       - name: Run tests 🧪
-        uses: mattallty/jest-github-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          test-command: "npm run test_ci"
+        run: npm run test_ci
 
       - name: Report test results 📈
         uses: dorny/test-reporter@v1
@@ -68,3 +64,8 @@ jobs:
           name: Test results
           path: reports/jest-*.xml
           reporter: jest-junit
+
+      - name: Report code coverage 🔍
+        uses: romeovs/lcov-reporter-action@v0.2.16
+        with:
+          lcov-file: ./coverage/lcov.info
