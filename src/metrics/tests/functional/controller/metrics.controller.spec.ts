@@ -5,18 +5,23 @@ import { MetricsController } from '../../../metrics.controller';
 import { MetricsModule } from '../../../metrics.module';
 
 describe('MetricsController', () => {
-  let controller: MetricsController;
+    let module: TestingModule;
+    let controller: MetricsController;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [MetricsModule, AppModule, DatabaseModule],
-      controllers: [MetricsController],
-    }).compile();
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [MetricsModule, AppModule, DatabaseModule],
+            controllers: [MetricsController],
+        }).compile();
 
-    controller = module.get<MetricsController>(MetricsController);
-  });
+        controller = module.get<MetricsController>(MetricsController);
+    });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+    afterAll(async () => {
+        await module.close();
+    });
+
+    it('should be defined', () => {
+        expect(controller).toBeDefined();
+    });
 });

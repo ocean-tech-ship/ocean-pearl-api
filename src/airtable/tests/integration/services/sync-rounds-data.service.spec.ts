@@ -6,14 +6,19 @@ import { AirtableModule } from '../../../airtable.module';
 import { SyncRoundsDataService } from '../../../services/sync-rounds-data.service';
 
 describe('SyncRoundsDataService', () => {
+    let module: TestingModule;
     let service: SyncRoundsDataService;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule, AirtableModule, HttpModule],
         }).compile();
 
         service = module.get<SyncRoundsDataService>(SyncRoundsDataService);
+    });
+
+    afterAll(async () => {
+        await module.close();
     });
 
     it('should be defined', () => {

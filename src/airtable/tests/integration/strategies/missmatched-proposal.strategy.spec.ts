@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Types } from 'mongoose';
 import { AppModule } from '../../../../app.module';
-import { DatabaseModule } from '../../../../database/database.module';
 import { DaoProposalRepository } from '../../../../database/repositories/dao-proposal.repository';
 import { DaoProposal } from '../../../../database/schemas/dao-proposal.schema';
 import { Project } from '../../../../database/schemas/project.schema';
@@ -9,12 +8,13 @@ import { AirtableModule } from '../../../airtable.module';
 import { MissmatchedProposalStrategy } from '../../../strategies/missmatched-proposal.strategy';
 
 describe('MissmatchedProposalStrategy', () => {
+    let module: TestingModule;
     let service: MissmatchedProposalStrategy;
     let proposalRepository: DaoProposalRepository;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            imports: [DatabaseModule, AppModule, AirtableModule],
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [AppModule, AirtableModule],
         }).compile();
 
         service = module.get<MissmatchedProposalStrategy>(
@@ -23,11 +23,17 @@ describe('MissmatchedProposalStrategy', () => {
         proposalRepository = module.get<DaoProposalRepository>(
             DaoProposalRepository,
         );
+    });
 
+    beforeEach(async () => {
         const mockResponse = { airtableId: 'someId' } as DaoProposal;
         jest.spyOn(proposalRepository, 'findOneRaw').mockImplementation(
             async () => mockResponse,
         );
+    });
+
+    afterAll(async () => {
+        await module.close();
     });
 
     it('should be defined', () => {

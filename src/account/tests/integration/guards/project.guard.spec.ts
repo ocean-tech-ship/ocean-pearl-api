@@ -4,14 +4,19 @@ import { DatabaseModule } from '../../../../database/database.module';
 import { ProjectGuard } from '../../../guards/project.guard';
 
 describe('ProjectGuard', () => {
+    let module: TestingModule;
     let service: ProjectGuard;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule],
         }).compile();
 
         service = module.get<ProjectGuard>(ProjectGuard);
+    });
+
+    afterAll(async () => {
+        await module.close();
     });
 
     it('should be defined', () => {
