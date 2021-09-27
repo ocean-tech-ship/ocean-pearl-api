@@ -1,18 +1,23 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AirtableUrlBuilder } from '../../../builder/airtable-url.builder';
 
-const BASE_URL = process.env.AIRTABLE_URL + 'test';
 const SEARCH_QUERY_STRING = '?filterByFormula=';
 
 describe('AirtableUrlBuilder', () => {
     let service: AirtableUrlBuilder;
+    let configService: ConfigService;
+    let BASE_URL: string;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [AirtableUrlBuilder],
+            providers: [AirtableUrlBuilder, ConfigService],
         }).compile();
 
         service = module.get<AirtableUrlBuilder>(AirtableUrlBuilder);
+        configService = module.get<ConfigService>(ConfigService);
+
+        BASE_URL = configService.get<string>('AIRTABLE_URL') + 'test';
     });
 
     it('should be defined', () => {
