@@ -10,14 +10,14 @@ export default class Version100001 implements MigrationInterface {
 
     public getDescription(): string {
         // Add a short description of what will happen.
-        return 'Remove the only availableFunding field and add two seperate for usd and ocean.'
+        return 'Remove the availableFunding field and add two seperate for usd and ocean.';
     }
 
     public async up(connection: Connection): Promise<void> {
         // add the migration code here
         const roundModel = connection.model<any>('Round');
-        const rounds = await roundModel.find();
-        
+        const rounds = await roundModel.find().lean();
+
         for (let round of rounds) {
             if (round.paymentOption === PaymentOptionEnum.Usd) {
                 round.availableFundingUsd = round.availableFunding;
@@ -26,24 +26,38 @@ export default class Version100001 implements MigrationInterface {
             }
 
             delete round.availableFunding;
-            await roundModel.updateOne({ id: round.id }, round);
+            await roundModel.updateOne(
+                { id: round.id },
+                { $set: round, $unset: { availableFunding: 1 } },
+                { strict: false },
+            );
         }
     }
 
     public async down(connection: Connection): Promise<void> {
         // if possible add code that will revert the migration
         const roundModel = connection.model<any>('Round');
-        const rounds = await roundModel.find();
-        
+        const rounds = await roundModel.find().lean();
+
         for (let round of rounds) {
-            round.availableFunding = 
+            round.availableFunding =
                 round.paymentOption === PaymentOptionEnum.Usd
-                ? round.availableFundingUsd
-                : round.availableFundingOcean;
+                    ? round.availableFundingUsd
+                    : round.availableFundingOcean;
 
             delete round.availableFundingUsd;
             delete round.availableFundingOcean;
-            await roundModel.updateOne({ id: round.id }, round);
+            await roundModel.updateOne(
+                { id: round.id },
+                {
+                    $set: round,
+                    $unset: {
+                        availableFundingUsd: 1,
+                        availableFundingOcean: 1,
+                    },
+                },
+                { strict: false },
+            );
         }
     }
 }
