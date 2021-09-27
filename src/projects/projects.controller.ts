@@ -5,17 +5,15 @@ import {
     HttpStatus,
     Param,
     Query,
-    Res,
     UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
 import {
     ApiBadRequestResponse,
-    ApiNoContentResponse,
+    ApiNotFoundResponse,
     ApiOkResponse,
     ApiTags,
 } from '@nestjs/swagger';
-import { Response } from 'express';
 import { PaginationOptions } from '../database/interfaces/pagination-options.interface';
 import { Project } from '../database/schemas/project.schema';
 import { ProjectFilterQuery } from './models/project-filter-query.model';
@@ -72,7 +70,7 @@ export class ProjectsController {
     }
 
     @Get(':id')
-    @ApiNoContentResponse()
+    @ApiNotFoundResponse()
     @ApiOkResponse({
         type: Project,
         description: 'Returns a single Project',
@@ -86,10 +84,10 @@ export class ProjectsController {
             if (!project) {
                 throw new HttpException(
                     {
-                        status: HttpStatus.NO_CONTENT,
+                        status: HttpStatus.NOT_FOUND,
                         error: `No Project found with id: ${id}`,
                     },
-                    HttpStatus.NO_CONTENT,
+                    HttpStatus.NOT_FOUND,
                 );
             }
 

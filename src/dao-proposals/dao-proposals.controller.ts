@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import {
     ApiBadRequestResponse,
-    ApiNoContentResponse,
+    ApiNotFoundResponse,
     ApiOkResponse,
     ApiTags,
     getSchemaPath,
@@ -86,7 +86,7 @@ export class DaoProposalsController {
     }
 
     @Get(':id')
-    @ApiNoContentResponse()
+    @ApiNotFoundResponse()
     @ApiOkResponse({
         type: DaoProposal,
         description: 'Returns a single Proposal',
@@ -98,10 +98,10 @@ export class DaoProposalsController {
             if (!proposal) {
                 throw new HttpException(
                     {
-                        status: HttpStatus.NO_CONTENT,
+                        status: HttpStatus.NOT_FOUND,
                         error: `No Project found with id: ${id}`,
                     },
-                    HttpStatus.NO_CONTENT,
+                    HttpStatus.NOT_FOUND,
                 );
             }
 
