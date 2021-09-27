@@ -55,7 +55,11 @@ jobs:
         run: npm ci
         
       - name: Run tests 🧪
-        run: npm run test_ci
+        uses: mattallty/jest-github-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          test-command: "npm run test_ci"
 
       - name: Report test results 📈
         uses: dorny/test-reporter@v1
