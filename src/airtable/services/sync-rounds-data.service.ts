@@ -40,7 +40,7 @@ export class SyncRoundsDataService {
             round: round['Round'],
             earmarked: round['Earmarked'] ?? round['Earmarked USD'],
             maxGrant: round['Max Grant'] ?? round['Max Grant USD'],
-            paymentOption: round['Max Grant']
+            paymentOption: round['Max Grant USD']
                 ? PaymentOptionEnum.Ocean
                 : PaymentOptionEnum.Usd,
             availableFundingOcean: round['Funding Available'] ?? 0,
