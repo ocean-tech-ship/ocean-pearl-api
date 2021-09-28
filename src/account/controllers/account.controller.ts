@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Get,
+    Param,
     Put,
     Req,
     UploadedFiles,
@@ -76,14 +77,17 @@ export class AccountController {
     @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
     @UseGuards(ProjectGuard)
     @UseInterceptors(
-        FileFieldsInterceptor([
-            { name: 'logo', maxCount: 1 },
-            { name: 'newPictures', maxCount: 1 },
-        ], {
-            limits: {
-                fileSize: 4000000
-            }
-        }),
+        FileFieldsInterceptor(
+            [
+                { name: 'logo', maxCount: 1 },
+                { name: 'newPictures', maxCount: 1 },
+            ],
+            {
+                limits: {
+                    fileSize: 4000000,
+                },
+            },
+        ),
     )
     public async updateProject(
         @Req() request: Request,
@@ -92,21 +96,18 @@ export class AccountController {
             logo?: Express.Multer.File;
             newPictures?: Express.Multer.File[];
         },
+        @Param('id') id: string,
         @Body() project: UpdatedProject,
     ): Promise<AssociatedProject[]> {
         try {
             project.logo = files.logo;
             project.newPictures = files.newPictures;
 
-            await this.updateProjectService.execute(project);
+            await this.updateProjectService.execute(id, project);
 
             const user = request.user as AuthenticatedUser;
 
-            const projects = await this.getAssociatedProjectsService.execute(
-                user.wallet,
-            );
-
-            return projects;
+            return await this.getAssociatedProjectsService.execute(user.wallet);
         } catch (error) {
             throw error;
         }
