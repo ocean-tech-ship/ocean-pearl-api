@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 const SEARCH_QUERY_STRING = '?filterByFormula=';
 
 @Injectable()
 export class AirtableUrlBuilder {
+    public constructor(private configService: ConfigService) {}
+
     public build(table: string, query: any = null): string {
-        let baseUrl: string = process.env.AIRTABLE_URL + table;
+        let baseUrl: string =
+            this.configService.get<string>('AIRTABLE_URL') + table;
 
         if (query === null) {
             return baseUrl;

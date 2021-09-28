@@ -5,17 +5,24 @@ import { GetProjectsPaginatedService } from '../../../../projects/services/get-p
 import { DaoProposalsModule } from '../../../dao-proposals.module';
 
 describe('GetProjectsPaginatedService', () => {
-  let service: GetProjectsPaginatedService;
+    let module: TestingModule;
+    let service: GetProjectsPaginatedService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule, DaoProposalsModule, AppModule]
-    }).compile();
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [DatabaseModule, DaoProposalsModule, AppModule],
+        }).compile();
 
-    service = module.get<GetProjectsPaginatedService>(GetProjectsPaginatedService);
-  });
+        service = module.get<GetProjectsPaginatedService>(
+            GetProjectsPaginatedService,
+        );
+    });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+    afterAll(async () => {
+        await module.close();
+    });
+
+    it('should be defined', () => {
+        expect(service).toBeDefined();
+    });
 });

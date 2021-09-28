@@ -5,17 +5,24 @@ import { ProjectsModule } from '../../../projects.module';
 import { GetFilteredProjectsService } from '../../../services/get-filtered-projects.service';
 
 describe('GetFilteredProjectsService', () => {
-  let service: GetFilteredProjectsService;
+    let module: TestingModule;
+    let service: GetFilteredProjectsService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule, ProjectsModule, AppModule]
-    }).compile();
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [DatabaseModule, ProjectsModule, AppModule],
+        }).compile();
 
-    service = module.get<GetFilteredProjectsService>(GetFilteredProjectsService);
-  });
+        service = module.get<GetFilteredProjectsService>(
+            GetFilteredProjectsService,
+        );
+    });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+    afterAll(async () => {
+        await module.close();
+    });
+
+    it('should be defined', () => {
+        expect(service).toBeDefined();
+    });
 });

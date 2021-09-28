@@ -1,6 +1,8 @@
+![CI](https://github.com/ocean-tech-ship/ocean-pearl-api/actions/workflows/ci.yml/badge.svg)
+
 ## Description
 
-Backend repository for the ocean-pearl project 
+Backend repository for the ocean-pearl project.
 
 ## Startup
 

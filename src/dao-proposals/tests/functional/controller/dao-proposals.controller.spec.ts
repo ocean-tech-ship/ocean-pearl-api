@@ -5,17 +5,22 @@ import { DaoProposalsController } from '../../../dao-proposals.controller';
 import { DaoProposalsModule } from '../../../dao-proposals.module';
 
 describe('DaoProposalsController', () => {
-  let controller: DaoProposalsController;
+    let module: TestingModule;
+    let controller: DaoProposalsController;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [DaoProposalsModule, DatabaseModule, AppModule]
-    }).compile();
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [DaoProposalsModule, DatabaseModule, AppModule],
+        }).compile();
 
-    controller = module.get<DaoProposalsController>(DaoProposalsController);
-  });
+        controller = module.get<DaoProposalsController>(DaoProposalsController);
+    });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+    afterAll(async () => {
+        await module.close();
+    });
+
+    it('should be defined', () => {
+        expect(controller).toBeDefined();
+    });
 });

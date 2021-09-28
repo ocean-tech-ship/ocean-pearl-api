@@ -9,10 +9,11 @@ import { GetAssociatedProjectsService } from '../../services/get-associated-proj
 import { UpdateProjectService } from '../../services/update-project.service';
 
 describe('AccountController', () => {
+    let module: TestingModule;
     let controller: AccountController;
 
     beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule, AwsModule],
             controllers: [AccountController],
             providers: [
@@ -24,6 +25,10 @@ describe('AccountController', () => {
         }).compile();
 
         controller = module.get<AccountController>(AccountController);
+    });
+
+    afterAll(async () => {
+        await module.close();
     });
 
     it('should be defined', () => {

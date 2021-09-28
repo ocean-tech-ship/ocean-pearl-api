@@ -5,15 +5,20 @@ import { RoundsModule } from '../../../rounds.module';
 import { GetRoundsAmountService } from '../../../services/get-rounds-amount.service';
 
 describe('GetRoundsAmountService', () => {
+    let module: TestingModule;
     let service: GetRoundsAmountService;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [RoundsModule, AppModule, DatabaseModule],
             providers: [GetRoundsAmountService],
         }).compile();
 
         service = module.get<GetRoundsAmountService>(GetRoundsAmountService);
+    });
+
+    afterAll(async () => {
+        await module.close();
     });
 
     it('should be defined', () => {

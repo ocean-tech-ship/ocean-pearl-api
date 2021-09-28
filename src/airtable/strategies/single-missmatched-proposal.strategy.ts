@@ -43,7 +43,7 @@ export class SingleMissmatchedProposalStrategy implements StrategyInterface {
                 find: { _id: linkedProposalId },
             });
 
-            if (linkedProposal.airtableId !== proposal.airtableId) {
+            if (linkedProposal.airtableId === proposal.airtableId) {
                 oldProject.daoProposals.splice(index, 1);
             }
         }
