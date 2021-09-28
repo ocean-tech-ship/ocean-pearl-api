@@ -6,6 +6,7 @@ import { createIdentity } from 'eth-crypto';
 import { Session } from '../../../schemas/session.schema';
 
 describe('SessionRepository', () => {
+    let module: TestingModule;
     let service: SessionRepository;
 
     let identity: {
@@ -15,7 +16,7 @@ describe('SessionRepository', () => {
     };
 
     beforeAll(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule],
         }).compile();
 
@@ -28,6 +29,7 @@ describe('SessionRepository', () => {
         await service.deleteMany({
             find: { walletAddress: identity.address },
         });
+        await module.close();
     });
 
     it('should be defined', () => {

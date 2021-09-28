@@ -61,6 +61,7 @@ describe('AuthLoginController', () => {
         await repository.deleteMany({
             find: { walletAddress: identity.address },
         });
+        await app.close();
     });
 
     it('should be defined', () => {

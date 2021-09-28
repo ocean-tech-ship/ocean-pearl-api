@@ -1,21 +1,24 @@
 import {
     Controller,
     Get,
+    HttpException,
+    HttpStatus,
     Param,
     Query,
     UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
 import {
+    ApiBadRequestResponse,
+    ApiNotFoundResponse,
     ApiOkResponse,
-    ApiResponse,
     ApiTags,
     getSchemaPath,
 } from '@nestjs/swagger';
 import { PaginationOptions } from '../database/interfaces/pagination-options.interface';
 import { DaoProposal } from '../database/schemas/dao-proposal.schema';
 import { GetRoundsAmountService } from '../rounds/services/get-rounds-amount.service';
-import { ProposalsFilterQuery } from './models/ProposalsFilterQuery.model';
+import { ProposalFilterQuery } from './models/proposal-filter-query.model';
 import { GetDaoProposalByIdService } from './services/get-dao-proposal-by-id.service';
 import { GetDaoProposalsPaginatedService } from './services/get-dao-proposals-paginated.service';
 import { GetFilteredDaoProposalsService } from './services/get-filtered-dao-proposals.service';
@@ -31,7 +34,7 @@ export class DaoProposalsController {
     ) {}
 
     @Get('')
-    @ApiResponse({ status: 400, description: 'Bad Request.' })
+    @ApiBadRequestResponse()
     @ApiOkResponse({
         description: 'Ok.',
         schema: {
@@ -48,7 +51,7 @@ export class DaoProposalsController {
     })
     @UsePipes(new ValidationPipe({ transform: true }))
     async getFilteredDaoProposals(
-        @Query() proposalsFilterQuery: ProposalsFilterQuery,
+        @Query() proposalFilterQuery: ProposalFilterQuery,
     ): Promise<{
         daoProposals: DaoProposal[];
         maxRounds: number;
@@ -56,7 +59,7 @@ export class DaoProposalsController {
         try {
             return {
                 daoProposals: await this.getFilteredDaoProposalsService.execute(
-                    proposalsFilterQuery,
+                    proposalFilterQuery,
                 ),
                 maxRounds: await this.getRoundsAmountService.execute(),
             };
@@ -83,13 +86,26 @@ export class DaoProposalsController {
     }
 
     @Get(':id')
+    @ApiNotFoundResponse()
     @ApiOkResponse({
         type: DaoProposal,
         description: 'Returns a single Proposal',
     })
     async getDaoProposalById(@Param('id') id: string): Promise<DaoProposal> {
         try {
-            return await this.getDaoProposalByIdService.execute(id);
+            const proposal = await this.getDaoProposalByIdService.execute(id);
+
+            if (!proposal) {
+                throw new HttpException(
+                    {
+                        status: HttpStatus.NOT_FOUND,
+                        error: `No Project found with id: ${id}`,
+                    },
+                    HttpStatus.NOT_FOUND,
+                );
+            }
+
+            return proposal;
         } catch (error: any) {
             throw error;
         }

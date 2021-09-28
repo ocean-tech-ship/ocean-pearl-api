@@ -5,17 +5,24 @@ import { DaoProposalsModule } from '../../../dao-proposals.module';
 import { GetLatestDaoProposalsService } from '../../../services/get-latest-dao-proposals.service';
 
 describe('GetLatestDaoProposalsService', () => {
-  let service: GetLatestDaoProposalsService;
+    let module: TestingModule;
+    let service: GetLatestDaoProposalsService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule, DaoProposalsModule, AppModule]
-    }).compile();
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [DatabaseModule, DaoProposalsModule, AppModule],
+        }).compile();
 
-    service = module.get<GetLatestDaoProposalsService>(GetLatestDaoProposalsService);
-  });
+        service = module.get<GetLatestDaoProposalsService>(
+            GetLatestDaoProposalsService,
+        );
+    });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+    afterAll(async () => {
+        await module.close();
+    });
+
+    it('should be defined', () => {
+        expect(service).toBeDefined();
+    });
 });

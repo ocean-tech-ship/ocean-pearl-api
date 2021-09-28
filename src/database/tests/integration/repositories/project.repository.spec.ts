@@ -15,7 +15,7 @@ const PROJECT_ID: string = nanoid();
 const PROJECT_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('ProjectRepository', () => {
-    let project: Project = <Project>{
+    const project: Project = <Project>{
         _id: PROJECT_MONGO_ID,
         id: PROJECT_ID,
         title: 'Best project ever',
@@ -37,10 +37,11 @@ describe('ProjectRepository', () => {
         teamName: 'TestTeam',
     };
 
+    let module: TestingModule;
     let service: ProjectRepository;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule],
         }).compile();
 
@@ -49,6 +50,7 @@ describe('ProjectRepository', () => {
 
     afterAll(async () => {
         await service.delete({ find: { _id: PROJECT_ID } });
+        await module.close();
     });
 
     it('should be defined', () => {

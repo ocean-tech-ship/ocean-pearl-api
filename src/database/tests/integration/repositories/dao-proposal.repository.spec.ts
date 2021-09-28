@@ -15,7 +15,7 @@ const DAO_PROPOSAL_ID: string = nanoid();
 const DAO_PROPOSAL_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('DaoProposalRepository', () => {
-    let daoProposal: DaoProposal = {
+    const daoProposal: DaoProposal = {
         _id: DAO_PROPOSAL_MONGO_ID,
         id: DAO_PROPOSAL_ID,
         fundingRound: new Types.ObjectId(),
@@ -43,10 +43,11 @@ describe('DaoProposalRepository', () => {
         pictures: [],
     } as DaoProposal;
 
+    let module: TestingModule;
     let service: DaoProposalRepository;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule],
         }).compile();
 
@@ -55,6 +56,7 @@ describe('DaoProposalRepository', () => {
 
     afterAll(async () => {
         await service.delete({ find: { _id: DAO_PROPOSAL_ID } });
+        await module.close();
     });
 
     it('should be defined', () => {

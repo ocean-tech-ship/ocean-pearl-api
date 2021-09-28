@@ -1,20 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
-import { ProjectsController } from '../../../projects.controller';
 import { ProjectsModule } from '../../../projects.module';
+import { GetFilteredProjectsService } from '../../../services/get-filtered-projects.service';
 
-describe('ProjectsController', () => {
+describe('GetFilteredProjectsService', () => {
     let module: TestingModule;
-    let controller: ProjectsController;
+    let service: GetFilteredProjectsService;
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
-            imports: [ProjectsModule, AppModule, DatabaseModule],
-            controllers: [ProjectsController],
+            imports: [DatabaseModule, ProjectsModule, AppModule],
         }).compile();
 
-        controller = module.get<ProjectsController>(ProjectsController);
+        service = module.get<GetFilteredProjectsService>(
+            GetFilteredProjectsService,
+        );
     });
 
     afterAll(async () => {
@@ -22,6 +23,6 @@ describe('ProjectsController', () => {
     });
 
     it('should be defined', () => {
-        expect(controller).toBeDefined();
+        expect(service).toBeDefined();
     });
 });

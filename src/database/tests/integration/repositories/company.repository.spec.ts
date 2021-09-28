@@ -11,7 +11,7 @@ const COMPANY_ID: string = nanoid();
 const COMPANY_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('CompanyRepository', () => {
-    let company: Company = <Company>{
+    const company: Company = <Company>{
         _id: COMPANY_MONGO_ID,
         id: COMPANY_ID,
         name: faker.company.companyName(),
@@ -23,10 +23,11 @@ describe('CompanyRepository', () => {
         jobs: [],
     };
 
+    let module: TestingModule;
     let service: CompanyRepository;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule],
         }).compile();
 
@@ -35,6 +36,7 @@ describe('CompanyRepository', () => {
 
     afterAll(async () => {
         await service.delete({ find: { _id: COMPANY_ID } });
+        await module.close();
     });
 
     it('should be defined', () => {

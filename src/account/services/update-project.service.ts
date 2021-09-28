@@ -12,13 +12,21 @@ export class UpdateProjectService {
         private s3ImageManagementService: S3ImageManagementService,
     ) {}
 
-    public async execute(updatedProject: UpdatedProject): Promise<void> {
+    public async execute(
+        id: string,
+        updatedProject: UpdatedProject,
+    ): Promise<void> {
         const dbProject = await this.projectRepository.findOneRaw({
-            find: { id: updatedProject.id },
+            find: { id: id },
         });
 
         dbProject.description =
             updatedProject.description ?? dbProject.description;
+
+        dbProject.category = updatedProject.category ?? dbProject.category;
+
+        dbProject.socialMedia =
+            updatedProject.socialMedia ?? dbProject.socialMedia;
 
         if (updatedProject.deletedPictures) {
             for (const pictureKey of updatedProject.deletedPictures) {

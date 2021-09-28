@@ -13,7 +13,7 @@ const PEARL_USER_ID: string = nanoid();
 const PEARL_USER_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('PearlUserRepository', () => {
-    let oceanUser: PearlUser = <PearlUser>{
+    const oceanUser: PearlUser = <PearlUser>{
         _id: PEARL_USER_MONGO_ID,
         id: PEARL_USER_ID,
         title: UserTitleEnum.Dr,
@@ -23,10 +23,11 @@ describe('PearlUserRepository', () => {
         socialMedia: {} as SocialMedia,
     };
 
+    let module: TestingModule;
     let service: PearlUserRepository;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule],
         }).compile();
 
@@ -35,6 +36,7 @@ describe('PearlUserRepository', () => {
 
     afterAll(async () => {
         await service.delete({ find: { _id: PEARL_USER_ID } });
+        await module.close();
     });
 
     it('should be defined', () => {

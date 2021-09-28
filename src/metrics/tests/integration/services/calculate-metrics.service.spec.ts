@@ -6,18 +6,28 @@ import { RoundsModule } from '../../../../rounds/rounds.module';
 import { CalculateMetricsService } from '../../../services/calculate-metrics.service';
 
 describe('CalculateMetricsService', () => {
-  let service: CalculateMetricsService;
+    let module: TestingModule;
+    let service: CalculateMetricsService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [DaoProposalsModule, AppModule, DatabaseModule, RoundsModule],
-      providers: [CalculateMetricsService],
-    }).compile();
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [
+                DaoProposalsModule,
+                AppModule,
+                DatabaseModule,
+                RoundsModule,
+            ],
+            providers: [CalculateMetricsService],
+        }).compile();
 
-    service = module.get<CalculateMetricsService>(CalculateMetricsService);
-  });
+        service = module.get<CalculateMetricsService>(CalculateMetricsService);
+    });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+    afterAll(async () => {
+        await module.close();
+    });
+
+    it('should be defined', () => {
+        expect(service).toBeDefined();
+    });
 });

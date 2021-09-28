@@ -39,7 +39,7 @@ export class S3ImageManagementService {
             return {
                 key,
                 fileExtension: imageFileExtension,
-                url: `${process.env.CDN_URL}${key}.${imageFileExtension}`,  
+                url: `${this.configService.get<string>('CDN_URL')}${key}.${imageFileExtension}`,  
             };
         } catch (error) {
             throw error;
@@ -48,7 +48,7 @@ export class S3ImageManagementService {
 
     public async deleteFileOnS3(picture: Picture): Promise<void> {
         const command = new DeleteObjectCommand({
-            Bucket: process.env.S3_BUCKET,
+            Bucket: this.configService.get<string>('S3_BUCKET'),
             Key: `${this.s3Path}${picture.key}.${picture.fileExtension}`,
         } as DeleteObjectCommandInput)
 
@@ -65,7 +65,7 @@ export class S3ImageManagementService {
         fileExtension: FileExtensionsEnum,
     ): Promise<void> {
         const command = new PutObjectCommand({
-            Bucket: process.env.S3_BUCKET,
+            Bucket: this.configService.get<string>('S3_BUCKET'),
             Body: data,
             ContentType: MimeTypesMap[fileExtension],
             Key: `${this.s3Path}${key}.${fileExtension}`,
