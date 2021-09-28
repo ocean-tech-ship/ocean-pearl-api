@@ -35,7 +35,7 @@ describe('PearlUserRepository', () => {
     });
 
     afterAll(async () => {
-        await service.delete(PEARL_USER_ID);
+        await service.delete({ find: { _id: PEARL_USER_MONGO_ID } });
         await module.close();
     });
 
@@ -81,7 +81,9 @@ describe('PearlUserRepository', () => {
         });
 
         test('it should delete a user', async () => {
-            expect(await service.delete(oceanUser.id)).toBeTruthy();
+            expect(
+                await service.delete({ find: { id: oceanUser.id } }),
+            ).toBeTruthy();
         });
     });
 });

@@ -26,7 +26,9 @@ describe('SessionRepository', () => {
     });
 
     afterAll(async () => {
-        await service.deleteByWalletAddress(identity.address);
+        await service.deleteMany({
+            find: { walletAddress: identity.address },
+        });
         await module.close();
     });
 
@@ -73,10 +75,12 @@ describe('SessionRepository', () => {
         await service.create(session);
 
         expect(
-            await service.deleteByWalletAddressAndCreatedAt(
-                session.walletAddress,
-                session.createdAt,
-            ),
+            await service.delete({
+                find: {
+                    walletAddress: session.walletAddress,
+                    createdAt: session.createdAt,
+                },
+            }),
         ).toBeTruthy();
     });
 });

@@ -51,9 +51,11 @@ export class MissmatchedProposalStrategy implements StrategyInterface {
                 index,
                 linkedProposalId,
             ] of oldProject.daoProposals.entries()) {
-                const linkedProposal = await this.proposalRepository.findOneRaw({
-                    find: { _id: linkedProposalId },
-                });
+                const linkedProposal = await this.proposalRepository.findOneRaw(
+                    {
+                        find: { _id: linkedProposalId },
+                    },
+                );
 
                 if (linkedProposal.airtableId === proposal.airtableId) {
                     oldProject.daoProposals.splice(index, 1);
@@ -61,12 +63,14 @@ export class MissmatchedProposalStrategy implements StrategyInterface {
             }
 
             if (oldProject.daoProposals.length === 0) {
-                await this.projectRepository.delete(oldProject.id);
+                await this.projectRepository.delete({
+                    find: { id: oldProject.id },
+                });
             } else {
                 await this.projectRepository.update(oldProject);
             }
         }
-        
+
         newProposal._id = proposal._id;
         newProposal.id = proposal.id;
         proposal.deliverables = proposal.deliverables as Types.ObjectId[];

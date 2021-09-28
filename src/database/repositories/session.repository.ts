@@ -47,21 +47,6 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         }
     }
 
-    public async deleteByWalletAddressAndCreatedAt(
-        walletAddress: string,
-        createdAt: Date,
-    ): Promise<boolean> {
-        try {
-            const response: MongooseDeleteResponse = await this.model.deleteOne(
-                { walletAddress: walletAddress, createdAt: createdAt },
-            );
-
-            return response.deletedCount === 1;
-        } catch (error: any) {
-            throw error;
-        }
-    }
-
     async update(model: Session): Promise<boolean> {
         try {
             const response: SessionType = await this.model.findOneAndUpdate(
@@ -88,10 +73,14 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         }
     }
 
-    public async delete(id: string): Promise<boolean> {
+    public async delete(query: FindQuery): Promise<boolean> {
         try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                { _id: id },
+                query.find,
             );
 
             return response.deletedCount === 1;
@@ -100,13 +89,14 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         }
     }
 
-    public async deleteByWalletAddress(
-        walletAddress: string,
-    ): Promise<boolean> {
+    public async deleteMany(query: FindQuery): Promise<boolean> {
         try {
-            const response: MongooseDeleteResponse = await this.model.deleteMany(
-                { walletAddress: walletAddress },
-            );
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            const response: MongooseDeleteResponse =
+                await this.model.deleteMany(query.find);
 
             return response.deletedCount > 0;
         } catch (error: any) {

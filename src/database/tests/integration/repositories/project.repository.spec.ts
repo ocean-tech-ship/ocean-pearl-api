@@ -4,10 +4,13 @@ import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../database.module';
 import { CategoryEnum } from '../../../enums/category.enum';
 import { nanoid } from '../../../functions/nano-id.function';
+import { Picture } from '../../../schemas/picture.schema';
 import { ProjectRepository } from '../../../repositories/project.repository';
 import { Project } from '../../../schemas/project.schema';
 import { SocialMedia } from '../../../schemas/social-media.schema';
+import { FileExtensionsEnum } from '../../../../aws/s3/enums/file-extensions.enum';
 
+const faker = require('faker');
 const PROJECT_ID: string = nanoid();
 const PROJECT_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
@@ -20,6 +23,11 @@ describe('ProjectRepository', () => {
         oneLiner: 'Best project as one liner',
         socialMedia: {} as SocialMedia,
         category: CategoryEnum.CoreSoftware,
+        logo: {
+            key: faker.datatype.hexaDecimal(21),
+            url: faker.internet.url(),
+            fileExtension: FileExtensionsEnum.Jpeg,
+        } as Picture,
         company: new Types.ObjectId(),
         associatedAddresses: ['0x967da4048cD07aB37855c090aAF366e4ce1b9F48'],
         paymentWalletsAddresses: [
@@ -41,7 +49,7 @@ describe('ProjectRepository', () => {
     });
 
     afterAll(async () => {
-        await service.delete(PROJECT_ID);
+        await service.delete({ find: { _id: PROJECT_MONGO_ID } });
         await module.close();
     });
 
@@ -70,7 +78,11 @@ describe('ProjectRepository', () => {
                 title: 'Best project ever',
                 description: 'Still the best project ever.',
                 socialMedia: {},
-                logo: undefined,
+                logo: {
+                    key: project.logo.key,
+                    url: project.logo.url,
+                    fileExtension: project.logo.fileExtension,
+                },
                 company: null,
                 category: CategoryEnum.CoreSoftware,
             });
@@ -87,7 +99,9 @@ describe('ProjectRepository', () => {
         });
 
         test('it should delete a project', async () => {
-            expect(await service.delete(project.id)).toBeTruthy();
+            expect(
+                await service.delete({ find: { id: project.id } }),
+            ).toBeTruthy();
         });
     });
 });
