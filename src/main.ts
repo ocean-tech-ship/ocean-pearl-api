@@ -11,7 +11,7 @@ async function bootstrap() {
 
     const config = new DocumentBuilder()
         .setTitle('Ocean Pearl API')
-        .setDescription('Public API endpoint of the Ocean-Pearl project')
+        .setDescription('Public API endpoint of the Ocean-Pearl project.')
         .setVersion('1.0')
         .addCookieAuth()
         .build();
