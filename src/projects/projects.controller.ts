@@ -1,29 +1,52 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+    Controller,
+    Get,
+    HttpException,
+    HttpStatus,
+    Param,
+    Query,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common';
+import {
+    ApiBadRequestResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiTags,
+} from '@nestjs/swagger';
 import { PaginationOptions } from '../database/interfaces/pagination-options.interface';
 import { Project } from '../database/schemas/project.schema';
+import { ProjectFilterQuery } from './models/project-filter-query.model';
+import { GetFilteredProjectsService } from './services/get-filtered-projects.service';
 import { GetProjectByIdService } from './services/get-project-by-id.service';
 import { GetProjectsPaginatedService } from './services/get-projects-paginated.service';
-import { GetProjectsService } from './services/get-projects.service';
 
 @ApiTags('projects')
 @Controller('projects')
 export class ProjectsController {
     public constructor(
-        private getProjectsService: GetProjectsService,
+        private getFilteredProjectsService: GetFilteredProjectsService,
         private getProjectByIdService: GetProjectByIdService,
         private getProjectsPaginatedService: GetProjectsPaginatedService,
     ) {}
 
     @Get()
+    @ApiBadRequestResponse()
     @ApiOkResponse({
         type: Project,
         isArray: true,
         description: 'Returns all Projects',
     })
-    async getProjects(): Promise<Project[]> {
+    @UsePipes(new ValidationPipe({ transform: true }))
+    async getProjects(
+        @Query() projectFilterQuery: ProjectFilterQuery,
+    ): Promise<Project[]> {
         try {
-            return await this.getProjectsService.execute();
+            const filteredProjects = await this.getFilteredProjectsService.execute(
+                projectFilterQuery,
+            );
+
+            return filteredProjects ?? [];
         } catch (error: any) {
             throw error;
         }
@@ -47,6 +70,7 @@ export class ProjectsController {
     }
 
     @Get(':id')
+    @ApiNotFoundResponse()
     @ApiOkResponse({
         type: Project,
         description: 'Returns a single Project',
@@ -58,7 +82,13 @@ export class ProjectsController {
             );
 
             if (!project) {
-                throw new Error(`No project Found with id: ${id}!`);
+                throw new HttpException(
+                    {
+                        status: HttpStatus.NOT_FOUND,
+                        error: `No Project found with id: ${id}`,
+                    },
+                    HttpStatus.NOT_FOUND,
+                );
             }
 
             return project;
