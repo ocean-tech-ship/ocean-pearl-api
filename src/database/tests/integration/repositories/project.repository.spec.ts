@@ -49,7 +49,7 @@ describe('ProjectRepository', () => {
     });
 
     afterAll(async () => {
-        await service.delete({ find: { _id: PROJECT_ID } });
+        await service.delete({ find: { _id: PROJECT_MONGO_ID } });
         await module.close();
     });
 

@@ -35,7 +35,7 @@ describe('PearlUserRepository', () => {
     });
 
     afterAll(async () => {
-        await service.delete({ find: { _id: PEARL_USER_ID } });
+        await service.delete({ find: { _id: PEARL_USER_MONGO_ID } });
         await module.close();
     });
 

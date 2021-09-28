@@ -55,7 +55,7 @@ describe('DaoProposalRepository', () => {
     });
 
     afterAll(async () => {
-        await service.delete({ find: { _id: DAO_PROPOSAL_ID } });
+        await service.delete({ find: { _id: DAO_PROPOSAL_MONGO_ID } });
         await module.close();
     });
 

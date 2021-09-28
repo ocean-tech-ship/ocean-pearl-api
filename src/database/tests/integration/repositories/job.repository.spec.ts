@@ -38,7 +38,7 @@ describe('JobRepository', () => {
     });
 
     afterAll(async () => {
-        await service.delete({ find: { _id: JOB_ID } });
+        await service.delete({ find: { _id: JOB_MONGO_ID } });
         await module.close();
     });
 

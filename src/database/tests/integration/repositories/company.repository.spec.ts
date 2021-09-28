@@ -35,7 +35,7 @@ describe('CompanyRepository', () => {
     });
 
     afterAll(async () => {
-        await service.delete({ find: { _id: COMPANY_ID } });
+        await service.delete({ find: { _id: COMPANY_MONGO_ID } });
         await module.close();
     });
 
