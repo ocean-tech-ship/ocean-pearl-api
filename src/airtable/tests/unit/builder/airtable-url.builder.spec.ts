@@ -9,7 +9,7 @@ describe('AirtableUrlBuilder', () => {
     let configService: ConfigService;
     let BASE_URL: string;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [AirtableUrlBuilder, ConfigService],
         }).compile();

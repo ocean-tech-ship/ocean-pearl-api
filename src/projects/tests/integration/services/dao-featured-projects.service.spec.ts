@@ -5,17 +5,24 @@ import { ProjectsModule } from '../../../projects.module';
 import { DaoFeaturedProjectsService } from '../../../services/dao-featured-projects.service';
 
 describe('DaoFeaturedProjectsService', () => {
-  let service: DaoFeaturedProjectsService;
+    let module: TestingModule;
+    let service: DaoFeaturedProjectsService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule, ProjectsModule, AppModule]
-    }).compile();
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [DatabaseModule, ProjectsModule, AppModule],
+        }).compile();
 
-    service = module.get<DaoFeaturedProjectsService>(DaoFeaturedProjectsService);
-  });
+        service = module.get<DaoFeaturedProjectsService>(
+            DaoFeaturedProjectsService,
+        );
+    });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+    afterAll(async () => {
+        await module.close();
+    });
+
+    it('should be defined', () => {
+        expect(service).toBeDefined();
+    });
 });

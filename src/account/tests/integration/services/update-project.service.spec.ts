@@ -4,14 +4,19 @@ import { DatabaseModule } from '../../../../database/database.module';
 import { UpdateProjectService } from '../../../services/update-project.service';
 
 describe('UpdateProjectService', () => {
+    let module: TestingModule;
     let service: UpdateProjectService;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule],
         }).compile();
 
         service = module.get<UpdateProjectService>(UpdateProjectService);
+    });
+
+    afterAll(async () => {
+        await module.close();
     });
 
     it('should be defined', () => {

@@ -4,16 +4,21 @@ import { DatabaseModule } from '../../../../database/database.module';
 import { GetAssociatedProjectsService } from '../../../services/get-associated-projects.service';
 
 describe('GetAssociatedProjectsService', () => {
+    let module: TestingModule;
     let service: GetAssociatedProjectsService;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule],
         }).compile();
 
         service = module.get<GetAssociatedProjectsService>(
             GetAssociatedProjectsService,
         );
+    });
+
+    afterAll(async () => {
+        await module.close();
     });
 
     it('should be defined', () => {

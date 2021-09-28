@@ -7,14 +7,19 @@ import { AirtableModule } from '../../../airtable.module';
 import { NewProjectStrategy } from '../../../strategies/new-project.strategy';
 
 describe('NewProjectStrategy', () => {
+    let module: TestingModule;
     let service: NewProjectStrategy;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule, AirtableModule],
         }).compile();
 
         service = module.get<NewProjectStrategy>(NewProjectStrategy);
+    });
+
+    afterAll(async () => {
+        await module.close();
     });
 
     it('should be defined', () => {
