@@ -4,7 +4,7 @@ import { DaoProposalRepository } from '../../database/repositories/dao-proposal.
 import { RoundRepository } from '../../database/repositories/round.repository';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { GetCurrentRoundService } from '../../rounds/services/get-current-round.service';
-import { ProposalsFilterQuery } from '../models/ProposalsFilterQuery.model';
+import { ProposalFilterQuery } from '../models/proposal-filter-query.model';
 
 @Injectable()
 export class GetFilteredDaoProposalsService {
@@ -15,7 +15,7 @@ export class GetFilteredDaoProposalsService {
     ) {}
 
     public async execute(
-        proposalsFilterQuery: ProposalsFilterQuery,
+        proposalFilterQuery: ProposalFilterQuery,
     ): Promise<DaoProposal[]> {
         let query: FindQuery = {
             find: {},
@@ -24,7 +24,7 @@ export class GetFilteredDaoProposalsService {
             }
         };
 
-        for (const [key, value] of Object.entries(proposalsFilterQuery)) {
+        for (const [key, value] of Object.entries(proposalFilterQuery)) {
             if (!value) {
                 continue;
             }

@@ -5,17 +5,24 @@ import { ProjectsModule } from '../../../projects.module';
 import { GetProjectsPaginatedService } from '../../../services/get-projects-paginated.service';
 
 describe('GetProjectsPaginatedService', () => {
-  let service: GetProjectsPaginatedService;
+    let module: TestingModule;
+    let service: GetProjectsPaginatedService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule, ProjectsModule, AppModule]
-    }).compile();
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [DatabaseModule, ProjectsModule, AppModule],
+        }).compile();
 
-    service = module.get<GetProjectsPaginatedService>(GetProjectsPaginatedService);
-  });
+        service = module.get<GetProjectsPaginatedService>(
+            GetProjectsPaginatedService,
+        );
+    });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+    afterAll(async () => {
+        await module.close();
+    });
+
+    it('should be defined', () => {
+        expect(service).toBeDefined();
+    });
 });

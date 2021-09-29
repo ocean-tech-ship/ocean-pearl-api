@@ -49,7 +49,9 @@ export class SingleMissmatchedProposalStrategy implements StrategyInterface {
         }
 
         if (oldProject.daoProposals.length === 0) {
-            await this.projectRepository.delete(oldProject.id);
+            await this.projectRepository.delete({
+                find: { id: oldProject.id },
+            });
         } else {
             await this.projectRepository.update(oldProject);
         }

@@ -9,11 +9,12 @@ import { AirtableModule } from '../../../airtable.module';
 import { UpdateProposalStrategy } from '../../../strategies/update-proposal.strategy';
 
 describe('UpdateProposalStrategy', () => {
+    let module: TestingModule;
     let service: UpdateProposalStrategy;
     let proposalRepository: DaoProposalRepository;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule, AirtableModule],
         }).compile();
 
@@ -21,11 +22,17 @@ describe('UpdateProposalStrategy', () => {
         proposalRepository = module.get<DaoProposalRepository>(
             DaoProposalRepository,
         );
+    });
 
+    beforeEach(async () => {
         const mockResponse = { airtableId: 'someId' } as DaoProposal;
         jest.spyOn(proposalRepository, 'findOneRaw').mockImplementation(
             async () => mockResponse,
         );
+    });
+
+    afterAll(async () => {
+        await module.close();
     });
 
     it('should be defined', () => {

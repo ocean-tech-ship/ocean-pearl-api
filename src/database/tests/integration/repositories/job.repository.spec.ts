@@ -12,7 +12,7 @@ const JOB_ID: string = nanoid();
 const JOB_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('JobRepository', () => {
-    let job: Job = <Job>{
+    const job: Job = <Job>{
         _id: JOB_MONGO_ID,
         id: JOB_ID,
         title: 'Head of doing Stuff',
@@ -26,22 +26,24 @@ describe('JobRepository', () => {
         company: new Types.ObjectId('6060e915a8c5f54934190541'),
     };
 
+    let module: TestingModule;
     let service: JobRepository;
-  
-    beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
-        imports: [DatabaseModule, AppModule]
-      }).compile();
-  
-      service = module.get<JobRepository>(JobRepository);
+
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [DatabaseModule, AppModule],
+        }).compile();
+
+        service = module.get<JobRepository>(JobRepository);
     });
 
     afterAll(async () => {
-        await service.delete(JOB_ID);
+        await service.delete({ find: { _id: JOB_MONGO_ID } });
+        await module.close();
     });
-  
+
     it('should be defined', () => {
-      expect(service).toBeDefined();
+        expect(service).toBeDefined();
     });
 
     describe('Given I have a job repository', () => {
@@ -78,9 +80,7 @@ describe('JobRepository', () => {
         });
 
         test('it should return all jobs', async () => {
-            expect((await service.getAll()).length).toBeGreaterThanOrEqual(
-                1
-            );
+            expect((await service.getAll()).length).toBeGreaterThanOrEqual(1);
         });
 
         test('it should update a job', async () => {
@@ -90,7 +90,7 @@ describe('JobRepository', () => {
         });
 
         test('it should delete a job', async () => {
-            expect(await service.delete(job.id)).toBeTruthy();
+            expect(await service.delete({ find: { id: job.id } })).toBeTruthy();
         });
     });
 });

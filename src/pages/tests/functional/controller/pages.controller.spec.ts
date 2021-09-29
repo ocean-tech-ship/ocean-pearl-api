@@ -6,18 +6,28 @@ import { ProjectsModule } from '../../../../projects/projects.module';
 import { PagesController } from '../../../pages.controller';
 
 describe('PagesController', () => {
-  let controller: PagesController;
+    let module: TestingModule;
+    let controller: PagesController;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [ProjectsModule, DaoProposalsModule, AppModule, MetricsModule],
-      controllers: [PagesController],
-    }).compile();
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [
+                ProjectsModule,
+                DaoProposalsModule,
+                AppModule,
+                MetricsModule,
+            ],
+            controllers: [PagesController],
+        }).compile();
 
-    controller = module.get<PagesController>(PagesController);
-  });
+        controller = module.get<PagesController>(PagesController);
+    });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+    afterAll(async () => {
+        await module.close();
+    });
+
+    it('should be defined', () => {
+        expect(controller).toBeDefined();
+    });
 });

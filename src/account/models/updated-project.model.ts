@@ -12,11 +12,6 @@ import { SocialMedia } from '../../database/schemas/social-media.schema';
 
 export class UpdatedProject {
     @ApiProperty({
-        default: 'someId',
-    })
-    id: string;
-
-    @ApiProperty({
         default: 'Ocean Pearl',
     })
     @IsOptional()
