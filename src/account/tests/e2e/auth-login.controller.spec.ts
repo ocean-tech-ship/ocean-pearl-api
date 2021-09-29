@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../../controllers/auth.controller';
-import { createIdentity, hash, sign } from 'eth-crypto';
 import { VerifyLoginService } from '../../../auth/services/verify-login.service';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
@@ -10,6 +9,7 @@ import { DatabaseModule } from '../../../database/database.module';
 import { AppModule } from '../../../app.module';
 import { SessionRepository } from '../../../database/repositories/session.repository';
 import { LoginRequest } from '../../../auth/models/login-request.model';
+import { Wallet } from 'ethers';
 
 describe('AuthLoginController', () => {
     let app: INestApplication;
@@ -18,11 +18,7 @@ describe('AuthLoginController', () => {
     let service: VerifyLoginService;
     let repository: SessionRepository;
 
-    let identity: {
-        privateKey: string;
-        publicKey: string;
-        address: string;
-    };
+    let identity: Wallet;
 
     let now: number;
     let plainSignature: string;
@@ -42,7 +38,7 @@ describe('AuthLoginController', () => {
         service = module.get<VerifyLoginService>(VerifyLoginService);
         repository = module.get<SessionRepository>(SessionRepository);
 
-        identity = createIdentity();
+        identity = Wallet.createRandom();
 
         now = Date.now();
         plainSignature = service.constructPlainSignature(new Date(now));
@@ -50,10 +46,7 @@ describe('AuthLoginController', () => {
         loginRequest = {
             wallet: identity.address,
             timestamp: new Date(now),
-            signature: sign(
-                identity.privateKey,
-                hash.keccak256(plainSignature),
-            ),
+            signature: await identity.signMessage(plainSignature),
         };
     });
 
@@ -111,7 +104,7 @@ describe('AuthLoginController', () => {
             request(app.getHttpServer())
                 .post('/account/login')
                 .send(<LoginRequest>{
-                    wallet: createIdentity().address,
+                    wallet: Wallet.createRandom().address,
                     timestamp: loginRequest.timestamp,
                     signature: loginRequest.signature,
                 })
@@ -129,7 +122,7 @@ describe('AuthLoginController', () => {
                 .expect(HttpStatus.UNAUTHORIZED);
         });
 
-        it('should throw unauthorized for outdated timestamp', () => {
+        it('should throw unauthorized for outdated timestamp', async () => {
             const timestamp = new Date(
                 Date.now() - VerifyLoginService.TIMESTAMP_TTL - 1,
             );
@@ -139,11 +132,8 @@ describe('AuthLoginController', () => {
                 .send(<LoginRequest>{
                     wallet: identity.address,
                     timestamp: timestamp,
-                    signature: sign(
-                        identity.privateKey,
-                        hash.keccak256(
-                            service.constructPlainSignature(timestamp),
-                        ),
+                    signature: await identity.signMessage(
+                        service.constructPlainSignature(timestamp),
                     ),
                 })
                 .expect(HttpStatus.UNAUTHORIZED);
