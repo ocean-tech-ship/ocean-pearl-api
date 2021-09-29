@@ -1,15 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { VerifyLoginService } from '../../../services/verify-login.service';
-import { createIdentity, hash, sign } from 'eth-crypto';
+import { Wallet } from 'ethers';
 
 describe('VerifyLoginService', () => {
     let service: VerifyLoginService;
 
-    let identity: {
-        privateKey: string;
-        publicKey: string;
-        address: string;
-    };
+    let identity: Wallet;
 
     let now: number;
     let plainSignature: string;
@@ -22,11 +18,12 @@ describe('VerifyLoginService', () => {
 
         service = module.get<VerifyLoginService>(VerifyLoginService);
 
-        identity = createIdentity();
+        identity = Wallet.createRandom();
 
         now = Date.now();
         plainSignature = service.constructPlainSignature(new Date(now));
-        signature = sign(identity.privateKey, hash.keccak256(plainSignature));
+
+        signature = await identity.signMessage(plainSignature);
     });
 
     it('should be defined', () => {
@@ -56,34 +53,28 @@ describe('VerifyLoginService', () => {
     it('wallet address should be manipulated', () => {
         expect(
             service.verifySignature({
-                wallet: createIdentity().address,
+                wallet: Wallet.createRandom().address,
                 timestamp: new Date(now),
                 signature,
             }),
         ).toBeFalsy();
     });
 
-    it('signature should be manipulated', () => {
+    it('signature should be manipulated', async () => {
         expect(
             service.verifySignature({
                 wallet: identity.address,
                 timestamp: new Date(now),
-                signature: sign(
-                    identity.privateKey,
-                    hash.keccak256('manipulated'),
-                ),
+                signature: await identity.signMessage('manipulated'),
             }),
         ).toBeFalsy();
     });
 
-    it('timestamp should be outdated', () => {
+    it('timestamp should be outdated', async () => {
         const timestamp = new Date(now - VerifyLoginService.TIMESTAMP_TTL - 1);
         const plainSignature = service.constructPlainSignature(timestamp);
 
-        const signature = sign(
-            identity.privateKey,
-            hash.keccak256(plainSignature),
-        );
+        const signature = await identity.signMessage(plainSignature);
 
         expect(
             service.verifyTimestamp({
