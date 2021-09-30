@@ -1,13 +1,8 @@
-name: CI
+name: Deploy Staging
 
 on:
   push:
-    branches-ignore:
-      - main
-      - development
-  pull_request:
-    branches-ignore:
-      - main
+    branches:
       - development
 
 jobs:
@@ -15,13 +10,13 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     timeout-minutes: 8
-    
+
     strategy:
       matrix:
         os: [ ubuntu-latest,windows-latest,macos-latest ]
         node: [ 12 ]
-        mongodb: [ 4.4 ]
-        
+        mongodb: [4.4]
+
     env:
       ORIGIN: http://localhost:3000
       MONGO_URL: mongodb://localhost:27017/test
@@ -45,12 +40,12 @@ jobs:
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v2.3.4
-        
+
       - name: Setup node env 🏗
         uses: actions/setup-node@v2.4.0
         with:
           node-version: ${{ matrix.node }}
-          
+
       - name: Cache Node.js modules 📦
         uses: actions/cache@v2
         with:
@@ -60,10 +55,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-          
+
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
-        
+
       - name: Run tests 🧪
         run: npm run test:ci
 
@@ -81,3 +76,72 @@ jobs:
         with:
           lcov-file: coverage/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 8
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest,windows-latest,macos-latest ]
+        node: [ 12 ]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v2.3.4
+
+      - name: Setup node env 🏗
+        uses: actions/setup-node@v2.4.0
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Cache Node.js modules 📦
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - name: Install dependencies 👨🏻‍💻
+        run: npm ci
+
+      - name: Building project 🚧
+        run: npm run build
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 8
+
+    needs:
+      - test
+      - build
+
+    environment:
+      name: staging
+      url: https://api.staging.oceanpearl.io/api/
+
+    concurrency:
+      group: deploy-staging
+
+    steps:
+      - run: echo "Deploying to staging environment..."
+
+      - name: Checkout 🛎
+        uses: actions/checkout@v2.3.4
+
+      - name: Deploy to Heroku 👾
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          branch: development
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          healthcheck: ${{ secrets.HEALTHCHECK_URL }}
+          delay: 5
+
+      - run: echo "Successfully deployed on staging environment!"
