@@ -1,0 +1,44 @@
+name: CI Report
+
+on:
+  workflow_run:
+    workflows: [ 'CI' ]
+    types:
+      - completed
+
+jobs:
+  report-tests:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 8
+
+    strategy:
+      matrix:
+        test-os: [ ubuntu-latest ]
+
+    steps:
+      - name: Report test results 📈
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          artifact: test-results-${{ matrix.test-os }}
+          name: Test results (${{ matrix.test-os }})
+          path: '*.xml'
+          reporter: jest-junit
+
+  report-coverage:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 8
+
+    steps:
+      - name: Download coverage report ⏹
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage-report
+
+      - name: Report code coverage 🔍
+        uses: romeovs/lcov-reporter-action@v0.2.21
+        with:
+          lcov-file: lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}

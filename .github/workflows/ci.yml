@@ -67,20 +67,19 @@ jobs:
       - name: Run tests 🧪
         run: npm run test:ci
 
-      - name: Report test results 📈
-        uses: dorny/test-reporter@v1
+      - name: Upload test artifacts 🦴
+        uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
-          name: 'Test results (${{ matrix.os }})'
+          name: test-results-${{ matrix.os }}
           path: reports/jest-*.xml
-          reporter: jest-junit
 
-      - name: Report code coverage 🔍
+      - name: Upload coverage artifact 🔍
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: romeovs/lcov-reporter-action@v0.2.21
+        uses: actions/upload-artifact@v2
         with:
-          lcov-file: coverage/lcov.info
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: coverage-report
+          path: coverage/lcov.info
 
   build:
     runs-on: ${{ matrix.os }}
