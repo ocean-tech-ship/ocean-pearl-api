@@ -33,8 +33,9 @@ jobs:
 
     steps:
       - name: Download coverage report ⏹
-        uses: actions/download-artifact@v2
+        uses: dawidd6/action-download-artifact@v2
         with:
+          workflow: ci.yml
           name: coverage-report
 
       - name: Report code coverage 🔍
