@@ -20,6 +20,7 @@ jobs:
       - name: Report test results 📈
         uses: dorny/test-reporter@v1
         if: success() || failure()
+        continue-on-error: true
         with:
           artifact: test-results-${{ matrix.test-os }}
           name: Test results (${{ matrix.test-os }})
