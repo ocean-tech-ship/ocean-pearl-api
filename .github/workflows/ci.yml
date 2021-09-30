@@ -74,12 +74,11 @@ jobs:
           name: test-results-${{ matrix.os }}
           path: reports/jest-*.xml
 
-      - name: Upload coverage artifact 🔍
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: actions/upload-artifact@v2
+      - name: Report code coverage 🔍
+        uses: romeovs/lcov-reporter-action@v0.2.21
         with:
-          name: coverage-report
-          path: coverage/lcov.info
+          lcov-file: coverage/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     runs-on: ${{ matrix.os }}
