@@ -66,6 +66,7 @@ jobs:
           path: reports/jest-*.xml
 
       - name: Report code coverage 🔍
+        continue-on-error: true
         uses: romeovs/lcov-reporter-action@v0.2.21
         with:
           lcov-file: coverage/lcov.info
