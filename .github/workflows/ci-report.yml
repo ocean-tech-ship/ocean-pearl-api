@@ -25,20 +25,3 @@ jobs:
           name: Test results (${{ matrix.test-os }})
           path: '*.xml'
           reporter: jest-junit
-
-  report-coverage:
-    runs-on: ubuntu-latest
-
-    timeout-minutes: 8
-
-    steps:
-      - name: Download coverage report ⏹
-        uses: actions/download-artifact@v2
-        with:
-          name: coverage-report
-
-      - name: Report code coverage 🔍
-        uses: romeovs/lcov-reporter-action@v0.2.21
-        with:
-          lcov-file: lcov.info
-          github-token: ${{ secrets.GITHUB_TOKEN }}
