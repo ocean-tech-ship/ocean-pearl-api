@@ -14,7 +14,9 @@ export interface RepositoryInterface<T extends Document> {
 
     create(model: T): Promise<Types.ObjectId>;
 
-    delete(id: string): Promise<boolean>;
+    delete(query: FindQuery): Promise<boolean>;
+
+    deleteMany(query: FindQuery): Promise<boolean>;
 
     getModel(): Model<T>;
 }

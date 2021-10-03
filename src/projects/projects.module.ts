@@ -5,7 +5,7 @@ import { DaoFeaturedProjectsService } from './services/dao-featured-projects.ser
 import { FeaturedProjectsService } from './services/featured-projects.service';
 import { GetProjectByIdService } from './services/get-project-by-id.service';
 import { GetProjectsPaginatedService } from './services/get-projects-paginated.service';
-import { GetProjectsService } from './services/get-projects.service';
+import { GetFilteredProjectsService } from './services/get-filtered-projects.service';
 import { LatestProjectsService } from './services/latest-projects.service';
 
 @Module({
@@ -16,7 +16,7 @@ import { LatestProjectsService } from './services/latest-projects.service';
       FeaturedProjectsService,
       GetProjectByIdService,
       GetProjectsPaginatedService,
-      GetProjectsService,
+      GetFilteredProjectsService,
       LatestProjectsService,
   ],
   exports: [
@@ -24,7 +24,7 @@ import { LatestProjectsService } from './services/latest-projects.service';
     FeaturedProjectsService,
     GetProjectByIdService,
     GetProjectsPaginatedService,
-    GetProjectsService,
+    GetFilteredProjectsService,
     LatestProjectsService,
 ]
 })

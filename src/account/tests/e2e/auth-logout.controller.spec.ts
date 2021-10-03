@@ -24,7 +24,7 @@ describe('AuthLogoutController', () => {
     let token: JwtToken;
     let session: Session;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [ConfigModule, AuthModule, DatabaseModule, AppModule],
             controllers: [AuthController],
@@ -38,7 +38,13 @@ describe('AuthLogoutController', () => {
         controller = module.get<AuthController>(AuthController);
         service = module.get<AuthService>(AuthService);
         repository = module.get<SessionRepository>(SessionRepository);
+    });
 
+    afterAll(async () => {
+        await app.close();
+    });
+
+    beforeEach(async () => {
         token = service.createToken({
             wallet: createIdentity().address,
             createdAt: new Date(),
@@ -55,7 +61,9 @@ describe('AuthLogoutController', () => {
     });
 
     afterEach(async () => {
-        await repository.deleteByWalletAddress(session.walletAddress);
+        await repository.deleteMany({
+            find: { walletAddress: session.walletAddress },
+        });
     });
 
     it('should be defined', () => {

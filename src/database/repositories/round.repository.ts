@@ -9,10 +9,7 @@ import { Round, RoundType } from '../schemas/round.schema';
 
 @Injectable()
 export class RoundRepository implements RepositoryInterface<RoundType> {
-
-    constructor(
-        @InjectModel('Round') private model: Model<RoundType>
-    ) {}
+    constructor(@InjectModel('Round') private model: Model<RoundType>) {}
 
     public async findOne(query: FindQuery): Promise<Round> {
         try {
@@ -36,10 +33,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model
-                .findOne(query.find)
-                .lean()
-                .exec();
+            return await this.model.findOne(query.find).lean().exec();
         } catch (error: any) {
             throw error;
         }
@@ -57,9 +51,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
         }
     }
 
-    public async getAll(
-        query?: FindQuery
-    ): Promise<Round[]> {
+    public async getAll(query?: FindQuery): Promise<Round[]> {
         try {
             return await this.model
                 .find(query?.find || {})
@@ -73,9 +65,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
         }
     }
 
-    public async getPaginated(
-        options: PaginationOptions
-    ): Promise<Round[]> {
+    public async getPaginated(options: PaginationOptions): Promise<Round[]> {
         try {
             return await this.model
                 .find(options.find || {})
@@ -94,7 +84,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
         try {
             const response: Round = await this.model.findOneAndUpdate(
                 { id: model.id },
-                model
+                model,
             );
 
             return response !== null;
@@ -113,12 +103,33 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
         }
     }
 
-    public async delete(id: string): Promise<boolean> {
+    public async delete(query): Promise<boolean> {
         try {
-            const response: MongooseDeleteResponse =
-                await this.model.deleteOne({ id: id });
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            const response: MongooseDeleteResponse = await this.model.deleteOne(
+                query.find,
+            );
 
             return response.deletedCount === 1;
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    public async deleteMany(query: FindQuery): Promise<boolean> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            const response: MongooseDeleteResponse = await this.model.deleteMany(
+                query.find,
+            );
+
+            return response.deletedCount > 0;
         } catch (error: any) {
             throw error;
         }

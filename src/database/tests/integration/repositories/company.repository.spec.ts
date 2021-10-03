@@ -11,7 +11,7 @@ const COMPANY_ID: string = nanoid();
 const COMPANY_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('CompanyRepository', () => {
-    let company: Company = <Company>{
+    const company: Company = <Company>{
         _id: COMPANY_MONGO_ID,
         id: COMPANY_ID,
         name: faker.company.companyName(),
@@ -20,32 +20,32 @@ describe('CompanyRepository', () => {
         socialMedia: {},
         address: {},
         projects: [],
-        jobs: []
+        jobs: [],
     };
 
+    let module: TestingModule;
     let service: CompanyRepository;
-  
-    beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
-        imports: [DatabaseModule, AppModule]
-      }).compile();
-  
-      service = module.get<CompanyRepository>(CompanyRepository);
+
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [DatabaseModule, AppModule],
+        }).compile();
+
+        service = module.get<CompanyRepository>(CompanyRepository);
     });
 
     afterAll(async () => {
-        await service.delete(COMPANY_ID);
+        await service.delete({ find: { _id: COMPANY_MONGO_ID } });
+        await module.close();
     });
-  
+
     it('should be defined', () => {
-      expect(service).toBeDefined();
+        expect(service).toBeDefined();
     });
 
     describe('Given I have a company repository', () => {
         test('it should save a company', async () => {
-            expect(await service.create(company)).toEqual(
-                COMPANY_MONGO_ID
-            );
+            expect(await service.create(company)).toEqual(COMPANY_MONGO_ID);
         });
 
         test('it should return a company', async () => {
@@ -68,14 +68,12 @@ describe('CompanyRepository', () => {
                 socialMedia: {},
                 address: {},
                 projects: [],
-                jobs: []
+                jobs: [],
             });
         });
 
         test('it should return all companies', async () => {
-            expect((await service.getAll()).length).toBeGreaterThanOrEqual(
-                1
-            );
+            expect((await service.getAll()).length).toBeGreaterThanOrEqual(1);
         });
 
         test('it should update a company', async () => {
@@ -85,7 +83,9 @@ describe('CompanyRepository', () => {
         });
 
         test('it should delete a company', async () => {
-            expect(await service.delete(company.id)).toBeTruthy();
+            expect(
+                await service.delete({ find: { id: company.id } }),
+            ).toBeTruthy();
         });
     });
 });

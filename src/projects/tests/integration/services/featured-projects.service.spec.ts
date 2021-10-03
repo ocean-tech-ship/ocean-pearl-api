@@ -5,17 +5,22 @@ import { ProjectsModule } from '../../../projects.module';
 import { FeaturedProjectsService } from '../../../services/featured-projects.service';
 
 describe('ProjectsService', () => {
-  let service: FeaturedProjectsService;
+    let module: TestingModule;
+    let service: FeaturedProjectsService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule, ProjectsModule, AppModule]
-    }).compile();
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [DatabaseModule, ProjectsModule, AppModule],
+        }).compile();
 
-    service = module.get<FeaturedProjectsService>(FeaturedProjectsService);
-  });
+        service = module.get<FeaturedProjectsService>(FeaturedProjectsService);
+    });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+    afterAll(async () => {
+        await module.close();
+    });
+
+    it('should be defined', () => {
+        expect(service).toBeDefined();
+    });
 });

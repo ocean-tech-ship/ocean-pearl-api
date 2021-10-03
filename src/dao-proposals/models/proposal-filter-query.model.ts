@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsNumberString, IsOptional, IsString } from 'class-validator';
 import { CategoryEnum } from '../../database/enums/category.enum';
 
-export class ProposalsFilterQuery {
+export class ProposalFilterQuery {
     @ApiPropertyOptional({
         description: 'The Round, 0 for the current Round',
         type: Number,

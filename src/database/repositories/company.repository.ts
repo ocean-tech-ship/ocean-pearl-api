@@ -115,12 +115,31 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
         }
     }
 
-    public async delete(id: string): Promise<boolean> {
+    public async delete(query: FindQuery): Promise<boolean> {
         try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
             const response: MongooseDeleteResponse =
-                await this.model.deleteOne({ id: id });
+                await this.model.deleteOne(query.find);
 
             return response.deletedCount === 1;
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    public async deleteMany(query: FindQuery): Promise<boolean> {
+        try {
+            if (!query || !query?.find) {
+                throw new Error('Please specify a query');
+            }
+
+            const response: MongooseDeleteResponse =
+                await this.model.deleteMany(query.find);
+
+            return response.deletedCount > 0;
         } catch (error: any) {
             throw error;
         }

@@ -9,16 +9,21 @@ import { SingleMissmatchedProposalStrategy } from '../../../strategies/single-mi
 const faker = require('faker');
 
 describe('SingleMissmatchedProposalStrategy', () => {
+    let module: TestingModule;
     let service: SingleMissmatchedProposalStrategy;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule, AirtableModule],
         }).compile();
 
         service = module.get<SingleMissmatchedProposalStrategy>(
             SingleMissmatchedProposalStrategy,
         );
+    });
+
+    afterAll(async () => {
+        await module.close();
     });
 
     it('should be defined', () => {

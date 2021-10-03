@@ -81,10 +81,12 @@ export class AuthController {
     async logout(@Req() req: Request, @Res() res: Response) {
         const user = req.user as AuthenticatedUser;
 
-        await this.sessionRepository.deleteByWalletAddressAndCreatedAt(
-            user.wallet,
-            user.createdAt,
-        );
+        await this.sessionRepository.delete({
+            find: {
+                walletAddress: user.wallet,
+                createdAt: user.createdAt,
+            },
+        });
 
         this.authService.clearToken(res);
 

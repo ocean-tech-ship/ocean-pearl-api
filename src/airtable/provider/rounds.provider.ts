@@ -1,4 +1,5 @@
 import { HttpService, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { AirtableUrlBuilder } from '../builder/airtable-url.builder';
 
@@ -9,12 +10,15 @@ export class RoundsProvider {
     public constructor(
         private httpService: HttpService,
         private airtableUrlBuilder: AirtableUrlBuilder,
+        private configService: ConfigService,
     ) {}
 
     public fetch(query: any = null): Promise<AxiosResponse<any>> {
         const config = {
             headers: {
-                Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+                Authorization: `Bearer ${this.configService.get<string>(
+                    'AIRTABLE_API_KEY',
+                )}`,
             },
         } as AxiosRequestConfig;
         const apiUrl = this.airtableUrlBuilder.build(tableName, query);
