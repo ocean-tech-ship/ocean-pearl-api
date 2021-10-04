@@ -66,6 +66,22 @@ export class SocialMedia {
     })
     @ApiProperty()
     discord: string;
+
+    @Prop({
+        type: String,
+        maxLength: 128,
+        trim: true,
+    })
+    @ApiProperty()
+    youtube: string;
+
+    @Prop({
+        type: String,
+        maxLength: 128,
+        trim: true,
+    })
+    @ApiProperty()
+    medium: string;
 }
 
 export const SocialMediaSchema = SchemaFactory.createForClass(SocialMedia);
