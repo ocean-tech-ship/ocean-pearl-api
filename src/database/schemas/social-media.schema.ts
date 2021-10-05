@@ -33,7 +33,7 @@ export class SocialMedia {
         trim: true,
     })
     @ApiProperty()
-    linkedIn: string;
+    linkedin: string;
 
     @Prop({
         type: String,
