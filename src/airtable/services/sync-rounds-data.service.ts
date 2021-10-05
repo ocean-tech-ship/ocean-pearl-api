@@ -38,8 +38,10 @@ export class SyncRoundsDataService {
     private mapRound(round: any): Round {
         let mappedRound: Round = {
             round: round['Round'],
-            earmarked: round['Earmarked'] ?? round['Earmarked USD'],
-            maxGrant: round['Max Grant'] ?? round['Max Grant USD'],
+            earmarkedFundingOcean: round['Earmarked'] ?? 0,
+            earmarkedFundingUsd: round['Earmarked USD'],
+            maxGrantOcean: round['Max Grant'] ?? 0,
+            maxGrantUsd: round['Max Grant USD'] ?? 0,
             paymentOption: round['Max Grant USD']
                 ? PaymentOptionEnum.Ocean
                 : PaymentOptionEnum.Usd,
