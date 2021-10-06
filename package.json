@@ -50,6 +50,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6",
     "sharp": "^0.29.1",
+    "svgo": "^2.7.0",
     "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
@@ -65,7 +66,9 @@
     "@types/node": "^14.14.36",
     "@types/passport": "^1.0.7",
     "@types/passport-jwt": "^3.0.6",
+    "@types/sharp": "^0.29.2",
     "@types/supertest": "^2.0.10",
+    "@types/svgo": "^2.6.0",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
     "cross-env": "^7.0.3",
