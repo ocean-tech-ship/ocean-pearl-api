@@ -8,15 +8,18 @@ import { ProjectGuard } from './guards/project.guard';
 import { ManagedProjectMapper } from './mapper/managed-project.mapper';
 import { GetAssociatedProjectsService } from './services/get-associated-projects.service';
 import { UpdateProjectService } from './services/update-project.service';
+import { UtilsModule } from '../utils/utils.module';
+import { PicturesService } from '../utils/services/pictures.service';
 
 @Module({
-    imports: [AuthModule, DatabaseModule, AwsModule],
+    imports: [AuthModule, DatabaseModule, AwsModule, UtilsModule],
     controllers: [AccountController, AuthController],
     providers: [
         GetAssociatedProjectsService,
         ManagedProjectMapper,
         UpdateProjectService,
         ProjectGuard,
+        PicturesService,
     ],
 })
 export class AccountModule {}

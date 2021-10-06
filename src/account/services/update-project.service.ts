@@ -4,11 +4,15 @@ import { S3ImageManagementService } from '../../aws/s3/services/s3-image-managem
 import { Picture } from '../../database/schemas/picture.schema';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { UpdatedProject } from '../models/updated-project.model';
+import { PicturesService } from '../../utils/services/pictures.service';
 
 @Injectable()
 export class UpdateProjectService {
+    MAX_PICTURES_SIZE = 8;
+
     public constructor(
         private projectRepository: ProjectRepository,
+        private picturesService: PicturesService,
         private s3ImageManagementService: S3ImageManagementService,
     ) {}
 
@@ -43,26 +47,36 @@ export class UpdateProjectService {
         }
 
         if (updatedProject.newPictures) {
-            for (const picture of updatedProject.newPictures) {
-                if (!dbProject.pictures) {
-                    dbProject.pictures = [
-                        await this.s3ImageManagementService.uploadImageToS3(
-                            picture.buffer,
-                            picture.mimetype as MimeTypesEnum,
-                            dbProject.id,
-                        ),
-                    ];
+            if (!dbProject.pictures) {
+                dbProject.pictures = [];
+            }
 
-                    break;
-                }
+            for (const picture of updatedProject.newPictures) {
+                const optimizedPicture = await this.picturesService.optimizeGalleryImage(
+                    {
+                        data: picture.buffer,
+                        type: picture.mimetype as MimeTypesEnum,
+                    },
+                );
 
                 dbProject.pictures.push(
                     await this.s3ImageManagementService.uploadImageToS3(
-                        picture.buffer,
-                        picture.mimetype as MimeTypesEnum,
+                        optimizedPicture.data,
+                        optimizedPicture.type,
                         dbProject.id,
                     ),
                 );
+
+                // Delete previous images if we reach the limit
+                if (dbProject.pictures.length > this.MAX_PICTURES_SIZE) {
+                    const oldestImage = dbProject.pictures[0];
+
+                    await this.s3ImageManagementService.deleteFileOnS3(
+                        oldestImage,
+                    );
+
+                    dbProject.pictures.splice(0, 1);
+                }
             }
         }
 
@@ -73,9 +87,14 @@ export class UpdateProjectService {
                 );
             }
 
+            const optimizedLogo = await this.picturesService.optimizeLogo({
+                data: updatedProject.logo[0].buffer,
+                type: updatedProject.logo[0].mimetype as MimeTypesEnum,
+            });
+
             dbProject.logo = await this.s3ImageManagementService.uploadImageToS3(
-                updatedProject.logo[0].buffer,
-                updatedProject.logo[0].mimetype as MimeTypesEnum,
+                optimizedLogo.data,
+                optimizedLogo.type,
                 dbProject.id,
             );
         }
