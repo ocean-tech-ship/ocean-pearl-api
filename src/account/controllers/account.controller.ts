@@ -80,7 +80,10 @@ export class AccountController {
         FileFieldsInterceptor(
             [
                 { name: 'logo', maxCount: 1 },
-                { name: 'newPictures', maxCount: 1 },
+                {
+                    name: 'newPictures',
+                    maxCount: UpdateProjectService.MAX_PICTURES_SIZE,
+                },
             ],
             {
                 limits: {

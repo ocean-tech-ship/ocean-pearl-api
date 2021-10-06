@@ -8,7 +8,7 @@ import { PicturesService } from '../../utils/services/pictures.service';
 
 @Injectable()
 export class UpdateProjectService {
-    MAX_PICTURES_SIZE = 8;
+    static MAX_PICTURES_SIZE = 8;
 
     public constructor(
         private projectRepository: ProjectRepository,
@@ -68,7 +68,10 @@ export class UpdateProjectService {
                 );
 
                 // Delete previous images if we reach the limit
-                if (dbProject.pictures.length > this.MAX_PICTURES_SIZE) {
+                if (
+                    dbProject.pictures.length >
+                    UpdateProjectService.MAX_PICTURES_SIZE
+                ) {
                     const oldestImage = dbProject.pictures[0];
 
                     await this.s3ImageManagementService.deleteFileOnS3(
