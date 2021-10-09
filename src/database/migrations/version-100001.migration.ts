@@ -65,6 +65,7 @@ export default class Version100001 implements MigrationInterface {
             delete round.earmarkedFundingOcean;
             delete round.maxGrantUsd;
             delete round.maxGrantOcean;
+            delete round.usdConversionRate;
             await roundModel.updateOne(
                 { id: round.id },
                 {
@@ -76,6 +77,7 @@ export default class Version100001 implements MigrationInterface {
                         earmarkedFundingOcean: 1,
                         maxGrantUsd: 1,
                         maxGrantOcean: 1,
+                        usdConversionRate: 1,
                     },
                 },
                 { strict: false },
