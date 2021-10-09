@@ -19,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "test_ci": "jest --ci --coverage --reporters=default --reporters=jest-junit"
+    "test:ci": "jest --ci --coverage --reporters=default --reporters=jest-junit"
   },
   "engines": {
     "node": "12.22.x",
@@ -40,7 +40,7 @@
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
-    "eth-crypto": "^2.0.0",
+    "ethers": "^5.4.7",
     "faker": "^5.5.3",
     "mongoose": "^5.12.14",
     "nanoid": "^3.1.23",

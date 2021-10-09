@@ -10,9 +10,9 @@ import { AuthModule } from '../../../auth/auth.module';
 import { DatabaseModule } from '../../../database/database.module';
 import { AppModule } from '../../../app.module';
 import * as cookieParser from 'cookie-parser';
-import { createIdentity } from 'eth-crypto';
 import { hash } from 'bcrypt';
 import * as request from 'supertest';
+import { Wallet } from 'ethers';
 
 describe('AuthLogoutController', () => {
     let app: INestApplication;
@@ -46,7 +46,7 @@ describe('AuthLogoutController', () => {
 
     beforeEach(async () => {
         token = service.createToken({
-            wallet: createIdentity().address,
+            wallet: Wallet.createRandom().address,
             createdAt: new Date(),
         });
 

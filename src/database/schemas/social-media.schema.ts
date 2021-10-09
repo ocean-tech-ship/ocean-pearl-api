@@ -5,75 +5,83 @@ import { ApiProperty } from '@nestjs/swagger';
 export class SocialMedia {
     @Prop({
         type: String,
-        maxLength: 64,
+        maxLength: 128,
         trim: true,
-        lowercase: true,
     })
     @ApiProperty()
     website: string;
 
     @Prop({
         type: String,
-        maxLength: 64,
+        maxLength: 128,
         trim: true,
-        lowercase: true,
     })
     @ApiProperty()
     github: string;
 
     @Prop({
         type: String,
-        maxLength: 64,
+        maxLength: 128,
         trim: true,
-        lowercase: true,
     })
     @ApiProperty()
     twitter: string;
 
     @Prop({
         type: String,
-        maxLength: 64,
+        maxLength: 128,
         trim: true,
-        lowercase: true,
     })
     @ApiProperty()
-    linkedIn: string;
+    linkedin: string;
 
     @Prop({
         type: String,
-        maxLength: 64,
+        maxLength: 128,
         trim: true,
-        lowercase: true,
     })
     @ApiProperty()
     reddit: string;
 
     @Prop({
         type: String,
-        maxLength: 64,
+        maxLength: 128,
         trim: true,
-        lowercase: true,
     })
     @ApiProperty()
     telegram: string;
 
     @Prop({
         type: String,
-        maxLength: 64,
+        maxLength: 128,
         trim: true,
-        lowercase: true,
     })
     @ApiProperty()
     facebook: string;
 
     @Prop({
         type: String,
-        maxLength: 64,
+        maxLength: 128,
         trim: true,
-        lowercase: true,
     })
     @ApiProperty()
     discord: string;
+
+    @Prop({
+        type: String,
+        maxLength: 128,
+        trim: true,
+    })
+    @ApiProperty()
+    youtube: string;
+
+    @Prop({
+        type: String,
+        maxLength: 128,
+        trim: true,
+    })
+    @ApiProperty()
+    medium: string;
 }
 
 export const SocialMediaSchema = SchemaFactory.createForClass(SocialMedia);
