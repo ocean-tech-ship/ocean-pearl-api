@@ -10,6 +10,7 @@ import { RoundsProvider } from '../provider/rounds.provider';
 @Injectable()
 export class SyncRoundsDataService {
     private readonly logger = new Logger(SyncRoundsDataService.name);
+    private readonly USD_OPTION_START_ROUND = 8;
 
     public constructor(
         private roundsProvider: RoundsProvider,
@@ -42,7 +43,7 @@ export class SyncRoundsDataService {
             earmarkedFundingUsd: round['Earmarked USD'],
             maxGrantOcean: round['Max Grant'] ?? 0,
             maxGrantUsd: round['Max Grant USD'] ?? 0,
-            paymentOption: round['Max Grant USD']
+            paymentOption: round['Round'] <= this.USD_OPTION_START_ROUND
                 ? PaymentOptionEnum.Ocean
                 : PaymentOptionEnum.Usd,
             availableFundingOcean: round['Funding Available'] ?? 0,
