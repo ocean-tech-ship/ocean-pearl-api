@@ -7,6 +7,7 @@ import { ProjectGuard } from '../../guards/project.guard';
 import { ManagedProjectMapper } from '../../mapper/managed-project.mapper';
 import { GetAssociatedProjectsService } from '../../services/get-associated-projects.service';
 import { UpdateProjectService } from '../../services/update-project.service';
+import { UtilsModule } from '../../../utils/utils.module';
 
 describe('AccountController', () => {
     let module: TestingModule;
@@ -14,7 +15,7 @@ describe('AccountController', () => {
 
     beforeEach(async () => {
         module = await Test.createTestingModule({
-            imports: [DatabaseModule, AppModule, AwsModule],
+            imports: [DatabaseModule, AppModule, AwsModule, UtilsModule],
             controllers: [AccountController],
             providers: [
                 GetAssociatedProjectsService,
