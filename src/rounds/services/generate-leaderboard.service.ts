@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
-import { GetCurrentRoundService } from './get-current-round.service';
 import { LeaderboardProposalMapper } from '../mapper/leaderboard-proposal.mapper';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
+import { GetCurrentRoundService } from './get-current-round.service';
 
 @Injectable()
 export class GenerateLeaderboardService {
@@ -24,8 +24,9 @@ export class GenerateLeaderboardService {
         let lowestGeneral: number;
 
         const round = await this.getCurrentRoundService.execute();
-        let { earmarked, availableFunding } = round;
-        let generalFunding: number = availableFunding - earmarked;
+        let { earmarkedFundingUsd, availableFundingUsd } = round;
+        let generalFundingUsd: number =
+            availableFundingUsd - earmarkedFundingUsd;
 
         const proposals = await this.daoProposalRepository.getAll({
             find: { fundingRound: round._id },
@@ -62,24 +63,28 @@ export class GenerateLeaderboardService {
                     ? leaderboard.maxVotes
                     : proposalMaxVotes;
 
-            if (proposal.isEarmarked && proposal.effectiveVotes >= 0 && earmarked > 0) {
-                if (earmarked >= proposal.requestedFunding) {
-                    earmarked -= proposal.requestedFunding;
+            if (
+                proposal.isEarmarked &&
+                proposal.effectiveVotes >= 0 &&
+                earmarkedFundingUsd > 0
+            ) {
+                if (earmarkedFundingUsd >= proposal.requestedFunding) {
+                    earmarkedFundingUsd -= proposal.requestedFunding;
                     proposal.receivedFunding = proposal.requestedFunding;
                     lowestEarmark = proposal.effectiveVotes;
                     leaderboard.fundedProposals.push(proposal);
                     continue;
                 }
 
-                proposal.receivedFunding = earmarked;
-                earmarked = 0;
+                proposal.receivedFunding = earmarkedFundingUsd;
+                earmarkedFundingUsd = 0;
 
-                if (generalFunding > 0) {
+                if (generalFundingUsd > 0) {
                     if (
-                        generalFunding >
+                        generalFundingUsd >
                         proposal.requestedFunding - proposal.receivedFunding
                     ) {
-                        generalFunding -=
+                        generalFundingUsd -=
                             proposal.requestedFunding -
                             proposal.receivedFunding;
                         proposal.receivedFunding = proposal.requestedFunding;
@@ -88,8 +93,8 @@ export class GenerateLeaderboardService {
                         continue;
                     }
 
-                    proposal.receivedFunding += generalFunding;
-                    generalFunding = 0;
+                    proposal.receivedFunding += generalFundingUsd;
+                    generalFundingUsd = 0;
                 }
 
                 lowestEarmark = proposal.effectiveVotes;
@@ -97,17 +102,17 @@ export class GenerateLeaderboardService {
                 continue;
             }
 
-            if (proposal.effectiveVotes >= 0 && generalFunding > 0) {
-                if (generalFunding >= proposal.requestedFunding) {
-                    generalFunding -= proposal.requestedFunding;
+            if (proposal.effectiveVotes >= 0 && generalFundingUsd > 0) {
+                if (generalFundingUsd >= proposal.requestedFunding) {
+                    generalFundingUsd -= proposal.requestedFunding;
                     proposal.receivedFunding = proposal.requestedFunding;
                     lowestGeneral = proposal.effectiveVotes;
                     leaderboard.fundedProposals.push(proposal);
                     continue;
                 }
 
-                proposal.receivedFunding = generalFunding;
-                generalFunding = 0;
+                proposal.receivedFunding = generalFundingUsd;
+                generalFundingUsd = 0;
                 lowestGeneral = proposal.effectiveVotes;
                 leaderboard.fundedProposals.push(proposal);
                 continue;
@@ -117,8 +122,8 @@ export class GenerateLeaderboardService {
                 proposal,
                 lowestEarmark,
                 lowestGeneral,
-                earmarked,
-                generalFunding
+                earmarkedFundingUsd,
+                generalFundingUsd,
             );
 
             leaderboard.notFundedProposals.push(proposal);
@@ -131,11 +136,11 @@ export class GenerateLeaderboardService {
         proposal: LeaderboardProposal,
         lowestEarmark: number,
         lowestGeneral: number,
-        earmarked: number,
-        generalFunding: number
+        earmarkedFundingUsd: number,
+        generalFundingUsd: number,
     ): number {
         if (proposal.isEarmarked) {
-            if (earmarked > 0 || generalFunding > 0) {
+            if (earmarkedFundingUsd > 0 || generalFundingUsd > 0) {
                 return proposal.effectiveVotes * -1;
             }
 
@@ -144,7 +149,7 @@ export class GenerateLeaderboardService {
                 : lowestEarmark - proposal.effectiveVotes;
         }
 
-        if (generalFunding > 0) {
+        if (generalFundingUsd > 0) {
             return proposal.effectiveVotes * -1;
         }
 
