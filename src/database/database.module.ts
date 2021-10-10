@@ -17,6 +17,8 @@ import { ProjectSchema } from './schemas/project.schema';
 import { RoundSchema } from './schemas/round.schema';
 import { SessionSchema } from './schemas/session.schema';
 import { SessionRepository } from './repositories/session.repository';
+import { MigrationSchema } from './schemas/migration.schema';
+import { MigrationService } from './services/migrations.service';
 
 @Module({
     imports: [
@@ -30,6 +32,7 @@ import { SessionRepository } from './repositories/session.repository';
             { name: 'Project', schema: ProjectSchema },
             { name: 'Round', schema: RoundSchema },
             { name: 'Session', schema: SessionSchema },
+            { name: 'Migration', schema: MigrationSchema },
         ]),
     ],
     providers: [
@@ -41,6 +44,7 @@ import { SessionRepository } from './repositories/session.repository';
         RoundRepository,
         DeliverableRepository,
         SessionRepository,
+        MigrationService,
     ],
     exports: [
         CompanyRepository,
