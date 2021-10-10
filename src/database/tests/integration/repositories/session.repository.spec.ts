@@ -2,18 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseModule } from '../../../database.module';
 import { AppModule } from '../../../../app.module';
 import { SessionRepository } from '../../../repositories/session.repository';
-import { createIdentity } from 'eth-crypto';
 import { Session } from '../../../schemas/session.schema';
+import { Wallet } from 'ethers';
 
 describe('SessionRepository', () => {
     let module: TestingModule;
     let service: SessionRepository;
 
-    let identity: {
-        privateKey: string;
-        publicKey: string;
-        address: string;
-    };
+    let identity: Wallet;
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
@@ -22,7 +18,7 @@ describe('SessionRepository', () => {
 
         service = module.get<SessionRepository>(SessionRepository);
 
-        identity = createIdentity();
+        identity = Wallet.createRandom();
     });
 
     afterAll(async () => {
