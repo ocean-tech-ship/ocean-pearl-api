@@ -85,6 +85,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
             const response: Round = await this.model.findOneAndUpdate(
                 { id: model.id },
                 model,
+                { upsert: true },
             );
 
             return response !== null;
