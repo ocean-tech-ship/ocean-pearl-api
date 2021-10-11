@@ -3,6 +3,7 @@ import { VerifyLoginService } from '../../../services/verify-login.service';
 import { Wallet } from 'ethers';
 
 describe('VerifyLoginService', () => {
+    let module: TestingModule;
     let service: VerifyLoginService;
 
     let identity: Wallet;
@@ -11,13 +12,19 @@ describe('VerifyLoginService', () => {
     let plainSignature: string;
     let signature: string;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
             providers: [VerifyLoginService],
         }).compile();
 
         service = module.get<VerifyLoginService>(VerifyLoginService);
+    });
 
+    afterAll(async () => {
+        await module.close();
+    });
+
+    beforeEach(async () => {
         identity = Wallet.createRandom();
 
         now = Date.now();
@@ -70,27 +77,66 @@ describe('VerifyLoginService', () => {
         ).toBeFalsy();
     });
 
-    it('timestamp should be outdated', async () => {
-        const timestamp = new Date(now - VerifyLoginService.TIMESTAMP_TTL - 1);
-        const plainSignature = service.constructPlainSignature(timestamp);
-
-        const signature = await identity.signMessage(plainSignature);
+    it('timestamp should be outdated (too old)', async () => {
+        const timestamp = new Date(
+            now - VerifyLoginService.TIMESTAMP_TTL - 1000,
+        );
 
         expect(
             service.verifyTimestamp({
                 wallet: identity.address,
                 timestamp,
-                signature,
+                signature: await identity.signMessage(
+                    service.constructPlainSignature(timestamp),
+                ),
             }),
         ).toBeFalsy();
     });
 
-    it('timestamp should be valid', () => {
+    it('timestamp should be outdated (too new)', async () => {
+        const timestamp = new Date(
+            now + VerifyLoginService.TIMESTAMP_TTL + 1000,
+        );
+
         expect(
             service.verifyTimestamp({
                 wallet: identity.address,
-                timestamp: new Date(now),
-                signature: signature,
+                timestamp: timestamp,
+                signature: await identity.signMessage(
+                    service.constructPlainSignature(timestamp),
+                ),
+            }),
+        ).toBeFalsy();
+    });
+
+    it('timestamp should be valid (past)', async () => {
+        const timestamp = new Date(
+            now - VerifyLoginService.TIMESTAMP_TTL + 1000,
+        );
+
+        expect(
+            service.verifyTimestamp({
+                wallet: identity.address,
+                timestamp: timestamp,
+                signature: await identity.signMessage(
+                    service.constructPlainSignature(timestamp),
+                ),
+            }),
+        ).toBeTruthy();
+    });
+
+    it('timestamp should be valid (future)', async () => {
+        const timestamp = new Date(
+            now + VerifyLoginService.TIMESTAMP_TTL - 1000,
+        );
+
+        expect(
+            service.verifyTimestamp({
+                wallet: identity.address,
+                timestamp: timestamp,
+                signature: await identity.signMessage(
+                    service.constructPlainSignature(timestamp),
+                ),
             }),
         ).toBeTruthy();
     });
