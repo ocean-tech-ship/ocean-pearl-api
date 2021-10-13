@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { PaginationOptions } from '../interfaces/pagination-options.interface';
@@ -9,7 +9,8 @@ import { DaoProposal, DaoProposalType } from '../schemas/dao-proposal.schema';
 
 @Injectable()
 export class DaoProposalRepository
-    implements RepositoryInterface<DaoProposalType> {
+    implements RepositoryInterface<DaoProposalType>
+{
     constructor(
         @InjectModel('DaoProposal') private model: Model<DaoProposalType>,
     ) {}
@@ -21,7 +22,7 @@ export class DaoProposalRepository
             }
 
             return await this.model
-                .findOne(query.find)
+                .findOne(query.find as FilterQuery<DaoProposalType>)
                 .lean()
                 .populate({
                     path: 'project',
@@ -53,7 +54,7 @@ export class DaoProposalRepository
             }
 
             return await this.model
-                .findOne(query.find)
+                .findOne(query.find as FilterQuery<DaoProposalType>)
                 .lean()
                 .exec();
         } catch (error: any) {
@@ -92,7 +93,7 @@ export class DaoProposalRepository
     public async getAll(query?: FindQuery): Promise<DaoProposal[]> {
         try {
             return await this.model
-                .find(query?.find || {})
+                .find((query?.find as FilterQuery<DaoProposalType>) || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -124,7 +125,7 @@ export class DaoProposalRepository
     ): Promise<DaoProposal[]> {
         try {
             return await this.model
-                .find(options.find || {})
+                .find((options.find as FilterQuery<DaoProposalType>) || {})
                 .sort(options.sort || {})
                 .skip((options.page - 1) * options.limit)
                 .limit(options.limit)
@@ -182,7 +183,7 @@ export class DaoProposalRepository
             }
 
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find,
+                query.find as FilterQuery<DaoProposalType>,
             );
 
             return response.deletedCount === 1;
@@ -198,7 +199,9 @@ export class DaoProposalRepository
             }
 
             const response: MongooseDeleteResponse =
-                await this.model.deleteMany(query.find);
+                await this.model.deleteMany(
+                    query.find as FilterQuery<DaoProposalType>,
+                );
 
             return response.deletedCount > 0;
         } catch (error: any) {
