@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { PaginationOptions } from '../interfaces/pagination-options.interface';
@@ -18,7 +18,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
             }
 
             return await this.model
-                .findOne(query.find)
+                .findOne(query.find as FilterQuery<ProjectType>)
                 .lean()
                 .populate({
                     path: 'company',
@@ -26,8 +26,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 })
                 .populate({
                     path: 'daoProposals',
-                    select:
-                        '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
@@ -51,7 +50,10 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model.findOne(query.find).lean().exec();
+            return await this.model
+                .findOne(query.find as FilterQuery<ProjectType>)
+                .lean()
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -68,8 +70,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 })
                 .populate({
                     path: 'daoProposals',
-                    select:
-                        '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
@@ -90,7 +91,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
     public async getAll(query?: FindQuery): Promise<Project[]> {
         try {
             return await this.model
-                .find(query?.find || {})
+                .find((query?.find as FilterQuery<ProjectType>) || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -100,8 +101,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 })
                 .populate({
                     path: 'daoProposals',
-                    select:
-                        '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
@@ -122,7 +122,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
     public async getPaginated(options: PaginationOptions): Promise<Project[]> {
         try {
             return await this.model
-                .find(options.find || {})
+                .find((options.find as FilterQuery<ProjectType>) || {})
                 .sort(options.sort || {})
                 .skip((options.page - 1) * options.limit)
                 .limit(options.limit)
@@ -133,8 +133,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 })
                 .populate({
                     path: 'daoProposals',
-                    select:
-                        '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
@@ -197,9 +196,10 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 throw new Error('Please specify a query');
             }
 
-            const response: MongooseDeleteResponse = await this.model.deleteMany(
-                query.find,
-            );
+            const response: MongooseDeleteResponse =
+                await this.model.deleteMany(
+                    query.find as FilterQuery<ProjectType>,
+                );
 
             return response.deletedCount > 0;
         } catch (error: any) {
