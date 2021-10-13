@@ -50,6 +50,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.7",
+    "sharp": "^0.29.1",
+    "svgo": "^2.7.0",
     "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
@@ -68,6 +70,8 @@
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
+    "@types/sharp": "^0.29.2",
+    "@types/svgo": "^2.6.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",

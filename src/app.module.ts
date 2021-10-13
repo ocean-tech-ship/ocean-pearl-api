@@ -16,6 +16,7 @@ import { MetricsModule } from './metrics/metrics.module';
 import { PagesModule } from './pages/pages.module';
 import { ProjectsModule } from './projects/projects.module';
 import { RoundsModule } from './rounds/rounds.module';
+import { UtilsModule } from './utils/utils.module';
 
 @Module({
     imports: [
@@ -58,6 +59,7 @@ import { RoundsModule } from './rounds/rounds.module';
         AwsModule,
         AccountModule,
         AuthModule,
+        UtilsModule,
     ],
     controllers: [AppController],
     providers: [
