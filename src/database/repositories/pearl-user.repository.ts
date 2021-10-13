@@ -19,7 +19,7 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
             }
 
             return await this.model
-                .findOne(query.find)
+                .findOne(query.find as FilterQuery<PearlUserType>)
                 .lean()
                 .select('-_id -__v')
                 .exec();
@@ -34,7 +34,10 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model.findOne(query.find).lean().exec();
+            return await this.model
+                .findOne(query.find as FilterQuery<PearlUserType>)
+                .lean()
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -55,7 +58,7 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
     public async getAll(query?: FilterQuery<any>): Promise<PearlUser[]> {
         try {
             return await this.model
-                .find(query || {})
+                .find((query as FilterQuery<PearlUserType>) || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -96,7 +99,7 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
             }
 
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find,
+                query.find as FilterQuery<PearlUserType>,
             );
 
             return response.deletedCount === 1;
@@ -111,9 +114,10 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
                 throw new Error('Please specify a query');
             }
 
-            const response: MongooseDeleteResponse = await this.model.deleteMany(
-                query.find,
-            );
+            const response: MongooseDeleteResponse =
+                await this.model.deleteMany(
+                    query.find as FilterQuery<PearlUserType>,
+                );
 
             return response.deletedCount > 0;
         } catch (error: any) {

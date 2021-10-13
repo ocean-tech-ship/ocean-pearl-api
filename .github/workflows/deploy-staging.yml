@@ -1,13 +1,8 @@
-name: CI
+name: Deploy Staging
 
 on:
   push:
-    branches-ignore:
-      - main
-      - development
-  pull_request:
-    branches-ignore:
-      - main
+    branches:
       - development
 
 jobs:
@@ -15,13 +10,13 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     timeout-minutes: 8
-    
+
     strategy:
       matrix:
         os: [ ubuntu-latest ]
         node: [ 12 ]
-        mongodb: [ 4.4 ]
-        
+        mongodb: [4.4]
+
     env:
       ORIGIN: http://localhost:3000
       MONGO_URL: mongodb://localhost:27017/test
@@ -45,28 +40,29 @@ jobs:
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v2.3.4
-        
+
       - name: Setup node env 🏗
         uses: actions/setup-node@v2.4.1
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
-          
+
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
-        
+
       - name: Run tests 🧪
         run: npm run test:ci
 
-      - name: Upload test artifacts 🦴
-        uses: actions/upload-artifact@v2
+      - name: Report test results 📈
+        uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: test-results-${{ matrix.os }}
+          name: 'Test results (${{ matrix.os }})'
           path: reports/jest-*.xml
+          reporter: jest-junit
 
       - name: Report code coverage 🔍
-        continue-on-error: true
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: romeovs/lcov-reporter-action@v0.2.21
         with:
           lcov-file: coverage/lcov.info
@@ -97,3 +93,37 @@ jobs:
 
       - name: Building project 🚧
         run: npm run build
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 8
+
+    needs:
+      - test
+      - build
+
+    environment:
+      name: staging
+      url: https://api.staging.oceanpearl.io/api/
+
+    concurrency:
+      group: deploy-staging
+
+    steps:
+      - run: echo "Deploying to staging environment..."
+
+      - name: Checkout 🛎
+        uses: actions/checkout@v2.3.4
+
+      - name: Deploy to Heroku 👾
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          branch: development
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          healthcheck: ${{ secrets.HEALTHCHECK_URL }}
+          delay: 5
+
+      - run: echo "Successfully deployed on staging environment!"

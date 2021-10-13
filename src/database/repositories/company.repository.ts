@@ -8,10 +8,7 @@ import { Company, CompanyType } from '../schemas/company.schema';
 
 @Injectable()
 export class CompanyRepository implements RepositoryInterface<CompanyType> {
-    
-    constructor(
-        @InjectModel('Company') private model: Model<CompanyType>
-    ) {}
+    constructor(@InjectModel('Company') private model: Model<CompanyType>) {}
 
     public async findOne(query: FindQuery): Promise<Company> {
         try {
@@ -20,7 +17,7 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
             }
 
             return await this.model
-                .findOne(query.find)
+                .findOne(query.find as FilterQuery<CompanyType>)
                 .lean()
                 .populate({
                     path: 'jobs',
@@ -44,7 +41,7 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
             }
 
             return await this.model
-                .findOne(query.find)
+                .findOne(query.find as FilterQuery<CompanyType>)
                 .lean()
                 .exec();
         } catch (error: any) {
@@ -75,7 +72,7 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
     public async getAll(query?: FilterQuery<any>): Promise<Company[]> {
         try {
             return await this.model
-                .find(query || {})
+                .find((query as FilterQuery<CompanyType>) || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -96,8 +93,10 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
 
     public async update(model: Company): Promise<boolean> {
         try {
-            const response: Company =
-                await this.model.findOneAndUpdate({ id: model.id }, model);
+            const response: Company = await this.model.findOneAndUpdate(
+                { id: model.id },
+                model,
+            );
 
             return response !== null;
         } catch (error: any) {
@@ -121,8 +120,9 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
                 throw new Error('Please specify a query');
             }
 
-            const response: MongooseDeleteResponse =
-                await this.model.deleteOne(query.find);
+            const response: MongooseDeleteResponse = await this.model.deleteOne(
+                query.find as FilterQuery<CompanyType>,
+            );
 
             return response.deletedCount === 1;
         } catch (error: any) {
@@ -137,7 +137,9 @@ export class CompanyRepository implements RepositoryInterface<CompanyType> {
             }
 
             const response: MongooseDeleteResponse =
-                await this.model.deleteMany(query.find);
+                await this.model.deleteMany(
+                    query.find as FilterQuery<CompanyType>,
+                );
 
             return response.deletedCount > 0;
         } catch (error: any) {

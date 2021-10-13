@@ -32,7 +32,7 @@ export class Round {
         default: 0,
     })
     @ApiProperty()
-    maxGrant: number;
+    maxGrantOcean: number;
 
     @Prop({
         type: Number,
@@ -40,7 +40,7 @@ export class Round {
         default: 0,
     })
     @ApiProperty()
-    earmarked: number;
+    maxGrantUsd: number;
 
     @Prop({
         type: Number,
@@ -48,7 +48,31 @@ export class Round {
         default: 0,
     })
     @ApiProperty()
-    availableFunding: number;
+    earmarkedFundingOcean: number;
+
+    @Prop({
+        type: Number,
+        min: 0,
+        default: 0,
+    })
+    @ApiProperty()
+    earmarkedFundingUsd: number;
+
+    @Prop({
+        type: Number,
+        min: 0,
+        default: 0,
+    })
+    @ApiProperty()
+    availableFundingOcean: number;
+
+    @Prop({
+        type: Number,
+        min: 0,
+        default: 0,
+    })
+    @ApiProperty()
+    availableFundingUsd: number;
 
     @Prop({
         type: String,
@@ -59,6 +83,12 @@ export class Round {
         enum: PaymentOptionEnum,
     })
     paymentOption: PaymentOptionEnum;
+
+    @Prop({
+        type: Number,
+        min: 0,
+    })
+    usdConversionRate: Number;
 
     @Prop({
         type: Date,
