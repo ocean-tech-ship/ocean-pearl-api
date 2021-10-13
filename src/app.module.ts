@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AccountModule } from './account/account.module';
 import { AirtableModule } from './airtable/airtable.module';
 import { AppController } from './app.controller';
@@ -34,6 +36,18 @@ import { UtilsModule } from './utils/utils.module';
             }),
             inject: [ConfigService],
         }),
+        ThrottlerModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => ({
+                ttl: config.get('THROTTLE_TTL'),
+                limit: config.get('THROTTLE_LIMIT'),
+                ignoreUserAgents: [
+                    new RegExp('googlebot', 'gi'),
+                    new RegExp('bingbot', 'gi'),
+                  ],
+            }),
+        }),
         ScheduleModule.forRoot(),
         DatabaseModule,
         ProjectsModule,
@@ -48,6 +62,12 @@ import { UtilsModule } from './utils/utils.module';
         UtilsModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+        AppService,
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+        },
+    ],
 })
 export class AppModule {}
