@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { PaginationOptions } from '../interfaces/pagination-options.interface';
@@ -18,7 +18,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
             }
 
             return await this.model
-                .findOne(query.find)
+                .findOne(query.find as FilterQuery<RoundType>)
                 .lean()
                 .select('-__v')
                 .exec();
@@ -33,7 +33,10 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model.findOne(query.find).lean().exec();
+            return await this.model
+                .findOne(query.find as FilterQuery<RoundType>)
+                .lean()
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -54,7 +57,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
     public async getAll(query?: FindQuery): Promise<Round[]> {
         try {
             return await this.model
-                .find(query?.find || {})
+                .find((query?.find as FilterQuery<RoundType>) || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -68,7 +71,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
     public async getPaginated(options: PaginationOptions): Promise<Round[]> {
         try {
             return await this.model
-                .find(options.find || {})
+                .find((options.find as FilterQuery<RoundType>) || {})
                 .sort(options.sort || {})
                 .skip((options.page - 1) * options.limit)
                 .limit(options.limit)
@@ -126,9 +129,10 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
                 throw new Error('Please specify a query');
             }
 
-            const response: MongooseDeleteResponse = await this.model.deleteMany(
-                query.find,
-            );
+            const response: MongooseDeleteResponse =
+                await this.model.deleteMany(
+                    query.find as FilterQuery<RoundType>,
+                );
 
             return response.deletedCount > 0;
         } catch (error: any) {

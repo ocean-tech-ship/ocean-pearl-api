@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
 import { Session, SessionType } from '../schemas/session.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { FindQuery } from '../interfaces/find-query.interface';
 
@@ -21,7 +21,7 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
     public async getAll(query?: FindQuery): Promise<Session[]> {
         try {
             return await this.model
-                .find(query?.find || {})
+                .find((query?.find as FilterQuery<SessionType>) || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -41,7 +41,10 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model.findOne(query.find).lean().exec();
+            return await this.model
+                .findOne(query.find as FilterQuery<SessionType>)
+                .lean()
+                .exec();
         } catch (error: any) {
             throw error;
         }
@@ -80,7 +83,7 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
             }
 
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find,
+                query.find as FilterQuery<SessionType>,
             );
 
             return response.deletedCount === 1;
@@ -96,7 +99,9 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
             }
 
             const response: MongooseDeleteResponse =
-                await this.model.deleteMany(query.find);
+                await this.model.deleteMany(
+                    query.find as FilterQuery<SessionType>,
+                );
 
             return response.deletedCount > 0;
         } catch (error: any) {
