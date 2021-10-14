@@ -5,15 +5,18 @@ import { Project } from '../../database/schemas/project.schema';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 
 @Injectable()
-export class LeaderboardProposalMapper {
+export class LeaderboardProposalBuilder {
     private readonly EARMARK_TAG = 'earmark';
 
     public constructor(private projectRepository: ProjectRepository) {}
 
-    public async map(proposal: DaoProposal): Promise<LeaderboardProposal> {
+    public async build(
+        proposal: DaoProposal,
+        round: number,
+    ): Promise<LeaderboardProposal> {
         let project = proposal.project as Project;
         project = await this.projectRepository.findOneRaw({
-            find: { id: project.id }
+            find: { id: project.id },
         });
 
         let mappedLeaderboardProposal = {
@@ -22,7 +25,11 @@ export class LeaderboardProposalMapper {
             requestedFunding: proposal.requestedGrantUsd,
             yesVotes: proposal.votes,
             noVotes: proposal.counterVotes,
-            effectiveVotes: proposal.votes - proposal.counterVotes,
+            effectiveVotes: this.calculateEffectiveVotes(
+                proposal.votes,
+                proposal.counterVotes,
+                round,
+            ),
             tags: [proposal.category],
             completedProposals: project.daoProposals.length,
             voteUrl: proposal.voteUrl,
@@ -34,5 +41,13 @@ export class LeaderboardProposalMapper {
         }
 
         return mappedLeaderboardProposal;
+    }
+
+    private calculateEffectiveVotes(
+        votes: number,
+        counterVotes: number,
+        round: number,
+    ): number {
+        return round >= 8 ? votes - counterVotes : votes;
     }
 }
