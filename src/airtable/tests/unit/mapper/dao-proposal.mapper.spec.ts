@@ -54,6 +54,7 @@ describe('DaoProposalMapper', () => {
             createdAt: airtableData['Created Date'],
             deliverables: [],
             description: 'Test Project Overview',
+            earmark: undefined,
             fundamentalMetric: FundamentalMetricEnum.MvpLaunch,
             fundingRound: ROUND_ID,
             grantedToken: 10000,
@@ -67,6 +68,7 @@ describe('DaoProposalMapper', () => {
             standing: StandingEnum.Completed,
             status: DaoProposalStatusEnum.Running,
             title: 'Test',
+            voteUrl: "",
             votes: 4200000,
             walletAddress: airtableData['Wallet Address'].toLowerCase(),
         });
