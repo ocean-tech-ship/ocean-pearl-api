@@ -17,7 +17,7 @@ export class JobRepository implements RepositoryInterface<JobType> {
             }
 
             return await this.model
-                .findOne(query.find)
+                .findOne(query.find as FilterQuery<JobType>)
                 .lean()
                 .populate({
                     path: 'company',
@@ -37,7 +37,7 @@ export class JobRepository implements RepositoryInterface<JobType> {
             }
 
             return await this.model
-                .findOne(query.find)
+                .findOne(query.find as FilterQuery<JobType>)
                 .lean()
                 .exec();
         } catch (error: any) {
@@ -64,7 +64,7 @@ export class JobRepository implements RepositoryInterface<JobType> {
     public async getAll(query?: FilterQuery<any>): Promise<Job[]> {
         try {
             return await this.model
-                .find(query || {})
+                .find((query as FilterQuery<JobType>) || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -109,7 +109,7 @@ export class JobRepository implements RepositoryInterface<JobType> {
             }
 
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find,
+                query.find as FilterQuery<JobType>,
             );
 
             return response.deletedCount === 1;
@@ -125,7 +125,7 @@ export class JobRepository implements RepositoryInterface<JobType> {
             }
 
             const response: MongooseDeleteResponse =
-                await this.model.deleteMany(query.find);
+                await this.model.deleteMany(query.find as FilterQuery<JobType>);
 
             return response.deletedCount > 0;
         } catch (error: any) {

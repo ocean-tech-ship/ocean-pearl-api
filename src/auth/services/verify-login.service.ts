@@ -4,7 +4,7 @@ import { utils } from 'ethers';
 
 @Injectable()
 export class VerifyLoginService {
-    public static readonly TIMESTAMP_TTL = 1000 * 60 * 15; // 15min
+    public static readonly TIMESTAMP_TTL = 1000 * 60 * 7; // 7min
 
     /* Reconstructs plaintext message for the login request */
     public constructPlainSignature(timestamp: Date): string {
@@ -31,7 +31,7 @@ export class VerifyLoginService {
         const now = Date.now();
 
         return (
-            now >= timestamp &&
+            now >= timestamp - VerifyLoginService.TIMESTAMP_TTL &&
             now <= timestamp + VerifyLoginService.TIMESTAMP_TTL
         );
     }
