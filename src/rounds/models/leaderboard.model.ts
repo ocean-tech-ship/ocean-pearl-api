@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { RoundStatusEnum } from '../enums/round-status.enum';
 import { LeaderboardProposal } from './leaderboard-proposal.model';
 
 export class Leaderboard {
@@ -18,5 +19,17 @@ export class Leaderboard {
     maxVotes: number;
 
     @ApiProperty()
+    remainingEarmarkFundingUsd: number;
+
+    @ApiProperty()
+    remainingGeneralFundingUsd: number;
+
+    @ApiProperty()
     voteEndDate: Date;
+
+    @ApiProperty({
+        type: String,
+        enum: RoundStatusEnum
+    })
+    status: string;
 }
