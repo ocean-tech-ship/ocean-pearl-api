@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
 import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProposalBuilder } from '../builder/leaderboard-proposal.builder';
 import { RoundStatusEnum } from '../enums/round-status.enum';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
-import { StrategyCollection } from '../strategies/strategy.collection';
+import { LeaderboardStrategyCollection } from '../strategies/leaderboard-strategy.collection';
 import { GetCurrentRoundService } from './get-current-round.service';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class GenerateLeaderboardService {
         private getCurrentRoundService: GetCurrentRoundService,
         private daoProposalRepository: DaoProposalRepository,
         private leaderboardProposalBuilder: LeaderboardProposalBuilder,
-        private strategyCollection: StrategyCollection,
+        private strategyCollection: LeaderboardStrategyCollection,
     ) {}
 
     public async execute(): Promise<Leaderboard> {
@@ -25,9 +26,14 @@ export class GenerateLeaderboardService {
             fundedProposals: [],
             notFundedProposals: [],
             voteEndDate: round.votingEndDate,
-            remainingEarmarkFundingUsd: round.earmarkedFundingUsd,
-            remainingGeneralFundingUsd:
-                round.availableFundingOcean - round.earmarkedFundingUsd,
+            paymentOption: round.paymentOption,
+            remainingEarmarkFunding: round.paymentOption === PaymentOptionEnum.Usd
+                ? round.earmarkedFundingUsd
+                : round.earmarkedFundingOcean,
+            remainingGeneralFunding:
+            round.paymentOption === PaymentOptionEnum.Usd
+                ? round.availableFundingUsd - round.earmarkedFundingUsd
+                : round.availableFundingOcean - round.earmarkedFundingOcean,
             status: this.determineRoundStatus(round),
         } as Leaderboard;
         let leaderboardProposals: LeaderboardProposal[] = [];
@@ -46,7 +52,7 @@ export class GenerateLeaderboardService {
             leaderboardProposals.push(
                 await this.leaderboardProposalBuilder.build(
                     proposal,
-                    round.round,
+                    round,
                 ),
             );
         }
