@@ -6,7 +6,7 @@ import { GenerateLeaderboardService } from './services/generate-leaderboard.serv
 import { GetCurrentRoundService } from './services/get-current-round.service';
 import { EarmarkedPropsoalStrategy } from './strategies/earmaked-proposal.strategy';
 import { GeneralPropsoalStrategy } from './strategies/general-proposal.strategy';
-import { StrategyCollection } from './strategies/strategy.collection';
+import { LeaderboardStrategyCollection } from './strategies/leaderboard-strategy.collection';
 import { WontReceiveFundingStrategy } from './strategies/wont-receive-funding.strategy';
 
 @Module({
@@ -16,7 +16,7 @@ import { WontReceiveFundingStrategy } from './strategies/wont-receive-funding.st
         GetCurrentRoundService,
         GenerateLeaderboardService,
         LeaderboardProposalBuilder,
-        StrategyCollection,
+        LeaderboardStrategyCollection,
         EarmarkedPropsoalStrategy,
         GeneralPropsoalStrategy,
         WontReceiveFundingStrategy,
