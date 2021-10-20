@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
     leaderboardStrategyInterface,
-    LeaderboardStrategyResponse,
+    LeaderboardStrategyResponse
 } from '../interfaces/leaderboard-strategy.interface';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
@@ -13,8 +13,9 @@ export class GeneralPropsoalStrategy implements leaderboardStrategyInterface {
         leaderboard: Leaderboard,
     ): boolean {
         return (
-            leaderboard.remainingGeneralFundingUsd > 0 &&
-            proposal.effectiveVotes > 0
+            leaderboard.remainingGeneralFunding > 0 &&
+            proposal.effectiveVotes > 0 &&
+            proposal.yesVotes > proposal.noVotes
         );
     }
 
@@ -34,12 +35,12 @@ export class GeneralPropsoalStrategy implements leaderboardStrategyInterface {
                 : proposalMaxVotes;
 
         const receivingGeneralFunding: number =
-        leaderboard.remainingGeneralFundingUsd - proposal.requestedFunding > 0
-            ? proposal.requestedFunding
-            : leaderboard.remainingEarmarkFundingUsd;
+            leaderboard.remainingGeneralFunding - proposal.requestedFunding > 0
+                ? proposal.requestedFunding
+                : leaderboard.remainingEarmarkFunding;
 
         proposal.receivedFunding = receivingGeneralFunding;
-        leaderboard.remainingGeneralFundingUsd -= receivingGeneralFunding;
+        leaderboard.remainingGeneralFunding -= receivingGeneralFunding;
 
         lowestGeneralVotes = proposal.effectiveVotes;
         leaderboard.fundedProposals.push(proposal);
