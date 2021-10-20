@@ -7,7 +7,7 @@ import { GeneralPropsoalStrategy } from './general-proposal.strategy';
 import { WontReceiveFundingStrategy } from './wont-receive-funding.strategy';
 
 @Injectable()
-export class StrategyCollection {
+export class LeaderboardStrategyCollection {
     private strategies: leaderboardStrategyInterface[];
 
     constructor(
