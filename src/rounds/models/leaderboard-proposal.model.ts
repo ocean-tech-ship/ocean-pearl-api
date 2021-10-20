@@ -8,6 +8,9 @@ export class LeaderboardProposal {
     title: string;
 
     @ApiProperty()
+    logoUrl: string;
+
+    @ApiProperty()
     requestedFunding: number;
 
     @ApiProperty()
