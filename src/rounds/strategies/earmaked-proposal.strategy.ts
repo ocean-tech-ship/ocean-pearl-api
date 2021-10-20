@@ -14,9 +14,10 @@ export class EarmarkedPropsoalStrategy implements leaderboardStrategyInterface {
     ): boolean {
         return (
             proposal.isEarmarked &&
+            proposal.yesVotes > proposal.noVotes &&
             proposal.effectiveVotes > 0 &&
-            (leaderboard.remainingEarmarkFundingUsd > 0 ||
-                leaderboard.remainingGeneralFundingUsd > 0)
+            (leaderboard.remainingEarmarkFunding > 0 ||
+                leaderboard.remainingGeneralFunding > 0)
         );
     }
 
@@ -36,23 +37,23 @@ export class EarmarkedPropsoalStrategy implements leaderboardStrategyInterface {
                 : leaderboardProposalMaxVotes;
 
         const receivingEarmarkFunding: number =
-            leaderboard.remainingEarmarkFundingUsd - proposal.requestedFunding > 0
+            leaderboard.remainingEarmarkFunding - proposal.requestedFunding > 0
                 ? proposal.requestedFunding
-                : leaderboard.remainingEarmarkFundingUsd;
+                : leaderboard.remainingEarmarkFunding;
 
         proposal.receivedFunding = receivingEarmarkFunding;
-        leaderboard.remainingEarmarkFundingUsd -= receivingEarmarkFunding;
+        leaderboard.remainingEarmarkFunding -= receivingEarmarkFunding;
 
         if (proposal.receivedFunding < proposal.requestedFunding) {
             const remainigRequestedFunding: number =
                 proposal.requestedFunding - proposal.receivedFunding;
             const receivingGeneralFunding: number =
-                leaderboard.remainingGeneralFundingUsd - remainigRequestedFunding > 0
+                leaderboard.remainingGeneralFunding - remainigRequestedFunding > 0
                     ? remainigRequestedFunding
-                    : leaderboard.remainingEarmarkFundingUsd;
+                    : leaderboard.remainingGeneralFunding;
 
             proposal.receivedFunding += receivingGeneralFunding;
-            leaderboard.remainingGeneralFundingUsd -= receivingGeneralFunding;
+            leaderboard.remainingGeneralFunding -= receivingGeneralFunding;
         }
 
         lowestEarmarkVotes = proposal.effectiveVotes;
