@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { Project } from '../../database/schemas/project.schema';
+import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 
 @Injectable()
@@ -12,7 +14,7 @@ export class LeaderboardProposalBuilder {
 
     public async build(
         proposal: DaoProposal,
-        round: number,
+        round: Round,
     ): Promise<LeaderboardProposal> {
         let project = proposal.project as Project;
         project = await this.projectRepository.findOneRaw({
@@ -22,13 +24,16 @@ export class LeaderboardProposalBuilder {
         let mappedLeaderboardProposal = {
             id: proposal.id,
             title: project.title,
-            requestedFunding: proposal.requestedGrantUsd,
+            requestedFunding: round.paymentOption === PaymentOptionEnum.Usd
+                ? proposal.requestedGrantUsd
+                : proposal.requestedGrantToken,
+            receivedFunding: 0,
             yesVotes: proposal.votes,
             noVotes: proposal.counterVotes,
             effectiveVotes: this.calculateEffectiveVotes(
                 proposal.votes,
                 proposal.counterVotes,
-                round,
+                round.round,
             ),
             tags: [proposal.category],
             completedProposals: project.daoProposals.length,
@@ -38,6 +43,10 @@ export class LeaderboardProposalBuilder {
         if (proposal.earmark) {
             mappedLeaderboardProposal.tags.push(this.EARMARK_TAG);
             mappedLeaderboardProposal.isEarmarked = true;
+        }
+
+        if (project.logo) {
+            mappedLeaderboardProposal.logoUrl = project.logo.url;
         }
 
         return mappedLeaderboardProposal;
