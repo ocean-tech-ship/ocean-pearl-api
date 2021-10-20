@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { RoundStatusEnum } from '../enums/round-status.enum';
 import { LeaderboardProposal } from './leaderboard-proposal.model';
 
@@ -8,7 +9,7 @@ export class Leaderboard {
         isArray: true,
     })
     fundedProposals: LeaderboardProposal[];
-    
+
     @ApiProperty({
         type: LeaderboardProposal,
         isArray: true,
@@ -19,17 +20,23 @@ export class Leaderboard {
     maxVotes: number;
 
     @ApiProperty()
-    remainingEarmarkFundingUsd: number;
+    remainingEarmarkFunding: number;
 
     @ApiProperty()
-    remainingGeneralFundingUsd: number;
+    remainingGeneralFunding: number;
+
+    @ApiProperty({
+        type: String,
+        enum: PaymentOptionEnum,
+    })
+    paymentOption: string;
 
     @ApiProperty()
     voteEndDate: Date;
 
     @ApiProperty({
         type: String,
-        enum: RoundStatusEnum
+        enum: RoundStatusEnum,
     })
     status: string;
 }
