@@ -1,19 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import {
     leaderboardStrategyInterface,
-    LeaderboardStrategyResponse
+    LeaderboardStrategyResponse,
 } from '../interfaces/leaderboard-strategy.interface';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
 
 @Injectable()
 export class WontReceiveFundingStrategy
-    implements leaderboardStrategyInterface {
+    implements leaderboardStrategyInterface
+{
     public canHandle(
         proposal: LeaderboardProposal,
         leaderboard: Leaderboard,
     ): boolean {
-        return proposal.effectiveVotes <= 0;
+        return (
+            proposal.effectiveVotes <= 0 ||
+            proposal.yesVotes < proposal.noVotes ||
+            (proposal.isEarmarked &&
+                leaderboard.remainingEarmarkFunding <= 0 &&
+                leaderboard.remainingGeneralFunding <= 0) ||
+            (!proposal.isEarmarked && leaderboard.remainingGeneralFunding <= 0)
+        );
     }
 
     public execute(
@@ -26,8 +34,8 @@ export class WontReceiveFundingStrategy
             proposal,
             lowestEarmarkVotes,
             lowestGeneralVotes,
-            leaderboard.remainingEarmarkFundingUsd,
-            leaderboard.remainingGeneralFundingUsd,
+            leaderboard.remainingEarmarkFunding,
+            leaderboard.remainingGeneralFunding,
         );
 
         leaderboard.notFundedProposals.push(proposal);
@@ -38,13 +46,13 @@ export class WontReceiveFundingStrategy
         proposal: LeaderboardProposal,
         lowestEarmarkVotes: number,
         lowestGeneralVotes: number,
-        remainingEarmarkedFundingUsd: number,
-        remainingGeneralFundingUsd: number,
+        remainingEarmarkedFunding: number,
+        remainingGeneralFunding: number,
     ): number {
         if (proposal.isEarmarked) {
             if (
-                remainingEarmarkedFundingUsd > 0 ||
-                remainingGeneralFundingUsd > 0
+                remainingEarmarkedFunding > 0 ||
+                remainingGeneralFunding > 0
             ) {
                 return proposal.effectiveVotes * -1 + 1;
             }
@@ -54,7 +62,7 @@ export class WontReceiveFundingStrategy
                 : lowestEarmarkVotes - proposal.effectiveVotes;
         }
 
-        if (remainingGeneralFundingUsd > 0) {
+        if (remainingGeneralFunding > 0) {
             return proposal.effectiveVotes * -1 + 1;
         }
 
