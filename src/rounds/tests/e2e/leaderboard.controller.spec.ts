@@ -4,6 +4,7 @@ import { AwsModule } from '../../../aws/aws.module';
 import { DatabaseModule } from '../../../database/database.module';
 import { LeaderboardProposalBuilder } from '../../builder/leaderboard-proposal.builder';
 import { LeaderboardController } from '../../controller/leaderboard.controller';
+import { LeaderboardMapper } from '../../mapper/leaderboard.mapper';
 import { GenerateLeaderboardService } from '../../services/generate-leaderboard.service';
 import { GetCurrentRoundService } from '../../services/get-current-round.service';
 import { EarmarkedPropsoalStrategy } from '../../strategies/earmaked-proposal.strategy';
@@ -22,6 +23,7 @@ describe('LeaderboardController', () => {
             providers: [
                 GetCurrentRoundService,
                 GenerateLeaderboardService,
+                LeaderboardMapper,
                 LeaderboardProposalBuilder,
                 LeaderboardStrategyCollection,
                 EarmarkedPropsoalStrategy,
