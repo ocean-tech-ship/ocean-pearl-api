@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { StandingEnum } from '../../database/enums/standing.enum';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
@@ -17,16 +18,24 @@ export class LeaderboardProposalBuilder {
         round: Round,
     ): Promise<LeaderboardProposal> {
         let project = proposal.project as Project;
-        project = await this.projectRepository.findOneRaw({
+        project = await this.projectRepository.findOne({
             find: { id: project.id },
         });
 
         let mappedLeaderboardProposal = {
             id: proposal.id,
-            title: project.title,
-            requestedFunding: round.paymentOption === PaymentOptionEnum.Usd
-                ? proposal.requestedGrantUsd
-                : proposal.requestedGrantToken,
+            title: proposal.title,
+            project: {
+                id: project.id,
+                title: project.title,
+                completedProposals: this.countFinishedProposals(
+                    project.daoProposals as DaoProposal[],
+                ),
+            },
+            requestedFunding:
+                round.paymentOption === PaymentOptionEnum.Usd
+                    ? proposal.requestedGrantUsd
+                    : proposal.requestedGrantToken,
             receivedFunding: 0,
             yesVotes: proposal.votes,
             noVotes: proposal.counterVotes,
@@ -36,7 +45,6 @@ export class LeaderboardProposalBuilder {
                 round.round,
             ),
             tags: [proposal.category],
-            completedProposals: project.daoProposals.length,
             voteUrl: proposal.voteUrl,
         } as LeaderboardProposal;
 
@@ -46,7 +54,7 @@ export class LeaderboardProposalBuilder {
         }
 
         if (project.logo) {
-            mappedLeaderboardProposal.logoUrl = project.logo.url;
+            mappedLeaderboardProposal.project.logoUrl = project.logo.url;
         }
 
         return mappedLeaderboardProposal;
@@ -58,5 +66,16 @@ export class LeaderboardProposalBuilder {
         round: number,
     ): number {
         return round >= 8 ? votes - counterVotes : votes;
+    }
+
+    private countFinishedProposals(proposals: DaoProposal[]): number {
+        let finishedProposals: number = 0;
+
+        for (const proposal of proposals) {
+            finishedProposals +=
+                proposal.standing === StandingEnum.Completed ? 1 : 0;
+        }
+
+        return finishedProposals;
     }
 }
