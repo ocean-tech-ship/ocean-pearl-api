@@ -1,5 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+export class LeaderboardProject {
+    @ApiProperty()
+    id: string;
+
+    @ApiProperty()
+    completedProposals: number;
+
+    @ApiProperty()
+    logoUrl: string;
+
+    @ApiProperty()
+    title: string;
+}
+
 export class LeaderboardProposal {
     @ApiProperty()
     id: string;
@@ -8,7 +22,7 @@ export class LeaderboardProposal {
     title: string;
 
     @ApiProperty()
-    logoUrl: string;
+    project: LeaderboardProject;
 
     @ApiProperty()
     requestedFunding: number;
@@ -30,9 +44,6 @@ export class LeaderboardProposal {
 
     @ApiProperty()
     tags: string[];
-
-    @ApiProperty()
-    completedProposals: number;
 
     @ApiProperty()
     voteUrl: string;
