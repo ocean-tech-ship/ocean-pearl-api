@@ -8,6 +8,7 @@ import { EarmarkedPropsoalStrategy } from './strategies/earmaked-proposal.strate
 import { GeneralPropsoalStrategy } from './strategies/general-proposal.strategy';
 import { LeaderboardStrategyCollection } from './strategies/leaderboard-strategy.collection';
 import { WontReceiveFundingStrategy } from './strategies/wont-receive-funding.strategy';
+import { LeaderboardMapper } from './mapper/leaderboard.mapper';
 
 @Module({
     controllers: [LeaderboardController],
@@ -15,6 +16,7 @@ import { WontReceiveFundingStrategy } from './strategies/wont-receive-funding.st
     providers: [
         GetCurrentRoundService,
         GenerateLeaderboardService,
+        LeaderboardMapper,
         LeaderboardProposalBuilder,
         LeaderboardStrategyCollection,
         EarmarkedPropsoalStrategy,
