@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
-import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProposalBuilder } from '../builder/leaderboard-proposal.builder';
-import { RoundStatusEnum } from '../enums/round-status.enum';
+import { LeaderboardMapper } from '../mapper/leaderboard.mapper';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
 import { LeaderboardStrategyCollection } from '../strategies/leaderboard-strategy.collection';
@@ -16,26 +14,12 @@ export class GenerateLeaderboardService {
         private daoProposalRepository: DaoProposalRepository,
         private leaderboardProposalBuilder: LeaderboardProposalBuilder,
         private strategyCollection: LeaderboardStrategyCollection,
+        private leaderboardMapper: LeaderboardMapper,
     ) {}
 
     public async execute(): Promise<Leaderboard> {
         const round = await this.getCurrentRoundService.execute();
-
-        let leaderboard: Leaderboard = {
-            maxVotes: 0,
-            fundedProposals: [],
-            notFundedProposals: [],
-            voteEndDate: round.votingEndDate,
-            paymentOption: round.paymentOption,
-            remainingEarmarkFunding: round.paymentOption === PaymentOptionEnum.Usd
-                ? round.earmarkedFundingUsd
-                : round.earmarkedFundingOcean,
-            remainingGeneralFunding:
-            round.paymentOption === PaymentOptionEnum.Usd
-                ? round.availableFundingUsd - round.earmarkedFundingUsd
-                : round.availableFundingOcean - round.earmarkedFundingOcean,
-            status: this.determineRoundStatus(round),
-        } as Leaderboard;
+        let leaderboard: Leaderboard = this.leaderboardMapper.map(round);
         let leaderboardProposals: LeaderboardProposal[] = [];
         let lowestEarmarkVotes: number;
         let lowestGeneralVotes: number;
@@ -50,10 +34,7 @@ export class GenerateLeaderboardService {
 
         for (const proposal of proposals) {
             leaderboardProposals.push(
-                await this.leaderboardProposalBuilder.build(
-                    proposal,
-                    round,
-                ),
+                await this.leaderboardProposalBuilder.build(proposal, round),
             );
         }
 
@@ -75,36 +56,15 @@ export class GenerateLeaderboardService {
                 leaderboard,
             );
 
-            ({
-                leaderboard,
-                lowestEarmarkVotes,
-                lowestGeneralVotes,
-            } = strategy.execute(
-                proposal,
-                leaderboard,
-                lowestEarmarkVotes,
-                lowestGeneralVotes,
-            ));
+            ({ leaderboard, lowestEarmarkVotes, lowestGeneralVotes } =
+                strategy.execute(
+                    proposal,
+                    leaderboard,
+                    lowestEarmarkVotes,
+                    lowestGeneralVotes,
+                ));
         }
 
         return leaderboard;
-    }
-
-    private determineRoundStatus(round: Round): RoundStatusEnum {
-        const currentDate = new Date();
-
-        if (round.submissionEndDate >= currentDate) {
-            return RoundStatusEnum.ProposalSubmission;
-        }
-
-        if (round.votingStartDate >= currentDate) {
-            return RoundStatusEnum.Pending;
-        }
-
-        if (round.votingEndDate >= currentDate) {
-            return RoundStatusEnum.VotingInProgress;
-        }
-
-        return RoundStatusEnum.VotingFinished;
     }
 }
