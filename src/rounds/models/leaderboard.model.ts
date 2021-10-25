@@ -32,6 +32,9 @@ export class Leaderboard {
     paymentOption: string;
 
     @ApiProperty()
+    voteStartDate: Date;
+
+    @ApiProperty()
     voteEndDate: Date;
 
     @ApiProperty({
