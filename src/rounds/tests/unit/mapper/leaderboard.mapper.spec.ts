@@ -15,6 +15,7 @@ describe('LeaderboardMapper', () => {
     const mapDataProvider = {
         'it should map for USD': {
             round: {
+                round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
                 earmarkedFundingUsd: 200000,
                 earmarkedFundingOcean: 0,
@@ -25,9 +26,14 @@ describe('LeaderboardMapper', () => {
                 submissionEndDate: faker.date.past(),
             } as Round,
             expected: {
+                amountProposals: 0,
                 fundedProposals: [],
                 notFundedProposals: [],
+                overallFunding: 800000,
+                overallRequestedFunding: 0,
                 maxVotes: 0,
+                totalVotes: 0,
+                round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
                 remainingEarmarkFunding: 200000,
                 remainingGeneralFunding: 600000,
@@ -36,6 +42,7 @@ describe('LeaderboardMapper', () => {
         },
         'it should map for OCEAN': {
             round: {
+                round: 10,
                 paymentOption: PaymentOptionEnum.Ocean,
                 earmarkedFundingOcean: 200000,
                 earmarkedFundingUsd: 0,
@@ -46,9 +53,14 @@ describe('LeaderboardMapper', () => {
                 submissionEndDate: faker.date.past(),
             } as Round,
             expected: {
+                amountProposals: 0,
                 fundedProposals: [],
                 notFundedProposals: [],
+                overallFunding: 800000,
+                overallRequestedFunding: 0,
                 maxVotes: 0,
+                totalVotes: 0,
+                round: 10,
                 paymentOption: PaymentOptionEnum.Ocean,
                 remainingEarmarkFunding: 200000,
                 remainingGeneralFunding: 600000,
@@ -57,6 +69,7 @@ describe('LeaderboardMapper', () => {
         },
         'it should map the correct status: proposal submission': {
             round: {
+                round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
                 earmarkedFundingUsd: 200000,
                 earmarkedFundingOcean: 0,
@@ -67,9 +80,14 @@ describe('LeaderboardMapper', () => {
                 submissionEndDate: faker.date.future(),
             } as Round,
             expected: {
+                amountProposals: 0,
                 fundedProposals: [],
                 notFundedProposals: [],
+                overallFunding: 800000,
+                overallRequestedFunding: 0,
                 maxVotes: 0,
+                totalVotes: 0,
+                round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
                 remainingEarmarkFunding: 200000,
                 remainingGeneralFunding: 600000,
@@ -78,6 +96,7 @@ describe('LeaderboardMapper', () => {
         },
         'it should map the correct status: pending': {
             round: {
+                round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
                 earmarkedFundingUsd: 200000,
                 earmarkedFundingOcean: 0,
@@ -88,9 +107,14 @@ describe('LeaderboardMapper', () => {
                 submissionEndDate: faker.date.past(),
             } as Round,
             expected: {
+                amountProposals: 0,
                 fundedProposals: [],
                 notFundedProposals: [],
+                overallFunding: 800000,
+                overallRequestedFunding: 0,
                 maxVotes: 0,
+                totalVotes: 0,
+                round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
                 remainingEarmarkFunding: 200000,
                 remainingGeneralFunding: 600000,
@@ -99,6 +123,7 @@ describe('LeaderboardMapper', () => {
         },
         'it should map the correct status: voting in progress': {
             round: {
+                round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
                 earmarkedFundingUsd: 200000,
                 earmarkedFundingOcean: 0,
@@ -109,9 +134,14 @@ describe('LeaderboardMapper', () => {
                 submissionEndDate: faker.date.past(),
             } as Round,
             expected: {
+                amountProposals: 0,
                 fundedProposals: [],
                 notFundedProposals: [],
+                overallFunding: 800000,
+                overallRequestedFunding: 0,
                 maxVotes: 0,
+                totalVotes: 0,
+                round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
                 remainingEarmarkFunding: 200000,
                 remainingGeneralFunding: 600000,
@@ -120,6 +150,7 @@ describe('LeaderboardMapper', () => {
         },
         'it should map the correct status: voting finished': {
             round: {
+                round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
                 earmarkedFundingUsd: 200000,
                 earmarkedFundingOcean: 0,
@@ -130,9 +161,14 @@ describe('LeaderboardMapper', () => {
                 submissionEndDate: faker.date.past(),
             } as Round,
             expected: {
+                amountProposals: 0,
                 fundedProposals: [],
                 notFundedProposals: [],
+                overallFunding: 800000,
+                overallRequestedFunding: 0,
                 maxVotes: 0,
+                totalVotes: 0,
+                round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
                 remainingEarmarkFunding: 200000,
                 remainingGeneralFunding: 600000,
