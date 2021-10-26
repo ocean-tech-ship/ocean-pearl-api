@@ -25,6 +25,8 @@ import { GeneralPropsoalStrategy } from '../../../strategies/general-proposal.st
 import { LeaderboardStrategyCollection } from '../../../strategies/leaderboard-strategy.collection';
 import { WontReceiveFundingStrategy } from '../../../strategies/wont-receive-funding.strategy';
 
+const faker = require('faker');
+
 describe('GenerateLeaderboardService', () => {
     let module: TestingModule;
     let service: GenerateLeaderboardService;
@@ -34,6 +36,9 @@ describe('GenerateLeaderboardService', () => {
 
     const PROPOSAL_ID = nanoid();
     const PROJECT_ID = nanoid();
+
+    const votingStartDate = faker.date.past();
+    const votingEndDate = faker.date.future();
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
@@ -64,7 +69,8 @@ describe('GenerateLeaderboardService', () => {
             paymentOption: PaymentOptionEnum.Usd,
             availableFundingUsd: 100000,
             earmarkedFundingUsd: 20000,
-            votingEndDate: new Date('05.11.2021'),
+            votingEndDate: votingEndDate,
+            votingStartDate: votingStartDate,
         } as Round;
         jest.spyOn(roundRepository, 'findOne').mockImplementation(
             async () => currentRoundMockResponse,
@@ -276,11 +282,17 @@ describe('GenerateLeaderboardService', () => {
                     voteUrl: 'https://port.oceanprotocol.com/',
                 } as LeaderboardProposal,
             ],
+            amountProposals: 6,
+            overallFunding: 100000,
+            overallRequestedFunding: 230000,
+            round: 10,
+            totalVotes: 805000,
             remainingEarmarkFunding: 0,
             remainingGeneralFunding: 30000,
             paymentOption: PaymentOptionEnum.Usd,
-            status: RoundStatusEnum.VotingFinished,
-            voteEndDate: new Date('05.11.2021'),
+            status: RoundStatusEnum.VotingInProgress,
+            voteStartDate: votingStartDate,
+            voteEndDate: votingEndDate,
             maxVotes: 200000,
         } as Leaderboard);
     });
