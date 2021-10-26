@@ -17,6 +17,9 @@ export class Leaderboard {
     notFundedProposals: LeaderboardProposal[];
 
     @ApiProperty()
+    amountProposals: number;
+
+    @ApiProperty()
     maxVotes: number;
 
     @ApiProperty()
@@ -42,4 +45,16 @@ export class Leaderboard {
         enum: RoundStatusEnum,
     })
     status: string;
+
+    @ApiProperty()
+    round: number;
+
+    @ApiProperty()
+    overallFunding: number;
+
+    @ApiProperty()
+    overallRequestedFunding: number;
+
+    @ApiProperty()
+    totalVotes: number;
 }
