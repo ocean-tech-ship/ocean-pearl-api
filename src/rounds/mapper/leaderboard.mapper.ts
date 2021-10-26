@@ -9,20 +9,29 @@ export class LeaderboardMapper {
     public map(round: Round): Leaderboard {
         return {
             maxVotes: 0,
+            totalVotes: 0,
+            amountProposals: 0,
+            overallRequestedFunding: 0,
             fundedProposals: [],
             notFundedProposals: [],
+            paymentOption: round.paymentOption,
+            overallFunding:
+                round.paymentOption === PaymentOptionEnum.Usd
+                    ? round.availableFundingUsd
+                    : round.availableFundingOcean,
+            remainingEarmarkFunding:
+                round.paymentOption === PaymentOptionEnum.Usd
+                    ? round.earmarkedFundingUsd
+                    : round.earmarkedFundingOcean,
+            remainingGeneralFunding:
+                round.paymentOption === PaymentOptionEnum.Usd
+                    ? round.availableFundingUsd - round.earmarkedFundingUsd
+                    : round.availableFundingOcean - round.earmarkedFundingOcean,
+            status: this.determineRoundStatus(round),
             voteStartDate: round.votingStartDate,
             voteEndDate: round.votingEndDate,
-            paymentOption: round.paymentOption,
-            remainingEarmarkFunding: round.paymentOption === PaymentOptionEnum.Usd
-                ? round.earmarkedFundingUsd
-                : round.earmarkedFundingOcean,
-            remainingGeneralFunding:
-            round.paymentOption === PaymentOptionEnum.Usd
-                ? round.availableFundingUsd - round.earmarkedFundingUsd
-                : round.availableFundingOcean - round.earmarkedFundingOcean,
-            status: this.determineRoundStatus(round),
-        } as Leaderboard
+            round: round.round,
+        } as Leaderboard;
     }
 
     private determineRoundStatus(round: Round): RoundStatusEnum {
