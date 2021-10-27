@@ -4,12 +4,12 @@ import { MigrationInterface } from '../interfaces/migration.interface';
 
 export default class Version100001 implements MigrationInterface {
     public getVersion(): number {
-        // Acount this number up with each migration
+        // count this number up with each migration
         return 100001;
     }
 
     public getDescription(): string {
-        // Add a short description of what will happen.
+        // add a short description of what will happen.
         return 'Remove the availableFunding field and add two seperate for usd and ocean.';
     }
 
