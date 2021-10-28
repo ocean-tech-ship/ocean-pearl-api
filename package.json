@@ -34,7 +34,7 @@
     "@nestjs/mongoose": "^8.0.1",
     "@nestjs/passport": "^8.0.1",
     "@nestjs/platform-express": "^7.6.18",
-    "@nestjs/schedule": "^0.4.3",
+    "@nestjs/schedule": "^1.0.1",
     "@nestjs/swagger": "^4.8.2",
     "@nestjs/throttler": "^2.0.0",
     "bcrypt": "^5.0.1",
