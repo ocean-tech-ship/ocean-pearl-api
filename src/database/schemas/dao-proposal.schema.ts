@@ -142,6 +142,13 @@ export class DaoProposal {
 
     @Prop({
         type: String,
+        enum: CategoryEnum,
+    })
+    @ApiProperty()
+    earmark: string;
+
+    @Prop({
+        type: String,
         enum: StandingEnum,
         default: StandingEnum.Unreported,
     })
