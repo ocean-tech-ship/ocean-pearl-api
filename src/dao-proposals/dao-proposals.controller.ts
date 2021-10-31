@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { PaginationOptions } from '../database/interfaces/pagination-options.interface';
 import { DaoProposal } from '../database/schemas/dao-proposal.schema';
-import { GetRoundsAmountService } from '../rounds/services/get-rounds-amount.service';
+import { GetCurrentRoundService } from '../rounds/services/get-current-round.service';
 import { ProposalFilterQuery } from './models/proposal-filter-query.model';
 import { GetDaoProposalByIdService } from './services/get-dao-proposal-by-id.service';
 import { GetDaoProposalsPaginatedService } from './services/get-dao-proposals-paginated.service';
@@ -30,7 +30,7 @@ export class DaoProposalsController {
         private getFilteredDaoProposalsService: GetFilteredDaoProposalsService,
         private getDaoProposalByIdService: GetDaoProposalByIdService,
         private getDaoProposalsPaginatedService: GetDaoProposalsPaginatedService,
-        private getRoundsAmountService: GetRoundsAmountService,
+        private getCurrentRoundService: GetCurrentRoundService,
     ) {}
 
     @Get('')
@@ -61,7 +61,7 @@ export class DaoProposalsController {
                 daoProposals: await this.getFilteredDaoProposalsService.execute(
                     proposalFilterQuery,
                 ),
-                maxRounds: await this.getRoundsAmountService.execute(),
+                maxRounds: (await this.getCurrentRoundService.execute()).round,
             };
         } catch (error: any) {
             throw error;

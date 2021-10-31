@@ -24,6 +24,9 @@ export class DaoProposalMapper {
             category:
                 CategoryMap[aritableData['Grant Category'].trim()] ??
                 CategoryEnum.Other,
+            earmark: aritableData['Earmarks']
+                ? CategoryMap[aritableData['Earmarks'].trim()]
+                : undefined,
             oneLiner: aritableData['One Liner'],
             description: aritableData['Overview'],
             standing:
@@ -54,6 +57,7 @@ export class DaoProposalMapper {
             counterVotes: aritableData['Voted No']
                 ? Math.floor(aritableData['Voted No'] as number)
                 : 0,
+            voteUrl: aritableData['Vote URL'] ?? '',
             deliverables: [],
             createdAt: new Date(aritableData['Created Date']),
         } as DaoProposal;
