@@ -21,11 +21,6 @@ export class MigrationService implements OnModuleInit {
         this.logger.log('Starting Migrations Up.');
         const migrationModel = this.connection.model<Migration>('Migration');
 
-        this.migrations.sort(
-            (current: MigrationInterface, next: MigrationInterface) =>
-            current.getVersion() - next.getVersion(),
-        );
-
         try {
             for (const migration of this.migrations) {
                 if (
@@ -53,9 +48,7 @@ export class MigrationService implements OnModuleInit {
                     { upsert: true },
                 );
 
-                this.logger.log(
-                    `Migration ${migration.getVersion()} UP finished.`,
-                );
+                this.logger.log(`Migration ${migration.getVersion()} finished.`);
             }
         } catch (error) {
             throw error;
@@ -75,10 +68,10 @@ export class MigrationService implements OnModuleInit {
         try {
             for (const migration of this.migrations) {
                 if (
-                    !(await migrationModel.exists({
+                    await !migrationModel.exists({
                         version: migration.getVersion(),
                         status: MigrationStatusEnum.Revert,
-                    }))
+                    })
                 ) {
                     continue;
                 }
@@ -89,9 +82,7 @@ export class MigrationService implements OnModuleInit {
                     status: MigrationStatusEnum.Down,
                 } as Migration);
 
-                this.logger.log(
-                    `Migration ${migration.getVersion()} DOWN finished.`,
-                );
+                this.logger.log(`Migration ${migration.getVersion()} finished.`);
             }
         } catch (error) {
             throw error;
