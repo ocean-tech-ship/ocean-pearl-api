@@ -10,6 +10,7 @@ import { RoundsProvider } from '../provider/rounds.provider';
 @Injectable()
 export class SyncRoundsDataService {
     private readonly logger = new Logger(SyncRoundsDataService.name);
+    private readonly USD_OPTION_START_ROUND = 8;
 
     public constructor(
         private roundsProvider: RoundsProvider,
@@ -38,16 +39,23 @@ export class SyncRoundsDataService {
     private mapRound(round: any): Round {
         let mappedRound: Round = {
             round: round['Round'],
-            earmarked: round['Earmarked'] ?? round['Earmarked USD'],
-            maxGrant: round['Max Grant'] ?? round['Max Grant USD'],
-            paymentOption: round['Max Grant']
+            earmarkedFundingOcean: round['Earmarked'] ?? 0,
+            earmarkedFundingUsd: round['Earmarked USD'],
+            maxGrantOcean: round['Max Grant'] ?? 0,
+            maxGrantUsd: round['Max Grant USD'] ?? 0,
+            paymentOption: round['Round'] <= this.USD_OPTION_START_ROUND
                 ? PaymentOptionEnum.Ocean
                 : PaymentOptionEnum.Usd,
-            availableFunding:
-                round['Funding Available'] ?? round['Funding Available USD'],
-            startDate: round['Start Date'] ? new Date(round['Start Date']) : null,
+            availableFundingOcean: round['Funding Available'] ?? 0,
+            availableFundingUsd: round['Funding Available USD'] ?? 0,
+            usdConversionRate: round['OCEAN Price'] ?? 0,
+            startDate: round['Start Date']
+                ? new Date(round['Start Date'])
+                : null,
             submissionEndDate: new Date(round['Proposals Due By']),
-            votingStartDate: round['Voting Starts'] ? new Date(round['Voting Starts']) : null,
+            votingStartDate: round['Voting Starts']
+                ? new Date(round['Voting Starts'])
+                : null,
             votingEndDate: new Date(round['Voting Ends']),
         } as Round;
 
@@ -69,16 +77,11 @@ export class SyncRoundsDataService {
                 round: round.round,
             },
         } as FindQuery;
-        const databaseRounds: Round[] = await this.roundsRepository.getAll(
+        const databaseRound: Round = await this.roundsRepository.findOne(
             findQuery,
         );
 
-        if (databaseRounds.length === 0) {
-            this.roundsRepository.create(round);
-            return;
-        }
-
-        round.id = databaseRounds[0].id;
+        round.id = databaseRound?.id ?? undefined;
         this.roundsRepository.update(round);
     }
 }

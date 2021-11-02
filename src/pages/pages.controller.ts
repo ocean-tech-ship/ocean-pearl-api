@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { GetLatestDaoProposalsService } from '../dao-proposals/services/get-latest-dao-proposals.service';
 import { DaoProposal } from '../database/schemas/dao-proposal.schema';
 import { Project } from '../database/schemas/project.schema';
-import { Metrics } from '../metrics/interfaces/metrics.interface';
+import { Metrics } from '../metrics/models/metrics.model';
 import { CalculateMetricsService } from '../metrics/services/calculate-metrics.service';
 import { LatestProjectsService } from '../projects/services/latest-projects.service';
 

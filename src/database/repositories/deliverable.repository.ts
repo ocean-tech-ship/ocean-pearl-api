@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
@@ -8,7 +8,8 @@ import { Deliverable, DeliverableType } from '../schemas/deliverable.schema';
 
 @Injectable()
 export class DeliverableRepository
-    implements RepositoryInterface<DeliverableType> {
+    implements RepositoryInterface<DeliverableType>
+{
     constructor(
         @InjectModel('Deliverable') private model: Model<DeliverableType>,
     ) {}
@@ -20,7 +21,7 @@ export class DeliverableRepository
             }
 
             return await this.model
-                .findOne(query.find)
+                .findOne(query.find as FilterQuery<DeliverableType>)
                 .lean()
                 .select('-_id -__v')
                 .exec();
@@ -36,7 +37,7 @@ export class DeliverableRepository
             }
 
             return await this.model
-                .findOne(query.find)
+                .findOne(query.find as FilterQuery<DeliverableType>)
                 .lean()
                 .exec();
         } catch (error: any) {
@@ -59,7 +60,7 @@ export class DeliverableRepository
     public async getAll(query?: FindQuery): Promise<Deliverable[]> {
         try {
             return await this.model
-                .find(query?.find || {})
+                .find((query?.find as FilterQuery<DeliverableType>) || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -100,7 +101,7 @@ export class DeliverableRepository
             }
 
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find,
+                query.find as FilterQuery<DeliverableType>,
             );
 
             return response.deletedCount === 1;
@@ -116,7 +117,9 @@ export class DeliverableRepository
             }
 
             const response: MongooseDeleteResponse =
-                await this.model.deleteMany(query.find);
+                await this.model.deleteMany(
+                    query.find as FilterQuery<DeliverableType>,
+                );
 
             return response.deletedCount > 0;
         } catch (error: any) {
