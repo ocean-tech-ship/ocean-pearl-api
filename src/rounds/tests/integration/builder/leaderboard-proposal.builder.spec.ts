@@ -3,7 +3,6 @@ import { Types } from 'mongoose';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
 import { CategoryEnum } from '../../../../database/enums/category.enum';
-import { StandingEnum } from '../../../../database/enums/standing.enum';
 import { PaymentOptionEnum } from '../../../../database/enums/payment-option.enum';
 import { nanoid } from '../../../../database/functions/nano-id.function';
 import { ProjectRepository } from '../../../../database/repositories/project.repository';
