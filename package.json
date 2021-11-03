@@ -26,7 +26,7 @@
     "npm": "6.x"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.38.0",
+    "@aws-sdk/client-s3": "^3.39.0",
     "@nestjs/common": "^7.6.18",
     "@nestjs/config": "^1.0.3",
     "@nestjs/core": "^7.6.18",
@@ -43,7 +43,7 @@
     "cookie-parser": "^1.4.5",
     "ethers": "^5.5.1",
     "faker": "^5.5.3",
-    "mongoose": "^5.13.12",
+    "mongoose": "^5.13.13",
     "nanoid": "^3.1.30",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
@@ -51,7 +51,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.7",
     "sharp": "^0.29.2",
-    "svgo": "^2.7.0",
+    "svgo": "^2.8.0",
     "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
@@ -70,7 +70,7 @@
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
-    "@types/sharp": "^0.29.2",
+    "@types/sharp": "^0.29.3",
     "@types/svgo": "^2.6.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",

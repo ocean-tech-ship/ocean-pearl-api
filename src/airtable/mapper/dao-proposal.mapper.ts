@@ -12,54 +12,54 @@ import { StatesMap } from '../constants/states-map.constant';
 @Injectable()
 export class DaoProposalMapper {
     public map(
-        aritableData: any,
+        airtableData: any,
         airtableId: string,
         roundId: Types.ObjectId,
     ): DaoProposal {
-        let mappedProposal: DaoProposal = {
+        const mappedProposal: DaoProposal = {
             airtableId: airtableId,
-            title: aritableData['Project Name'].trim(),
-            status: StatesMap[aritableData['Proposal State']],
+            title: airtableData['Project Name']?.trim(),
+            status: StatesMap[airtableData['Proposal State']],
             fundingRound: roundId,
             category:
-                CategoryMap[aritableData['Grant Category'].trim()] ??
+                CategoryMap[airtableData['Grant Category']?.trim()] ??
                 CategoryEnum.Other,
-            earmark: aritableData['Earmarks']
-                ? CategoryMap[aritableData['Earmarks'].trim()]
+            earmark: airtableData['Earmarks']
+                ? CategoryMap[airtableData['Earmarks']?.trim()]
                 : undefined,
-            oneLiner: aritableData['One Liner'],
-            description: aritableData['Overview'],
+            oneLiner: airtableData['One Liner'],
+            description: airtableData['Overview'],
             standing:
-                StandingMap[aritableData['Proposal Standing']] ??
+                StandingMap[airtableData['Proposal Standing']] ??
                 StandingEnum.Unreported,
-            walletAddress: aritableData['Wallet Address'].toLowerCase(),
+            walletAddress: airtableData['Wallet Address'].toLowerCase(),
             fundamentalMetric:
-                FundamentalMetricsMap[aritableData['Fundamental Metric']] ??
+                FundamentalMetricsMap[airtableData['Fundamental Metric']] ??
                 FundamentalMetricEnum.Other,
-            requestedGrantToken: aritableData['OCEAN Requested']
-                ? parseInt(aritableData['OCEAN Requested'])
+            requestedGrantToken: airtableData['OCEAN Requested']
+                ? parseInt(airtableData['OCEAN Requested'])
                 : 0,
-            grantedToken: aritableData['OCEAN Granted']
-                ? parseInt(aritableData['OCEAN Granted'])
+            grantedToken: airtableData['OCEAN Granted']
+                ? parseInt(airtableData['OCEAN Granted'])
                 : 0,
-            requestedGrantUsd: aritableData['USD Requested']
-                ? parseInt(aritableData['USD Requested'])
+            requestedGrantUsd: airtableData['USD Requested']
+                ? parseInt(airtableData['USD Requested'])
                 : 0,
-            grantedUsd: aritableData['USD Granted']
-                ? parseInt(aritableData['USD Granted'])
+            grantedUsd: airtableData['USD Granted']
+                ? parseInt(airtableData['USD Granted'])
                 : 0,
-            oceanProtocolPortUrl: aritableData['Proposal URL'] ?? '',
-            snapshotBlock: aritableData['Snapshot Block'],
-            ipfsHash: aritableData['ipfsHash'],
-            votes: aritableData['Voted Yes']
-                ? Math.floor(aritableData['Voted Yes'] as number)
+            oceanProtocolPortUrl: airtableData['Proposal URL'] ?? '',
+            snapshotBlock: airtableData['Snapshot Block'],
+            ipfsHash: airtableData['ipfsHash'],
+            votes: airtableData['Voted Yes']
+                ? Math.floor(airtableData['Voted Yes'] as number)
                 : 0,
-            counterVotes: aritableData['Voted No']
-                ? Math.floor(aritableData['Voted No'] as number)
+            counterVotes: airtableData['Voted No']
+                ? Math.floor(airtableData['Voted No'] as number)
                 : 0,
-            voteUrl: aritableData['Vote URL'] ?? '',
+            voteUrl: airtableData['Vote URL'] ?? '',
             deliverables: [],
-            createdAt: new Date(aritableData['Created Date']),
+            createdAt: new Date(airtableData['Created Date']),
         } as DaoProposal;
 
         if (

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { StandingEnum } from '../../database/enums/standing.enum';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { Project } from '../../database/schemas/project.schema';
 import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
+import { DaoProposalStatusEnum } from '../../database/enums/dao-proposal-status.enum';
 
 @Injectable()
 export class LeaderboardProposalBuilder {
@@ -22,7 +22,7 @@ export class LeaderboardProposalBuilder {
             find: { id: project.id },
         });
 
-        let mappedLeaderboardProposal = {
+        const mappedLeaderboardProposal = {
             id: proposal.id,
             title: proposal.title,
             project: {
@@ -69,11 +69,16 @@ export class LeaderboardProposalBuilder {
     }
 
     private countFinishedProposals(proposals: DaoProposal[]): number {
-        let finishedProposals: number = 0;
+        const allowedStates = [
+            DaoProposalStatusEnum.Funded,
+            DaoProposalStatusEnum.Granted,
+        ];
+        let finishedProposals = 0;
 
         for (const proposal of proposals) {
-            finishedProposals +=
-                proposal.standing === StandingEnum.Completed ? 1 : 0;
+            finishedProposals += allowedStates.includes(proposal.status)
+                ? 1
+                : 0;
         }
 
         return finishedProposals;
