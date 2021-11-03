@@ -27,25 +27,31 @@ export class SyncRoundsDataService {
         const roundsResponse: AxiosResponse = await this.roundsProvider.fetch();
         const airtbaleRounds = roundsResponse.data.records;
 
-        for (let round of airtbaleRounds) {
+        for (const round of airtbaleRounds) {
             const newRound: Round = this.mapRound(round.fields);
 
-            this.syncRound(newRound);
+            if (!newRound.round) {
+                // Ignore empty rows
+                continue;
+            }
+
+            await this.syncRound(newRound);
         }
 
         this.logger.log('Finish syncing Rounds from Airtable Job.');
     }
 
     private mapRound(round: any): Round {
-        let mappedRound: Round = {
+        const mappedRound: Round = {
             round: round['Round'],
             earmarkedFundingOcean: round['Earmarked'] ?? 0,
             earmarkedFundingUsd: round['Earmarked USD'],
             maxGrantOcean: round['Max Grant'] ?? 0,
             maxGrantUsd: round['Max Grant USD'] ?? 0,
-            paymentOption: round['Round'] <= this.USD_OPTION_START_ROUND
-                ? PaymentOptionEnum.Ocean
-                : PaymentOptionEnum.Usd,
+            paymentOption:
+                round['Round'] <= this.USD_OPTION_START_ROUND
+                    ? PaymentOptionEnum.Ocean
+                    : PaymentOptionEnum.Usd,
             availableFundingOcean: round['Funding Available'] ?? 0,
             availableFundingUsd: round['Funding Available USD'] ?? 0,
             usdConversionRate: round['OCEAN Price'] ?? 0,
@@ -81,7 +87,11 @@ export class SyncRoundsDataService {
             findQuery,
         );
 
-        round.id = databaseRound?.id ?? undefined;
-        this.roundsRepository.update(round);
+        if (databaseRound == null) {
+            await this.roundsRepository.create(round);
+        } else {
+            round.id = databaseRound?.id ?? undefined;
+            await this.roundsRepository.update(round);
+        }
     }
 }
