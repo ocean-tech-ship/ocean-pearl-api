@@ -8,5 +8,6 @@ export enum DaoProposalStatusEnum {
     Rejected = 'rejected',
     Ended = 'ended',
     DownVoted = 'downVoted',
-    Unknown = 'unknown'
+    Unknown = 'unknown',
+    Withdrawn = 'withdrawn',
 }
