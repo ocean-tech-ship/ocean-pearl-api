@@ -4,15 +4,18 @@ import { Round } from '../../database/schemas/round.schema';
 
 @Injectable()
 export class GetCurrentRoundService {
+    private readonly DATE_CORRECTION: number = 15;
+
     constructor(private roundRepository: RoundRepository) {}
 
     public async execute(): Promise<Round> {
-        const currentDate = new Date();
+        const searchDate = new Date();
+        searchDate.setDate(searchDate.getDate() - this.DATE_CORRECTION);
 
         let currentRound = await this.roundRepository.findOne({
             find: {
-                startDate: { $lte: currentDate },
-                votingEndDate: { $gte: currentDate },
+                startDate: { $lte: searchDate },
+                votingEndDate: { $gte: searchDate },
             },
         });
 
@@ -20,7 +23,7 @@ export class GetCurrentRoundService {
             currentRound = (
                 await this.roundRepository.getAll({
                     find: {
-                        votingEndDate: { $gte: currentDate },
+                        votingEndDate: { $gte: searchDate },
                     },
                     sort: {
                         votingEndDate: -1,

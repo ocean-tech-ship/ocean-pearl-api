@@ -24,7 +24,7 @@ export class SyncProposalsDataService {
         private strategyCollection: StrategyCollection,
     ) {}
 
-    @Cron('0 */15 * * * *', {
+    @Cron('0 */5 * * * *', {
         name: 'Round import',
         timeZone: 'Europe/Berlin',
     })
