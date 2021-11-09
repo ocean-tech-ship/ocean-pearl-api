@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { DaoProposalStatusEnum } from '../../database/enums/dao-proposal-status.enum';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
 import { LeaderboardProposalBuilder } from '../builder/leaderboard-proposal.builder';
@@ -10,6 +11,11 @@ import { GetCurrentRoundService } from './get-current-round.service';
 
 @Injectable()
 export class GenerateLeaderboardService {
+    private readonly INVALID_STATES: DaoProposalStatusEnum[] = [
+        DaoProposalStatusEnum.Rejected,
+        DaoProposalStatusEnum.Withdrawn,
+    ];
+
     public constructor(
         private getCurrentRoundService: GetCurrentRoundService,
         private daoProposalRepository: DaoProposalRepository,
@@ -36,12 +42,15 @@ export class GenerateLeaderboardService {
         leaderboard.amountProposals = proposals.length;
 
         for (const proposal of proposals) {
-            leaderboard.overallRequestedFunding += 
-                leaderboard.paymentOption === PaymentOptionEnum.Usd 
+            if (this.INVALID_STATES.includes(proposal.status)) {
+                continue;
+            }
+
+            leaderboard.overallRequestedFunding +=
+                leaderboard.paymentOption === PaymentOptionEnum.Usd
                     ? proposal.requestedGrantUsd
                     : proposal.requestedGrantToken;
             leaderboard.totalVotes += proposal.votes + proposal.counterVotes;
-
 
             leaderboardProposals.push(
                 await this.leaderboardProposalBuilder.build(proposal, round),
