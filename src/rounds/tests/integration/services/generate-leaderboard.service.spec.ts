@@ -5,7 +5,6 @@ import { DatabaseModule } from '../../../../database/database.module';
 import { CategoryEnum } from '../../../../database/enums/category.enum';
 import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../../../../database/enums/payment-option.enum';
-import { StandingEnum } from '../../../../database/enums/standing.enum';
 import { nanoid } from '../../../../database/functions/nano-id.function';
 import { DaoProposalRepository } from '../../../../database/repositories/dao-proposal.repository';
 import { ProjectRepository } from '../../../../database/repositories/project.repository';
@@ -25,6 +24,7 @@ import { EarmarkedPropsoalStrategy } from '../../../strategies/earmarked-proposa
 import { GeneralPropsoalStrategy } from '../../../strategies/general-proposal.strategy';
 import { LeaderboardStrategyCollection } from '../../../strategies/leaderboard-strategy.collection';
 import { WontReceiveFundingStrategy } from '../../../strategies/wont-receive-funding.strategy';
+import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-status.enum';
 
 const faker = require('faker');
 
@@ -158,10 +158,10 @@ describe('GenerateLeaderboardService', () => {
                 url: 'urlToLogo.com',
             },
             daoProposals: [
-                { standing: StandingEnum.Completed },
-                { standing: StandingEnum.Completed },
-                { standing: StandingEnum.Completed },
-                { standing: StandingEnum.Completed },
+                { status: DaoProposalStatusEnum.Granted },
+                { status: DaoProposalStatusEnum.Funded },
+                { status: DaoProposalStatusEnum.Granted },
+                { status: DaoProposalStatusEnum.Funded },
             ],
         } as Project;
         jest.spyOn(projectRepository, 'findOne').mockImplementation(
@@ -177,7 +177,7 @@ describe('GenerateLeaderboardService', () => {
         expect(service).toBeDefined();
     });
 
-    it('it should generate a full leaderbaord', () => {
+    it('it should generate a full leaderboard', () => {
         return expect(service.execute()).resolves.toEqual({
             fundedProposals: [
                 {

@@ -36,14 +36,14 @@ export class SyncRoundsDataService {
 
             const newRound: Round = this.mapRound(round.fields);
 
-            this.syncRound(newRound);
+            await this.syncRound(newRound);
         }
 
         this.logger.log('Finish syncing Rounds from Airtable Job.');
     }
 
     private mapRound(round: any): Round {
-        let mappedRound: Round = {
+        const mappedRound: Round = {
             round: round['Round'],
             paymentOption:
                 round['Round'] <= this.USD_OPTION_START_ROUND
@@ -158,7 +158,11 @@ export class SyncRoundsDataService {
             findQuery,
         );
 
-        round.id = databaseRound?.id ?? undefined;
-        this.roundsRepository.update(round);
+        if (databaseRound == null) {
+            await this.roundsRepository.create(round);
+        } else {
+            round.id = databaseRound?.id ?? undefined;
+            await this.roundsRepository.update(round);
+        }
     }
 }

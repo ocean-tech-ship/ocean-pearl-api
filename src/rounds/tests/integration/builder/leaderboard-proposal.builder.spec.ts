@@ -3,7 +3,6 @@ import { Types } from 'mongoose';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
 import { CategoryEnum } from '../../../../database/enums/category.enum';
-import { StandingEnum } from '../../../../database/enums/standing.enum';
 import { PaymentOptionEnum } from '../../../../database/enums/payment-option.enum';
 import { nanoid } from '../../../../database/functions/nano-id.function';
 import { ProjectRepository } from '../../../../database/repositories/project.repository';
@@ -13,6 +12,7 @@ import { Round } from '../../../../database/schemas/round.schema';
 import { LeaderboardProposalBuilder } from '../../../builder/leaderboard-proposal.builder';
 import { LeaderboardProposal } from '../../../models/leaderboard-proposal.model';
 import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
+import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-status.enum';
 
 describe('LeaderboardProposalBuilder', () => {
     let module: TestingModule;
@@ -46,10 +46,10 @@ describe('LeaderboardProposalBuilder', () => {
                     url: 'urlToLogo.com',
                 },
                 daoProposals: [
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.Completed },
+                    { status: DaoProposalStatusEnum.Granted },
+                    { status: DaoProposalStatusEnum.Funded },
+                    { status: DaoProposalStatusEnum.Granted },
+                    { status: DaoProposalStatusEnum.Funded },
                 ],
             } as Project,
             expected: {
@@ -93,10 +93,10 @@ describe('LeaderboardProposalBuilder', () => {
                     url: 'urlToLogo.com',
                 },
                 daoProposals: [
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.Unreported },
-                    { standing: StandingEnum.InProgress },
+                    { status: DaoProposalStatusEnum.Granted },
+                    { status: DaoProposalStatusEnum.Funded },
+                    { status: DaoProposalStatusEnum.Rejected },
+                    { status: DaoProposalStatusEnum.NotFunded },
                 ],
             } as Project,
             expected: {
@@ -140,10 +140,10 @@ describe('LeaderboardProposalBuilder', () => {
                     url: 'urlToLogo.com',
                 },
                 daoProposals: [
-                    { standing: StandingEnum.Unreported },
-                    { standing: StandingEnum.Unreported },
-                    { standing: StandingEnum.Unreported },
-                    { standing: StandingEnum.InProgress },
+                    { status: DaoProposalStatusEnum.Running },
+                    { status: DaoProposalStatusEnum.Rejected },
+                    { status: DaoProposalStatusEnum.DownVoted },
+                    { status: DaoProposalStatusEnum.Received },
                 ],
             } as Project,
             expected: {
@@ -187,10 +187,10 @@ describe('LeaderboardProposalBuilder', () => {
                     url: 'urlToLogo.com',
                 },
                 daoProposals: [
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.InProgress },
+                    { status: DaoProposalStatusEnum.Funded },
+                    { status: DaoProposalStatusEnum.Granted },
+                    { status: DaoProposalStatusEnum.Funded },
+                    { status: DaoProposalStatusEnum.Running },
                 ],
             } as Project,
             expected: {
@@ -235,11 +235,11 @@ describe('LeaderboardProposalBuilder', () => {
                     url: 'urlToLogo.com',
                 },
                 daoProposals: [
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.Completed },
-                    { standing: StandingEnum.Completed },
+                    { status: DaoProposalStatusEnum.Granted },
+                    { status: DaoProposalStatusEnum.Funded },
+                    { status: DaoProposalStatusEnum.Granted },
+                    { status: DaoProposalStatusEnum.Funded },
+                    { status: DaoProposalStatusEnum.Granted },
                 ],
             } as Project,
             expected: {
@@ -285,12 +285,14 @@ describe('LeaderboardProposalBuilder', () => {
 
     it.each(Object.entries(buildDataProvider))(
         '%s',
-        async (description, { proposal, round, project ,expected }) => {
+        async (description, { proposal, round, project, expected }) => {
             jest.spyOn(projectRepository, 'findOne').mockImplementation(
                 async () => project,
             );
 
-            return expect(service.build(proposal, round)).resolves.toEqual(expected);
+            return expect(service.build(proposal, round)).resolves.toEqual(
+                expected,
+            );
         },
     );
 });

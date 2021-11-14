@@ -6,7 +6,7 @@ export class DeliverableMapper {
     public map(airtableData: any): Deliverable {
         return {
             title: 'Deliverables',
-            description: airtableData['Grant Deliverables'],
+            description: airtableData['Grant Deliverables'] ?? 'Unknown',
             delivered: airtableData['Proposal Standing'] === 'Completed',
         } as Deliverable;
     }

@@ -3,7 +3,7 @@ import { GetDaoProposalsByRoundService } from '../../dao-proposals/services/get-
 import { RoundRepository } from '../../database/repositories/round.repository';
 import { Round } from '../../database/schemas/round.schema';
 import { GetCurrentRoundService } from '../../rounds/services/get-current-round.service';
-import { Metrics, RoundMetrics } from '../interfaces/metrics.interface';
+import { Metrics, RoundMetrics } from '../models/metrics.model';
 
 @Injectable()
 export class CalculateMetricsService {
@@ -13,12 +13,19 @@ export class CalculateMetricsService {
         private roundRepository: RoundRepository,
     ) {}
 
-    public async execute(): Promise<Metrics> {
+    public async execute(round: number = 0): Promise<Metrics> {
+        let currentRound;
         let totalVotesCount: number = 0,
             totalRequestedFundingOcean: number = 0,
             totalRequestedFundingUsd: number = 0;
 
-        const currentRound = await this.getCurrentRoundService.execute();
+        currentRound =
+            round === 0
+                ? await this.getCurrentRoundService.execute()
+                : await this.roundRepository.findOne({
+                      find: { round: round },
+                  });
+
         const nextRound = await this.roundRepository.findOne({
             find: { round: currentRound.round + 1 },
         });
