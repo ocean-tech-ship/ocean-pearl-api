@@ -33,19 +33,17 @@ export class GenerateLeaderboardService {
             return leaderboard;
         }
 
-        leaderboard.amountProposals = proposals.length;
-
         for (const proposal of proposals) {
-            leaderboard.overallRequestedFunding += 
-                leaderboard.paymentOption === PaymentOptionEnum.Usd 
+            leaderboard.overallRequestedFunding +=
+                leaderboard.paymentOption === PaymentOptionEnum.Usd
                     ? proposal.requestedGrantUsd
                     : proposal.requestedGrantToken;
             leaderboard.totalVotes += proposal.votes + proposal.counterVotes;
 
-
             leaderboardProposals.push(
                 await this.leaderboardProposalBuilder.build(proposal, round),
             );
+            leaderboard.amountProposals++;
         }
 
         leaderboardProposals.sort(
