@@ -7,7 +7,10 @@ import { Leaderboard } from '../models/leaderboard.model';
 @Injectable()
 export class LeaderboardMapper {
     public map(round: Round): Leaderboard {
-        return {
+        let totalEarmarkFunding: number = 0;
+        const isPaymentOpetionUsd: boolean =
+            round.paymentOption === PaymentOptionEnum.Usd;
+        let mappedLeaderboard = {
             maxVotes: 0,
             totalVotes: 0,
             amountProposals: 0,
@@ -15,23 +18,34 @@ export class LeaderboardMapper {
             fundedProposals: [],
             notFundedProposals: [],
             paymentOption: round.paymentOption,
-            overallFunding:
-                round.paymentOption === PaymentOptionEnum.Usd
-                    ? round.availableFundingUsd
-                    : round.availableFundingOcean,
-            remainingEarmarkFunding:
-                round.paymentOption === PaymentOptionEnum.Usd
-                    ? round.earmarkedFundingUsd
-                    : round.earmarkedFundingOcean,
-            remainingGeneralFunding:
-                round.paymentOption === PaymentOptionEnum.Usd
-                    ? round.availableFundingUsd - round.earmarkedFundingUsd
-                    : round.availableFundingOcean - round.earmarkedFundingOcean,
+            overallFunding: isPaymentOpetionUsd
+                ? round.availableFundingUsd
+                : round.availableFundingOcean,
+            earmarks: {},
             status: this.determineRoundStatus(round),
             voteStartDate: round.votingStartDate,
             voteEndDate: round.votingEndDate,
             round: round.round,
         } as Leaderboard;
+
+        for (const [type, earmark] of Object.entries(round.earmarks)) {
+            mappedLeaderboard.earmarks[type] = {
+                type: earmark.type,
+                remainingFunding: isPaymentOpetionUsd
+                    ? earmark.fundingUsd
+                    : earmark.fundingOcean,
+            };
+
+            totalEarmarkFunding += isPaymentOpetionUsd
+                ? earmark.fundingUsd
+                : earmark.fundingOcean;
+        }
+
+        mappedLeaderboard.remainingGeneralFunding = isPaymentOpetionUsd
+            ? round.availableFundingUsd - totalEarmarkFunding
+            : round.availableFundingOcean - totalEarmarkFunding;
+
+        return mappedLeaderboard;
     }
 
     private determineRoundStatus(round: Round): RoundStatusEnum {
