@@ -30,7 +30,7 @@ export class CalculateMetricsService {
         for (const proposal of daoProposals) {
             totalRequestedFundingOcean += proposal.requestedGrantToken;
             totalRequestedFundingUsd += proposal.requestedGrantUsd;
-            totalVotesCount += proposal.votes;
+            totalVotesCount += proposal.votes + proposal.counterVotes;
         }
 
         return {
