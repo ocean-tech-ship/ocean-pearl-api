@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
     leaderboardStrategyInterface,
-    LeaderboardStrategyResponse,
+    LeaderboardStrategyResponse
 } from '../interfaces/leaderboard-strategy.interface';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
@@ -12,12 +12,17 @@ export class EarmarkedPropsoalStrategy implements leaderboardStrategyInterface {
         proposal: LeaderboardProposal,
         leaderboard: Leaderboard,
     ): boolean {
+        if (
+            !proposal.isEarmarked ||
+            proposal.yesVotes < proposal.noVotes ||
+            proposal.effectiveVotes < 0
+        ) {
+            return false;
+        }
+
         return (
-            proposal.isEarmarked &&
-            proposal.yesVotes > proposal.noVotes &&
-            proposal.effectiveVotes > 0 &&
-            (leaderboard.remainingEarmarkFunding > 0 ||
-                leaderboard.remainingGeneralFunding > 0)
+            leaderboard.earmarks[proposal.earmarkeType]?.remainingFunding > 0 ||
+            leaderboard.remainingGeneralFunding > 0
         );
     }
 
@@ -31,24 +36,28 @@ export class EarmarkedPropsoalStrategy implements leaderboardStrategyInterface {
             proposal.yesVotes > proposal.noVotes
                 ? proposal.yesVotes
                 : proposal.noVotes;
+
         leaderboard.maxVotes =
             leaderboard.maxVotes > leaderboardProposalMaxVotes
                 ? leaderboard.maxVotes
                 : leaderboardProposalMaxVotes;
 
         const receivingEarmarkFunding: number =
-            leaderboard.remainingEarmarkFunding - proposal.requestedFunding > 0
+            leaderboard.earmarks[proposal.earmarkeType].remainingFunding -
+                proposal.requestedFunding >
+            0
                 ? proposal.requestedFunding
-                : leaderboard.remainingEarmarkFunding;
+                : leaderboard.earmarks[proposal.earmarkeType].remainingFunding;
 
         proposal.receivedFunding = receivingEarmarkFunding;
-        leaderboard.remainingEarmarkFunding -= receivingEarmarkFunding;
+        leaderboard.earmarks[proposal.earmarkeType].remainingFunding -= receivingEarmarkFunding;
 
         if (proposal.receivedFunding < proposal.requestedFunding) {
             const remainigRequestedFunding: number =
                 proposal.requestedFunding - proposal.receivedFunding;
             const receivingGeneralFunding: number =
-                leaderboard.remainingGeneralFunding - remainigRequestedFunding > 0
+                leaderboard.remainingGeneralFunding - remainigRequestedFunding >
+                0
                     ? remainigRequestedFunding
                     : leaderboard.remainingGeneralFunding;
 
