@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
 
 export class LeaderboardProject {
     @ApiProperty()
@@ -41,6 +42,9 @@ export class LeaderboardProposal {
 
     @ApiProperty()
     isEarmarked: boolean;
+
+    @ApiProperty()
+    earmarkeType: EarmarkTypeEnum;
 
     @ApiProperty()
     tags: string[];
