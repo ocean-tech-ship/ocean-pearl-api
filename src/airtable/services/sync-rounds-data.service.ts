@@ -4,7 +4,9 @@ import { AxiosResponse } from 'axios';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { FindQuery } from '../../database/interfaces/find-query.interface';
 import { RoundRepository } from '../../database/repositories/round.repository';
-import { Round } from '../../database/schemas/round.schema';
+import { Earmark } from '../../database/schemas/earmark.schema';
+import { EarmarksType, Round } from '../../database/schemas/round.schema';
+import { EarmarkTypeMap } from '../constants/earmark-type-map.constant';
 import { RoundsProvider } from '../provider/rounds.provider';
 
 @Injectable()
@@ -27,7 +29,11 @@ export class SyncRoundsDataService {
         const roundsResponse: AxiosResponse = await this.roundsProvider.fetch();
         const airtbaleRounds = roundsResponse.data.records;
 
-        for (let round of airtbaleRounds) {
+        for (const round of airtbaleRounds) {
+            if (!round.fields['Round']) {
+                continue;
+            }
+
             const newRound: Round = this.mapRound(round.fields);
 
             this.syncRound(newRound);
@@ -39,16 +45,17 @@ export class SyncRoundsDataService {
     private mapRound(round: any): Round {
         let mappedRound: Round = {
             round: round['Round'],
-            earmarkedFundingOcean: round['Earmarked'] ?? 0,
-            earmarkedFundingUsd: round['Earmarked USD'],
+            paymentOption:
+                round['Round'] <= this.USD_OPTION_START_ROUND
+                    ? PaymentOptionEnum.Ocean
+                    : PaymentOptionEnum.Usd,
+            basisCurrency: round['Basis Currency'],
             maxGrantOcean: round['Max Grant'] ?? 0,
             maxGrantUsd: round['Max Grant USD'] ?? 0,
-            paymentOption: round['Round'] <= this.USD_OPTION_START_ROUND
-                ? PaymentOptionEnum.Ocean
-                : PaymentOptionEnum.Usd,
             availableFundingOcean: round['Funding Available'] ?? 0,
             availableFundingUsd: round['Funding Available USD'] ?? 0,
-            usdConversionRate: round['OCEAN Price'] ?? 0,
+            earmarks: {},
+            usdConversionRate: round['OCEAN Price'] ?? undefined,
             startDate: round['Start Date']
                 ? new Date(round['Start Date'])
                 : null,
@@ -68,7 +75,77 @@ export class SyncRoundsDataService {
             mappedRound.votingStartDate = startDate;
         }
 
+        if (round['Earmarks']) {
+            const earmarks = JSON.parse(round['Earmarks']);
+
+            mappedRound.earmarks = this.mapEarmarks(
+                earmarks,
+                mappedRound.usdConversionRate,
+            );
+        }
+
+        if (mappedRound.usdConversionRate) {
+            mappedRound.availableFundingOcean =
+                mappedRound.availableFundingOcean === 0
+                    ? parseFloat(
+                          (
+                              mappedRound.availableFundingUsd /
+                              mappedRound.usdConversionRate
+                          ).toFixed(3),
+                      )
+                    : mappedRound.availableFundingOcean;
+
+            mappedRound.availableFundingUsd =
+                mappedRound.availableFundingUsd === 0
+                    ? parseFloat(
+                          (
+                              mappedRound.availableFundingOcean *
+                              mappedRound.usdConversionRate
+                          ).toFixed(3),
+                      )
+                    : mappedRound.availableFundingUsd;
+        }
+
         return mappedRound;
+    }
+
+    private mapEarmarks(
+        earmarks: any,
+        usdConversionRate: number,
+    ): EarmarksType {
+        let mappedEarmarks: any = {};
+
+        for (const [index, data] of Object.entries(earmarks)) {
+            let earmark: Earmark = {
+                type: EarmarkTypeMap[index],
+                fundingOcean: data['OCEAN'],
+                fundingUsd: data['USD'],
+            } as Earmark;
+
+            if (usdConversionRate) {
+                earmark.fundingOcean =
+                    earmark.fundingOcean === 0
+                        ? parseFloat(
+                              (earmark.fundingUsd / usdConversionRate).toFixed(
+                                  3,
+                              ),
+                          )
+                        : earmark.fundingOcean;
+
+                earmark.fundingUsd =
+                    earmark.fundingUsd === 0
+                        ? parseFloat(
+                              (
+                                  earmark.fundingOcean * usdConversionRate
+                              ).toFixed(3),
+                          )
+                        : earmark.fundingUsd;
+            }
+
+            mappedEarmarks[EarmarkTypeMap[index]] = earmark;
+        }
+
+        return mappedEarmarks as EarmarksType;
     }
 
     private async syncRound(round: Round): Promise<void> {
