@@ -18,7 +18,8 @@ export class WontReceiveFundingStrategy
             proposal.effectiveVotes <= 0 ||
             proposal.yesVotes < proposal.noVotes ||
             (proposal.isEarmarked &&
-                leaderboard.remainingEarmarkFunding <= 0 &&
+                leaderboard.earmarks[proposal.earmarkeType]?.remainingFunding <=
+                    0 &&
                 leaderboard.remainingGeneralFunding <= 0) ||
             (!proposal.isEarmarked && leaderboard.remainingGeneralFunding <= 0)
         );
@@ -34,7 +35,7 @@ export class WontReceiveFundingStrategy
             proposal,
             lowestEarmarkVotes,
             lowestGeneralVotes,
-            leaderboard.remainingEarmarkFunding,
+            leaderboard.earmarks[proposal.earmarkeType]?.remainingFunding,
             leaderboard.remainingGeneralFunding,
         );
 
@@ -50,22 +51,19 @@ export class WontReceiveFundingStrategy
         remainingGeneralFunding: number,
     ): number {
         if (proposal.isEarmarked) {
-            if (
-                remainingEarmarkedFunding > 0 ||
-                remainingGeneralFunding > 0
-            ) {
+            if (remainingEarmarkedFunding > 0 || remainingGeneralFunding > 0) {
                 return proposal.effectiveVotes * -1 + 1;
             }
 
             return lowestEarmarkVotes > lowestGeneralVotes
-                ? lowestGeneralVotes - proposal.effectiveVotes
-                : lowestEarmarkVotes - proposal.effectiveVotes;
+                ? lowestGeneralVotes - proposal.effectiveVotes + 1
+                : lowestEarmarkVotes - proposal.effectiveVotes + 1;
         }
 
         if (remainingGeneralFunding > 0) {
             return proposal.effectiveVotes * -1 + 1;
         }
 
-        return lowestGeneralVotes - proposal.effectiveVotes;
+        return lowestGeneralVotes - proposal.effectiveVotes + 1;
     }
 }
