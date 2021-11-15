@@ -5,6 +5,7 @@ import { FundamentalMetricEnum } from '../../database/enums/fundamental-metric.e
 import { StandingEnum } from '../../database/enums/standing.enum';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { CategoryMap } from '../constants/category-map.constant';
+import { EarmarkTypeMap } from '../constants/earmark-type-map.constant';
 import { FundamentalMetricsMap } from '../constants/fundamental-metrics-map.constant';
 import { StandingMap } from '../constants/standing-map.constant';
 import { StatesMap } from '../constants/states-map.constant';
@@ -25,7 +26,7 @@ export class DaoProposalMapper {
                 CategoryMap[airtableData['Grant Category']?.trim()] ??
                 CategoryEnum.Other,
             earmark: airtableData['Earmarks']
-                ? CategoryMap[airtableData['Earmarks']?.trim()]
+                ? EarmarkTypeMap[airtableData['Earmarks']?.trim()]
                 : undefined,
             oneLiner: airtableData['One Liner'],
             description: airtableData['Overview'],
