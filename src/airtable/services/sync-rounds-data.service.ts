@@ -1,12 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { AxiosResponse } from 'axios';
+import { BallotTypeEnum } from '../../database/enums/ballot-type.enum';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
+import { VoteTypeEnum } from '../../database/enums/vote-type.enum';
 import { FindQuery } from '../../database/interfaces/find-query.interface';
 import { RoundRepository } from '../../database/repositories/round.repository';
 import { Earmark } from '../../database/schemas/earmark.schema';
 import { EarmarksType, Round } from '../../database/schemas/round.schema';
+import { BallotTypeMap } from '../constants/ballot-type-map.constant';
 import { EarmarkTypeMap } from '../constants/earmark-type-map.constant';
+import { VoteTypeMap } from '../constants/vote-type-map.constant';
 import { RoundsProvider } from '../provider/rounds.provider';
 
 @Injectable()
@@ -50,6 +54,8 @@ export class SyncRoundsDataService {
                     ? PaymentOptionEnum.Ocean
                     : PaymentOptionEnum.Usd,
             basisCurrency: round['Basis Currency'],
+            ballotType: BallotTypeMap[round['Ballot Type']],
+            voteType: VoteTypeMap[round['Vote Type']],
             maxGrantOcean: round['Max Grant'] ?? 0,
             maxGrantUsd: round['Max Grant USD'] ?? 0,
             availableFundingOcean: round['Funding Available'] ?? 0,
