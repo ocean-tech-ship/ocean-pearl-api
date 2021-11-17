@@ -1,9 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { AxiosResponse } from 'axios';
-import { BallotTypeEnum } from '../../database/enums/ballot-type.enum';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
-import { VoteTypeEnum } from '../../database/enums/vote-type.enum';
 import { FindQuery } from '../../database/interfaces/find-query.interface';
 import { RoundRepository } from '../../database/repositories/round.repository';
 import { Earmark } from '../../database/schemas/earmark.schema';
