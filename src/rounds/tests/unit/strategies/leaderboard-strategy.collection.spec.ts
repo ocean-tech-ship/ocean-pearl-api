@@ -17,7 +17,7 @@ describe('LeaderboardStrategyCollection', () => {
             {
                 proposal: {
                     isEarmarked: true,
-                    earmarkeType: EarmarkTypeEnum.NewEntrants,
+                    earmarkType: EarmarkTypeEnum.NewEntrants,
                     requestedFunding: 20000,
                     effectiveVotes: 10000,
                     yesVotes: 100000,
@@ -37,7 +37,7 @@ describe('LeaderboardStrategyCollection', () => {
         'it should return the earmarked strategy: remaining general funding': {
             proposal: {
                 isEarmarked: true,
-                earmarkeType: EarmarkTypeEnum.NewEntrants,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 10000,
                 yesVotes: 100000,
@@ -90,7 +90,7 @@ describe('LeaderboardStrategyCollection', () => {
             {
                 proposal: {
                     isEarmarked: true,
-                    earmarkeType: EarmarkTypeEnum.NewEntrants,
+                    earmarkType: EarmarkTypeEnum.NewEntrants,
                     requestedFunding: 20000,
                     effectiveVotes: 10000,
                     yesVotes: 100000,

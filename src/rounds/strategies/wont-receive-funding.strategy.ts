@@ -18,7 +18,7 @@ export class WontReceiveFundingStrategy
             proposal.effectiveVotes <= 0 ||
             proposal.yesVotes < proposal.noVotes ||
             (proposal.isEarmarked &&
-                leaderboard.earmarks[proposal.earmarkeType]?.remainingFunding <=
+                leaderboard.earmarks[proposal.earmarkType]?.remainingFunding <=
                     0 &&
                 leaderboard.remainingGeneralFunding <= 0) ||
             (!proposal.isEarmarked && leaderboard.remainingGeneralFunding <= 0)
@@ -35,7 +35,7 @@ export class WontReceiveFundingStrategy
             proposal,
             lowestEarmarkVotes,
             lowestGeneralVotes,
-            leaderboard.earmarks[proposal.earmarkeType]?.remainingFunding,
+            leaderboard.earmarks[proposal.earmarkType]?.remainingFunding,
             leaderboard.remainingGeneralFunding,
         );
 

@@ -14,7 +14,7 @@ describe('EarmarkedPropsoalStrategy', () => {
         'should be able to handle': {
             proposal: {
                 isEarmarked: true,
-                earmarkeType: EarmarkTypeEnum.NewEntrants,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 100000,
                 yesVotes: 100000,
@@ -52,7 +52,7 @@ describe('EarmarkedPropsoalStrategy', () => {
         'should not be able to handle: negative effective votes': {
             proposal: {
                 isEarmarked: true,
-                earmarkeType: EarmarkTypeEnum.NewEntrants,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 effectiveVotes: -1000,
                 yesVotes: 10000,
                 noVotes: 11000,
@@ -71,7 +71,7 @@ describe('EarmarkedPropsoalStrategy', () => {
         'should not be able to handle: no overall funding left': {
             proposal: {
                 isEarmarked: true,
-                earmarkeType: EarmarkTypeEnum.NewEntrants,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 receivedFunding: 20000,
                 effectiveVotes: 100000,
                 yesVotes: 100000,
@@ -94,7 +94,7 @@ describe('EarmarkedPropsoalStrategy', () => {
         'it should receive full funding from earmark pool': {
             proposal: {
                 isEarmarked: true,
-                earmarkeType: EarmarkTypeEnum.NewEntrants,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 200000,
                 yesVotes: 210000,
@@ -115,7 +115,7 @@ describe('EarmarkedPropsoalStrategy', () => {
                     fundedProposals: [
                         {
                             isEarmarked: true,
-                            earmarkeType: EarmarkTypeEnum.NewEntrants,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 20000,
                             effectiveVotes: 200000,
@@ -138,7 +138,7 @@ describe('EarmarkedPropsoalStrategy', () => {
         'it should receive full funding from general pool': {
             proposal: {
                 isEarmarked: true,
-                earmarkeType: EarmarkTypeEnum.NewEntrants,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 210000,
                 yesVotes: 300000,
@@ -159,7 +159,7 @@ describe('EarmarkedPropsoalStrategy', () => {
                     fundedProposals: [
                         {
                             isEarmarked: true,
-                            earmarkeType: EarmarkTypeEnum.NewEntrants,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 20000,
                             effectiveVotes: 210000,
@@ -182,7 +182,7 @@ describe('EarmarkedPropsoalStrategy', () => {
         'it should receive full funding from mixed pool': {
             proposal: {
                 isEarmarked: true,
-                earmarkeType: EarmarkTypeEnum.NewEntrants,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 90000,
                 yesVotes: 100000,
@@ -203,7 +203,7 @@ describe('EarmarkedPropsoalStrategy', () => {
                     fundedProposals: [
                         {
                             isEarmarked: true,
-                            earmarkeType: EarmarkTypeEnum.NewEntrants,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 20000,
                             effectiveVotes: 90000,
@@ -226,7 +226,7 @@ describe('EarmarkedPropsoalStrategy', () => {
         'it should receive partial funding from earmark pool': {
             proposal: {
                 isEarmarked: true,
-                earmarkeType: EarmarkTypeEnum.NewEntrants,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 200000,
                 yesVotes: 210000,
@@ -247,7 +247,7 @@ describe('EarmarkedPropsoalStrategy', () => {
                     fundedProposals: [
                         {
                             isEarmarked: true,
-                            earmarkeType: EarmarkTypeEnum.NewEntrants,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 19000,
                             effectiveVotes: 200000,
@@ -270,7 +270,7 @@ describe('EarmarkedPropsoalStrategy', () => {
         'it should receive partial funding from general pool': {
             proposal: {
                 isEarmarked: true,
-                earmarkeType: EarmarkTypeEnum.NewEntrants,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 200000,
                 yesVotes: 210000,
@@ -291,7 +291,7 @@ describe('EarmarkedPropsoalStrategy', () => {
                     fundedProposals: [
                         {
                             isEarmarked: true,
-                            earmarkeType: EarmarkTypeEnum.NewEntrants,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 8000,
                             effectiveVotes: 200000,
@@ -314,7 +314,7 @@ describe('EarmarkedPropsoalStrategy', () => {
         'it should receive partial funding from mixed pool': {
             proposal: {
                 isEarmarked: true,
-                earmarkeType: EarmarkTypeEnum.NewEntrants,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 200000,
                 yesVotes: 210000,
@@ -335,7 +335,7 @@ describe('EarmarkedPropsoalStrategy', () => {
                     fundedProposals: [
                         {
                             isEarmarked: true,
-                            earmarkeType: EarmarkTypeEnum.NewEntrants,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 16000,
                             effectiveVotes: 200000,

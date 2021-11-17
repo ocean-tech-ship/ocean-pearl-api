@@ -52,7 +52,7 @@ export class LeaderboardProposalBuilder {
         if (proposal.earmark) {
             mappedLeaderboardProposal.tags.push(this.EARMARK_TAG);
             mappedLeaderboardProposal.isEarmarked = true;
-            mappedLeaderboardProposal.earmarkeType = proposal.earmark;
+            mappedLeaderboardProposal.earmarkType = proposal.earmark;
         }
 
         if (project.logo) {

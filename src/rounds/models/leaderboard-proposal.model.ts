@@ -44,7 +44,7 @@ export class LeaderboardProposal {
     isEarmarked: boolean;
 
     @ApiProperty()
-    earmarkeType: EarmarkTypeEnum;
+    earmarkType: EarmarkTypeEnum;
 
     @ApiProperty()
     tags: string[];

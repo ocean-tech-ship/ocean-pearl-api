@@ -21,7 +21,7 @@ export class EarmarkedPropsoalStrategy implements leaderboardStrategyInterface {
         }
 
         return (
-            leaderboard.earmarks[proposal.earmarkeType]?.remainingFunding > 0 ||
+            leaderboard.earmarks[proposal.earmarkType]?.remainingFunding > 0 ||
             leaderboard.remainingGeneralFunding > 0
         );
     }
@@ -43,14 +43,14 @@ export class EarmarkedPropsoalStrategy implements leaderboardStrategyInterface {
                 : leaderboardProposalMaxVotes;
 
         const receivingEarmarkFunding: number =
-            leaderboard.earmarks[proposal.earmarkeType].remainingFunding -
+            leaderboard.earmarks[proposal.earmarkType].remainingFunding -
                 proposal.requestedFunding >
             0
                 ? proposal.requestedFunding
-                : leaderboard.earmarks[proposal.earmarkeType].remainingFunding;
+                : leaderboard.earmarks[proposal.earmarkType].remainingFunding;
 
         proposal.receivedFunding = receivingEarmarkFunding;
-        leaderboard.earmarks[proposal.earmarkeType].remainingFunding -= receivingEarmarkFunding;
+        leaderboard.earmarks[proposal.earmarkType].remainingFunding -= receivingEarmarkFunding;
 
         if (proposal.receivedFunding < proposal.requestedFunding) {
             const remainigRequestedFunding: number =

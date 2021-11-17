@@ -60,7 +60,7 @@ describe('WontReceiveFundingStrategy', () => {
             {
                 proposal: {
                     isEarmarked: true,
-                    earmarkeType: EarmarkTypeEnum.NewEntrants,
+                    earmarkType: EarmarkTypeEnum.NewEntrants,
                     effectiveVotes: 10000,
                 } as LeaderboardProposal,
                 leaderboard: {
@@ -78,7 +78,7 @@ describe('WontReceiveFundingStrategy', () => {
             {
                 proposal: {
                     isEarmarked: true,
-                    earmarkeType: EarmarkTypeEnum.NewEntrants,
+                    earmarkType: EarmarkTypeEnum.NewEntrants,
                     effectiveVotes: 10000,
                 } as LeaderboardProposal,
                 leaderboard: {

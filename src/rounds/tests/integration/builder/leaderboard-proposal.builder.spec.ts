@@ -258,7 +258,7 @@ describe('LeaderboardProposalBuilder', () => {
                 effectiveVotes: 90000,
                 tags: [CategoryEnum.Outreach, 'earmark'],
                 isEarmarked: true,
-                earmarkeType: EarmarkTypeEnum.NewEntrants,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 voteUrl: 'https://port.oceanprotocol.com/',
             } as LeaderboardProposal,
         },
