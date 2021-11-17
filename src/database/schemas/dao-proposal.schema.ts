@@ -11,6 +11,7 @@ import { Round } from './round.schema';
 import { StandingEnum } from '../enums/standing.enum';
 import { Picture, PictureSchema } from './picture.schema';
 import { FundamentalMetricEnum } from '../enums/fundamental-metric.enum';
+import { EarmarkTypeEnum } from '../enums/earmark-type.enum';
 
 export type DaoProposalType = DaoProposal & Document;
 
@@ -142,10 +143,10 @@ export class DaoProposal {
 
     @Prop({
         type: String,
-        enum: CategoryEnum,
+        enum: EarmarkTypeEnum,
     })
     @ApiProperty()
-    earmark: string;
+    earmark: EarmarkTypeEnum;
 
     @Prop({
         type: String,

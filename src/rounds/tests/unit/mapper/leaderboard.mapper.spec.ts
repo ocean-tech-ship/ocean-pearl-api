@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
+import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../../../../database/enums/payment-option.enum';
 import { Round } from '../../../../database/schemas/round.schema';
 import { RoundStatusEnum } from '../../../enums/round-status.enum';
@@ -17,8 +18,13 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarkedFundingUsd: 200000,
-                earmarkedFundingOcean: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        fundingUsd: 200000,
+                        fundingOcean: 0,
+                    },
+                },
                 availableFundingUsd: 800000,
                 availableFundingOcean: 0,
                 votingEndDate: faker.date.future(),
@@ -35,7 +41,12 @@ describe('LeaderboardMapper', () => {
                 totalVotes: 0,
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                remainingEarmarkFunding: 200000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 200000,
+                    },
+                },
                 remainingGeneralFunding: 600000,
                 status: RoundStatusEnum.VotingInProgress,
             } as Leaderboard,
@@ -44,8 +55,13 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Ocean,
-                earmarkedFundingOcean: 200000,
-                earmarkedFundingUsd: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        fundingOcean: 200000,
+                        fundingUsd: 0,
+                    },
+                },
                 availableFundingOcean: 800000,
                 availableFundingUsd: 0,
                 votingEndDate: faker.date.future(),
@@ -62,7 +78,12 @@ describe('LeaderboardMapper', () => {
                 totalVotes: 0,
                 round: 10,
                 paymentOption: PaymentOptionEnum.Ocean,
-                remainingEarmarkFunding: 200000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 200000,
+                    },
+                },
                 remainingGeneralFunding: 600000,
                 status: RoundStatusEnum.VotingInProgress,
             } as Leaderboard,
@@ -71,8 +92,13 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarkedFundingUsd: 200000,
-                earmarkedFundingOcean: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        fundingUsd: 200000,
+                        fundingOcean: 0,
+                    },
+                },
                 availableFundingUsd: 800000,
                 availableFundingOcean: 0,
                 votingEndDate: faker.date.future(),
@@ -89,7 +115,12 @@ describe('LeaderboardMapper', () => {
                 totalVotes: 0,
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                remainingEarmarkFunding: 200000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 200000,
+                    },
+                },
                 remainingGeneralFunding: 600000,
                 status: RoundStatusEnum.ProposalSubmission,
             } as Leaderboard,
@@ -98,8 +129,13 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarkedFundingUsd: 200000,
-                earmarkedFundingOcean: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        fundingUsd: 200000,
+                        fundingOcean: 0,
+                    },
+                },
                 availableFundingUsd: 800000,
                 availableFundingOcean: 0,
                 votingEndDate: faker.date.future(),
@@ -116,7 +152,12 @@ describe('LeaderboardMapper', () => {
                 totalVotes: 0,
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                remainingEarmarkFunding: 200000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 200000,
+                    },
+                },
                 remainingGeneralFunding: 600000,
                 status: RoundStatusEnum.Pending,
             } as Leaderboard,
@@ -125,8 +166,13 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarkedFundingUsd: 200000,
-                earmarkedFundingOcean: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        fundingUsd: 200000,
+                        fundingOcean: 0,
+                    },
+                },
                 availableFundingUsd: 800000,
                 availableFundingOcean: 0,
                 votingEndDate: faker.date.future(),
@@ -143,7 +189,12 @@ describe('LeaderboardMapper', () => {
                 totalVotes: 0,
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                remainingEarmarkFunding: 200000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 200000,
+                    },
+                },
                 remainingGeneralFunding: 600000,
                 status: RoundStatusEnum.VotingInProgress,
             } as Leaderboard,
@@ -152,8 +203,13 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarkedFundingUsd: 200000,
-                earmarkedFundingOcean: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        fundingUsd: 200000,
+                        fundingOcean: 0,
+                    },
+                },
                 availableFundingUsd: 800000,
                 availableFundingOcean: 0,
                 votingEndDate: faker.date.past(),
@@ -170,7 +226,12 @@ describe('LeaderboardMapper', () => {
                 totalVotes: 0,
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                remainingEarmarkFunding: 200000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 200000,
+                    },
+                },
                 remainingGeneralFunding: 600000,
                 status: RoundStatusEnum.VotingFinished,
             } as Leaderboard,

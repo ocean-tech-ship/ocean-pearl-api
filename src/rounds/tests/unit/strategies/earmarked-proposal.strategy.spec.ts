@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
+import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { LeaderboardStrategyResponse } from '../../../interfaces/leaderboard-strategy.interface';
 import { LeaderboardProposal } from '../../../models/leaderboard-proposal.model';
 import { Leaderboard } from '../../../models/leaderboard.model';
-import { EarmarkedPropsoalStrategy } from '../../../strategies/earmaked-proposal.strategy';
+import { EarmarkedPropsoalStrategy } from '../../../strategies/earmarked-proposal.strategy';
 
 describe('EarmarkedPropsoalStrategy', () => {
     let module: TestingModule;
@@ -13,12 +14,19 @@ describe('EarmarkedPropsoalStrategy', () => {
         'should be able to handle': {
             proposal: {
                 isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
+                requestedFunding: 20000,
                 effectiveVotes: 100000,
                 yesVotes: 100000,
                 noVotes: 0,
             } as LeaderboardProposal,
             leaderboard: {
-                remainingEarmarkFunding: 10000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 20000,
+                    },
+                },
                 remainingGeneralFunding: 10000,
             } as Leaderboard,
             expected: true,
@@ -31,7 +39,12 @@ describe('EarmarkedPropsoalStrategy', () => {
                 noVotes: 0,
             } as LeaderboardProposal,
             leaderboard: {
-                remainingEarmarkFunding: 10000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 20000,
+                    },
+                },
                 remainingGeneralFunding: 10000,
             } as Leaderboard,
             expected: false,
@@ -39,12 +52,18 @@ describe('EarmarkedPropsoalStrategy', () => {
         'should not be able to handle: negative effective votes': {
             proposal: {
                 isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 effectiveVotes: -1000,
                 yesVotes: 10000,
                 noVotes: 11000,
             } as LeaderboardProposal,
             leaderboard: {
-                remainingEarmarkFunding: 10000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 20000,
+                    },
+                },
                 remainingGeneralFunding: 10000,
             } as Leaderboard,
             expected: false,
@@ -52,12 +71,19 @@ describe('EarmarkedPropsoalStrategy', () => {
         'should not be able to handle: no overall funding left': {
             proposal: {
                 isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
+                receivedFunding: 20000,
                 effectiveVotes: 100000,
                 yesVotes: 100000,
                 noVotes: 0,
             } as LeaderboardProposal,
             leaderboard: {
-                remainingEarmarkFunding: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 0,
+                    },
+                },
                 remainingGeneralFunding: 0,
             } as Leaderboard,
             expected: false,
@@ -67,6 +93,8 @@ describe('EarmarkedPropsoalStrategy', () => {
     const executeDataProvider = {
         'it should receive full funding from earmark pool': {
             proposal: {
+                isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 200000,
                 yesVotes: 210000,
@@ -74,13 +102,20 @@ describe('EarmarkedPropsoalStrategy', () => {
             } as LeaderboardProposal,
             leaderboard: {
                 fundedProposals: [],
-                remainingEarmarkFunding: 20000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 20000,
+                    },
+                },
                 remainingGeneralFunding: 100000,
             } as Leaderboard,
             expected: {
                 leaderboard: {
                     fundedProposals: [
                         {
+                            isEarmarked: true,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 20000,
                             effectiveVotes: 200000,
@@ -88,7 +123,12 @@ describe('EarmarkedPropsoalStrategy', () => {
                             noVotes: 10000,
                         },
                     ],
-                    remainingEarmarkFunding: 0,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 0,
+                        },
+                    },
                     remainingGeneralFunding: 100000,
                     maxVotes: 210000,
                 } as Leaderboard,
@@ -97,6 +137,8 @@ describe('EarmarkedPropsoalStrategy', () => {
         },
         'it should receive full funding from general pool': {
             proposal: {
+                isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 210000,
                 yesVotes: 300000,
@@ -104,13 +146,20 @@ describe('EarmarkedPropsoalStrategy', () => {
             } as LeaderboardProposal,
             leaderboard: {
                 fundedProposals: [],
-                remainingEarmarkFunding: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 0,
+                    },
+                },
                 remainingGeneralFunding: 100000,
             } as Leaderboard,
             expected: {
                 leaderboard: {
                     fundedProposals: [
                         {
+                            isEarmarked: true,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 20000,
                             effectiveVotes: 210000,
@@ -118,7 +167,12 @@ describe('EarmarkedPropsoalStrategy', () => {
                             noVotes: 90000,
                         },
                     ],
-                    remainingEarmarkFunding: 0,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 0,
+                        },
+                    },
                     remainingGeneralFunding: 80000,
                     maxVotes: 300000,
                 } as Leaderboard,
@@ -127,6 +181,8 @@ describe('EarmarkedPropsoalStrategy', () => {
         },
         'it should receive full funding from mixed pool': {
             proposal: {
+                isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 90000,
                 yesVotes: 100000,
@@ -134,13 +190,20 @@ describe('EarmarkedPropsoalStrategy', () => {
             } as LeaderboardProposal,
             leaderboard: {
                 fundedProposals: [],
-                remainingEarmarkFunding: 10000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 10000,
+                    },
+                },
                 remainingGeneralFunding: 100000,
             } as Leaderboard,
             expected: {
                 leaderboard: {
                     fundedProposals: [
                         {
+                            isEarmarked: true,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 20000,
                             effectiveVotes: 90000,
@@ -148,7 +211,12 @@ describe('EarmarkedPropsoalStrategy', () => {
                             noVotes: 10000,
                         },
                     ],
-                    remainingEarmarkFunding: 0,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 0,
+                        },
+                    },
                     remainingGeneralFunding: 90000,
                     maxVotes: 100000,
                 } as Leaderboard,
@@ -157,6 +225,8 @@ describe('EarmarkedPropsoalStrategy', () => {
         },
         'it should receive partial funding from earmark pool': {
             proposal: {
+                isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 200000,
                 yesVotes: 210000,
@@ -164,13 +234,20 @@ describe('EarmarkedPropsoalStrategy', () => {
             } as LeaderboardProposal,
             leaderboard: {
                 fundedProposals: [],
-                remainingEarmarkFunding: 19000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 19000,
+                    },
+                },
                 remainingGeneralFunding: 0,
             } as Leaderboard,
             expected: {
                 leaderboard: {
                     fundedProposals: [
                         {
+                            isEarmarked: true,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 19000,
                             effectiveVotes: 200000,
@@ -178,7 +255,12 @@ describe('EarmarkedPropsoalStrategy', () => {
                             noVotes: 10000,
                         },
                     ],
-                    remainingEarmarkFunding: 0,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 0,
+                        },
+                    },
                     remainingGeneralFunding: 0,
                     maxVotes: 210000,
                 } as Leaderboard,
@@ -187,6 +269,8 @@ describe('EarmarkedPropsoalStrategy', () => {
         },
         'it should receive partial funding from general pool': {
             proposal: {
+                isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 200000,
                 yesVotes: 210000,
@@ -194,13 +278,20 @@ describe('EarmarkedPropsoalStrategy', () => {
             } as LeaderboardProposal,
             leaderboard: {
                 fundedProposals: [],
-                remainingEarmarkFunding: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 0,
+                    },
+                },
                 remainingGeneralFunding: 8000,
             } as Leaderboard,
             expected: {
                 leaderboard: {
                     fundedProposals: [
                         {
+                            isEarmarked: true,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 8000,
                             effectiveVotes: 200000,
@@ -208,7 +299,12 @@ describe('EarmarkedPropsoalStrategy', () => {
                             noVotes: 10000,
                         },
                     ],
-                    remainingEarmarkFunding: 0,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 0,
+                        },
+                    },
                     remainingGeneralFunding: 0,
                     maxVotes: 210000,
                 } as Leaderboard,
@@ -217,6 +313,8 @@ describe('EarmarkedPropsoalStrategy', () => {
         },
         'it should receive partial funding from mixed pool': {
             proposal: {
+                isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 requestedFunding: 20000,
                 effectiveVotes: 200000,
                 yesVotes: 210000,
@@ -224,13 +322,20 @@ describe('EarmarkedPropsoalStrategy', () => {
             } as LeaderboardProposal,
             leaderboard: {
                 fundedProposals: [],
-                remainingEarmarkFunding: 8000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 8000,
+                    },
+                },
                 remainingGeneralFunding: 8000,
             } as Leaderboard,
             expected: {
                 leaderboard: {
                     fundedProposals: [
                         {
+                            isEarmarked: true,
+                            earmarkType: EarmarkTypeEnum.NewEntrants,
                             requestedFunding: 20000,
                             receivedFunding: 16000,
                             effectiveVotes: 200000,
@@ -238,7 +343,12 @@ describe('EarmarkedPropsoalStrategy', () => {
                             noVotes: 10000,
                         },
                     ],
-                    remainingEarmarkFunding: 0,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 0,
+                        },
+                    },
                     remainingGeneralFunding: 0,
                     maxVotes: 210000,
                 } as Leaderboard,

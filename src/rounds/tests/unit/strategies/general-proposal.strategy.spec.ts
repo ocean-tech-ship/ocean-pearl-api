@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
+import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { LeaderboardStrategyResponse } from '../../../interfaces/leaderboard-strategy.interface';
 import { LeaderboardProposal } from '../../../models/leaderboard-proposal.model';
 import { Leaderboard } from '../../../models/leaderboard.model';
@@ -17,7 +18,12 @@ describe('GeneralPropsoalStrategy', () => {
                 noVotes: 0,
             } as LeaderboardProposal,
             leaderboard: {
-                remainingEarmarkFunding: 10000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 10000,
+                    },
+                },
                 remainingGeneralFunding: 10000,
             } as Leaderboard,
             expected: true,
@@ -29,7 +35,12 @@ describe('GeneralPropsoalStrategy', () => {
                 noVotes: 1000,
             } as LeaderboardProposal,
             leaderboard: {
-                remainingEarmarkFunding: 10000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 10000,
+                    },
+                },
                 remainingGeneralFunding: 10000,
             } as Leaderboard,
             expected: false,
@@ -41,7 +52,12 @@ describe('GeneralPropsoalStrategy', () => {
                 noVotes: 0,
             } as LeaderboardProposal,
             leaderboard: {
-                remainingEarmarkFunding: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 10000,
+                    },
+                },
                 remainingGeneralFunding: 0,
             } as Leaderboard,
             expected: false,
@@ -58,7 +74,12 @@ describe('GeneralPropsoalStrategy', () => {
             } as LeaderboardProposal,
             leaderboard: {
                 fundedProposals: [],
-                remainingEarmarkFunding: 20000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 20000,
+                    },
+                },
                 remainingGeneralFunding: 100000,
             } as Leaderboard,
             expected: {
@@ -72,7 +93,12 @@ describe('GeneralPropsoalStrategy', () => {
                             noVotes: 90000,
                         },
                     ],
-                    remainingEarmarkFunding: 20000,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 20000,
+                        },
+                    },
                     remainingGeneralFunding: 80000,
                     maxVotes: 300000,
                 } as Leaderboard,
@@ -88,7 +114,12 @@ describe('GeneralPropsoalStrategy', () => {
             } as LeaderboardProposal,
             leaderboard: {
                 fundedProposals: [],
-                remainingEarmarkFunding: 8000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 8000,
+                    },
+                },
                 remainingGeneralFunding: 8000,
             } as Leaderboard,
             expected: {
@@ -102,7 +133,12 @@ describe('GeneralPropsoalStrategy', () => {
                             noVotes: 10000,
                         },
                     ],
-                    remainingEarmarkFunding: 8000,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 8000,
+                        },
+                    },
                     remainingGeneralFunding: 0,
                     maxVotes: 210000,
                 } as Leaderboard,
