@@ -28,7 +28,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.39.0",
     "@nestjs/common": "^7.6.18",
-    "@nestjs/config": "^1.0.3",
+    "@nestjs/config": "^1.1.2",
     "@nestjs/core": "^7.6.18",
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/mongoose": "^8.0.1",
