@@ -27,6 +27,8 @@ export class UpdateProjectService {
         dbProject.description =
             updatedProject.description ?? dbProject.description;
 
+        dbProject.oneLiner = updatedProject.oneLiner ?? dbProject.oneLiner;
+
         dbProject.category = updatedProject.category ?? dbProject.category;
 
         dbProject.socialMedia =
@@ -52,12 +54,11 @@ export class UpdateProjectService {
             }
 
             for (const picture of updatedProject.newPictures) {
-                const optimizedPicture = await this.picturesService.optimizeGalleryImage(
-                    {
+                const optimizedPicture =
+                    await this.picturesService.optimizeGalleryImage({
                         data: picture.buffer,
                         type: picture.mimetype as MimeTypesEnum,
-                    },
-                );
+                    });
 
                 dbProject.pictures.push(
                     await this.s3ImageManagementService.uploadImageToS3(
@@ -95,11 +96,12 @@ export class UpdateProjectService {
                 type: updatedProject.logo[0].mimetype as MimeTypesEnum,
             });
 
-            dbProject.logo = await this.s3ImageManagementService.uploadImageToS3(
-                optimizedLogo.data,
-                optimizedLogo.type,
-                dbProject.id,
-            );
+            dbProject.logo =
+                await this.s3ImageManagementService.uploadImageToS3(
+                    optimizedLogo.data,
+                    optimizedLogo.type,
+                    dbProject.id,
+                );
         }
 
         if (updatedProject.deleteLogo) {
