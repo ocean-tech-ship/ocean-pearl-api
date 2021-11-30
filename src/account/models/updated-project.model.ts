@@ -6,6 +6,7 @@ import {
     IsObject,
     IsOptional,
     IsString,
+    MaxLength,
 } from 'class-validator';
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { SocialMedia } from '../../database/schemas/social-media.schema';
@@ -30,6 +31,9 @@ export class UpdatedProject {
     })
     @IsOptional()
     @IsString()
+    @MaxLength(80, {
+        message: 'One-Liner must be smaller than 80 characters',
+    })
     oneLiner: string;
 
     @ApiProperty({
