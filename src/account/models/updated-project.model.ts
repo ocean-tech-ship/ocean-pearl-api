@@ -6,6 +6,7 @@ import {
     IsObject,
     IsOptional,
     IsString,
+    MinLength,
 } from 'class-validator';
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { SocialMedia } from '../../database/schemas/social-media.schema';
@@ -44,6 +45,9 @@ export class UpdatedProject {
     @ApiProperty()
     @IsOptional()
     @IsArray()
+    @MinLength(1, {
+        message: 'At least one address must be specified',
+    })
     accessAddresses: string[];
 
     @ApiProperty({

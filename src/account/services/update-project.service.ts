@@ -24,6 +24,9 @@ export class UpdateProjectService {
             find: { id: id },
         });
 
+        dbProject.accessAddresses =
+            updatedProject.accessAddresses ?? dbProject.accessAddresses;
+
         dbProject.description =
             updatedProject.description ?? dbProject.description;
 
@@ -52,12 +55,11 @@ export class UpdateProjectService {
             }
 
             for (const picture of updatedProject.newPictures) {
-                const optimizedPicture = await this.picturesService.optimizeGalleryImage(
-                    {
+                const optimizedPicture =
+                    await this.picturesService.optimizeGalleryImage({
                         data: picture.buffer,
                         type: picture.mimetype as MimeTypesEnum,
-                    },
-                );
+                    });
 
                 dbProject.pictures.push(
                     await this.s3ImageManagementService.uploadImageToS3(
@@ -95,11 +97,12 @@ export class UpdateProjectService {
                 type: updatedProject.logo[0].mimetype as MimeTypesEnum,
             });
 
-            dbProject.logo = await this.s3ImageManagementService.uploadImageToS3(
-                optimizedLogo.data,
-                optimizedLogo.type,
-                dbProject.id,
-            );
+            dbProject.logo =
+                await this.s3ImageManagementService.uploadImageToS3(
+                    optimizedLogo.data,
+                    optimizedLogo.type,
+                    dbProject.id,
+                );
         }
 
         if (updatedProject.deleteLogo) {
