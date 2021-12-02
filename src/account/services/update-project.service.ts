@@ -25,7 +25,9 @@ export class UpdateProjectService {
         });
 
         dbProject.accessAddresses =
-            updatedProject.accessAddresses ?? dbProject.accessAddresses;
+            updatedProject.accessAddresses?.map((address) =>
+                address.toLowerCase(),
+            ) ?? dbProject.accessAddresses;
 
         dbProject.description =
             updatedProject.description ?? dbProject.description;
