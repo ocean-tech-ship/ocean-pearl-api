@@ -63,7 +63,7 @@ jobs:
 
       - name: Report code coverage 🔍
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: romeovs/lcov-reporter-action@v0.2.21
+        uses: romeovs/lcov-reporter-action@v0.3.1
         with:
           lcov-file: coverage/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
