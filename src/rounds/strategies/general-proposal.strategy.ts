@@ -37,7 +37,7 @@ export class GeneralPropsoalStrategy implements leaderboardStrategyInterface {
         const receivingGeneralFunding: number =
             leaderboard.remainingGeneralFunding - proposal.requestedFunding > 0
                 ? proposal.requestedFunding
-                : leaderboard.remainingEarmarkFunding;
+                : leaderboard.remainingGeneralFunding;
 
         proposal.receivedFunding = receivingGeneralFunding;
         leaderboard.remainingGeneralFunding -= receivingGeneralFunding;

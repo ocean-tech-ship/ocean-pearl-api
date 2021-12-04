@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { leaderboardStrategyInterface } from '../interfaces/leaderboard-strategy.interface';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
-import { EarmarkedPropsoalStrategy } from './earmaked-proposal.strategy';
+import { EarmarkedPropsoalStrategy } from './earmarked-proposal.strategy';
 import { GeneralPropsoalStrategy } from './general-proposal.strategy';
 import { WontReceiveFundingStrategy } from './wont-receive-funding.strategy';
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
+import { StandingEnum } from '../../database/enums/standing.enum';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { Project } from '../../database/schemas/project.schema';
@@ -51,6 +52,7 @@ export class LeaderboardProposalBuilder {
         if (proposal.earmark) {
             mappedLeaderboardProposal.tags.push(this.EARMARK_TAG);
             mappedLeaderboardProposal.isEarmarked = true;
+            mappedLeaderboardProposal.earmarkType = proposal.earmark;
         }
 
         if (project.logo) {

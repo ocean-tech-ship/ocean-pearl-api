@@ -11,6 +11,7 @@ import { Project } from '../../../../database/schemas/project.schema';
 import { Round } from '../../../../database/schemas/round.schema';
 import { LeaderboardProposalBuilder } from '../../../builder/leaderboard-proposal.builder';
 import { LeaderboardProposal } from '../../../models/leaderboard-proposal.model';
+import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-status.enum';
 
 describe('LeaderboardProposalBuilder', () => {
@@ -219,7 +220,7 @@ describe('LeaderboardProposalBuilder', () => {
                 counterVotes: 10000,
                 requestedGrantUsd: 1000,
                 requestedGrantToken: 2000,
-                earmark: CategoryEnum.NewEntrants,
+                earmark: EarmarkTypeEnum.NewEntrants,
                 category: CategoryEnum.Outreach,
                 voteUrl: 'https://port.oceanprotocol.com/',
             } as DaoProposal,
@@ -257,6 +258,7 @@ describe('LeaderboardProposalBuilder', () => {
                 effectiveVotes: 90000,
                 tags: [CategoryEnum.Outreach, 'earmark'],
                 isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
                 voteUrl: 'https://port.oceanprotocol.com/',
             } as LeaderboardProposal,
         },

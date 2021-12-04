@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
+import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { LeaderboardStrategyResponse } from '../../../interfaces/leaderboard-strategy.interface';
 import { LeaderboardProposal } from '../../../models/leaderboard-proposal.model';
 import { Leaderboard } from '../../../models/leaderboard.model';
@@ -15,7 +16,12 @@ describe('WontReceiveFundingStrategy', () => {
                 effectiveVotes: -100000,
             } as LeaderboardProposal,
             leaderboard: {
-                remainingEarmarkFunding: 10000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 10000,
+                    },
+                },
                 remainingGeneralFunding: 10000,
             } as Leaderboard,
             expected: true,
@@ -25,7 +31,12 @@ describe('WontReceiveFundingStrategy', () => {
                 effectiveVotes: 100000,
             } as LeaderboardProposal,
             leaderboard: {
-                remainingEarmarkFunding: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 10000,
+                    },
+                },
                 remainingGeneralFunding: 0,
             } as Leaderboard,
             expected: true,
@@ -35,7 +46,12 @@ describe('WontReceiveFundingStrategy', () => {
                 effectiveVotes: 100000,
             } as LeaderboardProposal,
             leaderboard: {
-                remainingEarmarkFunding: 10000,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 10000,
+                    },
+                },
                 remainingGeneralFunding: 0,
             } as Leaderboard,
             expected: true,
@@ -44,10 +60,16 @@ describe('WontReceiveFundingStrategy', () => {
             {
                 proposal: {
                     isEarmarked: true,
+                    earmarkType: EarmarkTypeEnum.NewEntrants,
                     effectiveVotes: 10000,
                 } as LeaderboardProposal,
                 leaderboard: {
-                    remainingEarmarkFunding: 10000,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 10000,
+                        },
+                    },
                     remainingGeneralFunding: 0,
                 } as Leaderboard,
                 expected: false,
@@ -56,10 +78,16 @@ describe('WontReceiveFundingStrategy', () => {
             {
                 proposal: {
                     isEarmarked: true,
+                    earmarkType: EarmarkTypeEnum.NewEntrants,
                     effectiveVotes: 10000,
                 } as LeaderboardProposal,
                 leaderboard: {
-                    remainingEarmarkFunding: 0,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 0,
+                        },
+                    },
                     remainingGeneralFunding: 10000,
                 } as Leaderboard,
                 expected: false,
@@ -69,7 +97,12 @@ describe('WontReceiveFundingStrategy', () => {
                 effectiveVotes: 100000,
             } as LeaderboardProposal,
             leaderboard: {
-                remainingEarmarkFunding: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 0,
+                    },
+                },
                 remainingGeneralFunding: 10000,
             } as Leaderboard,
             expected: false,
@@ -87,7 +120,12 @@ describe('WontReceiveFundingStrategy', () => {
             } as LeaderboardProposal,
             leaderboard: {
                 notFundedProposals: [],
-                remainingEarmarkFunding: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 0,
+                    },
+                },
                 remainingGeneralFunding: 0,
             } as Leaderboard,
             expected: {
@@ -98,10 +136,15 @@ describe('WontReceiveFundingStrategy', () => {
                         effectiveVotes: 2100000,
                         yesVotes: 3000000,
                         noVotes: 900000,
-                        neededVotes: 1900000,
+                        neededVotes: 1900001,
                     },
                 ],
-                remainingEarmarkFunding: 0,
+                earmarks: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 0,
+                    },
+                },
                 remainingGeneralFunding: 0,
             } as Leaderboard,
         },
@@ -116,7 +159,12 @@ describe('WontReceiveFundingStrategy', () => {
                 } as LeaderboardProposal,
                 leaderboard: {
                     notFundedProposals: [],
-                    remainingEarmarkFunding: 8000,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 8000,
+                        },
+                    },
                     remainingGeneralFunding: 8000,
                 } as Leaderboard,
                 expected: {
@@ -130,7 +178,12 @@ describe('WontReceiveFundingStrategy', () => {
                             neededVotes: 2000001,
                         },
                     ],
-                    remainingEarmarkFunding: 8000,
+                    earmarks: {
+                        [EarmarkTypeEnum.NewEntrants]: {
+                            type: EarmarkTypeEnum.NewEntrants,
+                            remainingFunding: 8000,
+                        },
+                    },
                     remainingGeneralFunding: 8000,
                 } as Leaderboard,
             },

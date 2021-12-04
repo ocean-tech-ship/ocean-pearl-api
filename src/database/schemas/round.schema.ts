@@ -1,10 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
+import { BallotTypeEnum } from '../enums/ballot-type.enum';
+import { EarmarkTypeEnum } from '../enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../enums/payment-option.enum';
+import { VoteTypeEnum } from '../enums/vote-type.enum';
 import { nanoid } from '../functions/nano-id.function';
+import { Earmark, EarmarkSchema } from './earmark.schema';
 
 export type RoundType = Round & Document;
+
+export type EarmarksType = { [key in EarmarkTypeEnum]: Earmark};
 
 @Schema({ timestamps: true })
 export class Round {
@@ -48,22 +54,6 @@ export class Round {
         default: 0,
     })
     @ApiProperty()
-    earmarkedFundingOcean: number;
-
-    @Prop({
-        type: Number,
-        min: 0,
-        default: 0,
-    })
-    @ApiProperty()
-    earmarkedFundingUsd: number;
-
-    @Prop({
-        type: Number,
-        min: 0,
-        default: 0,
-    })
-    @ApiProperty()
     availableFundingOcean: number;
 
     @Prop({
@@ -73,6 +63,24 @@ export class Round {
     })
     @ApiProperty()
     availableFundingUsd: number;
+
+    @Prop({
+            type: () => new Map<EarmarkTypeEnum, Earmark>(),
+            of: EarmarkSchema,
+        },
+    )
+    @ApiProperty()
+    earmarks: EarmarksType;
+
+    @Prop({
+        type: String,
+        enum: PaymentOptionEnum,
+        default: PaymentOptionEnum.Usd,
+    })
+    @ApiProperty({
+        enum: PaymentOptionEnum,
+    })
+    basisCurrency: PaymentOptionEnum;
 
     @Prop({
         type: String,
@@ -87,8 +95,30 @@ export class Round {
     @Prop({
         type: Number,
         min: 0,
+        default: 0,
     })
-    usdConversionRate: Number;
+    @ApiProperty()
+    usdConversionRate: number;
+
+    @Prop({
+        type: String,
+        enum: VoteTypeEnum,
+        default: VoteTypeEnum.SingleChoice,
+    })
+    @ApiProperty({
+        enum: VoteTypeEnum,
+    })
+    voteType: string;
+
+    @Prop({
+        type: String,
+        enum: BallotTypeEnum,
+        default: BallotTypeEnum.Batch,
+    })
+    @ApiProperty({
+        enum: BallotTypeEnum,
+    })
+    ballotType: string;
 
     @Prop({
         type: Date,

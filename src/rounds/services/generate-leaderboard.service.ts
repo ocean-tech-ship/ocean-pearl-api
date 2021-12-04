@@ -39,8 +39,6 @@ export class GenerateLeaderboardService {
             return leaderboard;
         }
 
-        leaderboard.amountProposals = proposals.length;
-
         for (const proposal of proposals) {
             if (this.INVALID_STATES.includes(proposal.status)) {
                 continue;
@@ -55,6 +53,7 @@ export class GenerateLeaderboardService {
             leaderboardProposals.push(
                 await this.leaderboardProposalBuilder.build(proposal, round),
             );
+            leaderboard.amountProposals++;
         }
 
         leaderboardProposals.sort(

@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
 import { CategoryEnum } from '../../../../database/enums/category.enum';
+import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../../../../database/enums/payment-option.enum';
 import { nanoid } from '../../../../database/functions/nano-id.function';
 import { DaoProposalRepository } from '../../../../database/repositories/dao-proposal.repository';
@@ -19,7 +20,7 @@ import { Leaderboard } from '../../../models/leaderboard.model';
 import { RoundsModule } from '../../../rounds.module';
 import { GenerateLeaderboardService } from '../../../services/generate-leaderboard.service';
 import { GetCurrentRoundService } from '../../../services/get-current-round.service';
-import { EarmarkedPropsoalStrategy } from '../../../strategies/earmaked-proposal.strategy';
+import { EarmarkedPropsoalStrategy } from '../../../strategies/earmarked-proposal.strategy';
 import { GeneralPropsoalStrategy } from '../../../strategies/general-proposal.strategy';
 import { LeaderboardStrategyCollection } from '../../../strategies/leaderboard-strategy.collection';
 import { WontReceiveFundingStrategy } from '../../../strategies/wont-receive-funding.strategy';
@@ -68,7 +69,13 @@ describe('GenerateLeaderboardService', () => {
             round: 10,
             paymentOption: PaymentOptionEnum.Usd,
             availableFundingUsd: 100000,
-            earmarkedFundingUsd: 20000,
+            earmarks: {
+                [EarmarkTypeEnum.NewEntrants]: {
+                    type: EarmarkTypeEnum.NewEntrants,
+                    fundingUsd: 20000,
+                    fundingOcean: 20000,
+                },
+            },
             votingEndDate: votingEndDate,
             votingStartDate: votingStartDate,
         } as Round;
@@ -80,7 +87,7 @@ describe('GenerateLeaderboardService', () => {
             {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
-                title: 'Ocean Pearl Proposal',
+                title: 'Ocean Pearl Proposal 1',
                 votes: 200000,
                 counterVotes: 10000,
                 requestedGrantUsd: 50000,
@@ -90,7 +97,7 @@ describe('GenerateLeaderboardService', () => {
             {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
-                title: 'Ocean Pearl Proposal',
+                title: 'Ocean Pearl Proposal 2',
                 votes: 100000,
                 counterVotes: 10000,
                 requestedGrantUsd: 20000,
@@ -101,7 +108,7 @@ describe('GenerateLeaderboardService', () => {
             {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
-                title: 'Ocean Pearl Proposal',
+                title: 'Ocean Pearl Proposal 3',
                 votes: 10000,
                 counterVotes: 100000,
                 requestedGrantUsd: 40000,
@@ -111,7 +118,7 @@ describe('GenerateLeaderboardService', () => {
             {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
-                title: 'Ocean Pearl Proposal',
+                title: 'Ocean Pearl Proposal 4',
                 votes: 100000,
                 counterVotes: 10000,
                 requestedGrantUsd: 50000,
@@ -121,7 +128,7 @@ describe('GenerateLeaderboardService', () => {
             {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
-                title: 'Ocean Pearl Proposal',
+                title: 'Ocean Pearl Proposal 5',
                 votes: 100000,
                 counterVotes: 55000,
                 requestedGrantUsd: 50000,
@@ -131,7 +138,7 @@ describe('GenerateLeaderboardService', () => {
             {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
-                title: 'Ocean Pearl Proposal',
+                title: 'Ocean Pearl Proposal 6',
                 votes: 10000,
                 counterVotes: 100000,
                 requestedGrantUsd: 20000,
@@ -175,7 +182,7 @@ describe('GenerateLeaderboardService', () => {
             fundedProposals: [
                 {
                     id: PROPOSAL_ID,
-                    title: 'Ocean Pearl Proposal',
+                    title: 'Ocean Pearl Proposal 1',
                     project: {
                         id: PROJECT_ID,
                         title: 'Ocean Pearl Project',
@@ -192,7 +199,7 @@ describe('GenerateLeaderboardService', () => {
                 } as LeaderboardProposal,
                 {
                     id: PROPOSAL_ID,
-                    title: 'Ocean Pearl Proposal',
+                    title: 'Ocean Pearl Proposal 2',
                     project: {
                         id: PROJECT_ID,
                         title: 'Ocean Pearl Project',
@@ -200,6 +207,7 @@ describe('GenerateLeaderboardService', () => {
                         completedProposals: 4,
                     },
                     isEarmarked: true,
+                    earmarkType: EarmarkTypeEnum.NewEntrants,
                     requestedFunding: 20000,
                     receivedFunding: 20000,
                     yesVotes: 100000,
@@ -210,7 +218,7 @@ describe('GenerateLeaderboardService', () => {
                 } as LeaderboardProposal,
                 {
                     id: PROPOSAL_ID,
-                    title: 'Ocean Pearl Proposal',
+                    title: 'Ocean Pearl Proposal 4',
                     project: {
                         id: PROJECT_ID,
                         title: 'Ocean Pearl Project',
@@ -218,16 +226,18 @@ describe('GenerateLeaderboardService', () => {
                         completedProposals: 4,
                     },
                     requestedFunding: 50000,
-                    receivedFunding: 0,
+                    receivedFunding: 30000,
                     yesVotes: 100000,
                     noVotes: 10000,
                     effectiveVotes: 90000,
                     tags: [CategoryEnum.Outreach],
                     voteUrl: 'https://port.oceanprotocol.com/',
                 } as LeaderboardProposal,
+            ],
+            notFundedProposals: [
                 {
                     id: PROPOSAL_ID,
-                    title: 'Ocean Pearl Proposal',
+                    title: 'Ocean Pearl Proposal 5',
                     project: {
                         id: PROJECT_ID,
                         title: 'Ocean Pearl Project',
@@ -239,14 +249,13 @@ describe('GenerateLeaderboardService', () => {
                     yesVotes: 100000,
                     noVotes: 55000,
                     effectiveVotes: 45000,
+                    neededVotes: 45001,
                     tags: [CategoryEnum.Outreach],
                     voteUrl: 'https://port.oceanprotocol.com/',
                 } as LeaderboardProposal,
-            ],
-            notFundedProposals: [
                 {
                     id: PROPOSAL_ID,
-                    title: 'Ocean Pearl Proposal',
+                    title: 'Ocean Pearl Proposal 3',
                     project: {
                         id: PROJECT_ID,
                         title: 'Ocean Pearl Project',
@@ -258,13 +267,13 @@ describe('GenerateLeaderboardService', () => {
                     yesVotes: 10000,
                     noVotes: 100000,
                     effectiveVotes: -90000,
-                    neededVotes: 90001,
+                    neededVotes: 180001,
                     tags: [CategoryEnum.CoreSoftware],
                     voteUrl: 'https://port.oceanprotocol.com/',
                 } as LeaderboardProposal,
                 {
                     id: PROPOSAL_ID,
-                    title: 'Ocean Pearl Proposal',
+                    title: 'Ocean Pearl Proposal 6',
                     project: {
                         id: PROJECT_ID,
                         title: 'Ocean Pearl Project',
@@ -272,12 +281,13 @@ describe('GenerateLeaderboardService', () => {
                         completedProposals: 4,
                     },
                     isEarmarked: true,
+                    earmarkType: EarmarkTypeEnum.NewEntrants,
                     requestedFunding: 20000,
                     receivedFunding: 0,
                     yesVotes: 10000,
                     noVotes: 100000,
                     effectiveVotes: -90000,
-                    neededVotes: 90001,
+                    neededVotes: 180001,
                     tags: [CategoryEnum.UnleashData, 'earmark'],
                     voteUrl: 'https://port.oceanprotocol.com/',
                 } as LeaderboardProposal,
@@ -287,8 +297,13 @@ describe('GenerateLeaderboardService', () => {
             overallRequestedFunding: 230000,
             round: 10,
             totalVotes: 805000,
-            remainingEarmarkFunding: 0,
-            remainingGeneralFunding: 30000,
+            earmarks: {
+                [EarmarkTypeEnum.NewEntrants]: {
+                    type: EarmarkTypeEnum.NewEntrants,
+                    remainingFunding: 0,
+                },
+            },
+            remainingGeneralFunding: 0,
             paymentOption: PaymentOptionEnum.Usd,
             status: RoundStatusEnum.VotingInProgress,
             voteStartDate: votingStartDate,

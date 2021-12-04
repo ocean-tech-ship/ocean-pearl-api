@@ -1,7 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { RoundStatusEnum } from '../enums/round-status.enum';
 import { LeaderboardProposal } from './leaderboard-proposal.model';
+
+export class LeaderboardEarmark {
+    @ApiProperty({
+        type: EarmarkTypeEnum,
+        enum: EarmarkTypeEnum,
+    })
+    type: EarmarkTypeEnum;
+
+    @ApiProperty()
+    remainingFunding: number;
+}
+
+export type LeaderboardEarmarks = {
+    [key in EarmarkTypeEnum]: LeaderboardEarmark;
+};
 
 export class Leaderboard {
     @ApiProperty({
@@ -22,8 +38,10 @@ export class Leaderboard {
     @ApiProperty()
     maxVotes: number;
 
-    @ApiProperty()
-    remainingEarmarkFunding: number;
+    @ApiProperty({
+        type: Object,
+    })
+    earmarks: LeaderboardEarmarks;
 
     @ApiProperty()
     remainingGeneralFunding: number;
