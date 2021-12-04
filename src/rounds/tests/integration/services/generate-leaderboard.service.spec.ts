@@ -1,8 +1,10 @@
+import { CacheModule } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Types } from 'mongoose';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
 import { CategoryEnum } from '../../../../database/enums/category.enum';
+import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-status.enum';
 import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../../../../database/enums/payment-option.enum';
 import { nanoid } from '../../../../database/functions/nano-id.function';
@@ -20,11 +22,11 @@ import { Leaderboard } from '../../../models/leaderboard.model';
 import { RoundsModule } from '../../../rounds.module';
 import { GenerateLeaderboardService } from '../../../services/generate-leaderboard.service';
 import { GetCurrentRoundService } from '../../../services/get-current-round.service';
+import { LeaderboardCacheService } from '../../../services/leaderboard-cache.service';
 import { EarmarkedPropsoalStrategy } from '../../../strategies/earmarked-proposal.strategy';
 import { GeneralPropsoalStrategy } from '../../../strategies/general-proposal.strategy';
 import { LeaderboardStrategyCollection } from '../../../strategies/leaderboard-strategy.collection';
 import { WontReceiveFundingStrategy } from '../../../strategies/wont-receive-funding.strategy';
-import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-status.enum';
 
 const faker = require('faker');
 
@@ -43,12 +45,13 @@ describe('GenerateLeaderboardService', () => {
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
-            imports: [RoundsModule, AppModule, DatabaseModule],
+            imports: [RoundsModule, AppModule, DatabaseModule, CacheModule.register()],
             providers: [
                 GenerateLeaderboardService,
                 LeaderboardProposalBuilder,
                 LeaderboardMapper,
                 LeaderboardStrategyCollection,
+                LeaderboardCacheService,
                 EarmarkedPropsoalStrategy,
                 GeneralPropsoalStrategy,
                 WontReceiveFundingStrategy,
