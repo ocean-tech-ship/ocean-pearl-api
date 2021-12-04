@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { DatabaseModule } from '../database/database.module';
 import { LeaderboardController } from './controller/leaderboard.controller';
 import { LeaderboardProposalBuilder } from './builder/leaderboard-proposal.builder';
@@ -9,13 +9,17 @@ import { GeneralPropsoalStrategy } from './strategies/general-proposal.strategy'
 import { LeaderboardStrategyCollection } from './strategies/leaderboard-strategy.collection';
 import { WontReceiveFundingStrategy } from './strategies/wont-receive-funding.strategy';
 import { LeaderboardMapper } from './mapper/leaderboard.mapper';
+import { LeaderboardCacheService } from './services/leaderboard-cache.service';
 
 @Module({
     controllers: [LeaderboardController],
-    imports: [DatabaseModule],
+    imports: [
+        CacheModule.register(),
+        DatabaseModule],
     providers: [
         GetCurrentRoundService,
         GenerateLeaderboardService,
+        LeaderboardCacheService,
         LeaderboardMapper,
         LeaderboardProposalBuilder,
         LeaderboardStrategyCollection,
