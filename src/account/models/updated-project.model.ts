@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+    ArrayNotEmpty,
     IsArray,
     IsBooleanString,
     IsEnum,
@@ -44,6 +45,9 @@ export class UpdatedProject {
     @ApiProperty()
     @IsOptional()
     @IsArray()
+    @ArrayNotEmpty({
+        message: 'At least one address must be specified',
+    })
     accessAddresses: string[];
 
     @ApiProperty({
