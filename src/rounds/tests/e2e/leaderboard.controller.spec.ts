@@ -1,3 +1,4 @@
+import { CacheModule } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../app.module';
 import { AwsModule } from '../../../aws/aws.module';
@@ -7,6 +8,7 @@ import { LeaderboardController } from '../../controller/leaderboard.controller';
 import { LeaderboardMapper } from '../../mapper/leaderboard.mapper';
 import { GenerateLeaderboardService } from '../../services/generate-leaderboard.service';
 import { GetCurrentRoundService } from '../../services/get-current-round.service';
+import { LeaderboardCacheService } from '../../services/leaderboard-cache.service';
 import { EarmarkedPropsoalStrategy } from '../../strategies/earmarked-proposal.strategy';
 import { GeneralPropsoalStrategy } from '../../strategies/general-proposal.strategy';
 import { LeaderboardStrategyCollection } from '../../strategies/leaderboard-strategy.collection';
@@ -18,7 +20,7 @@ describe('LeaderboardController', () => {
 
     beforeEach(async () => {
         module = await Test.createTestingModule({
-            imports: [DatabaseModule, AppModule, AwsModule],
+            imports: [DatabaseModule, AppModule, AwsModule, CacheModule.register()],
             controllers: [LeaderboardController],
             providers: [
                 GetCurrentRoundService,
@@ -26,6 +28,7 @@ describe('LeaderboardController', () => {
                 LeaderboardMapper,
                 LeaderboardProposalBuilder,
                 LeaderboardStrategyCollection,
+                LeaderboardCacheService,
                 EarmarkedPropsoalStrategy,
                 GeneralPropsoalStrategy,
                 WontReceiveFundingStrategy,
