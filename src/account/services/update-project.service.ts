@@ -32,6 +32,8 @@ export class UpdateProjectService {
         dbProject.description =
             updatedProject.description ?? dbProject.description;
 
+        dbProject.oneLiner = updatedProject.oneLiner ?? dbProject.oneLiner;
+
         dbProject.category = updatedProject.category ?? dbProject.category;
 
         dbProject.socialMedia =
