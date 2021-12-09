@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { DaoProposalStatusEnum } from '../../database/enums/dao-proposal-status.enum';
+import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
-import { StandingEnum } from '../../database/enums/standing.enum';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { Project } from '../../database/schemas/project.schema';
 import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
-import { DaoProposalStatusEnum } from '../../database/enums/dao-proposal-status.enum';
 
 @Injectable()
 export class LeaderboardProposalBuilder {
@@ -52,7 +52,10 @@ export class LeaderboardProposalBuilder {
         if (proposal.earmark) {
             mappedLeaderboardProposal.tags.push(this.EARMARK_TAG);
             mappedLeaderboardProposal.isEarmarked = true;
-            mappedLeaderboardProposal.earmarkType = proposal.earmark;
+            mappedLeaderboardProposal.earmarkType =
+                proposal.earmark === EarmarkTypeEnum.NewEntrants
+                    ? EarmarkTypeEnum.NewGeneral
+                    : proposal.earmark;
         }
 
         if (project.logo) {
