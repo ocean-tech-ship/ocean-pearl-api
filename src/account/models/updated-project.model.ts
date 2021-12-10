@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+    ArrayNotEmpty,
     IsArray,
     IsBooleanString,
     IsEnum,
     IsObject,
     IsOptional,
     IsString,
+    MaxLength,
 } from 'class-validator';
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { SocialMedia } from '../../database/schemas/social-media.schema';
@@ -30,6 +32,9 @@ export class UpdatedProject {
     })
     @IsOptional()
     @IsString()
+    @MaxLength(80, {
+        message: 'One-Liner must be smaller than 80 characters',
+    })
     oneLiner: string;
 
     @ApiProperty({
@@ -44,6 +49,9 @@ export class UpdatedProject {
     @ApiProperty()
     @IsOptional()
     @IsArray()
+    @ArrayNotEmpty({
+        message: 'At least one address must be specified',
+    })
     accessAddresses: string[];
 
     @ApiProperty({

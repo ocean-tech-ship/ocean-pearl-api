@@ -14,8 +14,8 @@ export class EarmarkedPropsoalStrategy implements leaderboardStrategyInterface {
     ): boolean {
         if (
             !proposal.isEarmarked ||
-            proposal.yesVotes < proposal.noVotes ||
-            proposal.effectiveVotes < 0
+            proposal.yesVotes <= proposal.noVotes ||
+            proposal.effectiveVotes <= 0
         ) {
             return false;
         }
