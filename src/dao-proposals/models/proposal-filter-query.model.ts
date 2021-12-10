@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNumberString, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { CategoryEnum } from '../../database/enums/category.enum';
 
 export class ProposalFilterQuery {
@@ -9,12 +10,13 @@ export class ProposalFilterQuery {
         default: 0,
     })
     @IsOptional()
-    @IsNumberString()
+    @Type(() => Number)
+    @IsNumber()
     round: number;
 
-    @ApiPropertyOptional({ 
+    @ApiPropertyOptional({
         enum: CategoryEnum,
-        enumName: 'Category'
+        enumName: 'Category',
     })
     @IsOptional()
     @IsEnum(CategoryEnum)
@@ -22,9 +24,30 @@ export class ProposalFilterQuery {
 
     @ApiPropertyOptional({
         description: 'The Title of the Proposal',
-        type: String
+        type: String,
     })
     @IsOptional()
     @IsString()
     search: string;
+
+    @ApiPropertyOptional({
+        description: 'The current page',
+        type: Number,
+        default: 0,
+    })
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    page: number;
+
+    @ApiPropertyOptional({
+        description:
+            'Amount of Proposals per page',
+        type: Number,
+        default: 0,
+    })
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    limit: number;
 }
