@@ -38,7 +38,8 @@ export class LeaderboardCacheService {
 
         if (leaderboard.status === RoundStatusEnum.VotingInProgress) {
             const remainingMinutes: number = new Date().getMinutes() % 5;
-            return (5 - remainingMinutes) * 60;
+            const secondsOverhead: number = new Date().getSeconds();
+            return (5 - remainingMinutes) * 60 - secondsOverhead;
         }
 
         const timeUntilVoteStartDate: number = Math.ceil(
