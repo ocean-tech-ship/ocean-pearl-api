@@ -70,8 +70,8 @@ describe('GenerateLeaderboardService', () => {
             paymentOption: PaymentOptionEnum.Usd,
             availableFundingUsd: 100000,
             earmarks: {
-                [EarmarkTypeEnum.NewGeneral]: {
-                    type: EarmarkTypeEnum.NewGeneral,
+                [EarmarkTypeEnum.NewEntrants]: {
+                    type: EarmarkTypeEnum.NewEntrants,
                     fundingUsd: 20000,
                     fundingOcean: 20000,
                 },
@@ -207,7 +207,7 @@ describe('GenerateLeaderboardService', () => {
                         completedProposals: 4,
                     },
                     isEarmarked: true,
-                    earmarkType: EarmarkTypeEnum.NewGeneral,
+                    earmarkType: EarmarkTypeEnum.NewEntrants,
                     requestedFunding: 20000,
                     receivedFunding: 20000,
                     yesVotes: 100000,
@@ -281,7 +281,7 @@ describe('GenerateLeaderboardService', () => {
                         completedProposals: 4,
                     },
                     isEarmarked: true,
-                    earmarkType: EarmarkTypeEnum.NewGeneral,
+                    earmarkType: EarmarkTypeEnum.NewEntrants,
                     requestedFunding: 20000,
                     receivedFunding: 0,
                     yesVotes: 10000,
@@ -298,8 +298,8 @@ describe('GenerateLeaderboardService', () => {
             round: 10,
             totalVotes: 805000,
             earmarks: {
-                [EarmarkTypeEnum.NewGeneral]: {
-                    type: EarmarkTypeEnum.NewGeneral,
+                [EarmarkTypeEnum.NewEntrants]: {
+                    type: EarmarkTypeEnum.NewEntrants,
                     remainingFunding: 0,
                 },
             },
