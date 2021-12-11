@@ -12,7 +12,6 @@ export interface PaginationOptions<T> {
         | undefined;
     projection?: any;
     lean?: boolean | undefined;
-    leanWithId?: boolean | undefined;
     page?: number | undefined;
     limit?: number | undefined;
     useEstimatedCount?: boolean | undefined;
