@@ -12,7 +12,6 @@ export function paginateFactory<T extends Model<T>>() {
         const defaultOptions = {
             collation: {},
             lean: true,
-            leanWithId: false,
             page: 0,
             limit: 0,
             projection: {},
@@ -33,7 +32,6 @@ export function paginateFactory<T extends Model<T>>() {
             .select(options.select)
             .sort(options.sort)
             .lean(options.lean)
-            .leanWithId(options.leanWithId)
             .skip(options.page * options.limit)
             .limit(options.limit);
 
