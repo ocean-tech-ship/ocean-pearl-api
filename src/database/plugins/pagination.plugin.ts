@@ -12,7 +12,7 @@ export function paginateFactory<T extends Model<T>>() {
         const defaultOptions = {
             collation: {},
             lean: true,
-            page: 0,
+            page: 1,
             limit: 0,
             projection: {},
             select: '',
@@ -28,11 +28,13 @@ export function paginateFactory<T extends Model<T>>() {
             ...options.options,
         };
 
+        const skippedEntries: number = (options.page - 1 ) * options.limit;
+
         const mongoQuery = this.find(query, options.projection)
             .select(options.select)
             .sort(options.sort)
             .lean(options.lean)
-            .skip(options.page * options.limit)
+            .skip((options.page - 1 ) * options.limit)
             .limit(options.limit);
 
         if (options.populate) {
@@ -64,7 +66,7 @@ export function paginateFactory<T extends Model<T>>() {
                     totalPages: totalPages,
                     prevPage: hasPrevPage ? options.page - 1 : null,
                     nextPage: hasNextPage ? options.page + 1 : null,
-                    pagingCounter: options.page * options.limit + 1,
+                    pagingCounter: skippedEntries + 1,
                     hasPrevPage: hasPrevPage,
                     hasNextPage: hasNextPage,
                 };
