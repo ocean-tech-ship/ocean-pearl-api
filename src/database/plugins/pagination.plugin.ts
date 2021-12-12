@@ -34,7 +34,7 @@ export function paginateFactory<T extends Model<T>>() {
             .select(options.select)
             .sort(options.sort)
             .lean(options.lean)
-            .skip((options.page - 1 ) * options.limit)
+            .skip(skippedEntries)
             .limit(options.limit);
 
         if (options.populate) {
