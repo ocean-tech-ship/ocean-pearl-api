@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 import { CategoryEnum } from '../../database/enums/category.enum';
 
 export class ProjectFilterQuery {
@@ -23,15 +23,16 @@ export class ProjectFilterQuery {
     @ApiPropertyOptional({
         description: 'The current page',
         type: Number,
-        default: 0,
+        default: 1,
     })
     @IsOptional()
     @Type(() => Number)
     @IsNumber()
+    @Min(1)
     page: number;
 
     @ApiPropertyOptional({
-        description: 'Amount of Proposals per page',
+        description: 'Amount of Projects per page',
         type: Number,
         default: 0,
     })
