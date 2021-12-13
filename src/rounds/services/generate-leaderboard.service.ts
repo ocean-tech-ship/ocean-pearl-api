@@ -8,6 +8,7 @@ import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
 import { LeaderboardStrategyCollection } from '../strategies/leaderboard-strategy.collection';
 import { GetCurrentRoundService } from './get-current-round.service';
+import { LeaderboardCacheService } from './leaderboard-cache.service';
 
 @Injectable()
 export class GenerateLeaderboardService {
@@ -22,10 +23,17 @@ export class GenerateLeaderboardService {
         private leaderboardProposalBuilder: LeaderboardProposalBuilder,
         private strategyCollection: LeaderboardStrategyCollection,
         private leaderboardMapper: LeaderboardMapper,
+        private leaderboardCacheService: LeaderboardCacheService,
     ) {}
 
     public async execute(): Promise<Leaderboard> {
         const round = await this.getCurrentRoundService.execute();
+        const cachedLeaderboard = await this.leaderboardCacheService.getFromCache(round.round);
+
+        if (cachedLeaderboard) {
+            return cachedLeaderboard;
+        }
+
         let leaderboard: Leaderboard = this.leaderboardMapper.map(round);
         let leaderboardProposals: LeaderboardProposal[] = [];
         let lowestEarmarkVotes: number;
@@ -83,6 +91,7 @@ export class GenerateLeaderboardService {
                 ));
         }
 
+        this.leaderboardCacheService.addToCache(leaderboard);
         return leaderboard;
     }
 }
