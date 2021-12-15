@@ -120,6 +120,10 @@ export class SyncRoundsDataService {
         let mappedEarmarks: any = {};
 
         for (const [index, data] of Object.entries(earmarks)) {
+            if(!EarmarkTypeMap[index]) {
+                continue;
+            }
+
             let earmark: Earmark = {
                 type: EarmarkTypeMap[index],
                 fundingOcean: data['OCEAN'],
