@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v2.4.0
         
       - name: Setup node env 🏗
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v2.5.0
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
@@ -67,7 +67,7 @@ jobs:
 
       - name: Report code coverage 🔍
         continue-on-error: true
-        uses: romeovs/lcov-reporter-action@v0.2.21
+        uses: romeovs/lcov-reporter-action@v0.3.1
         with:
           lcov-file: coverage/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -87,7 +87,7 @@ jobs:
         uses: actions/checkout@v2.4.0
 
       - name: Setup node env 🏗
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v2.5.0
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
