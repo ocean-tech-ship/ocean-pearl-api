@@ -14,12 +14,12 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
 
-    timeout-minutes: 8
+    timeout-minutes: 12
     
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        node: [ 12 ]
+        node: [ 16 ]
         mongodb: [ 4.4 ]
         
     env:
@@ -75,12 +75,12 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
 
-    timeout-minutes: 8
+    timeout-minutes: 12
 
     strategy:
       matrix:
         os: [ ubuntu-latest,windows-latest,macos-latest ]
-        node: [ 12 ]
+        node: [ 16 ]
 
     steps:
       - name: Checkout 🛎
