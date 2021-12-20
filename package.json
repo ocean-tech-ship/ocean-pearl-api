@@ -2,7 +2,7 @@
   "name": "ocean-pearl-api",
   "private": true,
   "version": "1.0.0",
-  "description": "API fot the Ocean Pearl project",
+  "description": "API for the Ocean Pearl project",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -22,8 +22,8 @@
     "test:ci": "jest --ci --coverage --reporters=default --reporters=jest-junit"
   },
   "engines": {
-    "node": "12.22.x",
-    "npm": "6.x"
+    "node": "16.13.x",
+    "npm": "8.x"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.44.0",
