@@ -28,11 +28,13 @@ export class GenerateLeaderboardService {
 
     public async execute(): Promise<Leaderboard> {
         const round = await this.getCurrentRoundService.execute();
-        const cachedLeaderboard = await this.leaderboardCacheService.getFromCache(round.round);
 
-        if (cachedLeaderboard) {
-            return cachedLeaderboard;
-        }
+        // TODO: revert this later on
+        // const cachedLeaderboard = await this.leaderboardCacheService.getFromCache(round.round);
+
+        // if (cachedLeaderboard) {
+        //     return cachedLeaderboard;
+        // }
 
         let leaderboard: Leaderboard = this.leaderboardMapper.map(round);
         let leaderboardProposals: LeaderboardProposal[] = [];
