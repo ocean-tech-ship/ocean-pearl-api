@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
@@ -12,14 +12,14 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
         @InjectModel('PearlUser') private model: Model<PearlUserType>,
     ) {}
 
-    public async findOne(query: FindQuery): Promise<PearlUser> {
+    public async findOne(query: FindQuery<PearlUserType>): Promise<PearlUser> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             return await this.model
-                .findOne(query.find as FilterQuery<PearlUserType>)
+                .findOne(query.find)
                 .lean()
                 .select('-_id -__v')
                 .exec();
@@ -28,16 +28,15 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
         }
     }
 
-    public async findOneRaw(query: FindQuery): Promise<PearlUser> {
+    public async findOneRaw(
+        query: FindQuery<PearlUserType>,
+    ): Promise<PearlUser> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model
-                .findOne(query.find as FilterQuery<PearlUserType>)
-                .lean()
-                .exec();
+            return await this.model.findOne(query.find).lean().exec();
         } catch (error: any) {
             throw error;
         }
@@ -55,10 +54,12 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
         }
     }
 
-    public async getAll(query?: FilterQuery<any>): Promise<PearlUser[]> {
+    public async getAll(
+        query?: FindQuery<PearlUserType>,
+    ): Promise<PearlUser[]> {
         try {
             return await this.model
-                .find((query as FilterQuery<PearlUserType>) || {})
+                .find(query?.find || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -92,14 +93,14 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
         }
     }
 
-    public async delete(query: FindQuery): Promise<boolean> {
+    public async delete(query: FindQuery<PearlUserType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find as FilterQuery<PearlUserType>,
+                query.find,
             );
 
             return response.deletedCount === 1;
@@ -108,16 +109,14 @@ export class PearlUserRepository implements RepositoryInterface<PearlUserType> {
         }
     }
 
-    public async deleteMany(query: FindQuery): Promise<boolean> {
+    public async deleteMany(query: FindQuery<PearlUserType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             const response: MongooseDeleteResponse =
-                await this.model.deleteMany(
-                    query.find as FilterQuery<PearlUserType>,
-                );
+                await this.model.deleteMany(query.find);
 
             return response.deletedCount > 0;
         } catch (error: any) {

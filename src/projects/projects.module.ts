@@ -4,8 +4,7 @@ import { ProjectsController } from './projects.controller';
 import { DaoFeaturedProjectsService } from './services/dao-featured-projects.service';
 import { FeaturedProjectsService } from './services/featured-projects.service';
 import { GetProjectByIdService } from './services/get-project-by-id.service';
-import { GetProjectsPaginatedService } from './services/get-projects-paginated.service';
-import { GetFilteredProjectsService } from './services/get-filtered-projects.service';
+import { GetProjectsService } from './services/get-projects.service';
 import { LatestProjectsService } from './services/latest-projects.service';
 
 @Module({
@@ -15,16 +14,14 @@ import { LatestProjectsService } from './services/latest-projects.service';
       DaoFeaturedProjectsService,
       FeaturedProjectsService,
       GetProjectByIdService,
-      GetProjectsPaginatedService,
-      GetFilteredProjectsService,
+      GetProjectsService,
       LatestProjectsService,
   ],
   exports: [
     DaoFeaturedProjectsService,
     FeaturedProjectsService,
     GetProjectByIdService,
-    GetProjectsPaginatedService,
-    GetFilteredProjectsService,
+    GetProjectsService,
     LatestProjectsService,
 ]
 })

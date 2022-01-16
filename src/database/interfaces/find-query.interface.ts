@@ -1,7 +1,8 @@
 import { FilterQuery } from 'mongoose';
 
-export interface FindQuery {
-    find?: FilterQuery<any>;
+export interface FindQuery<T> {
+    find?: FilterQuery<T>;
     sort?: FilterQuery<any>;
     limit?: number;
+    page?: number
 }

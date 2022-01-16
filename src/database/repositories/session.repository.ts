@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+import { FindQuery } from '../interfaces/find-query.interface';
+import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
 import { Session, SessionType } from '../schemas/session.schema';
-import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Types } from 'mongoose';
-import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
-import { FindQuery } from '../interfaces/find-query.interface';
 
 @Injectable()
 export class SessionRepository implements RepositoryInterface<SessionType> {
@@ -18,10 +18,10 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         }
     }
 
-    public async getAll(query?: FindQuery): Promise<Session[]> {
+    public async getAll(query?: FindQuery<SessionType>): Promise<Session[]> {
         try {
             return await this.model
-                .find((query?.find as FilterQuery<SessionType>) || {})
+                .find(query?.find || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -31,20 +31,17 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         }
     }
 
-    public async findOne(query: FindQuery): Promise<Session> {
+    public async findOne(query: FindQuery<SessionType>): Promise<Session> {
         return this.findOneRaw(query);
     }
 
-    public async findOneRaw(query: FindQuery): Promise<any> {
+    public async findOneRaw(query: FindQuery<SessionType>): Promise<any> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model
-                .findOne(query.find as FilterQuery<SessionType>)
-                .lean()
-                .exec();
+            return await this.model.findOne(query.find).lean().exec();
         } catch (error: any) {
             throw error;
         }
@@ -76,14 +73,14 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         }
     }
 
-    public async delete(query: FindQuery): Promise<boolean> {
+    public async delete(query: FindQuery<SessionType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find as FilterQuery<SessionType>,
+                query.find,
             );
 
             return response.deletedCount === 1;
@@ -92,16 +89,14 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         }
     }
 
-    public async deleteMany(query: FindQuery): Promise<boolean> {
+    public async deleteMany(query: FindQuery<SessionType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             const response: MongooseDeleteResponse =
-                await this.model.deleteMany(
-                    query.find as FilterQuery<SessionType>,
-                );
+                await this.model.deleteMany(query.find);
 
             return response.deletedCount > 0;
         } catch (error: any) {
