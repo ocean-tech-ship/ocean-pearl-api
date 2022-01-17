@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { FindQuery } from '../../database/interfaces/find-query.interface';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
-import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
+import { DaoProposal, DaoProposalType } from '../../database/schemas/dao-proposal.schema';
 
 @Injectable()
 export class GetDaoProposalsByRoundService
@@ -12,7 +12,7 @@ export class GetDaoProposalsByRoundService
     ) {}
 
     public async execute(round: Types.ObjectId): Promise<DaoProposal[]> {
-        const query: FindQuery = {
+        const query: FindQuery<DaoProposalType> = {
             find: { fundingRound: round },
         };
 

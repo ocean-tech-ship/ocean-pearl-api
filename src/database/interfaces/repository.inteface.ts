@@ -4,19 +4,19 @@ import { FindQuery } from './find-query.interface';
 export interface RepositoryInterface<T extends Document> {
     getByID(id: string): Promise<any>;
 
-    getAll(): Promise<any[]>;
+    getAll(query: FindQuery<T>): Promise<any[]>;
 
-    findOne(query: FindQuery): Promise<any>;
+    findOne(query: FindQuery<T>): Promise<any>;
 
-    findOneRaw(query: FindQuery): Promise<any>;
+    findOneRaw(query: FindQuery<T>): Promise<any>;
 
     update(model: T): Promise<boolean>;
 
     create(model: T): Promise<Types.ObjectId>;
 
-    delete(query: FindQuery): Promise<boolean>;
+    delete(query: FindQuery<T>): Promise<boolean>;
 
-    deleteMany(query: FindQuery): Promise<boolean>;
+    deleteMany(query: FindQuery<T>): Promise<boolean>;
 
     getModel(): Model<T>;
 }

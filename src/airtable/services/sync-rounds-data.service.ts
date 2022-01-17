@@ -5,7 +5,7 @@ import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { FindQuery } from '../../database/interfaces/find-query.interface';
 import { RoundRepository } from '../../database/repositories/round.repository';
 import { Earmark } from '../../database/schemas/earmark.schema';
-import { EarmarksType, Round } from '../../database/schemas/round.schema';
+import { EarmarksType, Round, RoundType } from '../../database/schemas/round.schema';
 import { BallotTypeMap } from '../constants/ballot-type-map.constant';
 import { EarmarkTypeMap } from '../constants/earmark-type-map.constant';
 import { VoteTypeMap } from '../constants/vote-type-map.constant';
@@ -161,7 +161,7 @@ export class SyncRoundsDataService {
             find: {
                 round: round.round,
             },
-        } as FindQuery;
+        } as FindQuery<RoundType>;
         const databaseRound: Round = await this.roundsRepository.findOne(
             findQuery,
         );
