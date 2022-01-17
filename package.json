@@ -23,7 +23,7 @@
   },
   "engines": {
     "node": "16.13.x",
-    "npm": "8.x"
+    "yarn": "1.22.x"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.44.0",
