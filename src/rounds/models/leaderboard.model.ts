@@ -4,7 +4,7 @@ import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { RoundStatusEnum } from '../enums/round-status.enum';
 import { LeaderboardProposal } from './leaderboard-proposal.model';
 
-export class LeaderboardEarmark {
+export class GrantPool {
     @ApiProperty({
         type: EarmarkTypeEnum,
         enum: EarmarkTypeEnum,
@@ -12,11 +12,17 @@ export class LeaderboardEarmark {
     type: EarmarkTypeEnum;
 
     @ApiProperty()
+    totalFunding: number;
+
+    @ApiProperty()
     remainingFunding: number;
+
+    @ApiProperty()
+    potentialRemainingFunding?: number;
 }
 
-export type LeaderboardEarmarks = {
-    [key in EarmarkTypeEnum]: LeaderboardEarmark;
+export type LeaderboardGrantPools = {
+    [key in EarmarkTypeEnum]: GrantPool;
 };
 
 export class Leaderboard {
@@ -24,13 +30,19 @@ export class Leaderboard {
         type: LeaderboardProposal,
         isArray: true,
     })
-    fundedProposals: LeaderboardProposal[];
+    fundedProposals: LeaderboardProposal[] = [];
 
     @ApiProperty({
         type: LeaderboardProposal,
         isArray: true,
     })
-    notFundedProposals: LeaderboardProposal[];
+    partiallyFundedProposals: LeaderboardProposal[] = [];
+
+    @ApiProperty({
+        type: LeaderboardProposal,
+        isArray: true,
+    })
+    notFundedProposals: LeaderboardProposal[] = [];
 
     @ApiProperty()
     amountProposals: number;
@@ -41,10 +53,7 @@ export class Leaderboard {
     @ApiProperty({
         type: Object,
     })
-    earmarks: LeaderboardEarmarks;
-
-    @ApiProperty()
-    remainingGeneralFunding: number;
+    grantPools: LeaderboardGrantPools;
 
     @ApiProperty({
         type: String,
@@ -53,10 +62,10 @@ export class Leaderboard {
     paymentOption: string;
 
     @ApiProperty()
-    voteStartDate: Date;
+    votingStartDate: Date;
 
     @ApiProperty()
-    voteEndDate: Date;
+    votingEndDate: Date;
 
     @ApiProperty({
         type: String,
