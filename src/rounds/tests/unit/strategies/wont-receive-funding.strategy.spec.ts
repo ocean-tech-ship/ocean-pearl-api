@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
-import { LeaderboardStrategyResponse } from '../../../interfaces/leaderboard-strategy.interface';
 import { LeaderboardProposal } from '../../../models/leaderboard-proposal.model';
 import { Leaderboard } from '../../../models/leaderboard.model';
 import { WontReceiveFundingStrategy } from '../../../strategies/wont-receive-funding.strategy';
@@ -16,13 +15,19 @@ describe('WontReceiveFundingStrategy', () => {
                 effectiveVotes: -100000,
             } as LeaderboardProposal,
             leaderboard: {
-                earmarks: {
+                fundedProposals: [],
+                partiallyFundedProposals: [],
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
                         remainingFunding: 10000,
                     },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 10000,
+                        remainingFunding: 10000,
+                    },
                 },
-                remainingGeneralFunding: 10000,
             } as Leaderboard,
             expected: true,
         },
@@ -31,13 +36,19 @@ describe('WontReceiveFundingStrategy', () => {
                 effectiveVotes: 100000,
             } as LeaderboardProposal,
             leaderboard: {
-                earmarks: {
+                fundedProposals: [],
+                partiallyFundedProposals: [],
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
                         remainingFunding: 10000,
                     },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 0,
+                        remainingFunding: 0,
+                    },
                 },
-                remainingGeneralFunding: 0,
             } as Leaderboard,
             expected: true,
         },
@@ -46,64 +57,86 @@ describe('WontReceiveFundingStrategy', () => {
                 effectiveVotes: 100000,
             } as LeaderboardProposal,
             leaderboard: {
-                earmarks: {
+                fundedProposals: [],
+                partiallyFundedProposals: [],
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
                         remainingFunding: 10000,
                     },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 0,
+                        remainingFunding: 0,
+                    },
                 },
-                remainingGeneralFunding: 0,
             } as Leaderboard,
             expected: true,
         },
-        'should not be able to handle: earmarked project with earmarked funding left':
-            {
-                proposal: {
-                    isEarmarked: true,
-                    earmarkType: EarmarkTypeEnum.NewEntrants,
-                    effectiveVotes: 10000,
-                } as LeaderboardProposal,
-                leaderboard: {
-                    earmarks: {
-                        [EarmarkTypeEnum.NewEntrants]: {
-                            type: EarmarkTypeEnum.NewEntrants,
-                            remainingFunding: 10000,
-                        },
+        'should not be able to handle: earmarked project with earmarked funding left': {
+            proposal: {
+                isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
+                effectiveVotes: 10000,
+            } as LeaderboardProposal,
+            leaderboard: {
+                fundedProposals: [],
+                partiallyFundedProposals: [],
+                grantPools: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 10000,
                     },
-                    remainingGeneralFunding: 0,
-                } as Leaderboard,
-                expected: false,
-            },
-        'should not be able to handle: earmarked project with general funding left':
-            {
-                proposal: {
-                    isEarmarked: true,
-                    earmarkType: EarmarkTypeEnum.NewEntrants,
-                    effectiveVotes: 10000,
-                } as LeaderboardProposal,
-                leaderboard: {
-                    earmarks: {
-                        [EarmarkTypeEnum.NewEntrants]: {
-                            type: EarmarkTypeEnum.NewEntrants,
-                            remainingFunding: 0,
-                        },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 0,
+                        remainingFunding: 0,
                     },
-                    remainingGeneralFunding: 10000,
-                } as Leaderboard,
-                expected: false,
-            },
+                },
+            } as Leaderboard,
+            expected: false,
+        },
+        'should not be able to handle: earmarked project with general funding left': {
+            proposal: {
+                isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
+                effectiveVotes: 10000,
+            } as LeaderboardProposal,
+            leaderboard: {
+                fundedProposals: [],
+                partiallyFundedProposals: [],
+                grantPools: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        remainingFunding: 0,
+                    },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 10000,
+                        remainingFunding: 10000,
+                    },
+                },
+            } as Leaderboard,
+            expected: false,
+        },
         'should not be able to handle: general funding left': {
             proposal: {
                 effectiveVotes: 100000,
             } as LeaderboardProposal,
             leaderboard: {
-                earmarks: {
+                fundedProposals: [],
+                partiallyFundedProposals: [],
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
                         remainingFunding: 0,
                     },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 10000,
+                        remainingFunding: 10000,
+                    },
                 },
-                remainingGeneralFunding: 10000,
             } as Leaderboard,
             expected: false,
         },
@@ -112,81 +145,181 @@ describe('WontReceiveFundingStrategy', () => {
     const executeDataProvider = {
         'it should calculate needed votes for no funding left': {
             proposal: {
+                id: '1',
                 requestedFunding: 20000,
                 receivedFunding: 0,
-                effectiveVotes: 2100000,
-                yesVotes: 3000000,
-                noVotes: 900000,
+                effectiveVotes: 170000,
             } as LeaderboardProposal,
             leaderboard: {
-                notFundedProposals: [],
-                earmarks: {
-                    [EarmarkTypeEnum.NewEntrants]: {
-                        type: EarmarkTypeEnum.NewEntrants,
-                        remainingFunding: 0,
-                    },
-                },
-                remainingGeneralFunding: 0,
-            } as Leaderboard,
-            expected: {
-                notFundedProposals: [
+                fundedProposals: [
                     {
                         requestedFunding: 20000,
-                        receivedFunding: 0,
-                        effectiveVotes: 2100000,
-                        yesVotes: 3000000,
-                        noVotes: 900000,
-                        neededVotes: 1900001,
+                        receivedFunding: 20000,
+                        grantPoolShare: {
+                            [EarmarkTypeEnum.General]: 20000,
+                        },
+                        effectiveVotes: 210000,
                     },
                 ],
-                earmarks: {
+                partiallyFundedProposals: [
+                    {
+                        requestedFunding: 20000,
+                        receivedFunding: 10000,
+                        grantPoolShare: {
+                            [EarmarkTypeEnum.General]: 10000,
+                        },
+                        effectiveVotes: 200000,
+                    },
+                ],
+                notFundedProposals: [],
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
+                        totalFunding: 10000,
+                        remainingFunding: 0,
+                    },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 30000,
                         remainingFunding: 0,
                     },
                 },
-                remainingGeneralFunding: 0,
+            } as Leaderboard,
+            expected: {
+                fundedProposals: [
+                    {
+                        requestedFunding: 20000,
+                        receivedFunding: 20000,
+                        grantPoolShare: {
+                            [EarmarkTypeEnum.General]: 20000,
+                        },
+                        effectiveVotes: 210000,
+                    },
+                ],
+                partiallyFundedProposals: [
+                    {
+                        requestedFunding: 20000,
+                        receivedFunding: 10000,
+                        grantPoolShare: {
+                            [EarmarkTypeEnum.General]: 10000,
+                        },
+                        effectiveVotes: 200000,
+                    },
+                ],
+                notFundedProposals: [
+                    {
+                        id: '1',
+                        requestedFunding: 20000,
+                        receivedFunding: 0,
+                        effectiveVotes: 170000,
+                        neededVotes: {
+                            fullyFunded: 40001,
+                            partiallyFunded: 30001,
+                        },
+                    },
+                ],
+                grantPools: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        totalFunding: 10000,
+                        remainingFunding: 0,
+                    },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 30000,
+                        remainingFunding: 0,
+                    },
+                },
             } as Leaderboard,
         },
-        'it should calculate needed votes for negative effective votes with funding left':
-            {
-                proposal: {
-                    requestedFunding: 20000,
-                    receivedFunding: 0,
-                    effectiveVotes: -2000000,
-                    yesVotes: 100000,
-                    noVotes: 2100000,
-                } as LeaderboardProposal,
-                leaderboard: {
-                    notFundedProposals: [],
-                    earmarks: {
-                        [EarmarkTypeEnum.NewEntrants]: {
-                            type: EarmarkTypeEnum.NewEntrants,
-                            remainingFunding: 8000,
+        'it should calculate needed votes for negative effective votes with funding left': {
+            proposal: {
+                id: '1',
+                requestedFunding: 20000,
+                receivedFunding: 0,
+                effectiveVotes: -20000,
+            } as LeaderboardProposal,
+            leaderboard: {
+                fundedProposals: [
+                    {
+                        requestedFunding: 20000,
+                        receivedFunding: 20000,
+                        grantPoolShare: {
+                            [EarmarkTypeEnum.General]: 20000,
+                        },
+                        effectiveVotes: 210000,
+                    },
+                ],
+                partiallyFundedProposals: [
+                    {
+                        requestedFunding: 20000,
+                        receivedFunding: 10000,
+                        grantPoolShare: {
+                            [EarmarkTypeEnum.General]: 10000,
+                        },
+                        effectiveVotes: 200000,
+                    },
+                ],
+                notFundedProposals: [],
+                grantPools: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        totalFunding: 10000,
+                        remainingFunding: 8000,
+                    },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 60000,
+                        remainingFunding: 30000,
+                    },
+                },
+            } as Leaderboard,
+            expected: {
+                fundedProposals: [
+                    {
+                        requestedFunding: 20000,
+                        receivedFunding: 20000,
+                        grantPoolShare: {
+                            [EarmarkTypeEnum.General]: 20000,
+                        },
+                        effectiveVotes: 210000,
+                    },
+                ],
+                partiallyFundedProposals: [
+                    {
+                        requestedFunding: 20000,
+                        receivedFunding: 10000,
+                        grantPoolShare: {
+                            [EarmarkTypeEnum.General]: 10000,
+                        },
+                        effectiveVotes: 200000,
+                    },
+                ],
+                notFundedProposals: [
+                    {
+                        id: '1',
+                        requestedFunding: 20000,
+                        receivedFunding: 0,
+                        effectiveVotes: -20000,
+                        neededVotes: {
+                            fullyFunded: 20001,
                         },
                     },
-                    remainingGeneralFunding: 8000,
-                } as Leaderboard,
-                expected: {
-                    notFundedProposals: [
-                        {
-                            requestedFunding: 20000,
-                            receivedFunding: 0,
-                            effectiveVotes: -2000000,
-                            yesVotes: 100000,
-                            noVotes: 2100000,
-                            neededVotes: 2000001,
-                        },
-                    ],
-                    earmarks: {
-                        [EarmarkTypeEnum.NewEntrants]: {
-                            type: EarmarkTypeEnum.NewEntrants,
-                            remainingFunding: 8000,
-                        },
+                ],
+                grantPools: {
+                    [EarmarkTypeEnum.NewEntrants]: {
+                        type: EarmarkTypeEnum.NewEntrants,
+                        totalFunding: 10000,
+                        remainingFunding: 8000,
                     },
-                    remainingGeneralFunding: 8000,
-                } as Leaderboard,
-            },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 60000,
+                        remainingFunding: 30000,
+                    },
+                },
+            } as Leaderboard,
+        },
     };
 
     beforeAll(async () => {
@@ -194,9 +327,7 @@ describe('WontReceiveFundingStrategy', () => {
             imports: [AppModule],
         }).compile();
 
-        service = module.get<WontReceiveFundingStrategy>(
-            WontReceiveFundingStrategy,
-        );
+        service = module.get<WontReceiveFundingStrategy>(WontReceiveFundingStrategy);
     });
 
     afterAll(async () => {
@@ -217,17 +348,9 @@ describe('WontReceiveFundingStrategy', () => {
     it.each(Object.entries(executeDataProvider))(
         '%s',
         (description, { proposal, leaderboard, expected }) => {
-            let lowestEarmark,
-                lowestGeneral: number = 4000000;
+            let result: Leaderboard = service.execute(proposal, leaderboard);
 
-            let result: LeaderboardStrategyResponse = service.execute(
-                proposal,
-                leaderboard,
-                lowestEarmark,
-                lowestGeneral,
-            );
-
-            expect(result.leaderboard).toEqual(expected);
+            expect(result).toEqual(expected);
         },
     );
 });

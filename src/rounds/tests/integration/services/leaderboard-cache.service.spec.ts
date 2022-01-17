@@ -28,23 +28,29 @@ describe('LeaderboardCacheService', () => {
 
         leaderboard = {
             fundedProposals: [],
+            partiallyFundedProposals: [],
             notFundedProposals: [],
             amountProposals: 6,
             overallFunding: 100000,
             overallRequestedFunding: 230000,
             round: 10,
             totalVotes: 805000,
-            earmarks: {
+            grantPools: {
                 [EarmarkTypeEnum.NewEntrants]: {
                     type: EarmarkTypeEnum.NewEntrants,
-                    remainingFunding: 0,
+                    totalFunding: 20000,
+                    remainingFunding: 20000,
                 },
+                [EarmarkTypeEnum.General]: {
+                    type: EarmarkTypeEnum.NewEntrants,
+                    totalFunding: 80000,
+                    remainingFunding: 80000,
+                }
             },
-            remainingGeneralFunding: 0,
             paymentOption: PaymentOptionEnum.Usd,
             status: RoundStatusEnum.VotingInProgress,
-            voteStartDate: voteStartDate,
-            voteEndDate: voteEndDate,
+            votingStartDate: voteStartDate,
+            votingEndDate: voteEndDate,
             maxVotes: 200000,
         } as Leaderboard;
     });
