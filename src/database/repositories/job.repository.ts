@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
@@ -10,14 +10,14 @@ import { Job, JobType } from '../schemas/job.schema';
 export class JobRepository implements RepositoryInterface<JobType> {
     constructor(@InjectModel('Job') private model: Model<JobType>) {}
 
-    public async findOne(query: FindQuery): Promise<Job> {
+    public async findOne(query: FindQuery<JobType>): Promise<Job> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             return await this.model
-                .findOne(query.find as FilterQuery<JobType>)
+                .findOne(query.find)
                 .lean()
                 .populate({
                     path: 'company',
@@ -30,16 +30,13 @@ export class JobRepository implements RepositoryInterface<JobType> {
         }
     }
 
-    public async findOneRaw(query: FindQuery): Promise<Job> {
+    public async findOneRaw(query: FindQuery<JobType>): Promise<Job> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model
-                .findOne(query.find as FilterQuery<JobType>)
-                .lean()
-                .exec();
+            return await this.model.findOne(query.find).lean().exec();
         } catch (error: any) {
             throw error;
         }
@@ -61,10 +58,10 @@ export class JobRepository implements RepositoryInterface<JobType> {
         }
     }
 
-    public async getAll(query?: FilterQuery<any>): Promise<Job[]> {
+    public async getAll(query?: FindQuery<JobType>): Promise<Job[]> {
         try {
             return await this.model
-                .find((query as FilterQuery<JobType>) || {})
+                .find(query?.find || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -102,14 +99,14 @@ export class JobRepository implements RepositoryInterface<JobType> {
         }
     }
 
-    public async delete(query: FindQuery): Promise<boolean> {
+    public async delete(query: FindQuery<JobType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find as FilterQuery<JobType>,
+                query.find,
             );
 
             return response.deletedCount === 1;
@@ -118,14 +115,14 @@ export class JobRepository implements RepositoryInterface<JobType> {
         }
     }
 
-    public async deleteMany(query: FindQuery): Promise<boolean> {
+    public async deleteMany(query: FindQuery<JobType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             const response: MongooseDeleteResponse =
-                await this.model.deleteMany(query.find as FilterQuery<JobType>);
+                await this.model.deleteMany(query.find);
 
             return response.deletedCount > 0;
         } catch (error: any) {

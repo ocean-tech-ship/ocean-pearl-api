@@ -3,10 +3,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { CategoryEnum } from '../enums/category.enum';
 import { nanoid } from '../functions/nano-id.function';
-import { Picture, PictureSchema } from './picture.schema';
+import { PaginatePlugin } from '../plugins/pagination.plugin';
 import { Company } from './company.schema';
 import { DaoProposal } from './dao-proposal.schema';
 import { PearlUser } from './pearl-user.schema';
+import { Picture, PictureSchema } from './picture.schema';
 import { SocialMedia, SocialMediaSchema } from './social-media.schema';
 
 export type ProjectType = Project & Document;
@@ -57,19 +58,23 @@ export class Project {
     @ApiProperty()
     category: string;
 
-    @Prop([{
-        type: String,
-        trim: true,
-        maxLength: 64,
-    }])
+    @Prop([
+        {
+            type: String,
+            trim: true,
+            maxLength: 64,
+        },
+    ])
     @ApiProperty()
     associatedAddresses: string[];
 
-    @Prop([{
-        type: String,
-        trim: true,
-        maxLength: 64,
-    }])
+    @Prop([
+        {
+            type: String,
+            trim: true,
+            maxLength: 64,
+        },
+    ])
     @ApiProperty()
     accessAddresses: string[];
 
@@ -119,7 +124,7 @@ export class Project {
     })
     @ApiProperty({
         type: DaoProposal,
-        isArray: true
+        isArray: true,
     })
     daoProposals: DaoProposal[] | Types.ObjectId[];
 
@@ -156,4 +161,5 @@ export class Project {
     updatedAt: Date;
 }
 
-export const ProjectSchema = SchemaFactory.createForClass(Project);
+export const ProjectSchema =
+    SchemaFactory.createForClass(Project).plugin(PaginatePlugin);

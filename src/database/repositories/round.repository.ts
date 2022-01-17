@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
-import { PaginationOptions } from '../interfaces/pagination-options.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
 import { Round, RoundType } from '../schemas/round.schema';
 
@@ -11,14 +10,14 @@ import { Round, RoundType } from '../schemas/round.schema';
 export class RoundRepository implements RepositoryInterface<RoundType> {
     constructor(@InjectModel('Round') private model: Model<RoundType>) {}
 
-    public async findOne(query: FindQuery): Promise<Round> {
+    public async findOne(query: FindQuery<RoundType>): Promise<Round> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             return await this.model
-                .findOne(query.find as FilterQuery<RoundType>)
+                .findOne(query.find)
                 .lean()
                 .select('-__v')
                 .exec();
@@ -27,16 +26,13 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
         }
     }
 
-    public async findOneRaw(query: FindQuery): Promise<Round> {
+    public async findOneRaw(query: FindQuery<RoundType>): Promise<Round> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model
-                .findOne(query.find as FilterQuery<RoundType>)
-                .lean()
-                .exec();
+            return await this.model.findOne(query.find).lean().exec();
         } catch (error: any) {
             throw error;
         }
@@ -54,27 +50,12 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
         }
     }
 
-    public async getAll(query?: FindQuery): Promise<Round[]> {
+    public async getAll(query?: FindQuery<RoundType>): Promise<Round[]> {
         try {
             return await this.model
-                .find((query?.find as FilterQuery<RoundType>) || {})
+                .find(query?.find || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
-                .lean()
-                .select('-__v')
-                .exec();
-        } catch (error: any) {
-            throw error;
-        }
-    }
-
-    public async getPaginated(options: PaginationOptions): Promise<Round[]> {
-        try {
-            return await this.model
-                .find((options.find as FilterQuery<RoundType>) || {})
-                .sort(options.sort || {})
-                .skip((options.page - 1) * options.limit)
-                .limit(options.limit)
                 .lean()
                 .select('-__v')
                 .exec();
@@ -107,7 +88,7 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
         }
     }
 
-    public async delete(query): Promise<boolean> {
+    public async delete(query: FindQuery<RoundType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
@@ -123,16 +104,14 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
         }
     }
 
-    public async deleteMany(query: FindQuery): Promise<boolean> {
+    public async deleteMany(query: FindQuery<RoundType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             const response: MongooseDeleteResponse =
-                await this.model.deleteMany(
-                    query.find as FilterQuery<RoundType>,
-                );
+                await this.model.deleteMany(query.find);
 
             return response.deletedCount > 0;
         } catch (error: any) {
