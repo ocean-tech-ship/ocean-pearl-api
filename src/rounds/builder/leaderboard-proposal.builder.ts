@@ -6,7 +6,6 @@ import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { Project } from '../../database/schemas/project.schema';
 import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
-import { DaoProposalStatusEnum } from '../../database/enums/dao-proposal-status.enum';
 
 @Injectable()
 export class LeaderboardProposalBuilder {
@@ -38,6 +37,7 @@ export class LeaderboardProposalBuilder {
                     ? proposal.requestedGrantUsd
                     : proposal.requestedGrantToken,
             receivedFunding: 0,
+            grantPoolShare: {},
             yesVotes: proposal.votes,
             noVotes: proposal.counterVotes,
             effectiveVotes: this.calculateEffectiveVotes(
@@ -71,14 +71,10 @@ export class LeaderboardProposalBuilder {
     }
 
     private countFinishedProposals(proposals: DaoProposal[]): number {
-        const allowedStates = [
-            DaoProposalStatusEnum.Funded,
-            DaoProposalStatusEnum.Granted,
-        ];
         let finishedProposals = 0;
 
         for (const proposal of proposals) {
-            finishedProposals += allowedStates.includes(proposal.status)
+            finishedProposals += proposal.standing === StandingEnum.Completed
                 ? 1
                 : 0;
         }
