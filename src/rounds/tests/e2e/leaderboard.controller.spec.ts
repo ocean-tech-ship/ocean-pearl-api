@@ -6,6 +6,7 @@ import { DatabaseModule } from '../../../database/database.module';
 import { LeaderboardProposalBuilder } from '../../builder/leaderboard-proposal.builder';
 import { LeaderboardController } from '../../controller/leaderboard.controller';
 import { LeaderboardMapper } from '../../mapper/leaderboard.mapper';
+import { CalculateNeededVotesService } from '../../services/calculate-needed-votes.service';
 import { GenerateLeaderboardService } from '../../services/generate-leaderboard.service';
 import { GetCurrentRoundService } from '../../services/get-current-round.service';
 import { LeaderboardCacheService } from '../../services/leaderboard-cache.service';
@@ -25,6 +26,7 @@ describe('LeaderboardController', () => {
             providers: [
                 GetCurrentRoundService,
                 GenerateLeaderboardService,
+                CalculateNeededVotesService,
                 LeaderboardMapper,
                 LeaderboardProposalBuilder,
                 LeaderboardStrategyCollection,
