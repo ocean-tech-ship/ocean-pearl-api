@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PictureData } from '../models/pictures.model';
 import { MimeTypesEnum } from '../../aws/s3/enums/mime-types.enum';
-import { optimize } from 'svgo';
+import { optimize, OptimizedSvg } from 'svgo';
 import * as sharp from 'sharp';
 import { MimeTypesMap } from '../../aws/s3/constants/mime-types-map.const';
 
@@ -49,7 +49,7 @@ export class PicturesService {
     }
 
     public async optimizeSvg(input: PictureData): Promise<PictureData> {
-        const response = await optimize(input.data);
+        const response = (await optimize(input.data)) as OptimizedSvg;
 
         return {
             data: Buffer.from(response.data),
