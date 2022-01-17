@@ -36,18 +36,8 @@ export class LeaderboardCacheService {
             return this.ONE_DAY_TTL;
         }
 
-        if (leaderboard.status === RoundStatusEnum.VotingInProgress) {
-            const remainingMinutes: number = new Date().getMinutes() % 5;
-            const secondsOverhead: number = new Date().getSeconds();
-            return (5 - remainingMinutes) * 60 - secondsOverhead;
-        }
-
-        const timeUntilVoteStartDate: number = Math.ceil(
-            (leaderboard.voteStartDate.getTime() - new Date().getTime()) / 100,
-        );
-
-        return timeUntilVoteStartDate > this.ONE_DAY_TTL
-            ? this.ONE_DAY_TTL
-            : timeUntilVoteStartDate;
+        const remainingMinutes: number = new Date().getMinutes() % 5;
+        const secondsOverhead: number = new Date().getSeconds();
+        return (5 - remainingMinutes) * 60 - secondsOverhead;
     }
 }
