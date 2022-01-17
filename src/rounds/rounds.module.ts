@@ -10,6 +10,7 @@ import { LeaderboardStrategyCollection } from './strategies/leaderboard-strategy
 import { WontReceiveFundingStrategy } from './strategies/wont-receive-funding.strategy';
 import { LeaderboardMapper } from './mapper/leaderboard.mapper';
 import { LeaderboardCacheService } from './services/leaderboard-cache.service';
+import { CalculateNeededVotesService } from './services/calculate-needed-votes.service';
 
 @Module({
     controllers: [LeaderboardController],
@@ -20,6 +21,7 @@ import { LeaderboardCacheService } from './services/leaderboard-cache.service';
         GetCurrentRoundService,
         GenerateLeaderboardService,
         LeaderboardCacheService,
+        CalculateNeededVotesService,
         LeaderboardMapper,
         LeaderboardProposalBuilder,
         LeaderboardStrategyCollection,
