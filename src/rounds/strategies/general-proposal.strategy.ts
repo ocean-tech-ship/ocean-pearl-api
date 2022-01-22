@@ -25,10 +25,10 @@ export class GeneralPropsoalStrategy implements leaderboardStrategyInterface {
 
         const willBeFullyFunded: boolean =
             leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding -
-                proposal.requestedFunding >=
+                (proposal.requestedFunding - proposal.receivedFunding) >=
             0;
         const receivingGeneralFunding: number = willBeFullyFunded
-            ? proposal.requestedFunding
+            ? proposal.requestedFunding - proposal.receivedFunding
             : leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding;
 
         if (receivingGeneralFunding > 0) {

@@ -35,9 +35,9 @@ export class EarmarkedPropsoalStrategy implements leaderboardStrategyInterface {
 
         const receivingEarmarkFunding: number =
             leaderboard.grantPools[proposal.earmarkType].remainingFunding -
-                proposal.requestedFunding >
+                (proposal.requestedFunding - proposal.receivedFunding)  >
             0
-                ? proposal.requestedFunding
+                ? proposal.requestedFunding - proposal.receivedFunding
                 : leaderboard.grantPools[proposal.earmarkType].remainingFunding;
 
         if (receivingEarmarkFunding > 0) {
