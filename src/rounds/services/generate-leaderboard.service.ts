@@ -106,6 +106,12 @@ export class GenerateLeaderboardService {
         leaderboard.partiallyFundedProposals = [];
         leaderboard.notFundedProposals = [];
 
+        proposals.sort(
+            (current: LeaderboardProposal, next: LeaderboardProposal): number => {
+                return next.effectiveVotes - current.effectiveVotes;
+            },
+        );
+
         for (let proposal of proposals) {
             proposal.neededVotes = undefined;
 
