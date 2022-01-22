@@ -9,7 +9,7 @@ import { GrantPool, Leaderboard } from '../models/leaderboard.model';
 export class LeaderboardMapper {
     public map(round: Round): Leaderboard {
         let totalEarmarkFunding: number = 0;
-        const isPaymentOpetionUsd: boolean = round.paymentOption === PaymentOptionEnum.Usd;
+        const isPaymentOptionUsd: boolean = round.paymentOption === PaymentOptionEnum.Usd;
         let mappedLeaderboard = {
             maxVotes: 0,
             totalVotes: 0,
@@ -19,7 +19,7 @@ export class LeaderboardMapper {
             partiallyFundedProposals: [],
             notFundedProposals: [],
             paymentOption: round.paymentOption,
-            overallFunding: isPaymentOpetionUsd
+            overallFunding: isPaymentOptionUsd
                 ? round.availableFundingUsd
                 : round.availableFundingOcean,
             grantPools: {},
@@ -30,7 +30,7 @@ export class LeaderboardMapper {
         } as Leaderboard;
 
         for (const [type, earmark] of Object.entries(round.earmarks)) {
-            const totalFunding = isPaymentOpetionUsd ? earmark.fundingUsd : earmark.fundingOcean;
+            const totalFunding = isPaymentOptionUsd ? earmark.fundingUsd : earmark.fundingOcean;
 
             mappedLeaderboard.grantPools[type] = {
                 type: earmark.type,
@@ -42,7 +42,7 @@ export class LeaderboardMapper {
             totalEarmarkFunding += totalFunding;
         }
 
-        const totalGeneralFunding = isPaymentOpetionUsd
+        const totalGeneralFunding = isPaymentOptionUsd
             ? round.availableFundingUsd - totalEarmarkFunding
             : round.availableFundingOcean - totalEarmarkFunding;
 
