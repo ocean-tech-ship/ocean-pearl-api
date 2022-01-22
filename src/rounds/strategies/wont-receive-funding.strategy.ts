@@ -24,10 +24,18 @@ export class WontReceiveFundingStrategy implements leaderboardStrategyInterface 
     public execute(proposal: LeaderboardProposal, leaderboard: Leaderboard): Leaderboard {
         proposal.neededVotes = this.calculateNeededVotesService.execute(proposal, leaderboard);
 
-        leaderboard.notFundedProposals = this.insertInOrder(
-            proposal,
-            leaderboard.notFundedProposals,
-        );
+        if (proposal.receivedFunding > 0) {
+            leaderboard.partiallyFundedProposals = this.insertInOrder(
+                proposal,
+                leaderboard.partiallyFundedProposals,
+            );
+        } else {
+            leaderboard.notFundedProposals = this.insertInOrder(
+                proposal,
+                leaderboard.notFundedProposals,
+            );
+        }
+
         return leaderboard;
     }
 
