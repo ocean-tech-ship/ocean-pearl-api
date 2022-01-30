@@ -1,69 +1,70 @@
 import { Injectable } from '@nestjs/common';
-import {
-    leaderboardStrategyInterface,
-    LeaderboardStrategyResponse,
-} from '../interfaces/leaderboard-strategy.interface';
+import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
+import { leaderboardStrategyInterface } from '../interfaces/leaderboard-strategy.interface';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
+import { CalculateNeededVotesService } from '../services/calculate-needed-votes.service';
 
 @Injectable()
-export class WontReceiveFundingStrategy
-    implements leaderboardStrategyInterface
-{
-    public canHandle(
-        proposal: LeaderboardProposal,
-        leaderboard: Leaderboard,
-    ): boolean {
+export class WontReceiveFundingStrategy implements leaderboardStrategyInterface {
+    constructor(private calculateNeededVotesService: CalculateNeededVotesService) {}
+
+    public canHandle(proposal: LeaderboardProposal, leaderboard: Leaderboard): boolean {
         return (
             proposal.effectiveVotes <= 0 ||
             proposal.yesVotes < proposal.noVotes ||
             (proposal.isEarmarked &&
-                leaderboard.earmarks[proposal.earmarkType]?.remainingFunding <=
-                    0 &&
-                leaderboard.remainingGeneralFunding <= 0) ||
-            (!proposal.isEarmarked && leaderboard.remainingGeneralFunding <= 0)
+                leaderboard.grantPools[proposal.earmarkType]?.remainingFunding <= 0 &&
+                leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding <= 0) ||
+            (!proposal.isEarmarked &&
+                leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding <= 0)
         );
     }
 
-    public execute(
-        proposal: LeaderboardProposal,
-        leaderboard: Leaderboard,
-        lowestEarmarkVotes: number,
-        lowestGeneralVotes: number,
-    ): LeaderboardStrategyResponse {
-        proposal.neededVotes = this.calculateNeededVotes(
-            proposal,
-            lowestEarmarkVotes,
-            lowestGeneralVotes,
-            leaderboard.earmarks[proposal.earmarkType]?.remainingFunding,
-            leaderboard.remainingGeneralFunding,
-        );
+    public execute(proposal: LeaderboardProposal, leaderboard: Leaderboard): Leaderboard {
+        proposal.neededVotes = this.calculateNeededVotesService.execute(proposal, leaderboard);
 
-        leaderboard.notFundedProposals.push(proposal);
-        return { leaderboard, lowestEarmarkVotes, lowestGeneralVotes };
+        if (proposal.receivedFunding > 0) {
+            leaderboard.partiallyFundedProposals = this.insertInOrder(
+                proposal,
+                leaderboard.partiallyFundedProposals,
+            );
+        } else {
+            leaderboard.notFundedProposals = this.insertInOrder(
+                proposal,
+                leaderboard.notFundedProposals,
+            );
+        }
+
+        return leaderboard;
     }
 
-    private calculateNeededVotes(
+    private insertInOrder(
         proposal: LeaderboardProposal,
-        lowestEarmarkVotes: number,
-        lowestGeneralVotes: number,
-        remainingEarmarkedFunding: number,
-        remainingGeneralFunding: number,
-    ): number {
-        if (proposal.isEarmarked) {
-            if (remainingEarmarkedFunding > 0 || remainingGeneralFunding > 0) {
-                return proposal.effectiveVotes * -1 + 1;
+        proposalList: LeaderboardProposal[],
+    ): LeaderboardProposal[] {
+        if (proposalList.length === 0) {
+            proposalList.push(proposal);
+            return proposalList;
+        }
+
+        for (const [index, listProposal] of proposalList.entries()) {
+            if (index === proposalList.length - 1) {
+                listProposal.effectiveVotes > proposal.effectiveVotes
+                    ? proposalList.splice(index + 1, 0, proposal)
+                    : proposalList.splice(index, 0, proposal);
+                break;
             }
 
-            return lowestEarmarkVotes > lowestGeneralVotes
-                ? lowestGeneralVotes - proposal.effectiveVotes + 1
-                : lowestEarmarkVotes - proposal.effectiveVotes + 1;
+            if (
+                listProposal.effectiveVotes > proposal.effectiveVotes &&
+                proposalList[index + 1].effectiveVotes <= proposal.effectiveVotes
+            ) {
+                proposalList.splice(index + 1, 0, proposal);
+                break;
+            }
         }
 
-        if (remainingGeneralFunding > 0) {
-            return proposal.effectiveVotes * -1 + 1;
-        }
-
-        return lowestGeneralVotes - proposal.effectiveVotes + 1;
+        return proposalList;
     }
 }

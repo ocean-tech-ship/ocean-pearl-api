@@ -13,6 +13,7 @@ import { LeaderboardProposalBuilder } from '../../../builder/leaderboard-proposa
 import { LeaderboardProposal } from '../../../models/leaderboard-proposal.model';
 import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-status.enum';
+import { StandingEnum } from '../../../../database/enums/standing.enum';
 
 describe('LeaderboardProposalBuilder', () => {
     let module: TestingModule;
@@ -46,10 +47,22 @@ describe('LeaderboardProposalBuilder', () => {
                     url: 'urlToLogo.com',
                 },
                 daoProposals: [
-                    { status: DaoProposalStatusEnum.Granted },
-                    { status: DaoProposalStatusEnum.Funded },
-                    { status: DaoProposalStatusEnum.Granted },
-                    { status: DaoProposalStatusEnum.Funded },
+                    {
+                        status: DaoProposalStatusEnum.Granted,
+                        standing: StandingEnum.Completed,
+                    },
+                    {
+                        status: DaoProposalStatusEnum.Funded,
+                        standing: StandingEnum.Completed,
+                    },
+                    {
+                        status: DaoProposalStatusEnum.Granted,
+                        standing: StandingEnum.Completed,
+                    },
+                    {
+                        status: DaoProposalStatusEnum.Funded,
+                        standing: StandingEnum.Completed,
+                    },
                 ],
             } as Project,
             expected: {
@@ -63,6 +76,7 @@ describe('LeaderboardProposalBuilder', () => {
                 },
                 requestedFunding: 1000,
                 receivedFunding: 0,
+                grantPoolShare: {},
                 yesVotes: 100000,
                 noVotes: 10000,
                 effectiveVotes: 90000,
@@ -93,8 +107,14 @@ describe('LeaderboardProposalBuilder', () => {
                     url: 'urlToLogo.com',
                 },
                 daoProposals: [
-                    { status: DaoProposalStatusEnum.Granted },
-                    { status: DaoProposalStatusEnum.Funded },
+                    {
+                        status: DaoProposalStatusEnum.Granted,
+                        standing: StandingEnum.Completed,
+                    },
+                    {
+                        status: DaoProposalStatusEnum.Funded,
+                        standing: StandingEnum.Completed,
+                    },
                     { status: DaoProposalStatusEnum.Rejected },
                     { status: DaoProposalStatusEnum.NotFunded },
                 ],
@@ -110,6 +130,7 @@ describe('LeaderboardProposalBuilder', () => {
                 },
                 requestedFunding: 2000,
                 receivedFunding: 0,
+                grantPoolShare: {},
                 yesVotes: 100000,
                 noVotes: 10000,
                 effectiveVotes: 90000,
@@ -157,6 +178,7 @@ describe('LeaderboardProposalBuilder', () => {
                 },
                 requestedFunding: 1000,
                 receivedFunding: 0,
+                grantPoolShare: {},
                 yesVotes: 100000,
                 noVotes: 10000,
                 effectiveVotes: 100000,
@@ -187,9 +209,18 @@ describe('LeaderboardProposalBuilder', () => {
                     url: 'urlToLogo.com',
                 },
                 daoProposals: [
-                    { status: DaoProposalStatusEnum.Funded },
-                    { status: DaoProposalStatusEnum.Granted },
-                    { status: DaoProposalStatusEnum.Funded },
+                    {
+                        status: DaoProposalStatusEnum.Funded,
+                        standing: StandingEnum.Completed,
+                    },
+                    {
+                        status: DaoProposalStatusEnum.Granted,
+                        standing: StandingEnum.Completed,
+                    },
+                    {
+                        status: DaoProposalStatusEnum.Funded,
+                        standing: StandingEnum.Completed,
+                    },
                     { status: DaoProposalStatusEnum.Running },
                 ],
             } as Project,
@@ -204,6 +235,7 @@ describe('LeaderboardProposalBuilder', () => {
                 },
                 requestedFunding: 1000,
                 receivedFunding: 0,
+                grantPoolShare: {},
                 yesVotes: 100000,
                 noVotes: 10000,
                 effectiveVotes: 90000,
@@ -235,11 +267,26 @@ describe('LeaderboardProposalBuilder', () => {
                     url: 'urlToLogo.com',
                 },
                 daoProposals: [
-                    { status: DaoProposalStatusEnum.Granted },
-                    { status: DaoProposalStatusEnum.Funded },
-                    { status: DaoProposalStatusEnum.Granted },
-                    { status: DaoProposalStatusEnum.Funded },
-                    { status: DaoProposalStatusEnum.Granted },
+                    {
+                        status: DaoProposalStatusEnum.Granted,
+                        standing: StandingEnum.Completed,
+                    },
+                    {
+                        status: DaoProposalStatusEnum.Funded,
+                        standing: StandingEnum.Completed,
+                    },
+                    {
+                        status: DaoProposalStatusEnum.Granted,
+                        standing: StandingEnum.Completed,
+                    },
+                    {
+                        status: DaoProposalStatusEnum.Funded,
+                        standing: StandingEnum.Completed,
+                    },
+                    {
+                        status: DaoProposalStatusEnum.Granted,
+                        standing: StandingEnum.Completed,
+                    },
                 ],
             } as Project,
             expected: {
@@ -253,6 +300,7 @@ describe('LeaderboardProposalBuilder', () => {
                 },
                 requestedFunding: 1000,
                 receivedFunding: 0,
+                grantPoolShare: {},
                 yesVotes: 100000,
                 noVotes: 10000,
                 effectiveVotes: 90000,
@@ -269,9 +317,7 @@ describe('LeaderboardProposalBuilder', () => {
             imports: [AppModule, DatabaseModule],
         }).compile();
 
-        service = module.get<LeaderboardProposalBuilder>(
-            LeaderboardProposalBuilder,
-        );
+        service = module.get<LeaderboardProposalBuilder>(LeaderboardProposalBuilder);
         projectRepository = module.get<ProjectRepository>(ProjectRepository);
     });
 
@@ -286,13 +332,9 @@ describe('LeaderboardProposalBuilder', () => {
     it.each(Object.entries(buildDataProvider))(
         '%s',
         async (description, { proposal, round, project, expected }) => {
-            jest.spyOn(projectRepository, 'findOne').mockImplementation(
-                async () => project,
-            );
+            jest.spyOn(projectRepository, 'findOne').mockImplementation(async () => project);
 
-            return expect(service.build(proposal, round)).resolves.toEqual(
-                expected,
-            );
+            return expect(service.build(proposal, round)).resolves.toEqual(expected);
         },
     );
 });

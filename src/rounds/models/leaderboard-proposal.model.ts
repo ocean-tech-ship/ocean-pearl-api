@@ -1,6 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
 
+export type GrantPoolShare = {
+    [key in EarmarkTypeEnum]: number;
+};
+
 export class LeaderboardProject {
     @ApiProperty()
     id: string;
@@ -13,6 +17,14 @@ export class LeaderboardProject {
 
     @ApiProperty()
     title: string;
+}
+
+export class NeededVotes {
+    @ApiProperty()
+    fullyFunded: number;
+
+    @ApiProperty()
+    partiallyFunded?: number;
 }
 
 export class LeaderboardProposal {
@@ -30,6 +42,9 @@ export class LeaderboardProposal {
 
     @ApiProperty()
     receivedFunding: number;
+
+    @ApiProperty()
+    grantPoolShare?: GrantPoolShare;
 
     @ApiProperty()
     yesVotes: number;
@@ -53,5 +68,5 @@ export class LeaderboardProposal {
     voteUrl: string;
 
     @ApiProperty()
-    neededVotes: number;
+    neededVotes: NeededVotes;
 }
