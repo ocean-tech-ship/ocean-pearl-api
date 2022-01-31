@@ -23,7 +23,7 @@ export class LeaderboardProposalBuilder {
         const receivedFunding =
             round.paymentOption === PaymentOptionEnum.Usd
                 ? proposal.grantedUsd
-                : proposal.grantedUsd;
+                : proposal.grantedToken;
         const mappedLeaderboardProposal = new LeaderboardProposal({
             id: proposal.id,
             title: proposal.title,
