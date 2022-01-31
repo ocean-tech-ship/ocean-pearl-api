@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { AxiosResponse } from 'axios';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
+import { RemainingFundingStrategyEnum } from '../../database/enums/remaining-funding-strategy.enum';
 import { FindQuery } from '../../database/interfaces/find-query.interface';
 import { RoundRepository } from '../../database/repositories/round.repository';
 import { Earmark } from '../../database/schemas/earmark.schema';
@@ -15,6 +16,7 @@ import { RoundsProvider } from '../provider/rounds.provider';
 export class SyncRoundsDataService {
     private readonly logger = new Logger(SyncRoundsDataService.name);
     private readonly USD_OPTION_START_ROUND = 8;
+    private readonly RECYCLING_START_ROUND = 13;
 
     public constructor(
         private roundsProvider: RoundsProvider,
@@ -48,9 +50,9 @@ export class SyncRoundsDataService {
         const mappedRound: Round = {
             round: round['Round'],
             paymentOption:
-                round['Round'] <= this.USD_OPTION_START_ROUND
-                    ? PaymentOptionEnum.Ocean
-                    : PaymentOptionEnum.Usd,
+                round['Round'] >= this.USD_OPTION_START_ROUND
+                    ? PaymentOptionEnum.Usd
+                    : PaymentOptionEnum.Ocean,
             basisCurrency: round['Basis Currency'],
             ballotType: BallotTypeMap[round['Ballot Type']],
             voteType: VoteTypeMap[round['Vote Type']],
@@ -59,14 +61,14 @@ export class SyncRoundsDataService {
             availableFundingOcean: round['Funding Available'] ?? 0,
             availableFundingUsd: round['Funding Available USD'] ?? 0,
             earmarks: {},
+            remainingFundingStrategy:
+                round['Round'] >= this.RECYCLING_START_ROUND
+                    ? RemainingFundingStrategyEnum.Burn
+                    : RemainingFundingStrategyEnum.Recycle,
             usdConversionRate: round['OCEAN Price'] ?? undefined,
-            startDate: round['Start Date']
-                ? new Date(round['Start Date'])
-                : null,
+            startDate: round['Start Date'] ? new Date(round['Start Date']) : null,
             submissionEndDate: new Date(round['Proposals Due By']),
-            votingStartDate: round['Voting Starts']
-                ? new Date(round['Voting Starts'])
-                : null,
+            votingStartDate: round['Voting Starts'] ? new Date(round['Voting Starts']) : null,
             votingEndDate: new Date(round['Voting Ends']),
         } as Round;
 
@@ -82,20 +84,16 @@ export class SyncRoundsDataService {
         if (round['Earmarks']) {
             const earmarks = JSON.parse(round['Earmarks']);
 
-            mappedRound.earmarks = this.mapEarmarks(
-                earmarks,
-                mappedRound.usdConversionRate,
-            );
+            mappedRound.earmarks = this.mapEarmarks(earmarks, mappedRound.usdConversionRate);
         }
 
         if (mappedRound.usdConversionRate) {
             mappedRound.availableFundingOcean =
                 mappedRound.availableFundingOcean === 0
                     ? parseFloat(
-                          (
-                              mappedRound.availableFundingUsd /
-                              mappedRound.usdConversionRate
-                          ).toFixed(3),
+                          (mappedRound.availableFundingUsd / mappedRound.usdConversionRate).toFixed(
+                              3,
+                          ),
                       )
                     : mappedRound.availableFundingOcean;
 
@@ -103,8 +101,7 @@ export class SyncRoundsDataService {
                 mappedRound.availableFundingUsd === 0
                     ? parseFloat(
                           (
-                              mappedRound.availableFundingOcean *
-                              mappedRound.usdConversionRate
+                              mappedRound.availableFundingOcean * mappedRound.usdConversionRate
                           ).toFixed(3),
                       )
                     : mappedRound.availableFundingUsd;
@@ -113,14 +110,11 @@ export class SyncRoundsDataService {
         return mappedRound;
     }
 
-    private mapEarmarks(
-        earmarks: any,
-        usdConversionRate: number,
-    ): EarmarksType {
+    private mapEarmarks(earmarks: any, usdConversionRate: number): EarmarksType {
         let mappedEarmarks: any = {};
 
         for (const [index, data] of Object.entries(earmarks)) {
-            if(!EarmarkTypeMap[index]) {
+            if (!EarmarkTypeMap[index]) {
                 continue;
             }
 
@@ -133,20 +127,12 @@ export class SyncRoundsDataService {
             if (usdConversionRate) {
                 earmark.fundingOcean =
                     earmark.fundingOcean === 0
-                        ? parseFloat(
-                              (earmark.fundingUsd / usdConversionRate).toFixed(
-                                  3,
-                              ),
-                          )
+                        ? parseFloat((earmark.fundingUsd / usdConversionRate).toFixed(3))
                         : earmark.fundingOcean;
 
                 earmark.fundingUsd =
                     earmark.fundingUsd === 0
-                        ? parseFloat(
-                              (
-                                  earmark.fundingOcean * usdConversionRate
-                              ).toFixed(3),
-                          )
+                        ? parseFloat((earmark.fundingOcean * usdConversionRate).toFixed(3))
                         : earmark.fundingUsd;
             }
 
@@ -162,9 +148,7 @@ export class SyncRoundsDataService {
                 round: round.round,
             },
         } as FindQuery<RoundType>;
-        const databaseRound: Round = await this.roundsRepository.findOne(
-            findQuery,
-        );
+        const databaseRound: Round = await this.roundsRepository.findOne(findQuery);
 
         if (databaseRound == null) {
             await this.roundsRepository.create(round);
