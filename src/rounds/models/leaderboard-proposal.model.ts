@@ -1,31 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
+import { LeaderboardProject } from './leaderboard-project.model';
+import { NeededVotes } from './neede-votes.model';
+
+export interface LeaderboardProposalProperties {
+    id?: string;
+    title?: string;
+    project?: LeaderboardProject;
+    requestedFunding?: number;
+    receivedFunding?: number;
+    grantPoolShare?: Partial<GrantPoolShare>;
+    yesVotes?: number;
+    noVotes?: number;
+    effectiveVotes?: number;
+    isEarmarked?: boolean;
+    earmarkType?: EarmarkTypeEnum;
+    tags?: string[];
+    neededVotes?: NeededVotes;
+}
 
 export type GrantPoolShare = {
     [key in EarmarkTypeEnum]: number;
 };
-
-export class LeaderboardProject {
-    @ApiProperty()
-    id: string;
-
-    @ApiProperty()
-    completedProposals: number;
-
-    @ApiProperty()
-    logoUrl: string;
-
-    @ApiProperty()
-    title: string;
-}
-
-export class NeededVotes {
-    @ApiProperty()
-    fullyFunded: number;
-
-    @ApiProperty()
-    partiallyFunded?: number;
-}
 
 export class LeaderboardProposal {
     @ApiProperty()
@@ -41,10 +37,10 @@ export class LeaderboardProposal {
     requestedFunding: number;
 
     @ApiProperty()
-    receivedFunding: number;
+    receivedFunding: number = 0;
 
     @ApiProperty()
-    grantPoolShare?: GrantPoolShare;
+    grantPoolShare: Partial<GrantPoolShare> = {};
 
     @ApiProperty()
     yesVotes: number;
@@ -56,7 +52,7 @@ export class LeaderboardProposal {
     effectiveVotes: number;
 
     @ApiProperty()
-    isEarmarked: boolean;
+    isEarmarked: boolean = false;
 
     @ApiProperty()
     earmarkType: EarmarkTypeEnum;
@@ -65,8 +61,17 @@ export class LeaderboardProposal {
     tags: string[];
 
     @ApiProperty()
-    voteUrl: string;
-
-    @ApiProperty()
     neededVotes: NeededVotes;
+
+    constructor(attributes: LeaderboardProposalProperties = {}) {
+        for (let key in attributes) {
+            this[key] = attributes[key];
+        }
+    }
+
+    public addToGrantPoolShare(pool: EarmarkTypeEnum, amount: number) {
+        this.grantPoolShare[pool] = this.grantPoolShare[pool]
+            ? this.grantPoolShare[pool] + amount
+            : amount;
+    }
 }
