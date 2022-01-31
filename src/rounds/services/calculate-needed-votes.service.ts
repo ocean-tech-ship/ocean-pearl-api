@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
-import { LeaderboardProposal, NeededVotes } from '../models/leaderboard-proposal.model';
-import { GrantPool, Leaderboard } from '../models/leaderboard.model';
+import { GrantPool } from '../models/grant-pool.model';
+import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
+import { Leaderboard } from '../models/leaderboard.model';
+import { NeededVotes } from '../models/neede-votes.model';
 
 Injectable();
 export class CalculateNeededVotesService {
@@ -41,7 +43,7 @@ export class CalculateNeededVotesService {
         let partiallyFunded: number;
 
         let neededFunding = proposal.requestedFunding - proposal.receivedFunding;
-        const potentialEarmarkFunding = earmarkedPool.potentialRemainingFunding;
+        const potentialEarmarkFunding = earmarkedPool?.potentialRemainingFunding ?? 0;
         const potentialGeneralFunding = generalPool.remainingFunding - potentialEarmarkFunding;
 
         if (potentialEarmarkFunding > 0 || potentialGeneralFunding > 0) {
