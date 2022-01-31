@@ -25,46 +25,11 @@ export class WontReceiveFundingStrategy implements leaderboardStrategyInterface 
         proposal.neededVotes = this.calculateNeededVotesService.execute(proposal, leaderboard);
 
         if (proposal.receivedFunding > 0) {
-            leaderboard.partiallyFundedProposals = this.insertInOrder(
-                proposal,
-                leaderboard.partiallyFundedProposals,
-            );
+            leaderboard.addToPartiallyFundedProposals(proposal);
         } else {
-            leaderboard.notFundedProposals = this.insertInOrder(
-                proposal,
-                leaderboard.notFundedProposals,
-            );
+            leaderboard.addToNotFundedProposals(proposal);
         }
 
         return leaderboard;
-    }
-
-    private insertInOrder(
-        proposal: LeaderboardProposal,
-        proposalList: LeaderboardProposal[],
-    ): LeaderboardProposal[] {
-        if (proposalList.length === 0) {
-            proposalList.push(proposal);
-            return proposalList;
-        }
-
-        for (const [index, listProposal] of proposalList.entries()) {
-            if (index === proposalList.length - 1) {
-                listProposal.effectiveVotes > proposal.effectiveVotes
-                    ? proposalList.splice(index + 1, 0, proposal)
-                    : proposalList.splice(index, 0, proposal);
-                break;
-            }
-
-            if (
-                listProposal.effectiveVotes > proposal.effectiveVotes &&
-                proposalList[index + 1].effectiveVotes <= proposal.effectiveVotes
-            ) {
-                proposalList.splice(index + 1, 0, proposal);
-                break;
-            }
-        }
-
-        return proposalList;
     }
 }
