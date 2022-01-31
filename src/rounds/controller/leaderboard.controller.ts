@@ -1,5 +1,5 @@
 import { Controller, Get, Query, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardFilterQuery } from '../models/leaderboard-filter-query.model';
 import { Leaderboard } from '../models/leaderboard.model';
@@ -18,21 +18,38 @@ export class LeaderboardController {
 
     @Get()
     @ApiOkResponse({
-        type: Leaderboard,
         description: 'Leaderboard with an ordered list of proposals',
+        schema: {
+            properties: {
+                leaderboard: {
+                    type: 'object',
+                    $ref: getSchemaPath(Leaderboard),
+                },
+                currentRound: {
+                    type: 'number'
+                },
+            },
+        },
     })
     @UsePipes(new ValidationPipe({ transform: true }))
     public async calculateLeaderboard(
         @Query() query: LeaderboardFilterQuery,
-    ): Promise<Leaderboard> {
+    ): Promise<{leaderboard: Leaderboard,
+                currentRound: number}> {
         try {
             const currentRound: Round = await this.getCurrentRoundService.execute();
 
             if (currentRound.round > query.round) {
-                return await this.generateLegacyLeaderboardService.execute(query.round);
+                return {
+                    leaderboard: await this.generateLegacyLeaderboardService.execute(query.round),
+                    currentRound: currentRound.round
+                }
             }
 
-            return await this.generateLeaderboardService.execute(currentRound);
+            return {
+                leaderboard: await this.generateLeaderboardService.execute(currentRound),
+                currentRound: currentRound.round
+            };
         } catch (error) {
             throw error;
         }
