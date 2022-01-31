@@ -63,6 +63,12 @@ export class GenerateLegacyLeaderboardService {
             leaderboard.amountProposals++;
         }
 
+        leaderboardProposals.sort(
+            (current: LeaderboardProposal, next: LeaderboardProposal): number => {
+                return next.effectiveVotes - current.effectiveVotes;
+            },
+        );
+
         leaderboard = this.assignFunding(leaderboard, leaderboardProposals);
 
         if (leaderboard.remainingFundingStrategy === RemainingFundingStrategyEnum.Recycle) {
