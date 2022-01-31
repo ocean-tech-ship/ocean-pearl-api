@@ -63,8 +63,8 @@ export class SyncRoundsDataService {
             earmarks: {},
             remainingFundingStrategy:
                 round['Round'] >= this.RECYCLING_START_ROUND
-                    ? RemainingFundingStrategyEnum.Burn
-                    : RemainingFundingStrategyEnum.Recycle,
+                    ? RemainingFundingStrategyEnum.Recycle
+                    : RemainingFundingStrategyEnum.Burn,
             usdConversionRate: round['OCEAN Price'] ?? undefined,
             startDate: round['Start Date'] ? new Date(round['Start Date']) : null,
             submissionEndDate: new Date(round['Proposals Due By']),
