@@ -6,7 +6,7 @@ import { Leaderboard } from '../models/leaderboard.model';
 import { CalculateNeededVotesService } from '../services/calculate-needed-votes.service';
 
 @Injectable()
-export class GeneralPropsoalStrategy implements leaderboardStrategyInterface {
+export class GeneralProposalStrategy implements leaderboardStrategyInterface {
     constructor(private calculateNeededVotesService: CalculateNeededVotesService) {}
 
     public canHandle(proposal: LeaderboardProposal, leaderboard: Leaderboard): boolean {
@@ -18,67 +18,33 @@ export class GeneralPropsoalStrategy implements leaderboardStrategyInterface {
     }
 
     public execute(proposal: LeaderboardProposal, leaderboard: Leaderboard): Leaderboard {
-        const proposalMaxVotes: number =
-            proposal.yesVotes > proposal.noVotes ? proposal.yesVotes : proposal.noVotes;
-        leaderboard.maxVotes =
-            leaderboard.maxVotes > proposalMaxVotes ? leaderboard.maxVotes : proposalMaxVotes;
+        leaderboard.maxVotes = Math.max(leaderboard.maxVotes, proposal.yesVotes, proposal.noVotes);
 
-        const willBeFullyFunded: boolean =
-            leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding -
-                (proposal.requestedFunding - proposal.receivedFunding) >=
-            0;
-        const receivingGeneralFunding: number = willBeFullyFunded
-            ? proposal.requestedFunding - proposal.receivedFunding
-            : leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding;
+        let remainingRequestedFunding: number =
+            proposal.requestedFunding - proposal.receivedFunding;
+
+        const receivingGeneralFunding: number = Math.min(
+            remainingRequestedFunding,
+            leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding,
+        );
 
         if (receivingGeneralFunding > 0) {
-            proposal.receivedFunding += receivingGeneralFunding;
-            proposal.grantPoolShare[EarmarkTypeEnum.General] = receivingGeneralFunding;
+            remainingRequestedFunding -= receivingGeneralFunding;
+            proposal.addToGrantPoolShare(EarmarkTypeEnum.General, receivingGeneralFunding);
 
             leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding -=
                 receivingGeneralFunding;
         }
 
-        if (willBeFullyFunded) {
-            leaderboard.fundedProposals = this.insertInOrder(proposal, leaderboard.fundedProposals);
+        proposal.receivedFunding = proposal.requestedFunding - remainingRequestedFunding;
+
+        if (remainingRequestedFunding === 0) {
+            leaderboard.addToFundedProposals(proposal);
         } else {
             proposal.neededVotes = this.calculateNeededVotesService.execute(proposal, leaderboard);
-
-            leaderboard.partiallyFundedProposals = this.insertInOrder(
-                proposal,
-                leaderboard.partiallyFundedProposals,
-            );
+            leaderboard.addToPartiallyFundedProposals(proposal);
         }
 
         return leaderboard;
-    }
-
-    private insertInOrder(
-        proposal: LeaderboardProposal,
-        proposalList: LeaderboardProposal[],
-    ): LeaderboardProposal[] {
-        if (proposalList.length === 0) {
-            proposalList.push(proposal);
-            return proposalList;
-        }
-
-        for (const [index, listProposal] of proposalList.entries()) {
-            if (index === proposalList.length - 1) {
-                listProposal.effectiveVotes > proposal.effectiveVotes
-                    ? proposalList.splice(index + 1, 0, proposal)
-                    : proposalList.splice(index, 0, proposal);
-                break;
-            }
-
-            if (
-                listProposal.effectiveVotes > proposal.effectiveVotes &&
-                proposalList[index + 1].effectiveVotes <= proposal.effectiveVotes
-            ) {
-                proposalList.splice(index + 1, 0, proposal);
-                break;
-            }
-        }
-
-        return proposalList;
     }
 }

@@ -1,24 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
+import { RemainingFundingStrategyEnum } from '../../database/enums/remaining-funding-strategy.enum';
 import { RoundStatusEnum } from '../enums/round-status.enum';
+import { GrantPool } from './grant-pool.model';
 import { LeaderboardProposal } from './leaderboard-proposal.model';
 
-export class GrantPool {
-    @ApiProperty({
-        type: EarmarkTypeEnum,
-        enum: EarmarkTypeEnum,
-    })
-    type: EarmarkTypeEnum;
-
-    @ApiProperty()
-    totalFunding: number;
-
-    @ApiProperty()
-    remainingFunding: number;
-
-    @ApiProperty()
-    potentialRemainingFunding?: number;
+export class LeaderboardProperties {
+    fundedProposals?: LeaderboardProposal[];
+    partiallyFundedProposals?: LeaderboardProposal[];
+    notFundedProposals?: LeaderboardProposal[];
+    amountProposals?: number;
+    maxVotes?: number;
+    grantPools?: Partial<LeaderboardGrantPools>;
+    paymentOption?: PaymentOptionEnum;
+    votingStartDate?: Date;
+    votingEndDate?: Date;
+    status?: RoundStatusEnum;
+    round?: number;
+    overallFunding?: number;
+    remainingFundingStrategy?: RemainingFundingStrategyEnum;
+    overallRequestedFunding?: number;
+    totalVotes?: number;
 }
 
 export type LeaderboardGrantPools = {
@@ -45,21 +48,21 @@ export class Leaderboard {
     notFundedProposals: LeaderboardProposal[] = [];
 
     @ApiProperty()
-    amountProposals: number;
+    amountProposals: number = 0;
 
     @ApiProperty()
-    maxVotes: number;
+    maxVotes: number = 0;
 
     @ApiProperty({
         type: Object,
     })
-    grantPools: LeaderboardGrantPools;
+    grantPools: Partial<LeaderboardGrantPools> = {};
 
     @ApiProperty({
         type: String,
         enum: PaymentOptionEnum,
     })
-    paymentOption: string;
+    paymentOption: PaymentOptionEnum;
 
     @ApiProperty()
     votingStartDate: Date;
@@ -71,7 +74,7 @@ export class Leaderboard {
         type: String,
         enum: RoundStatusEnum,
     })
-    status: string;
+    status: RoundStatusEnum;
 
     @ApiProperty()
     round: number;
@@ -80,8 +83,66 @@ export class Leaderboard {
     overallFunding: number;
 
     @ApiProperty()
+    remainingFundingStrategy: RemainingFundingStrategyEnum;
+
+    @ApiProperty()
     overallRequestedFunding: number;
 
     @ApiProperty()
     totalVotes: number;
+
+    constructor(attributes: LeaderboardProperties = {}) {
+        for (let key in attributes) {
+            this[key] = attributes[key];
+        }
+    }
+
+    public addToFundedProposals(proposal: LeaderboardProposal): void {
+        this.fundedProposals = this.insertInOrder(proposal, this.fundedProposals);
+    }
+
+    public addToPartiallyFundedProposals(proposal: LeaderboardProposal): void {
+        this.partiallyFundedProposals = this.insertInOrder(proposal, this.partiallyFundedProposals);
+    }
+
+    public addToNotFundedProposals(proposal: LeaderboardProposal): void {
+        this.notFundedProposals = this.insertInOrder(proposal, this.notFundedProposals);
+    }
+    public moveUnusedRemainingFunding(): void {
+        for (let [key, pool] of Object.entries(this.grantPools)) {
+            if (key !== EarmarkTypeEnum.General) {
+                this.grantPools[EarmarkTypeEnum.General].remainingFunding += pool.remainingFunding;
+                pool.remainingFunding = 0;
+            }
+        }
+    }
+
+    private insertInOrder(
+        proposal: LeaderboardProposal,
+        proposalList: LeaderboardProposal[],
+    ): LeaderboardProposal[] {
+        if (proposalList.length === 0) {
+            proposalList.push(proposal);
+            return proposalList;
+        }
+
+        for (const [index, listProposal] of proposalList.entries()) {
+            if (index === proposalList.length - 1) {
+                listProposal.effectiveVotes >= proposal.effectiveVotes
+                    ? proposalList.splice(index + 1, 0, proposal)
+                    : proposalList.splice(index, 0, proposal);
+                break;
+            }
+
+            if (
+                listProposal.effectiveVotes > proposal.effectiveVotes &&
+                proposalList[index + 1].effectiveVotes <= proposal.effectiveVotes
+            ) {
+                proposalList.splice(index + 1, 0, proposal);
+                break;
+            }
+        }
+
+        return proposalList;
+    }
 }

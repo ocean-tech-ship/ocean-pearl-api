@@ -3,12 +3,12 @@ import { DaoProposalStatusEnum } from '../../database/enums/dao-proposal-status.
 import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
+import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProposalBuilder } from '../builder/leaderboard-proposal.builder';
 import { LeaderboardMapper } from '../mapper/leaderboard.mapper';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
 import { LeaderboardStrategyCollection } from '../strategies/leaderboard-strategy.collection';
-import { GetCurrentRoundService } from './get-current-round.service';
 import { LeaderboardCacheService } from './leaderboard-cache.service';
 
 @Injectable()
@@ -19,7 +19,6 @@ export class GenerateLeaderboardService {
     ];
 
     public constructor(
-        private getCurrentRoundService: GetCurrentRoundService,
         private daoProposalRepository: DaoProposalRepository,
         private leaderboardProposalBuilder: LeaderboardProposalBuilder,
         private strategyCollection: LeaderboardStrategyCollection,
@@ -27,8 +26,7 @@ export class GenerateLeaderboardService {
         private leaderboardCacheService: LeaderboardCacheService,
     ) {}
 
-    public async execute(): Promise<Leaderboard> {
-        const round = await this.getCurrentRoundService.execute();
+    public async execute(round: Round): Promise<Leaderboard> {
         const cachedLeaderboard = await this.leaderboardCacheService.getFromCache(round.round);
 
         if (cachedLeaderboard) {
@@ -87,13 +85,7 @@ export class GenerateLeaderboardService {
         leaderboard.grantPools[EarmarkTypeEnum.General].potentialRemainingFunding =
             leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding;
 
-        for (let [key, pool] of Object.entries(leaderboard.grantPools)) {
-            if (key !== EarmarkTypeEnum.General) {
-                leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding +=
-                    pool.remainingFunding;
-                pool.remainingFunding = 0;
-            }
-        }
+        leaderboard.moveUnusedRemainingFunding();
 
         if (leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding === 0) {
             return leaderboard;
@@ -107,9 +99,8 @@ export class GenerateLeaderboardService {
         leaderboard.notFundedProposals = [];
 
         proposals.sort(
-            (current: LeaderboardProposal, next: LeaderboardProposal): number => {
-                return next.effectiveVotes - current.effectiveVotes;
-            },
+            (current: LeaderboardProposal, next: LeaderboardProposal): number =>
+                next.effectiveVotes - current.effectiveVotes,
         );
 
         for (let proposal of proposals) {

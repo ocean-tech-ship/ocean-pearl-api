@@ -14,6 +14,7 @@ import { LeaderboardProposal } from '../../../models/leaderboard-proposal.model'
 import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-status.enum';
 import { StandingEnum } from '../../../../database/enums/standing.enum';
+import { LeaderboardProject } from '../../../models/leaderboard-project.model';
 
 describe('LeaderboardProposalBuilder', () => {
     let module: TestingModule;
@@ -65,24 +66,23 @@ describe('LeaderboardProposalBuilder', () => {
                     },
                 ],
             } as Project,
-            expected: {
+            expected: new LeaderboardProposal({
                 id: PROPOSAL_ID,
                 title: 'Ocean Pearl Proposal',
-                project: {
+                project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
                     logoUrl: 'urlToLogo.com',
                     completedProposals: 4,
-                },
+                }),
                 requestedFunding: 1000,
                 receivedFunding: 0,
-                grantPoolShare: {},
                 yesVotes: 100000,
                 noVotes: 10000,
                 effectiveVotes: 90000,
-                tags: [CategoryEnum.Outreach],
-                voteUrl: 'https://port.oceanprotocol.com/',
-            } as LeaderboardProposal,
+                tags: [CategoryEnum.Outreach]
+
+            }),
         },
         'it should choose the correct payment option: Ocean': {
             proposal: {
@@ -94,7 +94,6 @@ describe('LeaderboardProposalBuilder', () => {
                 requestedGrantUsd: 1000,
                 requestedGrantToken: 2000,
                 category: CategoryEnum.Outreach,
-                voteUrl: 'https://port.oceanprotocol.com/',
             } as DaoProposal,
             round: {
                 round: 8,
@@ -119,26 +118,24 @@ describe('LeaderboardProposalBuilder', () => {
                     { status: DaoProposalStatusEnum.NotFunded },
                 ],
             } as Project,
-            expected: {
+            expected: new LeaderboardProposal({
                 id: PROPOSAL_ID,
                 title: 'Ocean Pearl Proposal',
-                project: {
+                project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
                     logoUrl: 'urlToLogo.com',
                     completedProposals: 2,
-                },
+                }),
                 requestedFunding: 2000,
                 receivedFunding: 0,
-                grantPoolShare: {},
                 yesVotes: 100000,
                 noVotes: 10000,
                 effectiveVotes: 90000,
                 tags: [CategoryEnum.Outreach],
-                voteUrl: 'https://port.oceanprotocol.com/',
-            } as LeaderboardProposal,
+            })
         },
-        'it should calculate effective votes correctly: <= round 8': {
+        'it should calculate effective votes correctly: < round 8': {
             proposal: {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
@@ -148,7 +145,6 @@ describe('LeaderboardProposalBuilder', () => {
                 requestedGrantUsd: 1000,
                 requestedGrantToken: 2000,
                 category: CategoryEnum.Outreach,
-                voteUrl: 'https://port.oceanprotocol.com/',
             } as DaoProposal,
             round: {
                 round: 7,
@@ -167,26 +163,24 @@ describe('LeaderboardProposalBuilder', () => {
                     { status: DaoProposalStatusEnum.Received },
                 ],
             } as Project,
-            expected: {
+            expected: new LeaderboardProposal({
                 id: PROPOSAL_ID,
                 title: 'Ocean Pearl Proposal',
-                project: {
+                project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
                     logoUrl: 'urlToLogo.com',
                     completedProposals: 0,
-                },
+                }),
                 requestedFunding: 1000,
                 receivedFunding: 0,
-                grantPoolShare: {},
                 yesVotes: 100000,
                 noVotes: 10000,
                 effectiveVotes: 100000,
                 tags: [CategoryEnum.Outreach],
-                voteUrl: 'https://port.oceanprotocol.com/',
-            } as LeaderboardProposal,
+            })
         },
-        'it should calculate effective votes correctly: > round 8': {
+        'it should calculate effective votes correctly: >= round 8': {
             proposal: {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
@@ -196,7 +190,6 @@ describe('LeaderboardProposalBuilder', () => {
                 requestedGrantUsd: 1000,
                 requestedGrantToken: 2000,
                 category: CategoryEnum.Outreach,
-                voteUrl: 'https://port.oceanprotocol.com/',
             } as DaoProposal,
             round: {
                 round: 8,
@@ -224,24 +217,22 @@ describe('LeaderboardProposalBuilder', () => {
                     { status: DaoProposalStatusEnum.Running },
                 ],
             } as Project,
-            expected: {
+            expected: new LeaderboardProposal({
                 id: PROPOSAL_ID,
                 title: 'Ocean Pearl Proposal',
-                project: {
+                project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
                     logoUrl: 'urlToLogo.com',
                     completedProposals: 3,
-                },
+                }),
                 requestedFunding: 1000,
                 receivedFunding: 0,
-                grantPoolShare: {},
                 yesVotes: 100000,
                 noVotes: 10000,
                 effectiveVotes: 90000,
                 tags: [CategoryEnum.Outreach],
-                voteUrl: 'https://port.oceanprotocol.com/',
-            } as LeaderboardProposal,
+            })
         },
         'it should mark earmarked proposals': {
             proposal: {
@@ -254,7 +245,6 @@ describe('LeaderboardProposalBuilder', () => {
                 requestedGrantToken: 2000,
                 earmark: EarmarkTypeEnum.NewEntrants,
                 category: CategoryEnum.Outreach,
-                voteUrl: 'https://port.oceanprotocol.com/',
             } as DaoProposal,
             round: {
                 round: 8,
@@ -289,26 +279,24 @@ describe('LeaderboardProposalBuilder', () => {
                     },
                 ],
             } as Project,
-            expected: {
+            expected: new LeaderboardProposal({
                 id: PROPOSAL_ID,
                 title: 'Ocean Pearl Proposal',
-                project: {
+                project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
                     logoUrl: 'urlToLogo.com',
                     completedProposals: 5,
-                },
+                }),
                 requestedFunding: 1000,
                 receivedFunding: 0,
-                grantPoolShare: {},
                 yesVotes: 100000,
                 noVotes: 10000,
                 effectiveVotes: 90000,
                 tags: [CategoryEnum.Outreach, 'earmark'],
                 isEarmarked: true,
                 earmarkType: EarmarkTypeEnum.NewEntrants,
-                voteUrl: 'https://port.oceanprotocol.com/',
-            } as LeaderboardProposal,
+            })
         },
     };
 

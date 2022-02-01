@@ -34,7 +34,7 @@ describe('LeaderboardMapper', () => {
                 votingStartDate: pastDate,
                 submissionEndDate: pastDate,
             } as Round,
-            expected: {
+            expected: new Leaderboard({
                 fundedProposals: [],
                 partiallyFundedProposals: [],
                 notFundedProposals: [],
@@ -61,7 +61,7 @@ describe('LeaderboardMapper', () => {
                 overallFunding: 800000,
                 overallRequestedFunding: 0,
                 totalVotes: 0,
-            } as Leaderboard,
+            }),
         },
         'it should map for OCEAN': {
             round: {
@@ -80,7 +80,7 @@ describe('LeaderboardMapper', () => {
                 votingStartDate: pastDate,
                 submissionEndDate: pastDate,
             } as Round,
-            expected: {
+            expected: new Leaderboard({
                 amountProposals: 0,
                 fundedProposals: [],
                 partiallyFundedProposals: [],
@@ -107,7 +107,7 @@ describe('LeaderboardMapper', () => {
                 status: RoundStatusEnum.VotingInProgress,
                 votingEndDate: futureDate,
                 votingStartDate: pastDate,
-            } as Leaderboard,
+            }),
         },
         'it should map the correct status: proposal submission': {
             round: {
@@ -126,7 +126,7 @@ describe('LeaderboardMapper', () => {
                 votingStartDate: futureDate,
                 submissionEndDate: futureDate,
             } as Round,
-            expected: {
+            expected: new Leaderboard({
                 amountProposals: 0,
                 fundedProposals: [],
                 partiallyFundedProposals: [],
@@ -153,7 +153,7 @@ describe('LeaderboardMapper', () => {
                 status: RoundStatusEnum.ProposalSubmission,
                 votingEndDate: futureDate,
                 votingStartDate: futureDate,
-            } as Leaderboard,
+            }),
         },
         'it should map the correct status: pending': {
             round: {
@@ -172,7 +172,7 @@ describe('LeaderboardMapper', () => {
                 votingStartDate: futureDate,
                 submissionEndDate: pastDate,
             } as Round,
-            expected: {
+            expected: new Leaderboard({
                 amountProposals: 0,
                 fundedProposals: [],
                 partiallyFundedProposals: [],
@@ -199,7 +199,7 @@ describe('LeaderboardMapper', () => {
                 status: RoundStatusEnum.Pending,
                 votingEndDate: futureDate,
                 votingStartDate: futureDate,
-            } as Leaderboard,
+            }),
         },
         'it should map the correct status: voting in progress': {
             round: {
@@ -218,7 +218,7 @@ describe('LeaderboardMapper', () => {
                 votingStartDate: pastDate,
                 submissionEndDate: pastDate,
             } as Round,
-            expected: {
+            expected: new Leaderboard({
                 amountProposals: 0,
                 fundedProposals: [],
                 partiallyFundedProposals: [],
@@ -245,7 +245,7 @@ describe('LeaderboardMapper', () => {
                 status: RoundStatusEnum.VotingInProgress,
                 votingEndDate: futureDate,
                 votingStartDate: futureDate,
-            } as Leaderboard,
+            }),
         },
         'it should map the correct status: voting finished': {
             round: {
@@ -264,7 +264,7 @@ describe('LeaderboardMapper', () => {
                 votingStartDate: pastDate,
                 submissionEndDate: pastDate,
             } as Round,
-            expected: {
+            expected: new Leaderboard({
                 amountProposals: 0,
                 fundedProposals: [],
                 partiallyFundedProposals: [],
@@ -291,7 +291,7 @@ describe('LeaderboardMapper', () => {
                 status: RoundStatusEnum.VotingFinished,
                 votingEndDate: futureDate,
                 votingStartDate: futureDate,
-            } as Leaderboard,
+            }),
         },
     };
 

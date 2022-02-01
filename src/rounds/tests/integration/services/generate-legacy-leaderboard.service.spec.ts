@@ -7,10 +7,12 @@ import { CategoryEnum } from '../../../../database/enums/category.enum';
 import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-status.enum';
 import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../../../../database/enums/payment-option.enum';
+import { RemainingFundingStrategyEnum } from '../../../../database/enums/remaining-funding-strategy.enum';
 import { StandingEnum } from '../../../../database/enums/standing.enum';
 import { nanoid } from '../../../../database/functions/nano-id.function';
 import { DaoProposalRepository } from '../../../../database/repositories/dao-proposal.repository';
 import { ProjectRepository } from '../../../../database/repositories/project.repository';
+import { RoundRepository } from '../../../../database/repositories/round.repository';
 import { DaoProposal } from '../../../../database/schemas/dao-proposal.schema';
 import { Project } from '../../../../database/schemas/project.schema';
 import { Round } from '../../../../database/schemas/round.schema';
@@ -21,19 +23,18 @@ import { LeaderboardProject } from '../../../models/leaderboard-project.model';
 import { LeaderboardProposal } from '../../../models/leaderboard-proposal.model';
 import { Leaderboard } from '../../../models/leaderboard.model';
 import { RoundsModule } from '../../../rounds.module';
-import { CalculateNeededVotesService } from '../../../services/calculate-needed-votes.service';
-import { GenerateLeaderboardService } from '../../../services/generate-leaderboard.service';
+import { GenerateLegacyLeaderboardService } from '../../../services/generate-legacy-leaderboard.service';
 import { LeaderboardCacheService } from '../../../services/leaderboard-cache.service';
-import { EarmarkedProposalStrategy } from '../../../strategies/earmarked-proposal.strategy';
-import { GeneralProposalStrategy } from '../../../strategies/general-proposal.strategy';
-import { LeaderboardStrategyCollection } from '../../../strategies/leaderboard-strategy.collection';
-import { WontReceiveFundingStrategy } from '../../../strategies/wont-receive-funding.strategy';
+import { LegacyEarmarkedProposalStrategy } from '../../../strategies/legacy-earmarked-proposal.strategy';
+import { LegacyGeneralProposalStrategy } from '../../../strategies/legacy-general-proposal.strategy';
+import { LegacyLeaderboardStrategyCollection } from '../../../strategies/legacy-leaderboard-strategy.collection';
 
 const faker = require('faker');
 
-describe('GenerateLeaderboardService', () => {
+describe('GenerateLegacyLeaderboardService', () => {
     let module: TestingModule;
-    let service: GenerateLeaderboardService;
+    let service: GenerateLegacyLeaderboardService;
+    let roundRepository: RoundRepository;
     let daoProposalRepository: DaoProposalRepository;
     let projectRepository: ProjectRepository;
 
@@ -46,21 +47,38 @@ describe('GenerateLeaderboardService', () => {
         module = await Test.createTestingModule({
             imports: [RoundsModule, AppModule, DatabaseModule, CacheModule.register()],
             providers: [
-                GenerateLeaderboardService,
-                CalculateNeededVotesService,
                 LeaderboardProposalBuilder,
                 LeaderboardMapper,
-                LeaderboardStrategyCollection,
+                LegacyLeaderboardStrategyCollection,
                 LeaderboardCacheService,
-                EarmarkedProposalStrategy,
-                GeneralProposalStrategy,
-                WontReceiveFundingStrategy,
+                LegacyEarmarkedProposalStrategy,
+                LegacyGeneralProposalStrategy,
             ],
         }).compile();
 
-        service = module.get<GenerateLeaderboardService>(GenerateLeaderboardService);
+        service = module.get<GenerateLegacyLeaderboardService>(GenerateLegacyLeaderboardService);
+        roundRepository = module.get<RoundRepository>(RoundRepository);
         daoProposalRepository = module.get<DaoProposalRepository>(DaoProposalRepository);
         projectRepository = module.get<ProjectRepository>(ProjectRepository);
+
+        const currentRoundMockResponse = {
+            round: 10,
+            paymentOption: PaymentOptionEnum.Usd,
+            availableFundingUsd: 100000,
+            earmarks: {
+                [EarmarkTypeEnum.NewEntrants]: {
+                    type: EarmarkTypeEnum.NewEntrants,
+                    fundingUsd: 20000,
+                    fundingOcean: 20000,
+                },
+            },
+            votingEndDate: votingEndDate,
+            votingStartDate: votingStartDate,
+            remainingFundingStrategy: RemainingFundingStrategyEnum.Burn,
+        } as Round;
+        jest.spyOn(roundRepository, 'findOneRaw').mockImplementation(
+            async () => currentRoundMockResponse,
+        );
 
         const proposalRepositoryMockResponse = [
             {
@@ -70,6 +88,7 @@ describe('GenerateLeaderboardService', () => {
                 votes: 200000,
                 counterVotes: 10000,
                 requestedGrantUsd: 50000,
+                grantedUsd: 50000,
                 category: CategoryEnum.Outreach,
             },
             {
@@ -79,6 +98,7 @@ describe('GenerateLeaderboardService', () => {
                 votes: 100000,
                 counterVotes: 10000,
                 requestedGrantUsd: 20000,
+                grantedUsd: 20000,
                 earmark: CategoryEnum.NewEntrants,
                 category: CategoryEnum.DAO,
             },
@@ -97,6 +117,7 @@ describe('GenerateLeaderboardService', () => {
                 title: 'Ocean Pearl Proposal 4',
                 votes: 100000,
                 counterVotes: 10000,
+                grantedUsd: 30000,
                 requestedGrantUsd: 50000,
                 category: CategoryEnum.Outreach,
             },
@@ -163,22 +184,7 @@ describe('GenerateLeaderboardService', () => {
     });
 
     it('it should generate a full leaderboard', () => {
-        const currentRoundMock = {
-            round: 10,
-            paymentOption: PaymentOptionEnum.Usd,
-            availableFundingUsd: 100000,
-            earmarks: {
-                [EarmarkTypeEnum.NewEntrants]: {
-                    type: EarmarkTypeEnum.NewEntrants,
-                    fundingUsd: 20000,
-                    fundingOcean: 20000,
-                },
-            },
-            votingEndDate: votingEndDate,
-            votingStartDate: votingStartDate,
-        } as Round;
-
-        return expect(service.execute(currentRoundMock)).resolves.toEqual(
+        return expect(service.execute()).resolves.toEqual(
             new Leaderboard({
                 fundedProposals: [
                     new LeaderboardProposal({
@@ -198,8 +204,7 @@ describe('GenerateLeaderboardService', () => {
                         yesVotes: 200000,
                         noVotes: 10000,
                         effectiveVotes: 190000,
-                        tags: [CategoryEnum.Outreach]
-                    }),
+                        tags: [CategoryEnum.Outreach]}),
                     new LeaderboardProposal({
                         id: 'D5C50B1aF2',
                         title: 'Ocean Pearl Proposal 2',
@@ -219,8 +224,7 @@ describe('GenerateLeaderboardService', () => {
                         yesVotes: 100000,
                         noVotes: 10000,
                         effectiveVotes: 90000,
-                        tags: [CategoryEnum.DAO, 'earmark']
-                    }),
+                        tags: [CategoryEnum.DAO, 'earmark']}),
                 ],
                 partiallyFundedProposals: [
                     new LeaderboardProposal({
@@ -240,11 +244,7 @@ describe('GenerateLeaderboardService', () => {
                         yesVotes: 100000,
                         noVotes: 10000,
                         effectiveVotes: 90000,
-                        neededVotes: {
-                            fullyFunded: 100001,
-                        },
-                        tags: [CategoryEnum.Outreach]
-                    }),
+                        tags: [CategoryEnum.Outreach]}),
                 ],
                 notFundedProposals: [
                     new LeaderboardProposal({
@@ -261,10 +261,6 @@ describe('GenerateLeaderboardService', () => {
                         yesVotes: 100000,
                         noVotes: 55000,
                         effectiveVotes: 45000,
-                        neededVotes: {
-                            fullyFunded: 145001,
-                            partiallyFunded: 45001,
-                        },
                         tags: [CategoryEnum.Outreach]
                     }),
                     new LeaderboardProposal({
@@ -283,9 +279,6 @@ describe('GenerateLeaderboardService', () => {
                         yesVotes: 10000,
                         noVotes: 100000,
                         effectiveVotes: -90000,
-                        neededVotes: {
-                            fullyFunded: 180001,
-                        },
                         tags: [CategoryEnum.UnleashData, 'earmark']}),
                     new LeaderboardProposal({
                         id: 'D5C50B1aF3',
@@ -301,10 +294,6 @@ describe('GenerateLeaderboardService', () => {
                         yesVotes: 10000,
                         noVotes: 100000,
                         effectiveVotes: -90000,
-                        neededVotes: {
-                            fullyFunded: 280001,
-                            partiallyFunded: 180001,
-                        },
                         tags: [CategoryEnum.CoreSoftware]}),
                 ],
                 amountProposals: 6,
@@ -323,15 +312,15 @@ describe('GenerateLeaderboardService', () => {
                         type: EarmarkTypeEnum.General,
                         totalFunding: 80000,
                         remainingFunding: 0,
-                        potentialRemainingFunding: 0,
                     },
                 },
+                remainingFundingStrategy: RemainingFundingStrategyEnum.Burn,
                 paymentOption: PaymentOptionEnum.Usd,
                 status: RoundStatusEnum.VotingInProgress,
                 votingStartDate: votingStartDate,
                 votingEndDate: votingEndDate,
                 maxVotes: 200000
-            }),
+            })
         );
     });
 });

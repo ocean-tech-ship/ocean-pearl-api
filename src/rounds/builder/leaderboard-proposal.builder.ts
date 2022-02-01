@@ -5,6 +5,7 @@ import { ProjectRepository } from '../../database/repositories/project.repositor
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { Project } from '../../database/schemas/project.schema';
 import { Round } from '../../database/schemas/round.schema';
+import { LeaderboardProject } from '../models/leaderboard-project.model';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 
 @Injectable()
@@ -13,31 +14,31 @@ export class LeaderboardProposalBuilder {
 
     public constructor(private projectRepository: ProjectRepository) {}
 
-    public async build(
-        proposal: DaoProposal,
-        round: Round,
-    ): Promise<LeaderboardProposal> {
+    public async build(proposal: DaoProposal, round: Round): Promise<LeaderboardProposal> {
         let project = proposal.project as Project;
         project = await this.projectRepository.findOne({
             find: { id: project.id },
         });
 
-        const mappedLeaderboardProposal = {
+        const receivedFunding =
+            round.paymentOption === PaymentOptionEnum.Usd
+                ? proposal.grantedUsd
+                : proposal.grantedToken;
+        const mappedLeaderboardProposal = new LeaderboardProposal({
             id: proposal.id,
             title: proposal.title,
-            project: {
+            project: new LeaderboardProject({
                 id: project.id,
                 title: project.title,
                 completedProposals: this.countFinishedProposals(
                     project.daoProposals as DaoProposal[],
                 ),
-            },
+            }),
             requestedFunding:
                 round.paymentOption === PaymentOptionEnum.Usd
                     ? proposal.requestedGrantUsd
                     : proposal.requestedGrantToken,
-            receivedFunding: 0,
-            grantPoolShare: {},
+            receivedFunding: receivedFunding ?? 0,
             yesVotes: proposal.votes,
             noVotes: proposal.counterVotes,
             effectiveVotes: this.calculateEffectiveVotes(
@@ -46,8 +47,7 @@ export class LeaderboardProposalBuilder {
                 round.round,
             ),
             tags: [proposal.category],
-            voteUrl: proposal.voteUrl,
-        } as LeaderboardProposal;
+        });
 
         if (proposal.earmark) {
             mappedLeaderboardProposal.tags.push(this.EARMARK_TAG);
@@ -62,11 +62,7 @@ export class LeaderboardProposalBuilder {
         return mappedLeaderboardProposal;
     }
 
-    private calculateEffectiveVotes(
-        votes: number,
-        counterVotes: number,
-        round: number,
-    ): number {
+    private calculateEffectiveVotes(votes: number, counterVotes: number, round: number): number {
         return round >= 8 ? votes - counterVotes : votes;
     }
 
@@ -74,9 +70,7 @@ export class LeaderboardProposalBuilder {
         let finishedProposals = 0;
 
         for (const proposal of proposals) {
-            finishedProposals += proposal.standing === StandingEnum.Completed
-                ? 1
-                : 0;
+            finishedProposals += proposal.standing === StandingEnum.Completed ? 1 : 0;
         }
 
         return finishedProposals;

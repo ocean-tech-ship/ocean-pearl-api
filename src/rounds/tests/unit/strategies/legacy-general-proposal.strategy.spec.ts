@@ -4,77 +4,28 @@ import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { GrantPool } from '../../../models/grant-pool.model';
 import { LeaderboardProposal } from '../../../models/leaderboard-proposal.model';
 import { Leaderboard } from '../../../models/leaderboard.model';
-import { GeneralProposalStrategy } from '../../../strategies/general-proposal.strategy';
+import { LegacyGeneralProposalStrategy } from '../../../strategies/legacy-general-proposal.strategy';
 
-describe('GeneralProposalStrategy', () => {
+describe('LegacyGeneralProposalStrategy', () => {
     let module: TestingModule;
-    let service: GeneralProposalStrategy;
+    let service: LegacyGeneralProposalStrategy;
 
     const canHandleDataProvider = {
         'should be able to handle': {
-            proposal: new LeaderboardProposal({
-                effectiveVotes: 100000,
-                yesVotes: 100000,
-                noVotes: 0,
-            }),
-            leaderboard: new Leaderboard({
-                grantPools: {
-                    [EarmarkTypeEnum.NewEntrants]: new GrantPool({
-                        type: EarmarkTypeEnum.NewEntrants,
-                        totalFunding: 10000,
-                        remainingFunding: 10000,
-                    }),
-                    [EarmarkTypeEnum.General]: new GrantPool({
-                        type: EarmarkTypeEnum.General,
-                        totalFunding: 10000,
-                        remainingFunding: 10000,
-                    }),
-                },
-            }),
+            proposal: new LeaderboardProposal(),
+            leaderboard: new Leaderboard(),
             expected: true,
         },
-        'should not be able to handle: negative effective votes': {
+        'should not be able to handle: earmarked proposal': {
             proposal: new LeaderboardProposal({
-                effectiveVotes: -1000,
-                yesVotes: 0,
-                noVotes: 1000,
-            }),
-            leaderboard: new Leaderboard({
-                grantPools: {
-                    [EarmarkTypeEnum.NewEntrants]: new GrantPool({
-                        type: EarmarkTypeEnum.NewEntrants,
-                        totalFunding: 10000,
-                        remainingFunding: 10000,
-                    }),
-                    [EarmarkTypeEnum.General]: new GrantPool({
-                        type: EarmarkTypeEnum.General,
-                        totalFunding: 10000,
-                        remainingFunding: 10000,
-                    }),
-                },
-            }),
-            expected: false,
-        },
-        'should not be able to handle: no general funding left': {
-            proposal: new LeaderboardProposal({
+                isEarmarked: true,
+                earmarkType: EarmarkTypeEnum.NewEntrants,
+                requestedFunding: 20000,
                 effectiveVotes: 100000,
                 yesVotes: 100000,
                 noVotes: 0,
             }),
-            leaderboard: new Leaderboard({
-                grantPools: {
-                    [EarmarkTypeEnum.NewEntrants]: new GrantPool({
-                        type: EarmarkTypeEnum.NewEntrants,
-                        totalFunding: 10000,
-                        remainingFunding: 10000,
-                    }),
-                    [EarmarkTypeEnum.General]: new GrantPool({
-                        type: EarmarkTypeEnum.General,
-                        totalFunding: 10000,
-                        remainingFunding: 0,
-                    }),
-                },
-            }),
+            leaderboard: new Leaderboard(),
             expected: false,
         },
     };
@@ -83,6 +34,7 @@ describe('GeneralProposalStrategy', () => {
         'it should receive full funding': {
             proposal: new LeaderboardProposal({
                 requestedFunding: 20000,
+                receivedFunding: 20000,
                 effectiveVotes: 210000,
                 yesVotes: 300000,
                 noVotes: 90000,
@@ -132,6 +84,7 @@ describe('GeneralProposalStrategy', () => {
         'it should receive partial funding': {
             proposal: new LeaderboardProposal({
                 requestedFunding: 20000,
+                receivedFunding: 8000,
                 effectiveVotes: 200000,
                 yesVotes: 210000,
                 noVotes: 10000,
@@ -157,10 +110,6 @@ describe('GeneralProposalStrategy', () => {
                         receivedFunding: 8000,
                         grantPoolShare: {
                             [EarmarkTypeEnum.General]: 8000,
-                        },
-                        neededVotes: {
-                            fullyFunded: undefined,
-                            partiallyFunded: undefined,
                         },
                         effectiveVotes: 200000,
                         yesVotes: 210000,
@@ -189,7 +138,7 @@ describe('GeneralProposalStrategy', () => {
             imports: [AppModule],
         }).compile();
 
-        service = module.get<GeneralProposalStrategy>(GeneralProposalStrategy);
+        service = module.get<LegacyGeneralProposalStrategy>(LegacyGeneralProposalStrategy);
     });
 
     afterAll(async () => {
