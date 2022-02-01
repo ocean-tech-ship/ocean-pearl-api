@@ -1,50 +1,50 @@
 import { Injectable } from '@nestjs/common';
-import {
-    leaderboardStrategyInterface,
-    LeaderboardStrategyResponse
-} from '../interfaces/leaderboard-strategy.interface';
+import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
+import { leaderboardStrategyInterface } from '../interfaces/leaderboard-strategy.interface';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
+import { CalculateNeededVotesService } from '../services/calculate-needed-votes.service';
 
 @Injectable()
-export class GeneralPropsoalStrategy implements leaderboardStrategyInterface {
-    public canHandle(
-        proposal: LeaderboardProposal,
-        leaderboard: Leaderboard,
-    ): boolean {
+export class GeneralProposalStrategy implements leaderboardStrategyInterface {
+    constructor(private calculateNeededVotesService: CalculateNeededVotesService) {}
+
+    public canHandle(proposal: LeaderboardProposal, leaderboard: Leaderboard): boolean {
         return (
-            leaderboard.remainingGeneralFunding > 0 &&
+            leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding > 0 &&
             proposal.effectiveVotes > 0 &&
             proposal.yesVotes > proposal.noVotes
         );
     }
 
-    public execute(
-        proposal: LeaderboardProposal,
-        leaderboard: Leaderboard,
-        lowestEarmarkVotes: number,
-        lowestGeneralVotes: number,
-    ): LeaderboardStrategyResponse {
-        const proposalMaxVotes: number =
-            proposal.yesVotes > proposal.noVotes
-                ? proposal.yesVotes
-                : proposal.noVotes;
-        leaderboard.maxVotes =
-            leaderboard.maxVotes > proposalMaxVotes
-                ? leaderboard.maxVotes
-                : proposalMaxVotes;
+    public execute(proposal: LeaderboardProposal, leaderboard: Leaderboard): Leaderboard {
+        leaderboard.maxVotes = Math.max(leaderboard.maxVotes, proposal.yesVotes, proposal.noVotes);
 
-        const receivingGeneralFunding: number =
-            leaderboard.remainingGeneralFunding - proposal.requestedFunding > 0
-                ? proposal.requestedFunding
-                : leaderboard.remainingGeneralFunding;
+        let remainingRequestedFunding: number =
+            proposal.requestedFunding - proposal.receivedFunding;
 
-        proposal.receivedFunding = receivingGeneralFunding;
-        leaderboard.remainingGeneralFunding -= receivingGeneralFunding;
+        const receivingGeneralFunding: number = Math.min(
+            remainingRequestedFunding,
+            leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding,
+        );
 
-        lowestGeneralVotes = proposal.effectiveVotes;
-        leaderboard.fundedProposals.push(proposal);
+        if (receivingGeneralFunding > 0) {
+            remainingRequestedFunding -= receivingGeneralFunding;
+            proposal.addToGrantPoolShare(EarmarkTypeEnum.General, receivingGeneralFunding);
 
-        return { leaderboard, lowestEarmarkVotes, lowestGeneralVotes };
+            leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding -=
+                receivingGeneralFunding;
+        }
+
+        proposal.receivedFunding = proposal.requestedFunding - remainingRequestedFunding;
+
+        if (remainingRequestedFunding === 0) {
+            leaderboard.addToFundedProposals(proposal);
+        } else {
+            proposal.neededVotes = this.calculateNeededVotesService.execute(proposal, leaderboard);
+            leaderboard.addToPartiallyFundedProposals(proposal);
+        }
+
+        return leaderboard;
     }
 }

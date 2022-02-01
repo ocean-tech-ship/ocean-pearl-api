@@ -10,13 +10,5 @@ export interface leaderboardStrategyInterface {
     execute(
         proposal: LeaderboardProposal,
         leaderboard: Leaderboard,
-        lowestEarmarkVotes: number,
-        lowestGeneralVotes: number
-    ): LeaderboardStrategyResponse;
-}
-
-export interface LeaderboardStrategyResponse {
-    leaderboard: Leaderboard,
-    lowestEarmarkVotes: number,
-    lowestGeneralVotes: number,
+    ): Leaderboard;
 }

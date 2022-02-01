@@ -37,6 +37,7 @@ export class LeaderboardCacheService {
         }
 
         const remainingMinutes: number = new Date().getMinutes() % 5;
-        return (5 - remainingMinutes) * 60;
+        const secondsOverhead: number = new Date().getSeconds();
+        return (5 - remainingMinutes) * 60 - secondsOverhead;
     }
 }

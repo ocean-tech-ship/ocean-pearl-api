@@ -1,24 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
-import { PaginationOptions } from '../interfaces/pagination-options.interface';
+import { PaginateModel } from '../interfaces/paginate-model.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
+import { PaginatedResponse } from '../models/paginated-response.model';
 import { Project, ProjectType } from '../schemas/project.schema';
 
 @Injectable()
 export class ProjectRepository implements RepositoryInterface<ProjectType> {
-    constructor(@InjectModel('Project') private model: Model<ProjectType>) {}
+    constructor(
+        @InjectModel('Project') private model: PaginateModel<ProjectType>,
+    ) {}
 
-    public async findOne(query: FindQuery): Promise<Project> {
+    public async findOne(query: FindQuery<ProjectType>): Promise<Project> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             return await this.model
-                .findOne(query.find as FilterQuery<ProjectType>)
+                .findOne(query.find)
                 .lean()
                 .populate({
                     path: 'company',
@@ -44,16 +47,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async findOneRaw(query: FindQuery): Promise<Project> {
+    public async findOneRaw(query: FindQuery<ProjectType>): Promise<Project> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model
-                .findOne(query.find as FilterQuery<ProjectType>)
-                .lean()
-                .exec();
+            return await this.model.findOne(query.find).lean().exec();
         } catch (error: any) {
             throw error;
         }
@@ -88,10 +88,10 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async getAll(query?: FindQuery): Promise<Project[]> {
+    public async getAll(query?: FindQuery<ProjectType>): Promise<Project[]> {
         try {
             return await this.model
-                .find((query?.find as FilterQuery<ProjectType>) || {})
+                .find(query?.find || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -119,33 +119,35 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async getPaginated(options: PaginationOptions): Promise<Project[]> {
+    public async getPaginated(
+        query: FindQuery<ProjectType>,
+    ): Promise<PaginatedResponse<Project>> {
         try {
-            return await this.model
-                .find((options.find as FilterQuery<ProjectType>) || {})
-                .sort(options.sort || {})
-                .skip((options.page - 1) * options.limit)
-                .limit(options.limit)
-                .lean()
-                .populate({
-                    path: 'company',
-                    select: '-_id -__v',
-                })
-                .populate({
-                    path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
-                    populate: {
-                        path: 'fundingRound',
-                        model: 'Round',
+            return await this.model.paginate(query?.find || {}, {
+                sort: query?.sort || {},
+                limit: query?.limit || 0,
+                page: query?.page || 0,
+                populate: [
+                    {
+                        path: 'company',
                         select: '-_id -__v',
                     },
-                })
-                .populate({
-                    path: 'team',
-                    select: '-_id -__v',
-                })
-                .select('-_id -__v')
-                .exec();
+                    {
+                        path: 'daoProposals',
+                        select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                        populate: {
+                            path: 'fundingRound',
+                            model: 'Round',
+                            select: '-_id -__v',
+                        },
+                    },
+                    {
+                        path: 'team',
+                        select: '-_id -__v',
+                    },
+                ],
+                select: '-_id -__v',
+            });
         } catch (error: any) {
             throw error;
         }
@@ -190,16 +192,14 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async deleteMany(query: FindQuery): Promise<boolean> {
+    public async deleteMany(query: FindQuery<ProjectType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             const response: MongooseDeleteResponse =
-                await this.model.deleteMany(
-                    query.find as FilterQuery<ProjectType>,
-                );
+                await this.model.deleteMany(query.find);
 
             return response.deletedCount > 0;
         } catch (error: any) {
@@ -207,7 +207,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public getModel(): Model<ProjectType> {
+    public getModel(): PaginateModel<ProjectType> {
         return this.model;
     }
 }

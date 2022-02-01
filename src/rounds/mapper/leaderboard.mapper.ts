@@ -1,49 +1,54 @@
 import { Injectable } from '@nestjs/common';
+import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { Round } from '../../database/schemas/round.schema';
 import { RoundStatusEnum } from '../enums/round-status.enum';
+import { GrantPool } from '../models/grant-pool.model';
 import { Leaderboard } from '../models/leaderboard.model';
 
 @Injectable()
 export class LeaderboardMapper {
     public map(round: Round): Leaderboard {
         let totalEarmarkFunding: number = 0;
-        const isPaymentOpetionUsd: boolean =
-            round.paymentOption === PaymentOptionEnum.Usd;
-        let mappedLeaderboard = {
+        const isPaymentOptionUsd: boolean = round.paymentOption === PaymentOptionEnum.Usd;
+        let mappedLeaderboard = new Leaderboard({
             maxVotes: 0,
             totalVotes: 0,
             amountProposals: 0,
             overallRequestedFunding: 0,
-            fundedProposals: [],
-            notFundedProposals: [],
             paymentOption: round.paymentOption,
-            overallFunding: isPaymentOpetionUsd
+            overallFunding: isPaymentOptionUsd
                 ? round.availableFundingUsd
                 : round.availableFundingOcean,
-            earmarks: {},
+            remainingFundingStrategy: round.remainingFundingStrategy,
             status: this.determineRoundStatus(round),
-            voteStartDate: round.votingStartDate,
-            voteEndDate: round.votingEndDate,
+            votingStartDate: round.votingStartDate,
+            votingEndDate: round.votingEndDate,
             round: round.round,
-        } as Leaderboard;
+        });
 
         for (const [type, earmark] of Object.entries(round.earmarks)) {
-            mappedLeaderboard.earmarks[type] = {
-                type: earmark.type,
-                remainingFunding: isPaymentOpetionUsd
-                    ? earmark.fundingUsd
-                    : earmark.fundingOcean,
-            };
+            const totalFunding = isPaymentOptionUsd ? earmark.fundingUsd : earmark.fundingOcean;
 
-            totalEarmarkFunding += isPaymentOpetionUsd
-                ? earmark.fundingUsd
-                : earmark.fundingOcean;
+            mappedLeaderboard.grantPools[earmark.type] = new GrantPool({
+                type: earmark.type,
+                totalFunding: totalFunding,
+                remainingFunding: totalFunding,
+                potentialRemainingFunding: totalFunding,
+            });
+
+            totalEarmarkFunding += totalFunding;
         }
 
-        mappedLeaderboard.remainingGeneralFunding = isPaymentOpetionUsd
+        const totalGeneralFunding = isPaymentOptionUsd
             ? round.availableFundingUsd - totalEarmarkFunding
             : round.availableFundingOcean - totalEarmarkFunding;
+
+        mappedLeaderboard.grantPools[EarmarkTypeEnum.General] = new GrantPool({
+            type: EarmarkTypeEnum.General,
+            totalFunding: totalGeneralFunding,
+            remainingFunding: totalGeneralFunding,
+        });
 
         return mappedLeaderboard;
     }

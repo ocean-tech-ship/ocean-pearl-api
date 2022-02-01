@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
@@ -14,14 +14,16 @@ export class DeliverableRepository
         @InjectModel('Deliverable') private model: Model<DeliverableType>,
     ) {}
 
-    public async findOne(query: FindQuery): Promise<Deliverable> {
+    public async findOne(
+        query: FindQuery<DeliverableType>,
+    ): Promise<Deliverable> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             return await this.model
-                .findOne(query.find as FilterQuery<DeliverableType>)
+                .findOne(query.find)
                 .lean()
                 .select('-_id -__v')
                 .exec();
@@ -30,16 +32,15 @@ export class DeliverableRepository
         }
     }
 
-    public async findOneRaw(query: FindQuery): Promise<Deliverable> {
+    public async findOneRaw(
+        query: FindQuery<DeliverableType>,
+    ): Promise<Deliverable> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
-            return await this.model
-                .findOne(query.find as FilterQuery<DeliverableType>)
-                .lean()
-                .exec();
+            return await this.model.findOne(query.find).lean().exec();
         } catch (error: any) {
             throw error;
         }
@@ -57,10 +58,12 @@ export class DeliverableRepository
         }
     }
 
-    public async getAll(query?: FindQuery): Promise<Deliverable[]> {
+    public async getAll(
+        query?: FindQuery<DeliverableType>,
+    ): Promise<Deliverable[]> {
         try {
             return await this.model
-                .find((query?.find as FilterQuery<DeliverableType>) || {})
+                .find(query?.find || {})
                 .sort(query?.sort || {})
                 .limit(query?.limit || 0)
                 .lean()
@@ -94,14 +97,14 @@ export class DeliverableRepository
         }
     }
 
-    public async delete(query: FindQuery): Promise<boolean> {
+    public async delete(query: FindQuery<DeliverableType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find as FilterQuery<DeliverableType>,
+                query.find,
             );
 
             return response.deletedCount === 1;
@@ -110,16 +113,16 @@ export class DeliverableRepository
         }
     }
 
-    public async deleteMany(query: FindQuery): Promise<boolean> {
+    public async deleteMany(
+        query: FindQuery<DeliverableType>,
+    ): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
             const response: MongooseDeleteResponse =
-                await this.model.deleteMany(
-                    query.find as FilterQuery<DeliverableType>,
-                );
+                await this.model.deleteMany(query.find);
 
             return response.deletedCount > 0;
         } catch (error: any) {

@@ -1,20 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
-import { ProjectsModule } from '../../../projects.module';
-import { GetFilteredProjectsService } from '../../../services/get-filtered-projects.service';
+import { DaoProposalsModule } from '../../../dao-proposals.module';
+import { GetDaoProposalsService } from '../../../services/get-dao-proposals.service';
 
-describe('GetFilteredProjectsService', () => {
+describe('GetFilteredDaoProposalsService', () => {
     let module: TestingModule;
-    let service: GetFilteredProjectsService;
+    let service: GetDaoProposalsService;
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
-            imports: [DatabaseModule, ProjectsModule, AppModule],
+            imports: [DatabaseModule, DaoProposalsModule, AppModule],
         }).compile();
 
-        service = module.get<GetFilteredProjectsService>(
-            GetFilteredProjectsService,
+        service = module.get<GetDaoProposalsService>(
+            GetDaoProposalsService,
         );
     });
 

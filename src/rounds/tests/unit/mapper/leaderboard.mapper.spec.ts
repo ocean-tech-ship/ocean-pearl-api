@@ -13,6 +13,9 @@ describe('LeaderboardMapper', () => {
     let module: TestingModule;
     let service: LeaderboardMapper;
 
+    const futureDate: Date = faker.date.future();
+    const pastDate: Date = faker.date.past();
+
     const mapDataProvider = {
         'it should map for USD': {
             round: {
@@ -27,29 +30,38 @@ describe('LeaderboardMapper', () => {
                 },
                 availableFundingUsd: 800000,
                 availableFundingOcean: 0,
-                votingEndDate: faker.date.future(),
-                votingStartDate: faker.date.past(),
-                submissionEndDate: faker.date.past(),
+                votingEndDate: futureDate,
+                votingStartDate: pastDate,
+                submissionEndDate: pastDate,
             } as Round,
-            expected: {
-                amountProposals: 0,
+            expected: new Leaderboard({
                 fundedProposals: [],
+                partiallyFundedProposals: [],
                 notFundedProposals: [],
-                overallFunding: 800000,
-                overallRequestedFunding: 0,
+                amountProposals: 0,
                 maxVotes: 0,
-                totalVotes: 0,
-                round: 10,
-                paymentOption: PaymentOptionEnum.Usd,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
+                        totalFunding: 200000,
                         remainingFunding: 200000,
+                        potentialRemainingFunding: 200000,
+                    },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 600000,
+                        remainingFunding: 600000,
                     },
                 },
-                remainingGeneralFunding: 600000,
+                paymentOption: PaymentOptionEnum.Usd,
+                votingEndDate: futureDate,
+                votingStartDate: pastDate,
                 status: RoundStatusEnum.VotingInProgress,
-            } as Leaderboard,
+                round: 10,
+                overallFunding: 800000,
+                overallRequestedFunding: 0,
+                totalVotes: 0,
+            }),
         },
         'it should map for OCEAN': {
             round: {
@@ -64,13 +76,14 @@ describe('LeaderboardMapper', () => {
                 },
                 availableFundingOcean: 800000,
                 availableFundingUsd: 0,
-                votingEndDate: faker.date.future(),
-                votingStartDate: faker.date.past(),
-                submissionEndDate: faker.date.past(),
+                votingEndDate: futureDate,
+                votingStartDate: pastDate,
+                submissionEndDate: pastDate,
             } as Round,
-            expected: {
+            expected: new Leaderboard({
                 amountProposals: 0,
                 fundedProposals: [],
+                partiallyFundedProposals: [],
                 notFundedProposals: [],
                 overallFunding: 800000,
                 overallRequestedFunding: 0,
@@ -78,15 +91,23 @@ describe('LeaderboardMapper', () => {
                 totalVotes: 0,
                 round: 10,
                 paymentOption: PaymentOptionEnum.Ocean,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
+                        totalFunding: 200000,
                         remainingFunding: 200000,
+                        potentialRemainingFunding: 200000,
+                    },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 600000,
+                        remainingFunding: 600000,
                     },
                 },
-                remainingGeneralFunding: 600000,
                 status: RoundStatusEnum.VotingInProgress,
-            } as Leaderboard,
+                votingEndDate: futureDate,
+                votingStartDate: pastDate,
+            }),
         },
         'it should map the correct status: proposal submission': {
             round: {
@@ -101,13 +122,14 @@ describe('LeaderboardMapper', () => {
                 },
                 availableFundingUsd: 800000,
                 availableFundingOcean: 0,
-                votingEndDate: faker.date.future(),
-                votingStartDate: faker.date.future(),
-                submissionEndDate: faker.date.future(),
+                votingEndDate: futureDate,
+                votingStartDate: futureDate,
+                submissionEndDate: futureDate,
             } as Round,
-            expected: {
+            expected: new Leaderboard({
                 amountProposals: 0,
                 fundedProposals: [],
+                partiallyFundedProposals: [],
                 notFundedProposals: [],
                 overallFunding: 800000,
                 overallRequestedFunding: 0,
@@ -115,15 +137,23 @@ describe('LeaderboardMapper', () => {
                 totalVotes: 0,
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
+                        totalFunding: 200000,
                         remainingFunding: 200000,
+                        potentialRemainingFunding: 200000,
+                    },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 600000,
+                        remainingFunding: 600000,
                     },
                 },
-                remainingGeneralFunding: 600000,
                 status: RoundStatusEnum.ProposalSubmission,
-            } as Leaderboard,
+                votingEndDate: futureDate,
+                votingStartDate: futureDate,
+            }),
         },
         'it should map the correct status: pending': {
             round: {
@@ -138,13 +168,14 @@ describe('LeaderboardMapper', () => {
                 },
                 availableFundingUsd: 800000,
                 availableFundingOcean: 0,
-                votingEndDate: faker.date.future(),
-                votingStartDate: faker.date.future(),
-                submissionEndDate: faker.date.past(),
+                votingEndDate: futureDate,
+                votingStartDate: futureDate,
+                submissionEndDate: pastDate,
             } as Round,
-            expected: {
+            expected: new Leaderboard({
                 amountProposals: 0,
                 fundedProposals: [],
+                partiallyFundedProposals: [],
                 notFundedProposals: [],
                 overallFunding: 800000,
                 overallRequestedFunding: 0,
@@ -152,15 +183,23 @@ describe('LeaderboardMapper', () => {
                 totalVotes: 0,
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
+                        totalFunding: 200000,
                         remainingFunding: 200000,
+                        potentialRemainingFunding: 200000,
+                    },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 600000,
+                        remainingFunding: 600000,
                     },
                 },
-                remainingGeneralFunding: 600000,
                 status: RoundStatusEnum.Pending,
-            } as Leaderboard,
+                votingEndDate: futureDate,
+                votingStartDate: futureDate,
+            }),
         },
         'it should map the correct status: voting in progress': {
             round: {
@@ -175,13 +214,14 @@ describe('LeaderboardMapper', () => {
                 },
                 availableFundingUsd: 800000,
                 availableFundingOcean: 0,
-                votingEndDate: faker.date.future(),
-                votingStartDate: faker.date.past(),
-                submissionEndDate: faker.date.past(),
+                votingEndDate: futureDate,
+                votingStartDate: pastDate,
+                submissionEndDate: pastDate,
             } as Round,
-            expected: {
+            expected: new Leaderboard({
                 amountProposals: 0,
                 fundedProposals: [],
+                partiallyFundedProposals: [],
                 notFundedProposals: [],
                 overallFunding: 800000,
                 overallRequestedFunding: 0,
@@ -189,15 +229,23 @@ describe('LeaderboardMapper', () => {
                 totalVotes: 0,
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
+                        totalFunding: 200000,
                         remainingFunding: 200000,
+                        potentialRemainingFunding: 200000,
+                    },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 600000,
+                        remainingFunding: 600000,
                     },
                 },
-                remainingGeneralFunding: 600000,
                 status: RoundStatusEnum.VotingInProgress,
-            } as Leaderboard,
+                votingEndDate: futureDate,
+                votingStartDate: futureDate,
+            }),
         },
         'it should map the correct status: voting finished': {
             round: {
@@ -212,13 +260,14 @@ describe('LeaderboardMapper', () => {
                 },
                 availableFundingUsd: 800000,
                 availableFundingOcean: 0,
-                votingEndDate: faker.date.past(),
-                votingStartDate: faker.date.past(),
-                submissionEndDate: faker.date.past(),
+                votingEndDate: pastDate,
+                votingStartDate: pastDate,
+                submissionEndDate: pastDate,
             } as Round,
-            expected: {
+            expected: new Leaderboard({
                 amountProposals: 0,
                 fundedProposals: [],
+                partiallyFundedProposals: [],
                 notFundedProposals: [],
                 overallFunding: 800000,
                 overallRequestedFunding: 0,
@@ -226,15 +275,23 @@ describe('LeaderboardMapper', () => {
                 totalVotes: 0,
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
+                        totalFunding: 200000,
                         remainingFunding: 200000,
+                        potentialRemainingFunding: 200000,
+                    },
+                    [EarmarkTypeEnum.General]: {
+                        type: EarmarkTypeEnum.General,
+                        totalFunding: 600000,
+                        remainingFunding: 600000,
                     },
                 },
-                remainingGeneralFunding: 600000,
                 status: RoundStatusEnum.VotingFinished,
-            } as Leaderboard,
+                votingEndDate: futureDate,
+                votingStartDate: futureDate,
+            }),
         },
     };
 
@@ -254,13 +311,9 @@ describe('LeaderboardMapper', () => {
         expect(service).toBeDefined();
     });
 
-    it.each(Object.entries(mapDataProvider))(
-        '%s',
-        (description, { round, expected }) => {
-            expected.voteEndDate = round.votingEndDate,
-            expected.voteStartDate = round.votingStartDate,
-
+    it.each(Object.entries(mapDataProvider))('%s', (description, { round, expected }) => {
+        (expected.votingEndDate = round.votingEndDate),
+            (expected.votingStartDate = round.votingStartDate),
             expect(service.map(round)).toEqual(expected);
-        },
-    );
+    });
 });

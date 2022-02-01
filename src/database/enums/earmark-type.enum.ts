@@ -4,4 +4,5 @@ export enum EarmarkTypeEnum {
     NewEntrants = 'newEntrants',
     CoreTech = 'coreTech',
     NewGeneral = 'newGeneral',
+    General = 'general',
 }

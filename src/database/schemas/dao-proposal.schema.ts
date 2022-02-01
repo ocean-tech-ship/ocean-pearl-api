@@ -1,17 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { CategoryEnum } from '../enums/category.enum';
 import { DaoProposalStatusEnum } from '../enums/dao-proposal-status.enum';
+import { EarmarkTypeEnum } from '../enums/earmark-type.enum';
+import { FundamentalMetricEnum } from '../enums/fundamental-metric.enum';
+import { StandingEnum } from '../enums/standing.enum';
 import { nanoid } from '../functions/nano-id.function';
-import { Project } from './project.schema';
+import { PaginatePlugin } from '../plugins/pagination.plugin';
 import { Deliverable } from './deliverable.schema';
 import { KpiTarget } from './kpi-target.schema';
-import { ApiProperty } from '@nestjs/swagger';
-import { Round } from './round.schema';
-import { StandingEnum } from '../enums/standing.enum';
 import { Picture, PictureSchema } from './picture.schema';
-import { FundamentalMetricEnum } from '../enums/fundamental-metric.enum';
-import { EarmarkTypeEnum } from '../enums/earmark-type.enum';
+import { Project } from './project.schema';
+import { Round } from './round.schema';
 
 export type DaoProposalType = DaoProposal & Document;
 
@@ -247,4 +248,5 @@ export class DaoProposal {
     updatedAt: Date;
 }
 
-export const DaoProposalSchema = SchemaFactory.createForClass(DaoProposal);
+export const DaoProposalSchema =
+    SchemaFactory.createForClass(DaoProposal).plugin(PaginatePlugin);

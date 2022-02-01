@@ -2,7 +2,7 @@
   "name": "ocean-pearl-api",
   "private": true,
   "version": "1.0.0",
-  "description": "API fot the Ocean Pearl project",
+  "description": "API for the Ocean Pearl project",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -22,8 +22,8 @@
     "test:ci": "jest --ci --coverage --reporters=default --reporters=jest-junit"
   },
   "engines": {
-    "node": "12.22.x",
-    "npm": "6.x"
+    "node": "16.13.x",
+    "yarn": "1.22.x"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.44.0",
@@ -39,13 +39,13 @@
     "@nestjs/throttler": "^2.0.0",
     "bcrypt": "^5.0.1",
     "cache-manager": "^3.6.0",
-    "class-transformer": "^0.4.0",
+    "class-transformer": "0.4.0",
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "ethers": "^5.5.2",
     "faker": "^5.5.3",
     "mongoose": "^5.13.13",
-    "nanoid": "^3.1.30",
+    "nanoid": "^3.1.31",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
@@ -53,7 +53,7 @@
     "rxjs": "^6.6.7",
     "sharp": "^0.29.3",
     "svgo": "^2.8.0",
-    "swagger-ui-express": "^4.2.0"
+    "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",

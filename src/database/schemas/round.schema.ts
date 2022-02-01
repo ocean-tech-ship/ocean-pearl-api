@@ -4,13 +4,14 @@ import { Document, Types } from 'mongoose';
 import { BallotTypeEnum } from '../enums/ballot-type.enum';
 import { EarmarkTypeEnum } from '../enums/earmark-type.enum';
 import { PaymentOptionEnum } from '../enums/payment-option.enum';
+import { RemainingFundingStrategyEnum } from '../enums/remaining-funding-strategy.enum';
 import { VoteTypeEnum } from '../enums/vote-type.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { Earmark, EarmarkSchema } from './earmark.schema';
 
 export type RoundType = Round & Document;
 
-export type EarmarksType = { [key in EarmarkTypeEnum]: Earmark};
+export type EarmarksType = { [key in EarmarkTypeEnum]: Earmark };
 
 @Schema({ timestamps: true })
 export class Round {
@@ -65,12 +66,19 @@ export class Round {
     availableFundingUsd: number;
 
     @Prop({
-            type: () => new Map<EarmarkTypeEnum, Earmark>(),
-            of: EarmarkSchema,
-        },
-    )
+        type: () => new Map<EarmarkTypeEnum, Earmark>(),
+        of: EarmarkSchema,
+    })
     @ApiProperty()
     earmarks: EarmarksType;
+
+    @Prop({
+        type: String,
+        enum: RemainingFundingStrategyEnum,
+        default: RemainingFundingStrategyEnum.Recycle,
+    })
+    @ApiProperty()
+    remainingFundingStrategy: RemainingFundingStrategyEnum;
 
     @Prop({
         type: String,

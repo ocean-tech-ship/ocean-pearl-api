@@ -5,6 +5,8 @@ import * as cookieParser from 'cookie-parser';
 import { AssociatedProject } from './account/models/associated-project.model';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { Pagination } from './database/models/pagination.model';
+import { Leaderboard } from './rounds/models/leaderboard.model';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -16,7 +18,7 @@ async function bootstrap() {
         .addCookieAuth()
         .build();
     const document = SwaggerModule.createDocument(app, config, {
-        extraModels: [AssociatedProject],
+        extraModels: [AssociatedProject, Pagination, Leaderboard],
     });
     SwaggerModule.setup('api', app, document);
 

@@ -6,12 +6,17 @@ import { DatabaseModule } from '../../../database/database.module';
 import { LeaderboardProposalBuilder } from '../../builder/leaderboard-proposal.builder';
 import { LeaderboardController } from '../../controller/leaderboard.controller';
 import { LeaderboardMapper } from '../../mapper/leaderboard.mapper';
+import { CalculateNeededVotesService } from '../../services/calculate-needed-votes.service';
 import { GenerateLeaderboardService } from '../../services/generate-leaderboard.service';
+import { GenerateLegacyLeaderboardService } from '../../services/generate-legacy-leaderboard.service';
 import { GetCurrentRoundService } from '../../services/get-current-round.service';
 import { LeaderboardCacheService } from '../../services/leaderboard-cache.service';
-import { EarmarkedPropsoalStrategy } from '../../strategies/earmarked-proposal.strategy';
-import { GeneralPropsoalStrategy } from '../../strategies/general-proposal.strategy';
+import { EarmarkedProposalStrategy } from '../../strategies/earmarked-proposal.strategy';
+import { GeneralProposalStrategy } from '../../strategies/general-proposal.strategy';
 import { LeaderboardStrategyCollection } from '../../strategies/leaderboard-strategy.collection';
+import { LegacyEarmarkedProposalStrategy } from '../../strategies/legacy-earmarked-proposal.strategy';
+import { LegacyGeneralProposalStrategy } from '../../strategies/legacy-general-proposal.strategy';
+import { LegacyLeaderboardStrategyCollection } from '../../strategies/legacy-leaderboard-strategy.collection';
 import { WontReceiveFundingStrategy } from '../../strategies/wont-receive-funding.strategy';
 
 describe('LeaderboardController', () => {
@@ -25,13 +30,18 @@ describe('LeaderboardController', () => {
             providers: [
                 GetCurrentRoundService,
                 GenerateLeaderboardService,
+                CalculateNeededVotesService,
                 LeaderboardMapper,
                 LeaderboardProposalBuilder,
                 LeaderboardStrategyCollection,
                 LeaderboardCacheService,
-                EarmarkedPropsoalStrategy,
-                GeneralPropsoalStrategy,
+                EarmarkedProposalStrategy,
+                GeneralProposalStrategy,
                 WontReceiveFundingStrategy,
+                LegacyEarmarkedProposalStrategy,
+                LegacyGeneralProposalStrategy,
+                LegacyLeaderboardStrategyCollection,
+                GenerateLegacyLeaderboardService,
             ],
         }).compile();
 
