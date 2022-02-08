@@ -55,7 +55,11 @@ export class GenerateLeaderboardService {
                     : proposal.requestedGrantToken;
             leaderboard.totalVotes += proposal.votes + proposal.counterVotes;
 
-            leaderboardProposals.push(await this.leaderboardProposalBuilder.build(proposal, round));
+            let leaderboardProposal: LeaderboardProposal =
+                await this.leaderboardProposalBuilder.build(proposal, round);
+            leaderboardProposal.receivedFunding = 0;
+
+            leaderboardProposals.push(leaderboardProposal);
             leaderboard.amountProposals++;
         }
 
