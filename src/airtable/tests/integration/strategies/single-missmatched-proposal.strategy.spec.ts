@@ -5,8 +5,7 @@ import { DaoProposal } from '../../../../database/schemas/dao-proposal.schema';
 import { Project } from '../../../../database/schemas/project.schema';
 import { AirtableModule } from '../../../airtable.module';
 import { SingleMissmatchedProposalStrategy } from '../../../strategies/single-missmatched-proposal.strategy';
-
-const faker = require('faker');
+import { faker } from '@faker-js/faker';
 
 describe('SingleMissmatchedProposalStrategy', () => {
     let module: TestingModule;
@@ -17,9 +16,7 @@ describe('SingleMissmatchedProposalStrategy', () => {
             imports: [DatabaseModule, AppModule, AirtableModule],
         }).compile();
 
-        service = module.get<SingleMissmatchedProposalStrategy>(
-            SingleMissmatchedProposalStrategy,
-        );
+        service = module.get<SingleMissmatchedProposalStrategy>(SingleMissmatchedProposalStrategy);
     });
 
     afterAll(async () => {
@@ -34,7 +31,7 @@ describe('SingleMissmatchedProposalStrategy', () => {
         expect(
             service.canHandle(null, {
                 project: faker.datatype.hexaDecimal(10),
-            } as DaoProposal),
+            } as unknown as DaoProposal),
         ).resolves.toBeTruthy();
     });
 
@@ -42,7 +39,7 @@ describe('SingleMissmatchedProposalStrategy', () => {
         expect(
             service.canHandle(
                 {} as Project,
-                { project: faker.datatype.hexaDecimal(10) } as DaoProposal,
+                { project: faker.datatype.hexaDecimal(10) } as unknown as DaoProposal,
             ),
         ).resolves.toBeFalsy();
     });

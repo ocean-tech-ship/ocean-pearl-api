@@ -43,7 +43,6 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "ethers": "^5.5.4",
-    "faker": "^5.5.3",
     "mongoose": "^6.2.1",
     "nanoid": "^3.1.31",
     "passport": "^0.5.2",
@@ -56,6 +55,7 @@
     "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.0.0-alpha.6",
     "@nestjs/cli": "^8.2.0",
     "@nestjs/schematics": "^8.0.6",
     "@nestjs/testing": "^8.2.6",

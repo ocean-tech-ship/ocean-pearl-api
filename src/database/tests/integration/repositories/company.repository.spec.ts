@@ -5,8 +5,8 @@ import { DatabaseModule } from '../../../database.module';
 import { nanoid } from '../../../functions/nano-id.function';
 import { CompanyRepository } from '../../../repositories/company.repository';
 import { Company } from '../../../schemas/company.schema';
+import { faker } from '@faker-js/faker';
 
-const faker = require('faker');
 const COMPANY_ID: string = nanoid();
 const COMPANY_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
@@ -83,9 +83,7 @@ describe('CompanyRepository', () => {
         });
 
         test('it should delete a company', async () => {
-            expect(
-                await service.delete({ find: { id: company.id } }),
-            ).toBeTruthy();
+            expect(await service.delete({ find: { id: company.id } })).toBeTruthy();
         });
     });
 });
