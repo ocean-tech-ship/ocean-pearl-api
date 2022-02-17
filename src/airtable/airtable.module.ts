@@ -1,4 +1,4 @@
-import { HttpModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '../database/database.module';
 import { AirtableUrlBuilder } from './builder/airtable-url.builder';
@@ -15,6 +15,7 @@ import { NewProposalStrategy } from './strategies/new-proposal.strategy';
 import { SingleMissmatchedProposalStrategy } from './strategies/single-missmatched-proposal.strategy';
 import { StrategyCollection } from './strategies/strategy.collection';
 import { UpdateProposalStrategy } from './strategies/update-proposal.strategy';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
     imports: [HttpModule, DatabaseModule],

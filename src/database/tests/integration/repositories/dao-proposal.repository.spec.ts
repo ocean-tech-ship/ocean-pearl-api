@@ -9,8 +9,8 @@ import { StandingEnum } from '../../../enums/standing.enum';
 import { nanoid } from '../../../functions/nano-id.function';
 import { DaoProposalRepository } from '../../../repositories/dao-proposal.repository';
 import { DaoProposal } from '../../../schemas/dao-proposal.schema';
+import { faker } from '@faker-js/faker';
 
-const faker = require('faker');
 const DAO_PROPOSAL_ID: string = nanoid();
 const DAO_PROPOSAL_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
@@ -65,9 +65,7 @@ describe('DaoProposalRepository', () => {
 
     describe('Given I have a daoProposal repository', () => {
         test('it should save a daoProposal', async () => {
-            expect(await service.create(daoProposal)).toEqual(
-                DAO_PROPOSAL_MONGO_ID,
-            );
+            expect(await service.create(daoProposal)).toEqual(DAO_PROPOSAL_MONGO_ID);
         });
 
         test('it should return a daoProposal', async () => {
@@ -105,9 +103,7 @@ describe('DaoProposalRepository', () => {
         });
 
         test('it should delete a daoProposal', async () => {
-            expect(
-                await service.delete({ find: { id: daoProposal.id } }),
-            ).toBeTruthy();
+            expect(await service.delete({ find: { id: daoProposal.id } })).toBeTruthy();
         });
     });
 });

@@ -6,8 +6,7 @@ import { Round } from '../../../../database/schemas/round.schema';
 import { RoundStatusEnum } from '../../../enums/round-status.enum';
 import { LeaderboardMapper } from '../../../mapper/leaderboard.mapper';
 import { Leaderboard } from '../../../models/leaderboard.model';
-
-const faker = require('faker');
+import { faker } from '@faker-js/faker';
 
 describe('LeaderboardMapper', () => {
     let module: TestingModule;

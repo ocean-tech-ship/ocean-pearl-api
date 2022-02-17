@@ -7,8 +7,8 @@ import { nanoid } from '../../../functions/nano-id.function';
 import { PearlUserRepository } from '../../../repositories/pearl-user.repository';
 import { PearlUser } from '../../../schemas/pearl-user.schema';
 import { SocialMedia } from '../../../schemas/social-media.schema';
+import { faker } from '@faker-js/faker';
 
-const faker = require('faker');
 const PEARL_USER_ID: string = nanoid();
 const PEARL_USER_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
@@ -45,9 +45,7 @@ describe('PearlUserRepository', () => {
 
     describe('Given I have a ocean user repository', () => {
         test('it should save a user', async () => {
-            expect(await service.create(oceanUser)).toEqual(
-                PEARL_USER_MONGO_ID,
-            );
+            expect(await service.create(oceanUser)).toEqual(PEARL_USER_MONGO_ID);
         });
 
         test('it should return a user', async () => {
@@ -81,9 +79,7 @@ describe('PearlUserRepository', () => {
         });
 
         test('it should delete a user', async () => {
-            expect(
-                await service.delete({ find: { id: oceanUser.id } }),
-            ).toBeTruthy();
+            expect(await service.delete({ find: { id: oceanUser.id } })).toBeTruthy();
         });
     });
 });
