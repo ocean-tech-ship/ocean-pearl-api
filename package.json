@@ -44,7 +44,7 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "ethers": "^5.5.4",
-    "mongoose": "^6.2.1",
+    "mongoose": "^6.2.2",
     "nanoid": "^3.1.31",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
