@@ -29,8 +29,7 @@ import { LeaderboardCacheService } from '../../../services/leaderboard-cache.ser
 import { LegacyEarmarkedProposalStrategy } from '../../../strategies/legacy-earmarked-proposal.strategy';
 import { LegacyGeneralProposalStrategy } from '../../../strategies/legacy-general-proposal.strategy';
 import { LegacyLeaderboardStrategyCollection } from '../../../strategies/legacy-leaderboard-strategy.collection';
-
-const faker = require('faker');
+import { faker } from '@faker-js/faker';
 
 describe('GenerateLegacyLeaderboardService', () => {
     let module: TestingModule;
@@ -238,7 +237,8 @@ describe('GenerateLegacyLeaderboardService', () => {
                         yesVotes: 200000,
                         noVotes: 10000,
                         effectiveVotes: 190000,
-                        tags: [CategoryEnum.Outreach]}),
+                        tags: [CategoryEnum.Outreach],
+                    }),
                     new LeaderboardProposal({
                         id: 'D5C50B1aF2',
                         title: 'Ocean Pearl Proposal 2',
@@ -278,7 +278,8 @@ describe('GenerateLegacyLeaderboardService', () => {
                         yesVotes: 100000,
                         noVotes: 10000,
                         effectiveVotes: 90000,
-                        tags: [CategoryEnum.Outreach]}),
+                        tags: [CategoryEnum.Outreach],
+                    }),
                 ],
                 notFundedProposals: [
                     new LeaderboardProposal({
@@ -295,7 +296,7 @@ describe('GenerateLegacyLeaderboardService', () => {
                         yesVotes: 100000,
                         noVotes: 55000,
                         effectiveVotes: 45000,
-                        tags: [CategoryEnum.Outreach]
+                        tags: [CategoryEnum.Outreach],
                     }),
                     new LeaderboardProposal({
                         id: 'D5C50B1aF6',
@@ -328,7 +329,8 @@ describe('GenerateLegacyLeaderboardService', () => {
                         yesVotes: 10000,
                         noVotes: 100000,
                         effectiveVotes: -90000,
-                        tags: [CategoryEnum.CoreSoftware]}),
+                        tags: [CategoryEnum.CoreSoftware],
+                    }),
                 ],
                 amountProposals: 6,
                 overallFunding: 100000,
@@ -353,8 +355,8 @@ describe('GenerateLegacyLeaderboardService', () => {
                 status: RoundStatusEnum.VotingInProgress,
                 votingStartDate: votingStartDate,
                 votingEndDate: votingEndDate,
-                maxVotes: 200000
-            })
+                maxVotes: 200000,
+            }),
         );
     });
 });

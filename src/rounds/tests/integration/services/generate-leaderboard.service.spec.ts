@@ -29,8 +29,7 @@ import { EarmarkedProposalStrategy } from '../../../strategies/earmarked-proposa
 import { GeneralProposalStrategy } from '../../../strategies/general-proposal.strategy';
 import { LeaderboardStrategyCollection } from '../../../strategies/leaderboard-strategy.collection';
 import { WontReceiveFundingStrategy } from '../../../strategies/wont-receive-funding.strategy';
-
-const faker = require('faker');
+import { faker } from '@faker-js/faker';
 
 describe('GenerateLeaderboardService', () => {
     let module: TestingModule;
@@ -226,7 +225,7 @@ describe('GenerateLeaderboardService', () => {
                         yesVotes: 200000,
                         noVotes: 10000,
                         effectiveVotes: 190000,
-                        tags: [CategoryEnum.Outreach]
+                        tags: [CategoryEnum.Outreach],
                     }),
                     new LeaderboardProposal({
                         id: 'D5C50B1aF2',
@@ -271,7 +270,7 @@ describe('GenerateLeaderboardService', () => {
                         neededVotes: {
                             fullyFunded: 100001,
                         },
-                        tags: [CategoryEnum.Outreach]
+                        tags: [CategoryEnum.Outreach],
                     }),
                 ],
                 notFundedProposals: [
@@ -293,7 +292,7 @@ describe('GenerateLeaderboardService', () => {
                             fullyFunded: 145001,
                             partiallyFunded: 45001,
                         },
-                        tags: [CategoryEnum.Outreach]
+                        tags: [CategoryEnum.Outreach],
                     }),
                     new LeaderboardProposal({
                         id: 'D5C50B1aF6',
@@ -333,7 +332,8 @@ describe('GenerateLeaderboardService', () => {
                             fullyFunded: 280001,
                             partiallyFunded: 180001,
                         },
-                        tags: [CategoryEnum.CoreSoftware]}),
+                        tags: [CategoryEnum.CoreSoftware],
+                    }),
                 ],
                 amountProposals: 6,
                 overallFunding: 100000,
@@ -358,7 +358,7 @@ describe('GenerateLeaderboardService', () => {
                 status: RoundStatusEnum.VotingInProgress,
                 votingStartDate: votingStartDate,
                 votingEndDate: votingEndDate,
-                maxVotes: 200000
+                maxVotes: 200000,
             }),
         );
     });

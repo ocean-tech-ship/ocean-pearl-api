@@ -5,12 +5,12 @@ import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-s
 import { FundamentalMetricEnum } from '../../../../database/enums/fundamental-metric.enum';
 import { StandingEnum } from '../../../../database/enums/standing.enum';
 import { DaoProposalMapper } from '../../../mapper/dao-proposal.mapper';
+import { faker } from '@faker-js/faker';
 
-const faker = require('faker');
 const AIRTABLE_ID = faker.datatype.hexaDecimal(10);
-const ROUND_ID = Types.ObjectId(faker.datatype.hexaDecimal(10));
+const ROUND_ID = new Types.ObjectId(faker.datatype.hexaDecimal(10));
 
-let airtableData = {
+const airtableData = {
     'Project Name': 'Test',
     'Proposal State': 'Running',
     'Grant Category': 'DAO',
@@ -72,7 +72,7 @@ describe('DaoProposalMapper', () => {
             standing: StandingEnum.Completed,
             status: DaoProposalStatusEnum.Running,
             title: 'Test',
-            voteUrl: "",
+            voteUrl: '',
             yesVotes: 4200000,
             walletAddress: airtableData['Wallet Address'].toLowerCase(),
         });
