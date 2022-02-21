@@ -4,9 +4,7 @@ import { Document, Types } from 'mongoose';
 import { CategoryEnum } from '../enums/category.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
-import { Company } from './company.schema';
 import { DaoProposal } from './dao-proposal.schema';
-import { PearlUser } from './pearl-user.schema';
 import { Picture, PictureSchema } from './picture.schema';
 import { SocialMedia, SocialMediaSchema } from './social-media.schema';
 
@@ -108,12 +106,6 @@ export class Project {
     pictures: Picture[];
 
     @Prop({
-        type: Types.ObjectId,
-        ref: 'Company',
-    })
-    company: Company | Types.ObjectId;
-
-    @Prop({
         type: [
             {
                 type: Types.ObjectId,
@@ -127,17 +119,6 @@ export class Project {
         isArray: true,
     })
     daoProposals: DaoProposal[] | Types.ObjectId[];
-
-    @Prop({
-        type: [
-            {
-                type: Types.ObjectId,
-                ref: 'PearlUser',
-            },
-        ],
-        default: void 0,
-    })
-    team: PearlUser[] | Types.ObjectId[];
 
     @Prop({
         type: String,
