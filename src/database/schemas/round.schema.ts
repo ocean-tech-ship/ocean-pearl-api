@@ -7,11 +7,12 @@ import { PaymentOptionEnum } from '../enums/payment-option.enum';
 import { RemainingFundingStrategyEnum } from '../enums/remaining-funding-strategy.enum';
 import { VoteTypeEnum } from '../enums/vote-type.enum';
 import { nanoid } from '../functions/nano-id.function';
-import { Earmark, EarmarkSchema } from './earmark.schema';
+import { GrantPool, GrantPoolSchema } from './grant-pool.schema';
+import { Funding } from './funding.schema';
 
 export type RoundType = Round & Document;
 
-export type EarmarksType = { [key in EarmarkTypeEnum]: Earmark };
+export type GrantPoolsType = { [key in EarmarkTypeEnum]: GrantPool };
 
 @Schema({ timestamps: true })
 export class Round {
@@ -34,43 +35,23 @@ export class Round {
     round: number;
 
     @Prop({
-        type: Number,
-        min: 0,
-        default: 0,
+        type: Funding,
     })
     @ApiProperty()
-    maxGrantOcean: number;
+    maxGrant: Funding;
 
     @Prop({
-        type: Number,
-        min: 0,
-        default: 0,
+        type: Funding,
     })
     @ApiProperty()
-    maxGrantUsd: number;
+    availableFunding: Funding;
 
     @Prop({
-        type: Number,
-        min: 0,
-        default: 0,
+        type: () => new Map<EarmarkTypeEnum, GrantPool>(),
+        of: GrantPoolSchema,
     })
     @ApiProperty()
-    availableFundingOcean: number;
-
-    @Prop({
-        type: Number,
-        min: 0,
-        default: 0,
-    })
-    @ApiProperty()
-    availableFundingUsd: number;
-
-    @Prop({
-        type: () => new Map<EarmarkTypeEnum, Earmark>(),
-        of: EarmarkSchema,
-    })
-    @ApiProperty()
-    earmarks: EarmarksType;
+    grantPools: GrantPoolsType;
 
     @Prop({
         type: String,
