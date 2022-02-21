@@ -53,9 +53,9 @@ export class GenerateLegacyLeaderboardService {
 
             leaderboard.overallRequestedFunding +=
                 leaderboard.paymentOption === PaymentOptionEnum.Usd
-                    ? proposal.requestedGrantUsd
-                    : proposal.requestedGrantToken;
-            leaderboard.totalVotes += proposal.votes + proposal.counterVotes;
+                    ? proposal.requestedFunding.usd
+                    : proposal.requestedFunding.ocean;
+            leaderboard.totalVotes += proposal.yesVotes + proposal.noVotes;
 
             leaderboardProposals.push(
                 await this.leaderboardProposalBuilder.build(proposal, fundingRound),
