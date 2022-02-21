@@ -10,8 +10,6 @@ import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 
 @Injectable()
 export class LeaderboardProposalBuilder {
-    private readonly EARMARK_TAG = 'earmark';
-
     public constructor(private projectRepository: ProjectRepository) {}
 
     public async build(proposal: DaoProposal, round: Round): Promise<LeaderboardProposal> {
@@ -20,10 +18,6 @@ export class LeaderboardProposalBuilder {
             find: { id: project.id },
         });
 
-        const receivedFunding =
-            round.paymentOption === PaymentOptionEnum.Usd
-                ? proposal.grantedUsd
-                : proposal.grantedToken;
         const mappedLeaderboardProposal = new LeaderboardProposal({
             id: proposal.id,
             title: proposal.title,
@@ -36,21 +30,23 @@ export class LeaderboardProposalBuilder {
             }),
             requestedFunding:
                 round.paymentOption === PaymentOptionEnum.Usd
-                    ? proposal.requestedGrantUsd
-                    : proposal.requestedGrantToken,
-            receivedFunding: receivedFunding ?? 0,
-            yesVotes: proposal.votes,
-            noVotes: proposal.counterVotes,
+                    ? proposal.requestedFunding.usd
+                    : proposal.requestedFunding.ocean,
+            receivedFunding:
+                round.paymentOption === PaymentOptionEnum.Usd
+                    ? proposal.receivedFunding.usd
+                    : proposal.receivedFunding.ocean,
+            yesVotes: proposal.yesVotes,
+            noVotes: proposal.noVotes,
             effectiveVotes: this.calculateEffectiveVotes(
-                proposal.votes,
-                proposal.counterVotes,
+                proposal.yesVotes,
+                proposal.noVotes,
                 round.round,
             ),
             tags: [proposal.category],
         });
 
         if (proposal.earmark) {
-            mappedLeaderboardProposal.tags.push(this.EARMARK_TAG);
             mappedLeaderboardProposal.isEarmarked = true;
             mappedLeaderboardProposal.earmarkType = proposal.earmark;
         }
