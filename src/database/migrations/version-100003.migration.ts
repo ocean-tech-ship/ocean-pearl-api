@@ -2,7 +2,7 @@ import { Connection } from 'mongoose';
 import { MigrationInterface } from '../interfaces/migration.interface';
 import { Funding } from '../schemas/funding.schema';
 
-export default class Version100002 implements MigrationInterface {
+export default class Version100003 implements MigrationInterface {
     public getVersion(): number {
         // count this number up with each migration
         return 100003;
