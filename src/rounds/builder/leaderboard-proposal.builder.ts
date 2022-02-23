@@ -58,8 +58,8 @@ export class LeaderboardProposalBuilder {
         return mappedLeaderboardProposal;
     }
 
-    private calculateEffectiveVotes(votes: number, counterVotes: number, round: number): number {
-        return round >= 8 ? votes - counterVotes : votes;
+    private calculateEffectiveVotes(yesVotes: number, noVotes: number, round: number): number {
+        return round >= 8 ? yesVotes - noVotes : yesVotes;
     }
 
     private countFinishedProposals(proposals: DaoProposal[]): number {
