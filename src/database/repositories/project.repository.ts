@@ -24,21 +24,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .findOne(query.find)
                 .lean()
                 .populate({
-                    path: 'company',
-                    select: '-_id -__v',
-                })
-                .populate({
                     path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                    select: '-project -_id -__v -deliverables -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
                         select: '-_id -__v',
                     },
-                })
-                .populate({
-                    path: 'team',
-                    select: '-_id -__v',
                 })
                 .select('-_id -__v')
                 .exec();
@@ -65,21 +57,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .findOne({ id: id })
                 .lean()
                 .populate({
-                    path: 'company',
-                    select: '-_id -__v',
-                })
-                .populate({
                     path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                    select: '-project -_id -__v -deliverables -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
                         select: '-_id -__v',
                     },
-                })
-                .populate({
-                    path: 'team',
-                    select: '-_id -__v',
                 })
                 .select('-_id -__v')
                 .exec();
@@ -96,21 +80,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .limit(query?.limit || 0)
                 .lean()
                 .populate({
-                    path: 'company',
-                    select: '-_id -__v',
-                })
-                .populate({
                     path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                    select: '-project -_id -__v -deliverables -airtableId',
                     populate: {
                         path: 'fundingRound',
                         model: 'Round',
                         select: '-_id -__v',
                     },
-                })
-                .populate({
-                    path: 'team',
-                    select: '-_id -__v',
                 })
                 .select('-_id -__v')
                 .exec();
@@ -129,21 +105,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 page: query?.page || 0,
                 populate: [
                     {
-                        path: 'company',
-                        select: '-_id -__v',
-                    },
-                    {
                         path: 'daoProposals',
-                        select: '-project -_id -__v -deliverables -kpiTargets -airtableId',
+                        select: '-project -_id -__v -deliverables -airtableId',
                         populate: {
                             path: 'fundingRound',
                             model: 'Round',
                             select: '-_id -__v',
                         },
-                    },
-                    {
-                        path: 'team',
-                        select: '-_id -__v',
                     },
                 ],
                 select: '-_id -__v',

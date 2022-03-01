@@ -80,16 +80,16 @@ export class Leaderboard {
     round: number;
 
     @ApiProperty()
-    overallFunding: number;
+    overallFunding: number = 0;
 
     @ApiProperty()
     remainingFundingStrategy: RemainingFundingStrategyEnum;
 
     @ApiProperty()
-    overallRequestedFunding: number;
+    overallRequestedFunding: number = 0;
 
     @ApiProperty()
-    totalVotes: number;
+    totalVotes: number = 0;
 
     constructor(attributes: LeaderboardProperties = {}) {
         for (let key in attributes) {

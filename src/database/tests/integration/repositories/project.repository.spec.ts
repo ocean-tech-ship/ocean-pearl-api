@@ -28,7 +28,6 @@ describe('ProjectRepository', () => {
             url: faker.internet.url(),
             fileExtension: FileExtensionsEnum.Jpeg,
         } as Picture,
-        company: new Types.ObjectId(),
         associatedAddresses: ['0x967da4048cD07aB37855c090aAF366e4ce1b9F48'],
         paymentWalletsAddresses: [
             '0x967da4048cD07aB37855c090aAF366e4ce1b9F42',
@@ -72,7 +71,6 @@ describe('ProjectRepository', () => {
                 socialMedia: dbProject.socialMedia,
                 category: dbProject.category,
                 logo: dbProject.logo,
-                company: dbProject.company,
             }).toEqual({
                 id: PROJECT_ID,
                 title: 'Best project ever',
@@ -83,7 +81,6 @@ describe('ProjectRepository', () => {
                     url: project.logo.url,
                     fileExtension: project.logo.fileExtension,
                 },
-                company: null,
                 category: CategoryEnum.CoreSoftware,
             });
         });

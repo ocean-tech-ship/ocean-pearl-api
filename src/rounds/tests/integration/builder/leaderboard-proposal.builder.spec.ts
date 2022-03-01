@@ -15,6 +15,7 @@ import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-status.enum';
 import { StandingEnum } from '../../../../database/enums/standing.enum';
 import { LeaderboardProject } from '../../../models/leaderboard-project.model';
+import { Funding } from '../../../../database/schemas/funding.schema';
 
 describe('LeaderboardProposalBuilder', () => {
     let module: TestingModule;
@@ -30,10 +31,13 @@ describe('LeaderboardProposalBuilder', () => {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
                 title: 'Ocean Pearl Proposal',
-                votes: 100000,
-                counterVotes: 10000,
-                requestedGrantUsd: 1000,
-                requestedGrantToken: 2000,
+                yesVotes: 100000,
+                noVotes: 10000,
+                requestedFunding: {
+                    usd: 1000,
+                    ocean: 2000,
+                },
+                receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
                 voteUrl: 'https://port.oceanprotocol.com/',
             } as DaoProposal,
@@ -89,10 +93,13 @@ describe('LeaderboardProposalBuilder', () => {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
                 title: 'Ocean Pearl Proposal',
-                votes: 100000,
-                counterVotes: 10000,
-                requestedGrantUsd: 1000,
-                requestedGrantToken: 2000,
+                yesVotes: 100000,
+                noVotes: 10000,
+                requestedFunding: {
+                    usd: 1000,
+                    ocean: 2000,
+                },
+                receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
             } as DaoProposal,
             round: {
@@ -140,10 +147,13 @@ describe('LeaderboardProposalBuilder', () => {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
                 title: 'Ocean Pearl Proposal',
-                votes: 100000,
-                counterVotes: 10000,
-                requestedGrantUsd: 1000,
-                requestedGrantToken: 2000,
+                yesVotes: 100000,
+                noVotes: 10000,
+                requestedFunding: {
+                    usd: 1000,
+                    ocean: 2000,
+                },
+                receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
             } as DaoProposal,
             round: {
@@ -185,10 +195,13 @@ describe('LeaderboardProposalBuilder', () => {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
                 title: 'Ocean Pearl Proposal',
-                votes: 100000,
-                counterVotes: 10000,
-                requestedGrantUsd: 1000,
-                requestedGrantToken: 2000,
+                yesVotes: 100000,
+                noVotes: 10000,
+                requestedFunding: {
+                    usd: 1000,
+                    ocean: 2000,
+                },
+                receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
             } as DaoProposal,
             round: {
@@ -239,10 +252,13 @@ describe('LeaderboardProposalBuilder', () => {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: PROPOSAL_ID,
                 title: 'Ocean Pearl Proposal',
-                votes: 100000,
-                counterVotes: 10000,
-                requestedGrantUsd: 1000,
-                requestedGrantToken: 2000,
+                yesVotes: 100000,
+                noVotes: 10000,
+                requestedFunding: {
+                    usd: 1000,
+                    ocean: 2000,
+                },
+                receivedFunding: new Funding(),
                 earmark: EarmarkTypeEnum.NewEntrants,
                 category: CategoryEnum.Outreach,
             } as DaoProposal,
@@ -293,7 +309,7 @@ describe('LeaderboardProposalBuilder', () => {
                 yesVotes: 100000,
                 noVotes: 10000,
                 effectiveVotes: 90000,
-                tags: [CategoryEnum.Outreach, 'earmark'],
+                tags: [CategoryEnum.Outreach],
                 isEarmarked: true,
                 earmarkType: EarmarkTypeEnum.NewEntrants,
             })

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DaoProposalStatusEnum } from '../../database/enums/dao-proposal-status.enum';
 import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
-import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
 import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProposalBuilder } from '../builder/leaderboard-proposal.builder';
@@ -49,15 +48,12 @@ export class GenerateLeaderboardService {
                 continue;
             }
 
-            leaderboard.overallRequestedFunding +=
-                leaderboard.paymentOption === PaymentOptionEnum.Usd
-                    ? proposal.requestedGrantUsd
-                    : proposal.requestedGrantToken;
-            leaderboard.totalVotes += proposal.votes + proposal.counterVotes;
-
             let leaderboardProposal: LeaderboardProposal =
                 await this.leaderboardProposalBuilder.build(proposal, round);
             leaderboardProposal.receivedFunding = 0;
+
+            leaderboard.overallRequestedFunding += leaderboardProposal.requestedFunding;
+            leaderboard.totalVotes += leaderboardProposal.yesVotes + leaderboardProposal.noVotes;
 
             leaderboardProposals.push(leaderboardProposal);
             leaderboard.amountProposals++;
