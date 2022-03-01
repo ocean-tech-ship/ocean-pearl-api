@@ -3,6 +3,7 @@ import {
     Controller,
     Get,
     Param,
+    Post,
     Put,
     Req,
     UploadedFiles,
@@ -10,7 +11,7 @@ import {
     UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import {
     ApiBody,
     ApiOkResponse,
@@ -20,6 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthenticatedUser } from '../../auth/models/authenticated-user.model';
+import { ProjectCreationGuard } from '../guards/project-creation.guard';
 import { ProjectGuard } from '../guards/project.guard';
 import { AssociatedProject } from '../models/associated-project.model';
 import { UpdatedProject } from '../models/updated-project.model';
@@ -27,7 +29,7 @@ import { GetAssociatedProjectsService } from '../services/get-associated-project
 import { UpdateProjectService } from '../services/update-project.service';
 
 @ApiTags('account')
-@UseGuards(AuthGuard('jwt-refresh'))
+// @UseGuards(AuthGuard('jwt-refresh'))
 @Controller('account')
 export class AccountController {
     public constructor(
@@ -69,7 +71,7 @@ export class AccountController {
         };
     }
 
-    @Put('/project/:id')
+    @Put('/projects/:id')
     @ApiBody({
         type: UpdatedProject,
     })
@@ -114,5 +116,12 @@ export class AccountController {
         } catch (error) {
             throw error;
         }
+    }
+
+    @Post('/projects')
+    @UseGuards(ProjectCreationGuard)
+    public async createProject(@Req() request: Request, @Body() test: any): Promise<void> {
+        console.log('CONTROLLER');
+        console.log(test);
     }
 }

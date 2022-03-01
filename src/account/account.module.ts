@@ -10,6 +10,7 @@ import { GetAssociatedProjectsService } from './services/get-associated-projects
 import { UpdateProjectService } from './services/update-project.service';
 import { UtilsModule } from '../utils/utils.module';
 import { PicturesService } from '../utils/services/pictures.service';
+import { ProjectCreationGuard } from './guards/project-creation.guard';
 
 @Module({
     imports: [AuthModule, DatabaseModule, AwsModule, UtilsModule],
@@ -19,6 +20,7 @@ import { PicturesService } from '../utils/services/pictures.service';
         ManagedProjectMapper,
         UpdateProjectService,
         ProjectGuard,
+        ProjectCreationGuard,
         PicturesService,
     ],
 })
