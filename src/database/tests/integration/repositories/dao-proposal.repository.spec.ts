@@ -9,8 +9,8 @@ import { StandingEnum } from '../../../enums/standing.enum';
 import { nanoid } from '../../../functions/nano-id.function';
 import { DaoProposalRepository } from '../../../repositories/dao-proposal.repository';
 import { DaoProposal } from '../../../schemas/dao-proposal.schema';
+import { faker } from '@faker-js/faker';
 
-const faker = require('faker');
 const DAO_PROPOSAL_ID: string = nanoid();
 const DAO_PROPOSAL_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
@@ -21,21 +21,23 @@ describe('DaoProposalRepository', () => {
         fundingRound: new Types.ObjectId(),
         standing: StandingEnum.InProgress,
         project: new Types.ObjectId(),
-        kpiRoi: 'kpiRoi',
         oceanProtocolPortUrl: 'oceanProtocolPortLink.com',
         title: 'The Title of the Proposal',
         description: 'Here stands a description',
         category: CategoryEnum.BuildAndIntegrate,
         walletAddress: faker.datatype.hexaDecimal(42).toLowerCase(),
-        votes: 100000,
-        counterVotes: 20,
+        yesVotes: 100000,
+        noVotes: 20,
         status: DaoProposalStatusEnum.Running,
         deliverables: [new Types.ObjectId()],
-        kpiTargets: [new Types.ObjectId()],
-        requestedGrantToken: 10000,
-        grantedToken: 10000,
-        requestedGrantUsd: 8400,
-        grantedUsd: 8400,
+        requestedFunding: {
+            usd: 8400,
+            ocean: 10000, 
+        },
+        receivedFunding: {
+            usd: 8400,
+            ocean: 10000,
+        },
         fundamentalMetric: FundamentalMetricEnum.MvpLaunch,
         ipfsHash: '',
         snapshotBlock: 123456789,
@@ -65,9 +67,7 @@ describe('DaoProposalRepository', () => {
 
     describe('Given I have a daoProposal repository', () => {
         test('it should save a daoProposal', async () => {
-            expect(await service.create(daoProposal)).toEqual(
-                DAO_PROPOSAL_MONGO_ID,
-            );
+            expect(await service.create(daoProposal)).toEqual(DAO_PROPOSAL_MONGO_ID);
         });
 
         test('it should return a daoProposal', async () => {
@@ -77,7 +77,6 @@ describe('DaoProposalRepository', () => {
                 id: dbDoaProposal.id,
                 fundingRound: dbDoaProposal.fundingRound,
                 project: dbDoaProposal.project,
-                kpiRoi: dbDoaProposal.kpiRoi,
                 oceanProtocolPortUrl: dbDoaProposal.oceanProtocolPortUrl,
                 title: dbDoaProposal.title,
                 description: dbDoaProposal.description,
@@ -86,7 +85,6 @@ describe('DaoProposalRepository', () => {
                 id: DAO_PROPOSAL_ID,
                 fundingRound: null,
                 project: null,
-                kpiRoi: 'kpiRoi',
                 oceanProtocolPortUrl: 'oceanProtocolPortLink.com',
                 title: 'The Title of the Proposal',
                 description: 'Here stands a description',
@@ -105,9 +103,7 @@ describe('DaoProposalRepository', () => {
         });
 
         test('it should delete a daoProposal', async () => {
-            expect(
-                await service.delete({ find: { id: daoProposal.id } }),
-            ).toBeTruthy();
+            expect(await service.delete({ find: { id: daoProposal.id } })).toBeTruthy();
         });
     });
 });

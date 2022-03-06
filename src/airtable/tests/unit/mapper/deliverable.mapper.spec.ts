@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeliverableMapper } from '../../../mapper/deliverable.mapper';
 
-const faker = require('faker');
-
-let airtableData = {
+const airtableData = {
     'Grant Deliverables': 'Test Deliverable',
     'Proposal Standing': 'Completed',
 };

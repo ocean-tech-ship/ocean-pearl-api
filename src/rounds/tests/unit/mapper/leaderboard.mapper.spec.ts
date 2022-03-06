@@ -6,8 +6,7 @@ import { Round } from '../../../../database/schemas/round.schema';
 import { RoundStatusEnum } from '../../../enums/round-status.enum';
 import { LeaderboardMapper } from '../../../mapper/leaderboard.mapper';
 import { Leaderboard } from '../../../models/leaderboard.model';
-
-const faker = require('faker');
+import { faker } from '@faker-js/faker';
 
 describe('LeaderboardMapper', () => {
     let module: TestingModule;
@@ -21,15 +20,17 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
                         fundingUsd: 200000,
                         fundingOcean: 0,
                     },
                 },
-                availableFundingUsd: 800000,
-                availableFundingOcean: 0,
+                availableFunding: {
+                    usd: 800000,
+                    ocean: 0,
+                },
                 votingEndDate: futureDate,
                 votingStartDate: pastDate,
                 submissionEndDate: pastDate,
@@ -67,15 +68,17 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Ocean,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
                         fundingOcean: 200000,
                         fundingUsd: 0,
                     },
                 },
-                availableFundingOcean: 800000,
-                availableFundingUsd: 0,
+                availableFunding: {
+                    usd: 800000,
+                    ocean: 800000,
+                },
                 votingEndDate: futureDate,
                 votingStartDate: pastDate,
                 submissionEndDate: pastDate,
@@ -113,15 +116,17 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
                         fundingUsd: 200000,
                         fundingOcean: 0,
                     },
                 },
-                availableFundingUsd: 800000,
-                availableFundingOcean: 0,
+                availableFunding: {
+                    usd: 800000,
+                    ocean: 0,
+                },
                 votingEndDate: futureDate,
                 votingStartDate: futureDate,
                 submissionEndDate: futureDate,
@@ -159,15 +164,17 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
                         fundingUsd: 200000,
                         fundingOcean: 0,
                     },
                 },
-                availableFundingUsd: 800000,
-                availableFundingOcean: 0,
+                availableFunding: {
+                    usd: 800000,
+                    ocean: 0,
+                },
                 votingEndDate: futureDate,
                 votingStartDate: futureDate,
                 submissionEndDate: pastDate,
@@ -205,15 +212,17 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
                         fundingUsd: 200000,
                         fundingOcean: 0,
                     },
                 },
-                availableFundingUsd: 800000,
-                availableFundingOcean: 0,
+                availableFunding: {
+                    usd: 800000,
+                    ocean: 0,
+                },
                 votingEndDate: futureDate,
                 votingStartDate: pastDate,
                 submissionEndDate: pastDate,
@@ -251,15 +260,17 @@ describe('LeaderboardMapper', () => {
             round: {
                 round: 10,
                 paymentOption: PaymentOptionEnum.Usd,
-                earmarks: {
+                grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
                         fundingUsd: 200000,
                         fundingOcean: 0,
                     },
                 },
-                availableFundingUsd: 800000,
-                availableFundingOcean: 0,
+                availableFunding: {
+                    usd: 800000,
+                    ocean: 0,
+                },
                 votingEndDate: pastDate,
                 votingStartDate: pastDate,
                 submissionEndDate: pastDate,

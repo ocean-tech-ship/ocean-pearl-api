@@ -11,26 +11,26 @@ Create .env files for each working environment, e.g. ```dev.env```, inside the e
 An example for the contents of the file can be found inside the environment folder. 
 
 ```bash
-$ npm install
+$ yarn install
 ```
 
 ## Running the app
 
 ```bash
 # development
-$ npm run start
+$ yarn start
 
 # watch mode
-$ npm run start:dev
+$ yarn start:dev
 
 # production mode
-$ npm run start:prod
+$ yarn start:prod
 ```
 
 ## Testing
 
 ```bash
-$ npm run test 
+$ yarn test 
 ```
 
 To run tests locally you preferably have an instance of MongoDB installed on your local machine.

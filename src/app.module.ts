@@ -28,11 +28,7 @@ import { UtilsModule } from './utils/utils.module';
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
                 uri: configService.get<string>('MONGO_URL'),
-                useCreateIndex: true,
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
                 bufferCommands: false,
-                bufferMaxEntries: 0,
             }),
             inject: [ConfigService],
         }),
@@ -42,10 +38,7 @@ import { UtilsModule } from './utils/utils.module';
             useFactory: (config: ConfigService) => ({
                 ttl: config.get('THROTTLE_TTL'),
                 limit: config.get('THROTTLE_LIMIT'),
-                ignoreUserAgents: [
-                    new RegExp('googlebot', 'gi'),
-                    new RegExp('bingbot', 'gi'),
-                ],
+                ignoreUserAgents: [new RegExp('googlebot', 'gi'), new RegExp('bingbot', 'gi')],
             }),
         }),
         ScheduleModule.forRoot(),

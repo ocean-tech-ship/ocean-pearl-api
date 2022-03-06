@@ -1,10 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryEnum } from '../../../../database/enums/category.enum';
 import { ProjectMapper } from '../../../mapper/project.mapper';
+import { faker } from '@faker-js/faker';
 
-const faker = require('faker');
-
-let airtableData = {
+const airtableData = {
     'Project Name': 'Test',
     'Grant Category': 'DAO',
     'One Liner': 'Test Project One Liner',
@@ -36,7 +35,7 @@ describe('ProjectMapper', () => {
             category: CategoryEnum.DAO,
             createdAt: airtableData['Created Date'],
             description: 'Test Project One Liner',
-            oneLiner: "Test Project One Liner",
+            oneLiner: 'Test Project One Liner',
             title: 'Test',
             associatedAddresses: [airtableData['Wallet Address'].toLowerCase()],
             paymentWalletsAddresses: [
@@ -52,8 +51,6 @@ describe('ProjectMapper', () => {
     it('should choose the correct team name', () => {
         delete airtableData['Team Name (from Login Email)'];
 
-        expect(service.map(airtableData).teamName).toEqual(
-            airtableData['Project Name'],
-        );
+        expect(service.map(airtableData).teamName).toEqual(airtableData['Project Name']);
     });
 });

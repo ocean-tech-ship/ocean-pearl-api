@@ -4,7 +4,6 @@ import { FileExtensionsEnum } from '../../aws/s3/enums/file-extensions.enum';
 
 @Schema({ _id: false })
 export class Picture {
-
     @Prop({
         type: String,
         maxLength: 32,
@@ -12,7 +11,7 @@ export class Picture {
     })
     @ApiProperty()
     key: string;
-    
+
     @Prop({
         type: String,
         maxLength: 128,
@@ -22,7 +21,8 @@ export class Picture {
     url: string;
 
     @Prop({
-        type: FileExtensionsEnum,
+        type: String,
+        enum: FileExtensionsEnum,
         required: true,
     })
     @ApiProperty()

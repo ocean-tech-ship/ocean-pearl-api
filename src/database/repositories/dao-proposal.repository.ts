@@ -37,10 +37,6 @@ export class DaoProposalRepository
                     select: '-_id -__v',
                 })
                 .populate({
-                    path: 'kpiTargets',
-                    select: '-_id -__v',
-                })
-                .populate({
                     path: 'fundingRound',
                     select: '-_id -__v',
                 })
@@ -79,10 +75,6 @@ export class DaoProposalRepository
                     select: '-_id -__v',
                 })
                 .populate({
-                    path: 'kpiTargets',
-                    select: '-_id -__v',
-                })
-                .populate({
                     path: 'fundingRound',
                     select: '-_id -__v',
                 })
@@ -111,10 +103,6 @@ export class DaoProposalRepository
                     select: '-_id -__v',
                 })
                 .populate({
-                    path: 'kpiTargets',
-                    select: '-_id -__v',
-                })
-                .populate({
                     path: 'fundingRound',
                     select: '-_id -__v',
                 })
@@ -140,10 +128,6 @@ export class DaoProposalRepository
                     },
                     {
                         path: 'deliverables',
-                        select: '-_id -__v',
-                    },
-                    {
-                        path: 'kpiTargets',
                         select: '-_id -__v',
                     },
                     {

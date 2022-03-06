@@ -12,14 +12,10 @@ export class LeaderboardMapper {
         let totalEarmarkFunding: number = 0;
         const isPaymentOptionUsd: boolean = round.paymentOption === PaymentOptionEnum.Usd;
         let mappedLeaderboard = new Leaderboard({
-            maxVotes: 0,
-            totalVotes: 0,
-            amountProposals: 0,
-            overallRequestedFunding: 0,
             paymentOption: round.paymentOption,
             overallFunding: isPaymentOptionUsd
-                ? round.availableFundingUsd
-                : round.availableFundingOcean,
+                ? round.availableFunding.usd
+                : round.availableFunding.ocean,
             remainingFundingStrategy: round.remainingFundingStrategy,
             status: this.determineRoundStatus(round),
             votingStartDate: round.votingStartDate,
@@ -27,11 +23,11 @@ export class LeaderboardMapper {
             round: round.round,
         });
 
-        for (const [type, earmark] of Object.entries(round.earmarks)) {
-            const totalFunding = isPaymentOptionUsd ? earmark.fundingUsd : earmark.fundingOcean;
+        for (const [type, pool] of Object.entries(round.grantPools)) {
+            const totalFunding = isPaymentOptionUsd ? pool.fundingUsd : pool.fundingOcean;
 
-            mappedLeaderboard.grantPools[earmark.type] = new GrantPool({
-                type: earmark.type,
+            mappedLeaderboard.grantPools[pool.type] = new GrantPool({
+                type: pool.type,
                 totalFunding: totalFunding,
                 remainingFunding: totalFunding,
                 potentialRemainingFunding: totalFunding,
@@ -41,8 +37,8 @@ export class LeaderboardMapper {
         }
 
         const totalGeneralFunding = isPaymentOptionUsd
-            ? round.availableFundingUsd - totalEarmarkFunding
-            : round.availableFundingOcean - totalEarmarkFunding;
+            ? round.availableFunding.usd - totalEarmarkFunding
+            : round.availableFunding.ocean - totalEarmarkFunding;
 
         mappedLeaderboard.grantPools[EarmarkTypeEnum.General] = new GrantPool({
             type: EarmarkTypeEnum.General,

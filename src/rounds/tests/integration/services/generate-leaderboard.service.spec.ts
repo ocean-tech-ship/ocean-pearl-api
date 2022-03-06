@@ -12,6 +12,7 @@ import { nanoid } from '../../../../database/functions/nano-id.function';
 import { DaoProposalRepository } from '../../../../database/repositories/dao-proposal.repository';
 import { ProjectRepository } from '../../../../database/repositories/project.repository';
 import { DaoProposal } from '../../../../database/schemas/dao-proposal.schema';
+import { Funding } from '../../../../database/schemas/funding.schema';
 import { Project } from '../../../../database/schemas/project.schema';
 import { Round } from '../../../../database/schemas/round.schema';
 import { LeaderboardProposalBuilder } from '../../../builder/leaderboard-proposal.builder';
@@ -28,8 +29,7 @@ import { EarmarkedProposalStrategy } from '../../../strategies/earmarked-proposa
 import { GeneralProposalStrategy } from '../../../strategies/general-proposal.strategy';
 import { LeaderboardStrategyCollection } from '../../../strategies/leaderboard-strategy.collection';
 import { WontReceiveFundingStrategy } from '../../../strategies/wont-receive-funding.strategy';
-
-const faker = require('faker');
+import { faker } from '@faker-js/faker';
 
 describe('GenerateLeaderboardService', () => {
     let module: TestingModule;
@@ -67,18 +67,26 @@ describe('GenerateLeaderboardService', () => {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: 'D5C50B1aF1',
                 title: 'Ocean Pearl Proposal 1',
-                votes: 200000,
-                counterVotes: 10000,
-                requestedGrantUsd: 50000,
+                yesVotes: 200000,
+                noVotes: 10000,
+                requestedFunding: {
+                    usd: 50000,
+                    ocean: 0,
+                },
+                receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
             },
             {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: 'D5C50B1aF2',
                 title: 'Ocean Pearl Proposal 2',
-                votes: 100000,
-                counterVotes: 10000,
-                requestedGrantUsd: 20000,
+                yesVotes: 100000,
+                noVotes: 10000,
+                requestedFunding: {
+                    usd: 20000,
+                    ocean: 0,
+                },
+                receivedFunding: new Funding(),
                 earmark: CategoryEnum.NewEntrants,
                 category: CategoryEnum.DAO,
             },
@@ -86,36 +94,52 @@ describe('GenerateLeaderboardService', () => {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: 'D5C50B1aF3',
                 title: 'Ocean Pearl Proposal 3',
-                votes: 10000,
-                counterVotes: 100000,
-                requestedGrantUsd: 40000,
+                yesVotes: 10000,
+                noVotes: 100000,
+                requestedFunding: {
+                    usd: 40000,
+                    ocean: 0,
+                },
+                receivedFunding: new Funding(),
                 category: CategoryEnum.CoreSoftware,
             },
             {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: 'D5C50B1aF4',
                 title: 'Ocean Pearl Proposal 4',
-                votes: 100000,
-                counterVotes: 10000,
-                requestedGrantUsd: 50000,
+                yesVotes: 100000,
+                noVotes: 10000,
+                requestedFunding: {
+                    usd: 50000,
+                    ocean: 0,
+                },
+                receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
             },
             {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: 'D5C50B1aF5',
                 title: 'Ocean Pearl Proposal 5',
-                votes: 100000,
-                counterVotes: 55000,
-                requestedGrantUsd: 50000,
+                yesVotes: 100000,
+                noVotes: 55000,
+                requestedFunding: {
+                    usd: 50000,
+                    ocean: 0,
+                },
+                receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
             },
             {
                 project: { _id: new Types.ObjectId() } as Project,
                 id: 'D5C50B1aF6',
                 title: 'Ocean Pearl Proposal 6',
-                votes: 10000,
-                counterVotes: 100000,
-                requestedGrantUsd: 20000,
+                yesVotes: 10000,
+                noVotes: 100000,
+                requestedFunding: {
+                    usd: 20000,
+                    ocean: 0,
+                },
+                receivedFunding: new Funding(),
                 earmark: CategoryEnum.NewEntrants,
                 category: CategoryEnum.UnleashData,
             },
@@ -166,8 +190,11 @@ describe('GenerateLeaderboardService', () => {
         const currentRoundMock = {
             round: 10,
             paymentOption: PaymentOptionEnum.Usd,
-            availableFundingUsd: 100000,
-            earmarks: {
+            availableFunding: {
+                usd: 100000, 
+                ocean: 0, 
+            },
+            grantPools: {
                 [EarmarkTypeEnum.NewEntrants]: {
                     type: EarmarkTypeEnum.NewEntrants,
                     fundingUsd: 20000,
@@ -198,7 +225,7 @@ describe('GenerateLeaderboardService', () => {
                         yesVotes: 200000,
                         noVotes: 10000,
                         effectiveVotes: 190000,
-                        tags: [CategoryEnum.Outreach]
+                        tags: [CategoryEnum.Outreach],
                     }),
                     new LeaderboardProposal({
                         id: 'D5C50B1aF2',
@@ -219,7 +246,7 @@ describe('GenerateLeaderboardService', () => {
                         yesVotes: 100000,
                         noVotes: 10000,
                         effectiveVotes: 90000,
-                        tags: [CategoryEnum.DAO, 'earmark']
+                        tags: [CategoryEnum.DAO]
                     }),
                 ],
                 partiallyFundedProposals: [
@@ -243,7 +270,7 @@ describe('GenerateLeaderboardService', () => {
                         neededVotes: {
                             fullyFunded: 100001,
                         },
-                        tags: [CategoryEnum.Outreach]
+                        tags: [CategoryEnum.Outreach],
                     }),
                 ],
                 notFundedProposals: [
@@ -265,7 +292,7 @@ describe('GenerateLeaderboardService', () => {
                             fullyFunded: 145001,
                             partiallyFunded: 45001,
                         },
-                        tags: [CategoryEnum.Outreach]
+                        tags: [CategoryEnum.Outreach],
                     }),
                     new LeaderboardProposal({
                         id: 'D5C50B1aF6',
@@ -286,7 +313,7 @@ describe('GenerateLeaderboardService', () => {
                         neededVotes: {
                             fullyFunded: 180001,
                         },
-                        tags: [CategoryEnum.UnleashData, 'earmark']}),
+                        tags: [CategoryEnum.UnleashData]}),
                     new LeaderboardProposal({
                         id: 'D5C50B1aF3',
                         title: 'Ocean Pearl Proposal 3',
@@ -305,7 +332,8 @@ describe('GenerateLeaderboardService', () => {
                             fullyFunded: 280001,
                             partiallyFunded: 180001,
                         },
-                        tags: [CategoryEnum.CoreSoftware]}),
+                        tags: [CategoryEnum.CoreSoftware],
+                    }),
                 ],
                 amountProposals: 6,
                 overallFunding: 100000,
@@ -330,7 +358,7 @@ describe('GenerateLeaderboardService', () => {
                 status: RoundStatusEnum.VotingInProgress,
                 votingStartDate: votingStartDate,
                 votingEndDate: votingEndDate,
-                maxVotes: 200000
+                maxVotes: 200000,
             }),
         );
     });
