@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
+import { AwsModule } from '../../../../aws/aws.module';
 import { DatabaseModule } from '../../../../database/database.module';
 import { ImageCleanupService } from '../../../services/image-cleanup.service';
 
@@ -9,7 +10,7 @@ describe('ImageCleanupService', () => {
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
-            imports: [DatabaseModule, AppModule],
+            imports: [DatabaseModule, AppModule, AwsModule],
             providers: [ImageCleanupService],
         }).compile();
 
