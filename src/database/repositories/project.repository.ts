@@ -10,9 +10,7 @@ import { Project, ProjectType } from '../schemas/project.schema';
 
 @Injectable()
 export class ProjectRepository implements RepositoryInterface<ProjectType> {
-    constructor(
-        @InjectModel('Project') private model: PaginateModel<ProjectType>,
-    ) {}
+    constructor(@InjectModel('Project') private model: PaginateModel<ProjectType>) {}
 
     public async findOne(query: FindQuery<ProjectType>): Promise<Project> {
         try {
@@ -26,11 +24,26 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .populate({
                     path: 'daoProposals',
                     select: '-project -_id -__v -deliverables -airtableId',
-                    populate: {
-                        path: 'fundingRound',
-                        model: 'Round',
-                        select: '-_id -__v',
-                    },
+                    populate: [
+                        {
+                            path: 'fundingRound',
+                            model: 'Round',
+                            select: '-_id -__v',
+                        },
+                        {
+                            path: 'images',
+                            model: 'Image',
+                            select: '-_id -__v',
+                        },
+                    ],
+                })
+                .populate({
+                    path: 'images',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'logo',
+                    select: '-_id -__v',
                 })
                 .select('-_id -__v')
                 .exec();
@@ -65,6 +78,14 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                         select: '-_id -__v',
                     },
                 })
+                .populate({
+                    path: 'images',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'logo',
+                    select: '-_id -__v',
+                })
                 .select('-_id -__v')
                 .exec();
         } catch (error: any) {
@@ -88,6 +109,14 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                         select: '-_id -__v',
                     },
                 })
+                .populate({
+                    path: 'images',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'logo',
+                    select: '-_id -__v',
+                })
                 .select('-_id -__v')
                 .exec();
         } catch (error: any) {
@@ -95,9 +124,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async getPaginated(
-        query: FindQuery<ProjectType>,
-    ): Promise<PaginatedResponse<Project>> {
+    public async getPaginated(query: FindQuery<ProjectType>): Promise<PaginatedResponse<Project>> {
         try {
             return await this.model.paginate(query?.find || {}, {
                 sort: query?.sort || {},
@@ -112,6 +139,14 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                             model: 'Round',
                             select: '-_id -__v',
                         },
+                    },
+                    {
+                        path: 'images',
+                        select: '-_id -__v',
+                    },
+                    {
+                        path: 'logo',
+                        select: '-_id -__v',
                     },
                 ],
                 select: '-_id -__v',
@@ -150,9 +185,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 throw new Error('Please specify a query');
             }
 
-            const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find,
-            );
+            const response: MongooseDeleteResponse = await this.model.deleteOne(query.find);
 
             return response.deletedCount === 1;
         } catch (error: any) {
@@ -166,8 +199,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 throw new Error('Please specify a query');
             }
 
-            const response: MongooseDeleteResponse =
-                await this.model.deleteMany(query.find);
+            const response: MongooseDeleteResponse = await this.model.deleteMany(query.find);
 
             return response.deletedCount > 0;
         } catch (error: any) {
