@@ -42,7 +42,7 @@ describe('DaoProposalRepository', () => {
         ipfsHash: '',
         snapshotBlock: 123456789,
         voteUrl: '',
-        pictures: [],
+        images: [],
     } as DaoProposal;
 
     let module: TestingModule;
