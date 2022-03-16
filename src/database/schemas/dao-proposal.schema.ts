@@ -10,7 +10,7 @@ import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
 import { Deliverable } from './deliverable.schema';
 import { Funding, FundingSchema } from './funding.schema';
-import { Picture, PictureSchema } from './picture.schema';
+import { Image } from './image.schema';
 import { Project } from './project.schema';
 import { Round } from './round.schema';
 
@@ -195,11 +195,19 @@ export class DaoProposal {
     voteUrl: string;
 
     @Prop({
-        type: [PictureSchema],
-        default: [],
+        type: [
+            {
+                type: Types.ObjectId,
+                ref: 'Image',
+            },
+        ],
+        default: void 0,
     })
-    @ApiProperty()
-    pictures: Picture[];
+    @ApiProperty({
+        type: Image,
+        isArray: true,
+    })
+    images: Image[] | Types.ObjectId[];
 
     createdAt: Date;
 
