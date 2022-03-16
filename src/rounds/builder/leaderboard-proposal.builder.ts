@@ -3,6 +3,7 @@ import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { StandingEnum } from '../../database/enums/standing.enum';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
+import { Image } from '../../database/schemas/image.schema';
 import { Project } from '../../database/schemas/project.schema';
 import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProject } from '../models/leaderboard-project.model';
@@ -52,6 +53,7 @@ export class LeaderboardProposalBuilder {
         }
 
         if (project.logo) {
+            project.logo = project.logo as Image;
             mappedLeaderboardProposal.project.logoUrl = project.logo.url;
         }
 

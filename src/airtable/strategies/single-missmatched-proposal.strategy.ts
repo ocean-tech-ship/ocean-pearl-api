@@ -61,7 +61,7 @@ export class SingleMissmatchedProposalStrategy implements StrategyInterface {
         newProject.daoProposals = newProject.daoProposals as Types.ObjectId[];
         newProject.daoProposals.push(proposal._id);
         newProject.logo = oldProject.logo;
-        newProject.pictures = oldProject.pictures;
+        newProject.images = oldProject.images;
         newProject.description = oldProject.description;
 
         newProposal.project = await this.projectRepository.create(newProject);
