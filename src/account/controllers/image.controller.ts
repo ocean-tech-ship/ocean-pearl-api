@@ -4,11 +4,11 @@ import {
     UploadedFile,
     UploadedFiles,
     UseGuards,
-    UseInterceptors
+    UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AssociatedImage } from '../models/associated-project.model';
 import { ImageUploadService } from '../services/image-upload.service';
 import { UpdateProjectService } from '../services/update-project.service';
@@ -21,6 +21,18 @@ export class ImageController {
 
     @Post('logos')
     @ApiOkResponse({ description: 'Ok.' })
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                logo: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
+        },
+    })
     @UseInterceptors(
         FileFieldsInterceptor([{ name: 'logo', maxCount: 1 }], {
             limits: {
@@ -38,6 +50,21 @@ export class ImageController {
 
     @Post('images')
     @ApiOkResponse({ description: 'Ok.' })
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                images: {
+                    type: 'array',
+                    items: {
+                        type: 'string',
+                        format: 'binary',
+                    },
+                },
+            },
+        },
+    })
     @UseInterceptors(
         FileFieldsInterceptor(
             [
