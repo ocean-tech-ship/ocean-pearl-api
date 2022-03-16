@@ -1,16 +1,5 @@
-import {
-    Body,
-    Controller,
-    Get,
-    Param,
-    Put,
-    Req,
-    UploadedFiles,
-    UseGuards,
-    UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import {
     ApiBody,
     ApiOkResponse,
@@ -51,17 +40,13 @@ export class AccountController {
             },
         },
     })
-    public async getProjects(
-        @Req() request: Request,
-    ): Promise<{
+    public async getProjects(@Req() request: Request): Promise<{
         wallet: string;
         projects: AssociatedProject[];
     }> {
         const user = request.user as AuthenticatedUser;
 
-        const projects = await this.getAssociatedProjectsService.execute(
-            user.wallet,
-        );
+        const projects = await this.getAssociatedProjectsService.execute(user.wallet);
 
         return {
             wallet: user.wallet,
@@ -69,44 +54,19 @@ export class AccountController {
         };
     }
 
-    @Put('/project/:id')
+    @Put('/project')
     @ApiBody({
         type: UpdatedProject,
     })
     @ApiOkResponse({ description: 'Ok.' })
     @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
     @UseGuards(ProjectGuard)
-    @UseInterceptors(
-        FileFieldsInterceptor(
-            [
-                { name: 'logo', maxCount: 1 },
-                {
-                    name: 'newPictures',
-                    maxCount: UpdateProjectService.MAX_PICTURES_SIZE,
-                },
-            ],
-            {
-                limits: {
-                    fileSize: 4000000,
-                },
-            },
-        ),
-    )
     public async updateProject(
         @Req() request: Request,
-        @UploadedFiles()
-        files: {
-            logo?: Express.Multer.File;
-            newPictures?: Express.Multer.File[];
-        },
-        @Param('id') id: string,
         @Body() project: UpdatedProject,
     ): Promise<AssociatedProject[]> {
         try {
-            project.logo = files.logo;
-            project.newPictures = files.newPictures;
-
-            await this.updateProjectService.execute(id, project);
+            await this.updateProjectService.execute(project);
 
             const user = request.user as AuthenticatedUser;
 
