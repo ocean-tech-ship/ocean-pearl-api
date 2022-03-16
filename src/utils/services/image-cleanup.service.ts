@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { S3ImageManagementService } from '../../aws/s3/services/s3-image-management.service';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
 import { ImageRepository } from '../../database/repositories/image.repository';
 import { ProjectRepository } from '../../database/repositories/project.repository';
@@ -15,6 +16,7 @@ export class ImageCleanupService {
         private imageRepository: ImageRepository,
         private projectRepository: ProjectRepository,
         private proposalRepository: DaoProposalRepository,
+        private s3ImageManagementService: S3ImageManagementService,
     ) {}
 
     @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -38,6 +40,8 @@ export class ImageCleanupService {
                 await this.imageRepository.delete({
                     find: { _id: image._id },
                 });
+
+                await this.s3ImageManagementService.deleteFileOnS3(image);
 
                 imageCleanupCounter++;
             }
