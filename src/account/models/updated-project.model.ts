@@ -83,7 +83,7 @@ export class UpdatedProject {
     })
     @IsOptional()
     @IsArray()
-    deletedPictures: string[];
+    deletedImages: string[];
 
     @ApiProperty({
         type: String,
@@ -91,7 +91,7 @@ export class UpdatedProject {
     })
     @IsOptional()
     @IsArray()
-    newPictures: string[];
+    newImages: string[];
 
     @ApiProperty({
         default: 'Ocean Pearl',
