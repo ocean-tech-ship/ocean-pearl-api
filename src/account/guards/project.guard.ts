@@ -13,14 +13,13 @@ export class ProjectGuard implements CanActivate {
     public async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        const projectId = request.params?.id;
 
-        if (!user || !projectId) {
+        if (!user || !request.Body.id) {
             throw new UnauthorizedException();
         }
 
         const project = await this.projectRepository.findOne({
-            find: { id: projectId },
+            find: { id: request.Body.id },
         });
 
         if (project?.accessAddresses?.includes(user.wallet.toLowerCase())) {
