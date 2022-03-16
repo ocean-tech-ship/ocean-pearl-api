@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ImageData } from '../models/image.model';
+import { ImageData } from '../models/image-data.model';
 import { MimeTypesEnum } from '../../aws/s3/enums/mime-types.enum';
 import { optimize, OptimizedSvg } from 'svgo';
 import * as sharp from 'sharp';
