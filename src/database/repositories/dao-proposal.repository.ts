@@ -37,6 +37,10 @@ export class DaoProposalRepository
                     select: '-_id -__v',
                 })
                 .populate({
+                    path: 'images',
+                    select: '-_id -__v',
+                })
+                .populate({
                     path: 'fundingRound',
                     select: '-_id -__v',
                 })
@@ -75,6 +79,10 @@ export class DaoProposalRepository
                     select: '-_id -__v',
                 })
                 .populate({
+                    path: 'images',
+                    select: '-_id -__v',
+                })
+                .populate({
                     path: 'fundingRound',
                     select: '-_id -__v',
                 })
@@ -100,6 +108,10 @@ export class DaoProposalRepository
                 })
                 .populate({
                     path: 'deliverables',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'images',
                     select: '-_id -__v',
                 })
                 .populate({
@@ -134,6 +146,10 @@ export class DaoProposalRepository
                         path: 'fundingRound',
                         select: '-_id -__v',
                     },
+                    {
+                        path: 'images',
+                        select: '-_id -__v',
+                    }
                 ],
                 select: '-_id -__v -airtableId',
             });
