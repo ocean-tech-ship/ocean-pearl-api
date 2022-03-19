@@ -74,6 +74,21 @@ export class ImageRepository
         }
     }
 
+    public async getAllRaw(
+        query?: FindQuery<ImageType>,
+    ): Promise<Image[]> {
+        try {
+            return await this.model
+                .find(query?.find || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async update(model: Image): Promise<boolean> {
         try {
             const response: Image = await this.model.findOneAndUpdate(
