@@ -19,7 +19,10 @@ export class ImageCleanupService {
         private s3ImageManagementService: S3ImageManagementService,
     ) {}
 
-    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
+        name: 'Image Cleanup',
+        timeZone: 'Europe/Berlin',
+    })
     public async execute(): Promise<void> {
         this.logger.log('Start image cleanup.');
         let imageCleanupCounter: number = 0;
@@ -51,12 +54,14 @@ export class ImageCleanupService {
     }
 
     private async getImagesForCleanup(): Promise<Image[]> {
-        const yesterday: Date = new Date(new Date().getDay() - 1);
-        const lastWeek: Date = new Date(new Date().getDay() - 7);
-
-        return await this.imageRepository.getAll({
+        const yesterday: Date = new Date();
+        yesterday.setDate(new Date().getDate() - 1)
+        const lastWeek: Date = new Date();
+        lastWeek.setDate(new Date().getDate() - 7)
+        
+        return await this.imageRepository.getAllRaw({
             find: {
-                createdAt: { $and: [{$lte: yesterday}, {$gte: lastWeek}] },
+                createdAt: { $lte: yesterday, $gte: lastWeek },
             },
         });
     }
