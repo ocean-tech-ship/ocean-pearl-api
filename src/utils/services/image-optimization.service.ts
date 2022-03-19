@@ -35,7 +35,9 @@ export class ImageOptimizationService {
     }
 
     public async optimizeSvg(input: ImageData): Promise<ImageData> {
-        const response = (await optimize(input.data)) as OptimizedSvg;
+        const response = (await optimize(input.data, {
+            plugins: ['preset-default', 'removeScriptElement'],
+        })) as OptimizedSvg;
 
         return {
             data: Buffer.from(response.data),
