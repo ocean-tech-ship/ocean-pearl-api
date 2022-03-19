@@ -7,8 +7,8 @@ import {
     UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { AssociatedImage } from '../models/associated-project.model';
 import { ImageUploadService } from '../services/image-upload.service';
 import { UpdateProjectService } from '../services/update-project.service';
@@ -20,7 +20,7 @@ export class ImageController {
     public constructor(private imageUploadService: ImageUploadService) {}
 
     @Post('logos')
-    @ApiOkResponse({ description: 'Ok.' })
+    @ApiCreatedResponse({ description: 'Ok.' })
     @ApiConsumes('multipart/form-data')
     @ApiBody({
         schema: {
@@ -34,7 +34,7 @@ export class ImageController {
         },
     })
     @UseInterceptors(
-        FileFieldsInterceptor([{ name: 'logo', maxCount: 1 }], {
+        FileInterceptor('logo', {
             limits: {
                 fileSize: 4000000,
             },
@@ -49,7 +49,7 @@ export class ImageController {
     }
 
     @Post('images')
-    @ApiOkResponse({ description: 'Ok.' })
+    @ApiCreatedResponse({ description: 'Ok.' })
     @ApiConsumes('multipart/form-data')
     @ApiBody({
         schema: {
@@ -81,12 +81,12 @@ export class ImageController {
         ),
     )
     public async uploadImage(
-        @UploadedFiles() images: Array<Express.Multer.File>,
+        @UploadedFiles() files: { images: Array<Express.Multer.File> },
     ): Promise<AssociatedImage[]> {
         try {
             const savedImages: AssociatedImage[] = [];
 
-            for (const image of images) {
+            for (const image of files.images) {
                 savedImages.push(await this.imageUploadService.execute(image));
             }
 
