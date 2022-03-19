@@ -1,117 +1,85 @@
 import { Injectable } from '@nestjs/common';
-import { MimeTypesEnum } from '../../aws/s3/enums/mime-types.enum';
 import { S3ImageManagementService } from '../../aws/s3/services/s3-image-management.service';
-import { Picture } from '../../database/schemas/picture.schema';
+import { ImageRepository } from '../../database/repositories/image.repository';
 import { ProjectRepository } from '../../database/repositories/project.repository';
+import { Image } from '../../database/schemas/image.schema';
 import { UpdatedProject } from '../models/updated-project.model';
-import { PicturesService } from '../../utils/services/pictures.service';
 
 @Injectable()
 export class UpdateProjectService {
-    static MAX_PICTURES_SIZE = 8;
+    static MAX_PICTURES_AMOUNT = 8;
 
     public constructor(
         private projectRepository: ProjectRepository,
-        private picturesService: PicturesService,
+        private imageRepository: ImageRepository,
         private s3ImageManagementService: S3ImageManagementService,
     ) {}
 
-    public async execute(
-        id: string,
-        updatedProject: UpdatedProject,
-    ): Promise<void> {
-        const dbProject = await this.projectRepository.findOneRaw({
-            find: { id: id },
+    public async execute(updatedProject: UpdatedProject): Promise<void> {
+        const dbProject = await this.projectRepository.findOne({
+            find: { id: updatedProject.id },
         });
 
         dbProject.accessAddresses =
-            updatedProject.accessAddresses?.map((address) =>
-                address.toLowerCase(),
-            ) ?? dbProject.accessAddresses;
+            updatedProject.accessAddresses?.map((address) => address.toLowerCase()) ??
+            dbProject.accessAddresses;
 
-        dbProject.description =
-            updatedProject.description ?? dbProject.description;
-
+        dbProject.description = updatedProject.description ?? dbProject.description;
         dbProject.oneLiner = updatedProject.oneLiner ?? dbProject.oneLiner;
-
         dbProject.category = updatedProject.category ?? dbProject.category;
+        dbProject.socialMedia = updatedProject.socialMedia ?? dbProject.socialMedia;
 
-        dbProject.socialMedia =
-            updatedProject.socialMedia ?? dbProject.socialMedia;
+        if (updatedProject.deletedImages) {
+            for (const imageId of updatedProject.deletedImages) {
+                for (const [index, dbImage] of dbProject.images.entries()) {
+                    if (dbImage.id === imageId) {
+                        await this.s3ImageManagementService.deleteFileOnS3(dbImage as Image);
 
-        if (updatedProject.deletedPictures) {
-            for (const pictureKey of updatedProject.deletedPictures) {
-                for (const [index, dbPicture] of dbProject.pictures.entries()) {
-                    if (dbPicture.key === pictureKey) {
-                        await this.s3ImageManagementService.deleteFileOnS3(
-                            dbPicture,
-                        );
-
-                        dbProject.pictures.splice(index, 1);
+                        dbProject.images.splice(index, 1);
                     }
                 }
             }
         }
 
-        if (updatedProject.newPictures) {
-            if (!dbProject.pictures) {
-                dbProject.pictures = [];
+        if (updatedProject.newImages) {
+            if (!dbProject.images) {
+                dbProject.images = [];
             }
 
-            for (const picture of updatedProject.newPictures) {
-                const optimizedPicture =
-                    await this.picturesService.optimizeGalleryImage({
-                        data: picture.buffer,
-                        type: picture.mimetype as MimeTypesEnum,
-                    });
+            for (const image of updatedProject.newImages) {
+                const unassignedImage = await this.imageRepository.findOneRaw({
+                    find: { id: image },
+                });
 
-                dbProject.pictures.push(
-                    await this.s3ImageManagementService.uploadImageToS3(
-                        optimizedPicture.data,
-                        optimizedPicture.type,
-                        dbProject.id,
-                    ),
-                );
+                dbProject.images = dbProject.images as Image[];
+                dbProject.images.push(unassignedImage);
 
                 // Delete previous images if we reach the limit
-                if (
-                    dbProject.pictures.length >
-                    UpdateProjectService.MAX_PICTURES_SIZE
-                ) {
-                    const oldestImage = dbProject.pictures[0];
+                if (dbProject.images.length > UpdateProjectService.MAX_PICTURES_AMOUNT) {
+                    const oldestImage = dbProject.images[0];
 
-                    await this.s3ImageManagementService.deleteFileOnS3(
-                        oldestImage,
-                    );
+                    await this.s3ImageManagementService.deleteFileOnS3(oldestImage as Image);
 
-                    dbProject.pictures.splice(0, 1);
+                    dbProject.images.splice(0, 1);
                 }
             }
         }
 
         if (updatedProject.logo) {
             if (dbProject.logo) {
-                await this.s3ImageManagementService.deleteFileOnS3(
-                    dbProject.logo,
-                );
+                await this.s3ImageManagementService.deleteFileOnS3(dbProject.logo as Image);
             }
 
-            const optimizedLogo = await this.picturesService.optimizeLogo({
-                data: updatedProject.logo[0].buffer,
-                type: updatedProject.logo[0].mimetype as MimeTypesEnum,
+            const unassignedImage = await this.imageRepository.findOne({
+                find: { id: updatedProject.logo },
             });
 
-            dbProject.logo =
-                await this.s3ImageManagementService.uploadImageToS3(
-                    optimizedLogo.data,
-                    optimizedLogo.type,
-                    dbProject.id,
-                );
+            dbProject.logo = unassignedImage;
         }
 
         if (updatedProject.deleteLogo) {
-            await this.s3ImageManagementService.deleteFileOnS3(dbProject.logo);
-            dbProject.logo = {} as Picture;
+            await this.s3ImageManagementService.deleteFileOnS3(dbProject.logo as Image);
+            dbProject.logo = undefined;
         }
 
         await this.projectRepository.update(dbProject);

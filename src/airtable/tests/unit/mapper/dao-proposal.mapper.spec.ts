@@ -15,7 +15,7 @@ const airtableData = {
     'Proposal State': 'Running',
     'Grant Category': 'DAO',
     'One Liner': 'Test Project One Liner',
-    Overview: 'Test Project Overview',
+    'Overview': 'Test Project Overview',
     'Proposal Standing': 'Completed',
     'Wallet Address': faker.datatype.hexaDecimal(42),
     'Fundamental Metric': 'MVP Launch',
@@ -25,7 +25,7 @@ const airtableData = {
     'USD Granted': '8400',
     'Proposal URL': faker.internet.url(),
     'Snapshot Block': faker.datatype.hexaDecimal(10),
-    ipfsHash: faker.datatype.number(10),
+    'ipfsHash': faker.datatype.number(10),
     'Voted Yes': '4200000',
     'Voted No': '420',
     'Created Date': faker.date.past(),
@@ -50,33 +50,39 @@ describe('DaoProposalMapper', () => {
         expect(service.map(airtableData, AIRTABLE_ID, ROUND_ID)).toEqual({
             airtableId: AIRTABLE_ID,
             category: CategoryEnum.DAO,
-            counterVotes: 420,
+            noVotes: 420,
             createdAt: airtableData['Created Date'],
             deliverables: [],
             description: 'Test Project Overview',
             earmark: undefined,
             fundamentalMetric: FundamentalMetricEnum.MvpLaunch,
             fundingRound: ROUND_ID,
-            grantedToken: 10000,
-            grantedUsd: 8400,
+            receivedFunding: {
+                usd: 8400,
+                ocean: 10000,
+            },
             ipfsHash: airtableData['ipfsHash'],
             oceanProtocolPortUrl: airtableData['Proposal URL'],
             oneLiner: 'Test Project One Liner',
-            requestedGrantToken: 10000,
-            requestedGrantUsd: 8400,
+            requestedFunding: {
+                usd: 8400,
+                ocean: 10000,
+            },
             snapshotBlock: airtableData['Snapshot Block'],
             standing: StandingEnum.Completed,
             status: DaoProposalStatusEnum.Running,
             title: 'Test',
             voteUrl: '',
-            votes: 4200000,
+            yesVotes: 4200000,
             walletAddress: airtableData['Wallet Address'].toLowerCase(),
         });
     });
 
-    it('should use "grantedToken" for the "requestedToken" propoerty', () => {
+    it('should use "received ocean" for the "requested ocean" value', () => {
         airtableData['OCEAN Requested'] = '0';
 
-        expect(service.map(airtableData, AIRTABLE_ID, ROUND_ID).requestedGrantToken).toEqual(10000);
+        expect(
+            service.map(airtableData, AIRTABLE_ID, ROUND_ID).requestedFunding.ocean,
+        ).toEqual(10000);
     });
 });

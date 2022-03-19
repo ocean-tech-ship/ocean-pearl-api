@@ -3,6 +3,7 @@ import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { StandingEnum } from '../../database/enums/standing.enum';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
+import { Image } from '../../database/schemas/image.schema';
 import { Project } from '../../database/schemas/project.schema';
 import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProject } from '../models/leaderboard-project.model';
@@ -10,8 +11,6 @@ import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 
 @Injectable()
 export class LeaderboardProposalBuilder {
-    private readonly EARMARK_TAG = 'earmark';
-
     public constructor(private projectRepository: ProjectRepository) {}
 
     public async build(proposal: DaoProposal, round: Round): Promise<LeaderboardProposal> {
@@ -20,10 +19,6 @@ export class LeaderboardProposalBuilder {
             find: { id: project.id },
         });
 
-        const receivedFunding =
-            round.paymentOption === PaymentOptionEnum.Usd
-                ? proposal.grantedUsd
-                : proposal.grantedToken;
         const mappedLeaderboardProposal = new LeaderboardProposal({
             id: proposal.id,
             title: proposal.title,
@@ -36,34 +31,37 @@ export class LeaderboardProposalBuilder {
             }),
             requestedFunding:
                 round.paymentOption === PaymentOptionEnum.Usd
-                    ? proposal.requestedGrantUsd
-                    : proposal.requestedGrantToken,
-            receivedFunding: receivedFunding ?? 0,
-            yesVotes: proposal.votes,
-            noVotes: proposal.counterVotes,
+                    ? proposal.requestedFunding.usd
+                    : proposal.requestedFunding.ocean,
+            receivedFunding:
+                round.paymentOption === PaymentOptionEnum.Usd
+                    ? proposal.receivedFunding.usd
+                    : proposal.receivedFunding.ocean,
+            yesVotes: proposal.yesVotes,
+            noVotes: proposal.noVotes,
             effectiveVotes: this.calculateEffectiveVotes(
-                proposal.votes,
-                proposal.counterVotes,
+                proposal.yesVotes,
+                proposal.noVotes,
                 round.round,
             ),
             tags: [proposal.category],
         });
 
         if (proposal.earmark) {
-            mappedLeaderboardProposal.tags.push(this.EARMARK_TAG);
             mappedLeaderboardProposal.isEarmarked = true;
             mappedLeaderboardProposal.earmarkType = proposal.earmark;
         }
 
         if (project.logo) {
+            project.logo = project.logo as Image;
             mappedLeaderboardProposal.project.logoUrl = project.logo.url;
         }
 
         return mappedLeaderboardProposal;
     }
 
-    private calculateEffectiveVotes(votes: number, counterVotes: number, round: number): number {
-        return round >= 8 ? votes - counterVotes : votes;
+    private calculateEffectiveVotes(yesVotes: number, noVotes: number, round: number): number {
+        return round >= 8 ? yesVotes - noVotes : yesVotes;
     }
 
     private countFinishedProposals(proposals: DaoProposal[]): number {

@@ -25,7 +25,7 @@ export class SyncProposalsDataService {
     ) {}
 
     @Cron('0 */5 * * * *', {
-        name: 'Round import',
+        name: 'Proposal import',
         timeZone: 'Europe/Berlin',
     })
     public async execute(): Promise<void> {

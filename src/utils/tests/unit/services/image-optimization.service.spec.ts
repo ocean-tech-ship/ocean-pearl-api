@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PicturesService } from '../../../services/pictures.service';
+import { ImageOptimizationService } from '../../../services/image-optimization.service';
 
-describe('PicturesService', () => {
+describe('ImageOptimizationService', () => {
     let module: TestingModule;
-    let service: PicturesService;
+    let service: ImageOptimizationService;
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
-            providers: [PicturesService],
+            providers: [ImageOptimizationService],
         }).compile();
 
-        service = module.get<PicturesService>(PicturesService);
+        service = module.get<ImageOptimizationService>(ImageOptimizationService);
     });
 
     afterAll(async () => {

@@ -4,10 +4,8 @@ import { Document, Types } from 'mongoose';
 import { CategoryEnum } from '../enums/category.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
-import { Company } from './company.schema';
 import { DaoProposal } from './dao-proposal.schema';
-import { PearlUser } from './pearl-user.schema';
-import { Picture, PictureSchema } from './picture.schema';
+import { Image as Image } from './image.schema';
 import { SocialMedia, SocialMediaSchema } from './social-media.schema';
 
 export type ProjectType = Project & Document;
@@ -95,23 +93,28 @@ export class Project {
     socialMedia: SocialMedia;
 
     @Prop({
-        type: PictureSchema,
-    })
-    @ApiProperty()
-    logo: Picture;
-
-    @Prop({
-        type: [PictureSchema],
-        default: [],
-    })
-    @ApiProperty()
-    pictures: Picture[];
-
-    @Prop({
         type: Types.ObjectId,
-        ref: 'Company',
+        ref: 'Image',
     })
-    company: Company | Types.ObjectId;
+    @ApiProperty({
+        type: Image,
+    })
+    logo: Image | Types.ObjectId;
+
+    @Prop({
+        type: [
+            {
+                type: Types.ObjectId,
+                ref: 'Image',
+            },
+        ],
+        default: void 0,
+    })
+    @ApiProperty({
+        type: Image,
+        isArray: true,
+    })
+    images: Image[] | Types.ObjectId[];
 
     @Prop({
         type: [
@@ -127,17 +130,6 @@ export class Project {
         isArray: true,
     })
     daoProposals: DaoProposal[] | Types.ObjectId[];
-
-    @Prop({
-        type: [
-            {
-                type: Types.ObjectId,
-                ref: 'PearlUser',
-            },
-        ],
-        default: void 0,
-    })
-    team: PearlUser[] | Types.ObjectId[];
 
     @Prop({
         type: String,
@@ -161,5 +153,4 @@ export class Project {
     updatedAt: Date;
 }
 
-export const ProjectSchema =
-    SchemaFactory.createForClass(Project).plugin(PaginatePlugin);
+export const ProjectSchema = SchemaFactory.createForClass(Project).plugin(PaginatePlugin);

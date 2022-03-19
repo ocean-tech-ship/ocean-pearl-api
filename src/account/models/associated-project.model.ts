@@ -2,9 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { SocialMedia } from '../../database/schemas/social-media.schema';
 
-export class AssociatedPicture {
+export class AssociatedImage {
     @ApiProperty()
-    key: string;
+    id: string;
 
     @ApiProperty()
     url: string;
@@ -33,13 +33,13 @@ export class AssociatedProject {
     socialMedia: SocialMedia;
 
     @ApiProperty()
-    logo: AssociatedPicture;
+    logo: AssociatedImage;
 
     @ApiProperty({
-        type: AssociatedPicture,
+        type: AssociatedImage,
         isArray: true,
     })
-    pictures: AssociatedPicture[];
+    images: AssociatedImage[];
 
     @ApiProperty()
     teamName: string;

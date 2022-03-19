@@ -14,6 +14,12 @@ import { SocialMedia } from '../../database/schemas/social-media.schema';
 
 export class UpdatedProject {
     @ApiProperty({
+        default: 'Some Id',
+    })
+    @IsString()
+    id: string;
+
+    @ApiProperty({
         default: 'Ocean Pearl',
     })
     @IsOptional()
@@ -64,7 +70,7 @@ export class UpdatedProject {
     @ApiProperty()
     @IsOptional()
     @IsObject()
-    logo: Express.Multer.File;
+    logo: string;
 
     @ApiProperty()
     @IsOptional()
@@ -77,14 +83,15 @@ export class UpdatedProject {
     })
     @IsOptional()
     @IsArray()
-    deletedPictures: string[];
+    deletedImages: string[];
 
     @ApiProperty({
+        type: String,
         isArray: true,
     })
     @IsOptional()
     @IsArray()
-    newPictures: Express.Multer.File[];
+    newImages: string[];
 
     @ApiProperty({
         default: 'Ocean Pearl',

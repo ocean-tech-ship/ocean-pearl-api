@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { Picture } from '../../database/schemas/picture.schema';
+import { Image } from '../../database/schemas/image.schema';
 import { Project } from '../../database/schemas/project.schema';
 import { AssociatedProject } from '../models/associated-project.model';
 
 @Injectable()
 export class ManagedProjectMapper {
     public map(project: Project): AssociatedProject {
+        project.logo = project.logo as Image;
+
         const mappedProject = {
             id: project.id,
             title: project.title,
@@ -16,21 +18,24 @@ export class ManagedProjectMapper {
             socialMedia: project.socialMedia ?? {},
             logo: project.logo
                 ? {
-                      key: project.logo.key,
+                      id: project.logo.id,
                       url: project.logo.url,
                   }
                 : {},
-            pictures: [],
+            images: [],
             teamName: project.teamName,
         } as AssociatedProject;
 
-        mappedProject.pictures = project.pictures?.map((picture: Picture) => {
-            return {
-                key: picture.key,
-                url: picture.url,
-            };
-        }) ?? [];
+        if (project.images.length > 0) {
+            project.images = project.images as Image[];
+            mappedProject.images = project.images?.map((image: Image) => {
+                return {
+                    id: image.id,
+                    url: image.url,
+                };
+            }) ?? [];
+        }
 
         return mappedProject;
     }
-}
+} 

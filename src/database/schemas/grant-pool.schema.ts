@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EarmarkTypeEnum } from '../enums/earmark-type.enum';
 
 @Schema({ _id: false })
-export class Earmark {
+export class GrantPool {
     @Prop({
         type: String,
         enum: EarmarkTypeEnum,
@@ -31,4 +31,4 @@ export class Earmark {
     fundingOcean: number;
 }
 
-export const EarmarkSchema = SchemaFactory.createForClass(Earmark);
+export const GrantPoolSchema = SchemaFactory.createForClass(GrantPool);

@@ -1,8 +1,7 @@
 import { Connection } from 'mongoose';
-import { EarmarkTypeMap } from '../../airtable/constants/earmark-type-map.constant';
 import { EarmarkTypeEnum } from '../enums/earmark-type.enum';
 import { MigrationInterface } from '../interfaces/migration.interface';
-import { Earmark } from '../schemas/earmark.schema';
+import { GrantPool } from '../schemas/grant-pool.schema';
 
 export default class Version100002 implements MigrationInterface {
     public getVersion(): number {
@@ -26,7 +25,7 @@ export default class Version100002 implements MigrationInterface {
                 type: EarmarkTypeEnum.NewEntrants,
                 fundingOcean: round.earmarkedFundingOcean,
                 fundingUsd: round.earmarkedFundingUsd,
-            } as Earmark;
+            } as GrantPool;
 
             delete round.earmarkedFundingOcean;
             delete round.earmarkedFundingUsd;
@@ -46,6 +45,6 @@ export default class Version100002 implements MigrationInterface {
 
     public async down(connection: Connection): Promise<void> {
         // if possible add code that will revert the migration
-        throw new Error(`Can\'t revert migration ${this.getVersion}!`);
+        throw new Error(`Can\'t revert migration ${this.getVersion()}!`);
     }
 }

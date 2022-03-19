@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
+import { Funding } from '../../database/schemas/funding.schema';
 
 export class RoundMetrics {
     @ApiProperty()
@@ -29,10 +30,7 @@ export class Metrics {
     nextRound: RoundMetrics;
     
     @ApiProperty()
-    totalRequestedFundingOcean: number;
-    
-    @ApiProperty()
-    totalRequestedFundingUsd: number;
+    totalRequestedFunding: Funding;
     
     @ApiProperty()
     totalVotes: number;

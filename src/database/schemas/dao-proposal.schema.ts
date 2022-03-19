@@ -9,8 +9,8 @@ import { StandingEnum } from '../enums/standing.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
 import { Deliverable } from './deliverable.schema';
-import { KpiTarget } from './kpi-target.schema';
-import { Picture, PictureSchema } from './picture.schema';
+import { Funding, FundingSchema } from './funding.schema';
+import { Image } from './image.schema';
 import { Project } from './project.schema';
 import { Round } from './round.schema';
 
@@ -60,7 +60,7 @@ export class DaoProposal {
         default: 0,
     })
     @ApiProperty()
-    votes: number;
+    yesVotes: number;
 
     @Prop({
         type: Number,
@@ -68,39 +68,19 @@ export class DaoProposal {
         default: 0,
     })
     @ApiProperty()
-    counterVotes: number;
+    noVotes: number;
 
     @Prop({
-        type: Number,
-        min: 0,
-        default: 0,
+        type: FundingSchema,
     })
     @ApiProperty()
-    requestedGrantToken: number;
+    requestedFunding: Funding;
 
     @Prop({
-        type: Number,
-        min: 0,
-        default: 0,
+        type: FundingSchema,
     })
     @ApiProperty()
-    grantedToken: number;
-
-    @Prop({
-        type: Number,
-        min: 0,
-        default: 0,
-    })
-    @ApiProperty()
-    requestedGrantUsd: number;
-
-    @Prop({
-        type: Number,
-        min: 0,
-        default: 0,
-    })
-    @ApiProperty()
-    grantedUsd: number;
+    receivedFunding: Funding;
 
     @Prop({
         type: String,
@@ -187,28 +167,6 @@ export class DaoProposal {
     deliverables: Deliverable[] | Types.ObjectId[];
 
     @Prop({
-        type: [
-            {
-                type: Types.ObjectId,
-                ref: 'KpiTarget',
-            },
-        ],
-        default: void 0,
-    })
-    @ApiProperty({
-        type: KpiTarget,
-        isArray: true,
-    })
-    kpiTargets: KpiTarget[] | Types.ObjectId[];
-
-    @Prop({
-        type: String,
-        trim: true,
-    })
-    @ApiProperty()
-    kpiRoi: string;
-
-    @Prop({
         type: String,
         trim: true,
         default: FundamentalMetricEnum.Other,
@@ -237,16 +195,23 @@ export class DaoProposal {
     voteUrl: string;
 
     @Prop({
-        type: [PictureSchema],
-        default: [],
+        type: [
+            {
+                type: Types.ObjectId,
+                ref: 'Image',
+            },
+        ],
+        default: void 0,
     })
-    @ApiProperty()
-    pictures: Picture[];
+    @ApiProperty({
+        type: Image,
+        isArray: true,
+    })
+    images: Image[] | Types.ObjectId[];
 
     createdAt: Date;
 
     updatedAt: Date;
 }
 
-export const DaoProposalSchema =
-    SchemaFactory.createForClass(DaoProposal).plugin(PaginatePlugin);
+export const DaoProposalSchema = SchemaFactory.createForClass(DaoProposal).plugin(PaginatePlugin);

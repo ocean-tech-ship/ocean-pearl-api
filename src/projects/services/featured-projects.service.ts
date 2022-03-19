@@ -19,16 +19,8 @@ export class FeaturedProjectsService
             .limit(4)
             .lean()
             .populate({
-                path: 'company',
-                select: '-_id -__v',
-            })
-            .populate({
                 path: 'daoProposals',
-                select: '-project -_id -__v -deliverables -kpiTargets',
-            })
-            .populate({
-                path: 'team',
-                select: '-_id -__v',
+                select: '-project -_id -__v -deliverables',
             })
             .select('-_id -__v')
             .exec();

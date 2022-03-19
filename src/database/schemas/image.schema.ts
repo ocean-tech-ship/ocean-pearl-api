@@ -1,9 +1,23 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Types, Document } from 'mongoose';
 import { FileExtensionsEnum } from '../../aws/s3/enums/file-extensions.enum';
+import { nanoid } from '../functions/nano-id.function';
 
-@Schema({ _id: false })
-export class Picture {
+export type ImageType = Image & Document;
+
+@Schema({ timestamps: true })
+export class Image {
+    _id: Types.ObjectId;
+
+    @Prop({
+        type: String,
+        default: () => nanoid(),
+        unique: true,
+    })
+    @ApiProperty()
+    id: string;
+
     @Prop({
         type: String,
         maxLength: 32,
@@ -27,6 +41,12 @@ export class Picture {
     })
     @ApiProperty()
     fileExtension: FileExtensionsEnum;
+
+    @ApiProperty()
+    createdAt: Date;
+
+    @ApiProperty()
+    updatedAt: Date;
 }
 
-export const PictureSchema = SchemaFactory.createForClass(Picture);
+export const ImageSchema = SchemaFactory.createForClass(Image);
