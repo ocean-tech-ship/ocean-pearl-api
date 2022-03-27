@@ -7,6 +7,7 @@ import { PaginatePlugin } from '../plugins/pagination.plugin';
 import { DaoProposal } from './dao-proposal.schema';
 import { Image as Image } from './image.schema';
 import { SocialMedia, SocialMediaSchema } from './social-media.schema';
+import { TeamMember, TeamMemberSchema } from './team-member.schema';
 
 export type ProjectType = Project & Document;
 
@@ -140,6 +141,14 @@ export class Project {
     teamName: string;
 
     @Prop({
+        type: TeamMember,
+        isArray: true,
+        of: TeamMemberSchema,
+    })
+    @ApiProperty()
+    members: TeamMember[];
+
+    @Prop({
         type: Boolean,
         default: false,
     })
@@ -151,6 +160,12 @@ export class Project {
 
     @ApiProperty()
     updatedAt: Date;
+
+    public constructor(attributes: Partial<Project> = {}) {
+        for (let key in attributes) {
+            this[key] = attributes[key];
+        }
+    }
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project).plugin(PaginatePlugin);

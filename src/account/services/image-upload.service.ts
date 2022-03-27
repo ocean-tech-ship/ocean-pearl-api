@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { MimeTypesEnum } from '../../aws/s3/enums/mime-types.enum';
-import { AwsImageData } from '../../aws/s3/models/aws-image-data.model';
 import { S3ImageManagementService } from '../../aws/s3/services/s3-image-management.service';
 import { ImageRepository } from '../../database/repositories/image.repository';
 import { Image } from '../../database/schemas/image.schema';

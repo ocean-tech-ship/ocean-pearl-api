@@ -12,6 +12,7 @@ import { AuthenticatedUser } from '../../auth/models/authenticated-user.model';
 import { ProjectCreationGuard } from '../guards/project-creation.guard';
 import { ProjectGuard } from '../guards/project.guard';
 import { AssociatedProject } from '../models/associated-project.model';
+import { CreateProject } from '../models/create-project.model';
 import { UpdatedProject } from '../models/updated-project.model';
 import { GetAssociatedProjectsService } from '../services/get-associated-projects.service';
 import { UpdateProjectService } from '../services/update-project.service';
@@ -78,6 +79,9 @@ export class AccountController {
     }
 
     @Post('/projects')
+    @ApiBody({
+        type: CreateProject,
+    })
     @UseGuards(ProjectCreationGuard)
     public async createProject(@Req() request: Request, @Body() test: any): Promise<void> {
         console.log('CONTROLLER');
