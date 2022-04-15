@@ -6,26 +6,8 @@ import { RoundStatusEnum } from '../enums/round-status.enum';
 import { GrantPool } from './grant-pool.model';
 import { LeaderboardProposal } from './leaderboard-proposal.model';
 
-export class LeaderboardProperties {
-    fundedProposals?: LeaderboardProposal[];
-    partiallyFundedProposals?: LeaderboardProposal[];
-    notFundedProposals?: LeaderboardProposal[];
-    amountProposals?: number;
-    maxVotes?: number;
-    grantPools?: Partial<LeaderboardGrantPools>;
-    paymentOption?: PaymentOptionEnum;
-    votingStartDate?: Date;
-    votingEndDate?: Date;
-    status?: RoundStatusEnum;
-    round?: number;
-    overallFunding?: number;
-    remainingFundingStrategy?: RemainingFundingStrategyEnum;
-    overallRequestedFunding?: number;
-    totalVotes?: number;
-}
-
 export type LeaderboardGrantPools = {
-    [key in EarmarkTypeEnum]: GrantPool;
+    [key in EarmarkTypeEnum]?: GrantPool;
 };
 
 export class Leaderboard {
@@ -56,7 +38,7 @@ export class Leaderboard {
     @ApiProperty({
         type: Object,
     })
-    grantPools: Partial<LeaderboardGrantPools> = {};
+    grantPools: LeaderboardGrantPools = {};
 
     @ApiProperty({
         type: String,
@@ -91,23 +73,24 @@ export class Leaderboard {
     @ApiProperty()
     totalVotes: number = 0;
 
-    constructor(attributes: LeaderboardProperties = {}) {
+    constructor(attributes: Partial<Leaderboard> = {}) {
         for (let key in attributes) {
             this[key] = attributes[key];
         }
     }
 
     public addToFundedProposals(proposal: LeaderboardProposal): void {
-        this.fundedProposals = this.insertInOrder(proposal, this.fundedProposals);
+        this.fundedProposals.splice(this.findLocation(proposal, this.fundedProposals), 0, proposal);
     }
 
     public addToPartiallyFundedProposals(proposal: LeaderboardProposal): void {
-        this.partiallyFundedProposals = this.insertInOrder(proposal, this.partiallyFundedProposals);
+        this.partiallyFundedProposals.splice(this.findLocation(proposal, this.partiallyFundedProposals), 0, proposal);
     }
 
     public addToNotFundedProposals(proposal: LeaderboardProposal): void {
-        this.notFundedProposals = this.insertInOrder(proposal, this.notFundedProposals);
+        this.notFundedProposals.splice(this.findLocation(proposal, this.notFundedProposals), 0, proposal);
     }
+    
     public moveUnusedRemainingFunding(): void {
         for (let [key, pool] of Object.entries(this.grantPools)) {
             if (key !== EarmarkTypeEnum.General) {
@@ -117,32 +100,19 @@ export class Leaderboard {
         }
     }
 
-    private insertInOrder(
+    private findLocation(
         proposal: LeaderboardProposal,
         proposalList: LeaderboardProposal[],
-    ): LeaderboardProposal[] {
+    ): number {
         if (proposalList.length === 0) {
-            proposalList.push(proposal);
-            return proposalList;
+            return -1;
         }
 
         for (const [index, listProposal] of proposalList.entries()) {
-            if (index === proposalList.length - 1) {
-                listProposal.effectiveVotes >= proposal.effectiveVotes
-                    ? proposalList.splice(index + 1, 0, proposal)
-                    : proposalList.splice(index, 0, proposal);
-                break;
-            }
-
-            if (
-                listProposal.effectiveVotes > proposal.effectiveVotes &&
-                proposalList[index + 1].effectiveVotes <= proposal.effectiveVotes
-            ) {
-                proposalList.splice(index + 1, 0, proposal);
-                break;
-            }
+            if (listProposal.effectiveVotes < proposal.effectiveVotes)
+                return index;
         }
 
-        return proposalList;
+        return proposalList.length;
     }
 }
