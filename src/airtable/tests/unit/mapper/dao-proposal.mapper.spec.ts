@@ -21,8 +21,10 @@ const airtableData = {
     'Fundamental Metric': 'MVP Launch',
     'OCEAN Requested': '10000',
     'OCEAN Granted': '10000',
+    'Minimum OCEAN Requested': '1000',
     'USD Requested': '8400',
     'USD Granted': '8400',
+    'Minimum USD Requested': '840',
     'Proposal URL': faker.internet.url(),
     'Snapshot Block': faker.datatype.hexaDecimal(10),
     'ipfsHash': faker.datatype.number(10),
@@ -67,6 +69,10 @@ describe('DaoProposalMapper', () => {
             requestedFunding: {
                 usd: 8400,
                 ocean: 10000,
+            },
+            minimumRequestedFunding: {
+                usd: 840,
+                ocean: 1000
             },
             snapshotBlock: airtableData['Snapshot Block'],
             standing: StandingEnum.Completed,
