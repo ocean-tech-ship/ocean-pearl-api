@@ -35,6 +35,14 @@ export class DaoProposalMapper {
                     ? parseInt(airtableData['OCEAN Requested'])
                     : 0,
             },
+            minimumRequestedFunding: {
+                usd: airtableData['Minimum USD Requested']
+                    ? parseInt(airtableData['Minimum USD Requested'])
+                    : 0,
+                ocean: airtableData['Minimum OCEAN Requested']
+                    ? parseInt(airtableData['Minimum OCEAN Requested'])
+                    : 0,
+            },
             receivedFunding: {
                 usd: airtableData['USD Granted'] ? parseInt(airtableData['USD Granted']) : 0,
                 ocean: airtableData['OCEAN Granted'] ? parseInt(airtableData['OCEAN Granted']) : 0,
