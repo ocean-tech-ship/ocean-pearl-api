@@ -32,6 +32,10 @@ export class LeaderboardProposalBuilder {
                 round.paymentOption === PaymentOptionEnum.Usd
                     ? proposal.requestedFunding.usd
                     : proposal.requestedFunding.ocean,
+            minimumRequestedFunding:
+                round.paymentOption === PaymentOptionEnum.Usd
+                    ? proposal.minimumRequestedFunding.usd
+                    : proposal.minimumRequestedFunding.ocean,  
             receivedFunding:
                 round.paymentOption === PaymentOptionEnum.Usd
                     ? proposal.receivedFunding.usd
