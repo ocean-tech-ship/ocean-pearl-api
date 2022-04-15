@@ -6,7 +6,7 @@ import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProposalBuilder } from '../builder/leaderboard-proposal.builder';
 import { LeaderboardMapper } from '../mapper/leaderboard.mapper';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
-import { Leaderboard } from '../models/leaderboard.model';
+import { Leaderboard, LeaderboardGrantPools } from '../models/leaderboard.model';
 import { LeaderboardStrategyCollection } from '../strategies/leaderboard-strategy.collection';
 import { LeaderboardCacheService } from './leaderboard-cache.service';
 
@@ -33,7 +33,7 @@ export class GenerateLeaderboardService {
         }
 
         let leaderboard: Leaderboard = this.leaderboardMapper.map(round);
-        let leaderboardProposals: LeaderboardProposal[] = [];
+        let relevantProposals: LeaderboardProposal[] = [];
 
         const proposals = await this.daoProposalRepository.getAll({
             find: { fundingRound: round._id },
@@ -50,22 +50,31 @@ export class GenerateLeaderboardService {
 
             let leaderboardProposal: LeaderboardProposal =
                 await this.leaderboardProposalBuilder.build(proposal, round);
-            leaderboardProposal.receivedFunding = 0;
 
             leaderboard.overallRequestedFunding += leaderboardProposal.requestedFunding;
             leaderboard.totalVotes += leaderboardProposal.yesVotes + leaderboardProposal.noVotes;
-
-            leaderboardProposals.push(leaderboardProposal);
             leaderboard.amountProposals++;
+
+            if (leaderboardProposal.effectiveVotes <= 0) {
+                leaderboard.addToNotFundedProposals(leaderboardProposal);
+                continue;
+            }
+
+            if (leaderboardProposal.isEarmarked) {
+                leaderboard.grantPools[leaderboardProposal.earmarkType].totalEffectiveVotes +=
+                    leaderboardProposal.effectiveVotes;
+                leaderboard.grantPools[leaderboardProposal.earmarkType].relevantEffectiveVotes +=
+                    leaderboardProposal.effectiveVotes;
+            }
+            leaderboard.grantPools[EarmarkTypeEnum.General].totalEffectiveVotes +=
+                leaderboardProposal.effectiveVotes;
+            leaderboard.grantPools[EarmarkTypeEnum.General].relevantEffectiveVotes +=
+                leaderboardProposal.effectiveVotes;
+
+            relevantProposals.push(leaderboardProposal);
         }
 
-        leaderboardProposals.sort(
-            (current: LeaderboardProposal, next: LeaderboardProposal): number => {
-                return next.effectiveVotes - current.effectiveVotes;
-            },
-        );
-
-        leaderboard = this.assignFunding(leaderboard, leaderboardProposals);
+        leaderboard = this.calculateQuadraticFundingDistribution(leaderboard, relevantProposals);
 
         this.leaderboardCacheService.addToCache(leaderboard);
         return leaderboard;
@@ -73,42 +82,100 @@ export class GenerateLeaderboardService {
 
     private assignFunding(leaderboard: Leaderboard, proposals: LeaderboardProposal[]): Leaderboard {
         for (let proposal of proposals) {
-            let strategy = this.strategyCollection.findMatchingStrategy(proposal, leaderboard);
+            let strategy = this.strategyCollection.findMatchingStrategy(proposal);
 
             leaderboard = strategy.execute(proposal, leaderboard);
         }
 
-        return this.assignUnusedFunding(leaderboard);
+        return leaderboard;
     }
 
-    private assignUnusedFunding(leaderboard: Leaderboard): Leaderboard {
-        leaderboard.grantPools[EarmarkTypeEnum.General].potentialRemainingFunding =
-            leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding;
-
-        leaderboard.moveUnusedRemainingFunding();
-
-        if (leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding === 0) {
-            return leaderboard;
-        }
-
-        const proposals = [
-            ...leaderboard.partiallyFundedProposals,
-            ...leaderboard.notFundedProposals,
-        ];
-        leaderboard.partiallyFundedProposals = [];
-        leaderboard.notFundedProposals = [];
-
-        proposals.sort(
-            (current: LeaderboardProposal, next: LeaderboardProposal): number =>
-                next.effectiveVotes - current.effectiveVotes,
+    private calculateQuadraticFundingDistribution(
+        leaderboard: Leaderboard,
+        proposals: LeaderboardProposal[],
+    ): Leaderboard {
+        let hasProposalsUnderMinimalFunding: boolean = true;
+        let totalUnusedEarmarkedPoolsFunding: number = 0;
+        let previousFundedProposalsAmount: number = 0;
+        const baseGrantPools: LeaderboardGrantPools = JSON.parse(
+            JSON.stringify(leaderboard.grantPools),
         );
 
-        for (let proposal of proposals) {
-            proposal.neededVotes = undefined;
+        while (hasProposalsUnderMinimalFunding) {
+            for (const proposal of proposals) {
+                proposal.receivedFunding = 0;
+                proposal.grantPoolShare = {};
+            };
 
-            let strategy = this.strategyCollection.findMatchingStrategy(proposal, leaderboard);
+            leaderboard = this.assignFunding(leaderboard, proposals);
 
-            leaderboard = strategy.execute(proposal, leaderboard);
+            if (leaderboard.fundedProposals.length > previousFundedProposalsAmount) {
+                previousFundedProposalsAmount = leaderboard.fundedProposals.length;
+
+                proposals = [
+                    ...leaderboard.fundedProposals,
+                    ...leaderboard.partiallyFundedProposals,
+                ];
+                leaderboard.fundedProposals = [];
+                leaderboard.partiallyFundedProposals = [];
+                leaderboard.grantPools = JSON.parse(JSON.stringify(baseGrantPools));
+
+                continue;
+            }
+
+            totalUnusedEarmarkedPoolsFunding = 0;
+            for (const grantPool of Object.values(leaderboard.grantPools)) {
+                if (grantPool.type !== EarmarkTypeEnum.General && grantPool.relevantFunding > 0) {
+                    totalUnusedEarmarkedPoolsFunding += grantPool.relevantFunding;
+                    baseGrantPools[grantPool.type].relevantFunding -= grantPool.relevantFunding;
+                }
+            }
+
+            if (totalUnusedEarmarkedPoolsFunding > 0) {
+                baseGrantPools[EarmarkTypeEnum.General].relevantFunding +=
+                    totalUnusedEarmarkedPoolsFunding;
+
+                proposals = [
+                    ...leaderboard.fundedProposals,
+                    ...leaderboard.partiallyFundedProposals,
+                ];
+                leaderboard.fundedProposals = [];
+                leaderboard.partiallyFundedProposals = [];
+                leaderboard.grantPools = JSON.parse(JSON.stringify(baseGrantPools));
+
+                continue;
+            }
+
+            hasProposalsUnderMinimalFunding = false;
+            for (let index = leaderboard.partiallyFundedProposals.length - 1; index >= 0; index--) {
+                const proposal = leaderboard.partiallyFundedProposals[index];
+                if (!proposal.hasReceivedMinimalFunding()) {
+                    hasProposalsUnderMinimalFunding = true;
+
+                    proposal.receivedFunding = 0;
+                    proposal.grantPoolShare = {};
+                    leaderboard.addToNotFundedProposals(proposal);
+                    leaderboard.partiallyFundedProposals.splice(index, 1);
+
+                    if (proposal.isEarmarked) {
+                        baseGrantPools[proposal.earmarkType].relevantEffectiveVotes -=
+                            proposal.effectiveVotes;
+                    }
+
+                    baseGrantPools[EarmarkTypeEnum.General].relevantEffectiveVotes -=
+                        proposal.effectiveVotes;
+
+                    proposals = [
+                        ...leaderboard.fundedProposals,
+                        ...leaderboard.partiallyFundedProposals,
+                    ];
+                    leaderboard.fundedProposals = [];
+                    leaderboard.partiallyFundedProposals = [];
+
+                    leaderboard.grantPools = JSON.parse(JSON.stringify(baseGrantPools));
+                    break;
+                }
+            }
         }
 
         return leaderboard;
