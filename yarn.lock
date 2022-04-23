@@ -2857,10 +2857,10 @@ asap@^2.0.0:
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
-async@3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/async/-/async-3.2.0.tgz#b3a2685c5ebb641d3de02d161002c60fc9f85720"
-  integrity sha512-TR2mEZFVOj2pLStYxLht7TyfuRzaydfpxr3k9RpHIzMgw7A64dzsdqCxH1WJyQdoe8T10nDXd9wnEigmiuHIZw==
+async@3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/async/-/async-3.2.3.tgz#ac53dafd3f4720ee9e8a160628f18ea91df196c9"
+  integrity sha512-spZRyzKL5l5BZQrr/6m/SqFdBN0q3OCI0f9rjfBzCMBIP4p75P620rR3gTmaksNOhmzgdxcaxdNfMy6anrbM0g==
 
 asynckit@^0.4.0:
   version "0.4.0"
@@ -3096,12 +3096,12 @@ bytes@3.1.1:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.1.tgz#3f018291cb4cbad9accb6e6970bca9c8889e879a"
   integrity sha512-dWe4nWO/ruEOY7HkUJ5gFt1DCFV9zPRoJr8pV0/ASQermOZjtq8jMjOprC0Kd10GLN+l7xaUPvxzJFWtxGu8Fg==
 
-cache-manager@^3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/cache-manager/-/cache-manager-3.6.0.tgz#696392402bb80447fbab2c9af7a939ce3cd01809"
-  integrity sha512-D4GJZhyYgprYM30ZEPOn9kkdwdPUumX3ujbNbl7FYjcRViRvAgY53k6pO/82wNsm7c4aHVgXfR12/3huA47qnA==
+cache-manager@^3.6.1:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/cache-manager/-/cache-manager-3.6.1.tgz#44f93b7a42265cb653cdebcffc311b5bdfb62596"
+  integrity sha512-jxJvGYhN5dUgpriAdsDnnYbKse4dEXI5i3XpwTfPq5utPtXH1uYXWyGLHGlbSlh9Vq4ytrgAUVwY+IodNeKigA==
   dependencies:
-    async "3.2.0"
+    async "3.2.3"
     lodash "^4.17.21"
     lru-cache "6.0.0"
 
