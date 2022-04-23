@@ -2001,12 +2001,12 @@
     multer "1.4.4"
     tslib "2.3.1"
 
-"@nestjs/schedule@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@nestjs/schedule/-/schedule-1.0.2.tgz#9c921105deabf91274479888c9b1df284bb3c38b"
-  integrity sha512-GGRehpSm0nCthYNxAGdTzondPrRvurtKnkQCzIb3Tccqq6PhfS2QiHMwDaCel5/4jhYbR/lZR9UsVr6KSJc2Xg==
+"@nestjs/schedule@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/schedule/-/schedule-1.1.0.tgz#7c8e937399bf5da3d6895e7179ae4bdc4377906e"
+  integrity sha512-0QpbwClUildXqlyoaygG+aIQZNNMv31XDyQxX+Ob1zw/3I8+AVrDlBwZHQ+tlhIcJFR8aG+VTH8xwIjXwtS1UA==
   dependencies:
-    cron "1.7.2"
+    cron "1.8.2"
     uuid "8.3.2"
 
 "@nestjs/schematics@^8.0.3", "@nestjs/schematics@^8.0.7":
@@ -2857,10 +2857,10 @@ asap@^2.0.0:
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
-async@3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/async/-/async-3.2.0.tgz#b3a2685c5ebb641d3de02d161002c60fc9f85720"
-  integrity sha512-TR2mEZFVOj2pLStYxLht7TyfuRzaydfpxr3k9RpHIzMgw7A64dzsdqCxH1WJyQdoe8T10nDXd9wnEigmiuHIZw==
+async@3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/async/-/async-3.2.3.tgz#ac53dafd3f4720ee9e8a160628f18ea91df196c9"
+  integrity sha512-spZRyzKL5l5BZQrr/6m/SqFdBN0q3OCI0f9rjfBzCMBIP4p75P620rR3gTmaksNOhmzgdxcaxdNfMy6anrbM0g==
 
 asynckit@^0.4.0:
   version "0.4.0"
@@ -3096,12 +3096,12 @@ bytes@3.1.1:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.1.tgz#3f018291cb4cbad9accb6e6970bca9c8889e879a"
   integrity sha512-dWe4nWO/ruEOY7HkUJ5gFt1DCFV9zPRoJr8pV0/ASQermOZjtq8jMjOprC0Kd10GLN+l7xaUPvxzJFWtxGu8Fg==
 
-cache-manager@^3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/cache-manager/-/cache-manager-3.6.0.tgz#696392402bb80447fbab2c9af7a939ce3cd01809"
-  integrity sha512-D4GJZhyYgprYM30ZEPOn9kkdwdPUumX3ujbNbl7FYjcRViRvAgY53k6pO/82wNsm7c4aHVgXfR12/3huA47qnA==
+cache-manager@^3.6.1:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/cache-manager/-/cache-manager-3.6.1.tgz#44f93b7a42265cb653cdebcffc311b5bdfb62596"
+  integrity sha512-jxJvGYhN5dUgpriAdsDnnYbKse4dEXI5i3XpwTfPq5utPtXH1uYXWyGLHGlbSlh9Vq4ytrgAUVwY+IodNeKigA==
   dependencies:
-    async "3.2.0"
+    async "3.2.3"
     lodash "^4.17.21"
     lru-cache "6.0.0"
 
@@ -3454,10 +3454,10 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cron@1.7.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/cron/-/cron-1.7.2.tgz#2ea1f35c138a07edac2ac5af5084ed6fee5723db"
-  integrity sha512-+SaJ2OfeRvfQqwXQ2kgr0Y5pzBR/lijf5OpnnaruwWnmI799JfWr2jN2ItOV9s3A/+TFOt6mxvKzQq5F0Jp6VQ==
+cron@1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/cron/-/cron-1.8.2.tgz#4ac5e3c55ba8c163d84f3407bde94632da8370ce"
+  integrity sha512-Gk2c4y6xKEO8FSAUTklqtfSr7oTq0CiPQeLBG5Fl0qoXpZyMcj1SG59YL+hqq04bu6/IuEA7lMkYDAplQNKkyg==
   dependencies:
     moment-timezone "^0.5.x"
 
