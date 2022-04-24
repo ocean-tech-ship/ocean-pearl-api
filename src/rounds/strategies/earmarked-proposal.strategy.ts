@@ -19,10 +19,16 @@ export class EarmarkedProposalStrategy implements leaderboardStrategyInterface {
         const earmarkedFundingPerVote =
             leaderboard.grantPools[proposalEarmark].relevantFunding /
             leaderboard.grantPools[proposalEarmark].relevantEffectiveVotes;
+
+        const potentialEamarkFunding: number = 
+            leaderboard.grantPools[proposalEarmark].relevantEffectiveVotes === proposal.effectiveVotes
+            ? leaderboard.grantPools[proposalEarmark].relevantFunding
+            : earmarkedFundingPerVote * proposal.effectiveVotes;
+
         const receivingEarmarkFunding: number = Math.min(
-            remainingRequestedFunding,
-            earmarkedFundingPerVote * proposal.effectiveVotes,
-        );
+                remainingRequestedFunding,
+                potentialEamarkFunding,
+            );
 
         remainingRequestedFunding -= receivingEarmarkFunding;
         proposal.addToGrantPoolShare(proposalEarmark, receivingEarmarkFunding);
@@ -35,9 +41,15 @@ export class EarmarkedProposalStrategy implements leaderboardStrategyInterface {
             const generalFundingPerVote =
                 leaderboard.grantPools[EarmarkTypeEnum.General].relevantFunding /
                 leaderboard.grantPools[EarmarkTypeEnum.General].relevantEffectiveVotes;
+
+            const potentialGeneralFunding: number = 
+                leaderboard.grantPools[EarmarkTypeEnum.General].relevantEffectiveVotes === proposal.effectiveVotes
+                ? leaderboard.grantPools[EarmarkTypeEnum.General].relevantFunding
+                : generalFundingPerVote * proposal.effectiveVotes;
+            
             const receivingGeneralFunding: number = Math.min(
                 remainingRequestedFunding,
-                generalFundingPerVote * proposal.effectiveVotes,
+                potentialGeneralFunding,
             );
 
             remainingRequestedFunding -= receivingGeneralFunding;

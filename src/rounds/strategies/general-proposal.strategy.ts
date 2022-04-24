@@ -18,9 +18,16 @@ export class GeneralProposalStrategy implements leaderboardStrategyInterface {
         const generalFundingPerVote =
             leaderboard.grantPools[EarmarkTypeEnum.General].relevantFunding /
             leaderboard.grantPools[EarmarkTypeEnum.General].relevantEffectiveVotes;
+
+        const potentialGeneralFunding: number =
+            leaderboard.grantPools[EarmarkTypeEnum.General].relevantEffectiveVotes ===
+            proposal.effectiveVotes
+                ? leaderboard.grantPools[EarmarkTypeEnum.General].relevantFunding
+                : generalFundingPerVote * proposal.effectiveVotes;
+
         const receivingGeneralFunding: number = Math.min(
             remainingRequestedFunding,
-            generalFundingPerVote * proposal.effectiveVotes,
+            potentialGeneralFunding,
         );
 
         proposal.addToGrantPoolShare(EarmarkTypeEnum.General, receivingGeneralFunding);
