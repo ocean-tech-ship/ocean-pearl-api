@@ -1899,10 +1899,10 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
-"@nestjs/axios@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@nestjs/axios/-/axios-0.0.6.tgz#1d641822bfe1d5fe72f6dcc77a43c3007fd916b3"
-  integrity sha512-RgtKUziiEPRtWS3KJNDqq0Epw9ffFdIKAtcj6cXnWeJvgHLwnDkw2rUsmHpDYrhszG+8bc4H8sDygRKwNPPAQA==
+"@nestjs/axios@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@nestjs/axios/-/axios-0.0.7.tgz#7f134636db13c2c1e8299365c7eceb73cd782b67"
+  integrity sha512-at8nj+1Nb8UleHcIN5QqZYeWX54m4m9s9gxzVE1qWy00neX2rg0+h2TfbWsnDi2tc23zIxqexanxMOJZbzO0CA==
   dependencies:
     axios "0.26.0"
 
@@ -1944,13 +1944,13 @@
     tslib "2.3.1"
     uuid "8.3.2"
 
-"@nestjs/config@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-1.2.0.tgz#a4eb58390dd8145b761ee0c8e98e78c8471cabb1"
-  integrity sha512-GGZOj2g6EMZ23orsQqeD2Vs5E2ZrmAiB0qCGvERv+5nQmZjY4nKkisG4awQsym1uotmmzgtsd9lOiKqTIFONhA==
+"@nestjs/config@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-2.0.0.tgz#a8fbec48a2b55488ac50ad5ed4cf2df89d398171"
+  integrity sha512-Hi1k/1S5ogsS5c0OtNm72thiLSngijOaLDFaGI5ZPxNGpF23lctPg6ox3pYIOhXVRX/u+eiUIp71gswH2k8YNw==
   dependencies:
     dotenv "16.0.0"
-    dotenv-expand "8.0.1"
+    dotenv-expand "8.0.2"
     lodash "4.17.21"
     uuid "8.3.2"
 
@@ -2365,10 +2365,10 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
-"@types/sharp@^0.29.4":
-  version "0.29.5"
-  resolved "https://registry.yarnpkg.com/@types/sharp/-/sharp-0.29.5.tgz#9c7032d30d138ad16dde6326beaff2af757b91b3"
-  integrity sha512-3TC+S3H5RwnJmLYMHrcdfNjz/CaApKmujjY9b6PU/pE6n0qfooi99YqXGWoW8frU9EWYj/XTI35Pzxa+ThAZ5Q==
+"@types/sharp@^0.30.2":
+  version "0.30.2"
+  resolved "https://registry.yarnpkg.com/@types/sharp/-/sharp-0.30.2.tgz#df5ff34140b3bad165482e6f3d26b08e42a0503a"
+  integrity sha512-uLCBwjDg/BTcQit0dpNGvkIjvH3wsb8zpaJePCjvONBBSfaKHoxXBIuq1MT8DMQEfk2fKYnpC9QExCgFhkGkMQ==
   dependencies:
     "@types/node" "*"
 
@@ -3742,10 +3742,10 @@ domutils@^2.8.0:
     domelementtype "^2.2.0"
     domhandler "^4.2.0"
 
-dotenv-expand@8.0.1:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-8.0.1.tgz#332aa17c14b12e28e2e230f8d183eecc1c014fdc"
-  integrity sha512-j/Ih7bIERDR5PzI89Zu8ayd3tXZ6E3dbY0ljQ9Db0K87qBO8zdLsi2dIvDHMWtjC3Yxb8XixOTHAtia0fDHRpg==
+dotenv-expand@8.0.2:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-8.0.2.tgz#c75c6f695cff061a9ed9a95a520c6cc84b912188"
+  integrity sha512-vKKAk+VOzAWOV/dPIeSYqhgC/TQY+6L6Ibkzfsr8xd1stdBsTuGu9asCOXgbYbBeS+f2Y6lqqEuw7riOA+xEUQ==
 
 dotenv@16.0.0:
   version "16.0.0"
@@ -5705,10 +5705,15 @@ minimatch@^3.0.4:
   dependencies:
     brace-expansion "^1.1.7"
 
-minimist@1.2.5, minimist@^1.2.0, minimist@^1.2.3, minimist@^1.2.5:
+minimist@1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
   integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
+
+minimist@^1.2.0, minimist@^1.2.3, minimist@^1.2.5, minimist@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.6.tgz#8637a5b759ea0d6e98702cfb3a9283323c93af44"
+  integrity sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==
 
 minipass@^3.0.0:
   version "3.1.6"
@@ -7180,7 +7185,7 @@ tsconfig-paths-webpack-plugin@3.5.2:
     enhanced-resolve "^5.7.0"
     tsconfig-paths "^3.9.0"
 
-tsconfig-paths@3.12.0, tsconfig-paths@^3.12.0, tsconfig-paths@^3.9.0:
+tsconfig-paths@3.12.0:
   version "3.12.0"
   resolved "https://registry.yarnpkg.com/tsconfig-paths/-/tsconfig-paths-3.12.0.tgz#19769aca6ee8f6a1a341e38c8fa45dd9fb18899b"
   integrity sha512-e5adrnOYT6zqVnWqZu7i/BQ3BnhzvGbjEjejFXO20lKIKpwTaupkCPgEfv4GZK1IBciJUEhYs3J3p75FdaTFVg==
@@ -7188,6 +7193,16 @@ tsconfig-paths@3.12.0, tsconfig-paths@^3.12.0, tsconfig-paths@^3.9.0:
     "@types/json5" "^0.0.29"
     json5 "^1.0.1"
     minimist "^1.2.0"
+    strip-bom "^3.0.0"
+
+tsconfig-paths@^3.14.1, tsconfig-paths@^3.9.0:
+  version "3.14.1"
+  resolved "https://registry.yarnpkg.com/tsconfig-paths/-/tsconfig-paths-3.14.1.tgz#ba0734599e8ea36c862798e920bcf163277b137a"
+  integrity sha512-fxDhWnFSLt3VuTwtvJt5fpwxBHg5AdKWMsgcPOOIilyjymcYVZoCQF8fvFRezCNfblEXmi+PcM1eYHeOAgXCOQ==
+  dependencies:
+    "@types/json5" "^0.0.29"
+    json5 "^1.0.1"
+    minimist "^1.2.6"
     strip-bom "^3.0.0"
 
 tslib@2.3.1:
