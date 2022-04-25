@@ -7,8 +7,6 @@ import { UpdatedProject } from '../models/updated-project.model';
 
 @Injectable()
 export class UpdateProjectService {
-    static MAX_PICTURES_AMOUNT = 8;
-
     public constructor(
         private projectRepository: ProjectRepository,
         private imageRepository: ImageRepository,
@@ -29,57 +27,48 @@ export class UpdateProjectService {
         dbProject.category = updatedProject.category ?? dbProject.category;
         dbProject.socialMedia = updatedProject.socialMedia ?? dbProject.socialMedia;
 
-        if (updatedProject.deletedImages) {
-            for (const imageId of updatedProject.deletedImages) {
-                for (const [index, dbImage] of dbProject.images.entries()) {
-                    if (dbImage.id === imageId) {
-                        await this.s3ImageManagementService.deleteFileOnS3(dbImage as Image);
-
-                        dbProject.images.splice(index, 1);
-                    }
-                }
-            }
-        }
-
-        if (updatedProject.newImages) {
-            if (!dbProject.images) {
-                dbProject.images = [];
-            }
-
-            for (const image of updatedProject.newImages) {
-                const unassignedImage = await this.imageRepository.findOneRaw({
-                    find: { id: image },
-                });
-
-                dbProject.images = dbProject.images as Image[];
-                dbProject.images.push(unassignedImage);
-
-                // Delete previous images if we reach the limit
-                if (dbProject.images.length > UpdateProjectService.MAX_PICTURES_AMOUNT) {
-                    const oldestImage = dbProject.images[0];
-
-                    await this.s3ImageManagementService.deleteFileOnS3(oldestImage as Image);
-
-                    dbProject.images.splice(0, 1);
-                }
-            }
-        }
-
         if (updatedProject.logo) {
             if (dbProject.logo) {
                 await this.s3ImageManagementService.deleteFileOnS3(dbProject.logo as Image);
+                delete dbProject.logo;
             }
 
-            const unassignedImage = await this.imageRepository.findOne({
-                find: { id: updatedProject.logo },
-            });
-
-            dbProject.logo = unassignedImage;
+            // Only set new image if provided
+            if (updatedProject.logo.id) {
+                // TODO: We need to verify that the image has not been used yet
+                dbProject.logo = await this.imageRepository.findOne({
+                    find: { id: updatedProject.logo.id },
+                });
+            }
         }
 
-        if (updatedProject.deleteLogo) {
-            await this.s3ImageManagementService.deleteFileOnS3(dbProject.logo as Image);
-            dbProject.logo = undefined;
+        if (updatedProject.images) {
+            dbProject.images = dbProject.images ? (dbProject.images as Image[]) : [];
+            const deleteImages = [...dbProject.images];
+
+            for (const image of updatedProject.images) {
+                const index = dbProject.images.findIndex((el) => el.id === image.id);
+
+                if (index > -1) {
+                    // Existing image and we want to keep it
+                    deleteImages.splice(index, 1);
+                } else {
+                    // New image
+                    // TODO: We need to verify that the image has not been used yet
+                    const unassignedImage = await this.imageRepository.findOne({
+                        find: { id: image.id },
+                    });
+
+                    dbProject.images.push(unassignedImage);
+                }
+            }
+
+            // Delete old images which are no longer present
+            for (const image of deleteImages) {
+                await this.s3ImageManagementService.deleteFileOnS3(image as Image);
+                const index = dbProject.images.findIndex((el) => el.id === image.id);
+                dbProject.images.splice(index, 1);
+            }
         }
 
         await this.projectRepository.update(dbProject);

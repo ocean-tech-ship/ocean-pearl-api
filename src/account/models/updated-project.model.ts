@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+    ArrayMaxSize,
     ArrayNotEmpty,
     IsArray,
-    IsBooleanString,
     IsEnum,
     IsObject,
     IsOptional,
@@ -11,6 +11,7 @@ import {
 } from 'class-validator';
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { SocialMedia } from '../../database/schemas/social-media.schema';
+import { AssociatedImage } from './associated-project.model';
 
 export class UpdatedProject {
     @ApiProperty({
@@ -70,28 +71,18 @@ export class UpdatedProject {
     @ApiProperty()
     @IsOptional()
     @IsObject()
-    logo: string;
-
-    @ApiProperty()
-    @IsOptional()
-    @IsBooleanString()
-    deleteLogo: boolean;
+    logo: AssociatedImage;
 
     @ApiProperty({
-        type: String,
+        type: AssociatedImage,
         isArray: true,
     })
     @IsOptional()
     @IsArray()
-    deletedImages: string[];
-
-    @ApiProperty({
-        type: String,
-        isArray: true,
+    @ArrayMaxSize(8, {
+        message: 'Exceeded limit of 8 images',
     })
-    @IsOptional()
-    @IsArray()
-    newImages: string[];
+    images: AssociatedImage[];
 
     @ApiProperty({
         default: 'Ocean Pearl',
