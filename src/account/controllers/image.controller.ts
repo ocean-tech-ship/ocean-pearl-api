@@ -11,7 +11,6 @@ import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express
 import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { AssociatedImage } from '../models/associated-project.model';
 import { ImageUploadService } from '../services/image-upload.service';
-import { UpdateProjectService } from '../services/update-project.service';
 
 @ApiTags('account')
 @UseGuards(AuthGuard('jwt-refresh'))
@@ -36,7 +35,7 @@ export class ImageController {
     @UseInterceptors(
         FileInterceptor('logo', {
             limits: {
-                fileSize: 4000000,
+                fileSize: ImageUploadService.LOGO_MAX_SIZE,
             },
         }),
     )
@@ -70,12 +69,12 @@ export class ImageController {
             [
                 {
                     name: 'images',
-                    maxCount: UpdateProjectService.MAX_PICTURES_AMOUNT,
+                    maxCount: ImageUploadService.IMAGE_MAX_AMOUNT,
                 },
             ],
             {
                 limits: {
-                    fileSize: 4000000,
+                    fileSize: ImageUploadService.IMAGE_MAX_SIZE,
                 },
             },
         ),

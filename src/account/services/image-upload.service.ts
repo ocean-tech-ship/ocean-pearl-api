@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { MimeTypesEnum } from '../../aws/s3/enums/mime-types.enum';
-import { AwsImageData } from '../../aws/s3/models/aws-image-data.model';
 import { S3ImageManagementService } from '../../aws/s3/services/s3-image-management.service';
 import { ImageRepository } from '../../database/repositories/image.repository';
 import { Image } from '../../database/schemas/image.schema';
@@ -9,13 +8,17 @@ import { AssociatedImage } from '../models/associated-project.model';
 
 @Injectable()
 export class ImageUploadService {
+    static IMAGE_MAX_AMOUNT = 8;
+    static IMAGE_MAX_SIZE = 4000000;
+    static LOGO_MAX_SIZE = 500000;
+
     public constructor(
         private s3ImageManagementService: S3ImageManagementService,
         private imageRepository: ImageRepository,
         private imageService: ImageOptimizationService,
     ) {}
 
-    public async execute(image: Express.Multer.File, isLogo: boolean = false): Promise<AssociatedImage> {
+    public async execute(image: Express.Multer.File, isLogo = false): Promise<AssociatedImage> {
         try {
             const optimizedImage = await this.imageService.optimizeImage(
                 {
