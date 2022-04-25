@@ -33,7 +33,7 @@ export class ImageUploadService {
                 optimizedImage.type,
             );
 
-            this.imageRepository.create({
+            await this.imageRepository.create({
                 id: awsImageData.id,
                 key: awsImageData.id,
                 url: awsImageData.url,
