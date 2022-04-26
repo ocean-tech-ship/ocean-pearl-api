@@ -19,17 +19,17 @@ const airtableData = {
     'Proposal Standing': 'Completed',
     'Wallet Address': faker.datatype.hexaDecimal(42),
     'Fundamental Metric': 'MVP Launch',
-    'OCEAN Requested': '10000',
-    'OCEAN Granted': '10000',
-    'Minimum OCEAN Requested': '1000',
-    'USD Requested': '8400',
-    'USD Granted': '8400',
-    'Minimum USD Requested': '840',
+    'OCEAN Requested': 10000,
+    'OCEAN Granted': 10000,
+    'Minimum OCEAN Requested': 1000,
+    'USD Requested': 8400,
+    'USD Granted': 8400,
+    'Minimum USD Requested': 840,
     'Proposal URL': faker.internet.url(),
     'Snapshot Block': faker.datatype.hexaDecimal(10),
     'ipfsHash': faker.datatype.number(10),
-    'Voted Yes': '4200000',
-    'Voted No': '420',
+    'Voted Yes': 4200000,
+    'Voted No': 420,
     'Created Date': faker.date.past(),
 };
 
@@ -85,7 +85,7 @@ describe('DaoProposalMapper', () => {
     });
 
     it('should use "received ocean" for the "requested ocean" value', () => {
-        airtableData['OCEAN Requested'] = '0';
+        airtableData['OCEAN Requested'] = 0;
 
         expect(
             service.map(airtableData, AIRTABLE_ID, ROUND_ID).requestedFunding.ocean,
