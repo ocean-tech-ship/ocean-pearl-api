@@ -30,22 +30,20 @@ export class DaoProposalMapper {
                 FundamentalMetricsMap[airtableData['Fundamental Metric']] ??
                 FundamentalMetricEnum.Other,
             requestedFunding: {
-                usd: airtableData['USD Requested'] ? parseInt(airtableData['USD Requested']) : 0,
-                ocean: airtableData['OCEAN Requested']
-                    ? parseInt(airtableData['OCEAN Requested'])
-                    : 0,
+                usd: airtableData['USD Requested'] ? airtableData['USD Requested'] : 0,
+                ocean: airtableData['OCEAN Requested'] ? airtableData['OCEAN Requested'] : 0,
             },
             minimumRequestedFunding: {
                 usd: airtableData['Minimum USD Requested']
-                    ? parseInt(airtableData['Minimum USD Requested'])
+                    ? airtableData['Minimum USD Requested']
                     : 0,
                 ocean: airtableData['Minimum OCEAN Requested']
-                    ? parseInt(airtableData['Minimum OCEAN Requested'])
+                    ? airtableData['Minimum OCEAN Requested']
                     : 0,
             },
             receivedFunding: {
-                usd: airtableData['USD Granted'] ? parseInt(airtableData['USD Granted']) : 0,
-                ocean: airtableData['OCEAN Granted'] ? parseInt(airtableData['OCEAN Granted']) : 0,
+                usd: airtableData['USD Granted'] ? airtableData['USD Granted'] : 0,
+                ocean: airtableData['OCEAN Granted'] ? airtableData['OCEAN Granted'] : 0,
             },
             oceanProtocolPortUrl: airtableData['Proposal URL'] ?? '',
             snapshotBlock: airtableData['Snapshot Block'],
