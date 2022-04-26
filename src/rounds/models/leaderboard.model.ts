@@ -79,18 +79,41 @@ export class Leaderboard {
         }
     }
 
+    public orderLists(): void {
+        this.fundedProposals.sort(
+            (current: LeaderboardProposal, next: LeaderboardProposal) =>
+                next.effectiveVotes - current.effectiveVotes,
+        );
+        this.partiallyFundedProposals.sort(
+            (current: LeaderboardProposal, next: LeaderboardProposal) =>
+                next.effectiveVotes - current.effectiveVotes,
+        );
+        this.notFundedProposals.sort(
+            (current: LeaderboardProposal, next: LeaderboardProposal) =>
+                next.effectiveVotes - current.effectiveVotes,
+        );
+    }
+
     public addToFundedProposals(proposal: LeaderboardProposal): void {
         this.fundedProposals.splice(this.findLocation(proposal, this.fundedProposals), 0, proposal);
     }
 
     public addToPartiallyFundedProposals(proposal: LeaderboardProposal): void {
-        this.partiallyFundedProposals.splice(this.findLocation(proposal, this.partiallyFundedProposals), 0, proposal);
+        this.partiallyFundedProposals.splice(
+            this.findLocation(proposal, this.partiallyFundedProposals),
+            0,
+            proposal,
+        );
     }
 
     public addToNotFundedProposals(proposal: LeaderboardProposal): void {
-        this.notFundedProposals.splice(this.findLocation(proposal, this.notFundedProposals), 0, proposal);
+        this.notFundedProposals.splice(
+            this.findLocation(proposal, this.notFundedProposals),
+            0,
+            proposal,
+        );
     }
-    
+
     public moveUnusedRemainingFunding(): void {
         for (let [key, pool] of Object.entries(this.grantPools)) {
             if (key !== EarmarkTypeEnum.General) {
@@ -109,8 +132,9 @@ export class Leaderboard {
         }
 
         for (const [index, listProposal] of proposalList.entries()) {
-            if (listProposal.effectiveVotes < proposal.effectiveVotes)
+            if (listProposal.effectiveVotes < proposal.effectiveVotes) {
                 return index;
+            }
         }
 
         return proposalList.length;
