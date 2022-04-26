@@ -65,7 +65,7 @@ export class EarmarkedProposalStrategy implements leaderboardStrategyInterface {
         proposal.receivedFunding = proposal.requestedFunding - remainingRequestedFunding;
 
         if (remainingRequestedFunding === 0) {
-            leaderboard.addToFundedProposals(proposal);
+            leaderboard.fundedProposals.push(proposal);
         } else {
             leaderboard.addToPartiallyFundedProposals(proposal);
         }

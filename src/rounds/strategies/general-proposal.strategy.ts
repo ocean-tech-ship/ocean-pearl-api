@@ -39,7 +39,7 @@ export class GeneralProposalStrategy implements leaderboardStrategyInterface {
         proposal.receivedFunding = receivingGeneralFunding;
 
         if (proposal.requestedFunding === proposal.receivedFunding) {
-            leaderboard.addToFundedProposals(proposal);
+            leaderboard.fundedProposals.push(proposal);
         } else {
             leaderboard.addToPartiallyFundedProposals(proposal);
         }
