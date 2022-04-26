@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Image } from '../../database/schemas/image.schema';
 
 export interface LeaderboardProjectProperties {
     id?: string;
@@ -15,13 +16,13 @@ export class LeaderboardProject {
     completedProposals: number;
 
     @ApiProperty()
-    logoUrl?: string;
+    logo?: Image;
 
     @ApiProperty()
     title: string;
 
     constructor(attributes: LeaderboardProjectProperties = {}) {
-        for (let key in attributes) {
+        for (const key in attributes) {
             this[key] = attributes[key];
         }
     }
