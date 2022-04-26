@@ -56,7 +56,7 @@ export class GenerateLeaderboardService {
             leaderboard.amountProposals++;
 
             if (leaderboardProposal.effectiveVotes <= 0) {
-                leaderboard.addToNotFundedProposals(leaderboardProposal);
+                leaderboard.notFundedProposals.push(leaderboardProposal);
                 continue;
             }
 
@@ -75,6 +75,7 @@ export class GenerateLeaderboardService {
         }
 
         leaderboard = this.calculateQuadraticFundingDistribution(leaderboard, relevantProposals);
+        leaderboard.orderLists();
 
         this.leaderboardCacheService.addToCache(leaderboard);
         return leaderboard;
@@ -101,25 +102,23 @@ export class GenerateLeaderboardService {
             JSON.stringify(leaderboard.grantPools),
         );
 
+        proposals.sort(
+            (current: LeaderboardProposal, next: LeaderboardProposal) =>
+                next.effectiveVotes - current.effectiveVotes,
+        );
+
         while (hasProposalsUnderMinimalFunding) {
             for (const proposal of proposals) {
                 proposal.receivedFunding = 0;
                 proposal.grantPoolShare = {};
-            };
+            }
 
             leaderboard = this.assignFunding(leaderboard, proposals);
 
             if (leaderboard.fundedProposals.length > previousFundedProposalsAmount) {
                 previousFundedProposalsAmount = leaderboard.fundedProposals.length;
 
-                proposals = [
-                    ...leaderboard.fundedProposals,
-                    ...leaderboard.partiallyFundedProposals,
-                ];
-                leaderboard.fundedProposals = [];
-                leaderboard.partiallyFundedProposals = [];
-                leaderboard.grantPools = JSON.parse(JSON.stringify(baseGrantPools));
-
+                ({leaderboard, proposals} = this.resetCalculationData(leaderboard, baseGrantPools))
                 continue;
             }
 
@@ -135,14 +134,7 @@ export class GenerateLeaderboardService {
                 baseGrantPools[EarmarkTypeEnum.General].relevantFunding +=
                     totalUnusedEarmarkedPoolsFunding;
 
-                proposals = [
-                    ...leaderboard.fundedProposals,
-                    ...leaderboard.partiallyFundedProposals,
-                ];
-                leaderboard.fundedProposals = [];
-                leaderboard.partiallyFundedProposals = [];
-                leaderboard.grantPools = JSON.parse(JSON.stringify(baseGrantPools));
-
+                ({leaderboard, proposals} = this.resetCalculationData(leaderboard, baseGrantPools))
                 continue;
             }
 
@@ -154,7 +146,7 @@ export class GenerateLeaderboardService {
 
                     proposal.receivedFunding = 0;
                     proposal.grantPoolShare = {};
-                    leaderboard.addToNotFundedProposals(proposal);
+                    leaderboard.notFundedProposals.push(proposal);
                     leaderboard.partiallyFundedProposals.splice(index, 1);
 
                     if (proposal.isEarmarked) {
@@ -165,19 +157,31 @@ export class GenerateLeaderboardService {
                     baseGrantPools[EarmarkTypeEnum.General].relevantEffectiveVotes -=
                         proposal.effectiveVotes;
 
-                    proposals = [
-                        ...leaderboard.fundedProposals,
-                        ...leaderboard.partiallyFundedProposals,
-                    ];
-                    leaderboard.fundedProposals = [];
-                    leaderboard.partiallyFundedProposals = [];
-
-                    leaderboard.grantPools = JSON.parse(JSON.stringify(baseGrantPools));
+                    ({leaderboard, proposals} = this.resetCalculationData(leaderboard, baseGrantPools))
                     break;
                 }
             }
         }
 
         return leaderboard;
+    }
+
+    private resetCalculationData(
+        leaderboard: Leaderboard,
+        baseGrantPools: LeaderboardGrantPools,
+    ): {
+        leaderboard: Leaderboard;
+        proposals: LeaderboardProposal[];
+    } {
+        const proposals = [...leaderboard.fundedProposals, ...leaderboard.partiallyFundedProposals];
+        leaderboard.fundedProposals = [];
+        leaderboard.partiallyFundedProposals = [];
+
+        leaderboard.grantPools = JSON.parse(JSON.stringify(baseGrantPools));
+
+        return {
+            leaderboard,
+            proposals,
+        };
     }
 }
