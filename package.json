@@ -26,7 +26,7 @@
     "yarn": "1.22.x"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.76.0",
+    "@aws-sdk/client-s3": "^3.80.0",
     "@nestjs/axios": "^0.0.7",
     "@nestjs/common": "^8.3.1",
     "@nestjs/config": "^2.0.0",
