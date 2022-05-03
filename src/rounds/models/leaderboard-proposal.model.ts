@@ -1,26 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
 import { LeaderboardProject } from './leaderboard-project.model';
-import { NeededVotes } from './neede-votes.model';
-
-export interface LeaderboardProposalProperties {
-    id?: string;
-    title?: string;
-    project?: LeaderboardProject;
-    requestedFunding?: number;
-    receivedFunding?: number;
-    grantPoolShare?: Partial<GrantPoolShare>;
-    yesVotes?: number;
-    noVotes?: number;
-    effectiveVotes?: number;
-    isEarmarked?: boolean;
-    earmarkType?: EarmarkTypeEnum;
-    tags?: string[];
-    neededVotes?: NeededVotes;
-}
 
 export type GrantPoolShare = {
-    [key in EarmarkTypeEnum]: number;
+    [key in EarmarkTypeEnum]?: number;
 };
 
 export class LeaderboardProposal {
@@ -37,10 +20,13 @@ export class LeaderboardProposal {
     requestedFunding: number;
 
     @ApiProperty()
+    minimumRequestedFunding: number = 0;
+
+    @ApiProperty()
     receivedFunding: number = 0;
 
     @ApiProperty()
-    grantPoolShare: Partial<GrantPoolShare> = {};
+    grantPoolShare: GrantPoolShare = {};
 
     @ApiProperty()
     yesVotes: number;
@@ -60,10 +46,7 @@ export class LeaderboardProposal {
     @ApiProperty()
     tags: string[];
 
-    @ApiProperty()
-    neededVotes: NeededVotes;
-
-    constructor(attributes: LeaderboardProposalProperties = {}) {
+    constructor(attributes: Partial<LeaderboardProposal> = {}) {
         for (let key in attributes) {
             this[key] = attributes[key];
         }
@@ -73,5 +56,9 @@ export class LeaderboardProposal {
         this.grantPoolShare[pool] = this.grantPoolShare[pool]
             ? this.grantPoolShare[pool] + amount
             : amount;
+    }
+
+    public hasReceivedMinimalFunding(): boolean {
+        return this.receivedFunding > this.minimumRequestedFunding;
     }
 }

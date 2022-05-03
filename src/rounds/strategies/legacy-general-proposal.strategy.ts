@@ -6,7 +6,7 @@ import { Leaderboard } from '../models/leaderboard.model';
 
 @Injectable()
 export class LegacyGeneralProposalStrategy implements leaderboardStrategyInterface {
-    public canHandle(proposal: LeaderboardProposal, leaderboard: Leaderboard): boolean {
+    public canHandle(proposal: LeaderboardProposal): boolean {
         return !proposal.isEarmarked;
     }
 

@@ -17,7 +17,6 @@ import { LeaderboardStrategyCollection } from '../../strategies/leaderboard-stra
 import { LegacyEarmarkedProposalStrategy } from '../../strategies/legacy-earmarked-proposal.strategy';
 import { LegacyGeneralProposalStrategy } from '../../strategies/legacy-general-proposal.strategy';
 import { LegacyLeaderboardStrategyCollection } from '../../strategies/legacy-leaderboard-strategy.collection';
-import { WontReceiveFundingStrategy } from '../../strategies/wont-receive-funding.strategy';
 
 describe('LeaderboardController', () => {
     let module: TestingModule;
@@ -37,7 +36,6 @@ describe('LeaderboardController', () => {
                 LeaderboardCacheService,
                 EarmarkedProposalStrategy,
                 GeneralProposalStrategy,
-                WontReceiveFundingStrategy,
                 LegacyEarmarkedProposalStrategy,
                 LegacyGeneralProposalStrategy,
                 LegacyLeaderboardStrategyCollection,

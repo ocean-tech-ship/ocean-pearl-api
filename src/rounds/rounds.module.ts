@@ -14,7 +14,6 @@ import { LeaderboardStrategyCollection } from './strategies/leaderboard-strategy
 import { LegacyEarmarkedProposalStrategy } from './strategies/legacy-earmarked-proposal.strategy';
 import { LegacyGeneralProposalStrategy } from './strategies/legacy-general-proposal.strategy';
 import { LegacyLeaderboardStrategyCollection } from './strategies/legacy-leaderboard-strategy.collection';
-import { WontReceiveFundingStrategy } from './strategies/wont-receive-funding.strategy';
 
 @Module({
     controllers: [LeaderboardController],
@@ -29,7 +28,6 @@ import { WontReceiveFundingStrategy } from './strategies/wont-receive-funding.st
         LeaderboardStrategyCollection,
         EarmarkedProposalStrategy,
         GeneralProposalStrategy,
-        WontReceiveFundingStrategy,
         LegacyLeaderboardStrategyCollection,
         LegacyEarmarkedProposalStrategy,
         LegacyGeneralProposalStrategy,
