@@ -15,6 +15,8 @@ import { StrategyCollection } from '../strategies/strategy.collection';
 export class SyncProposalsDataService {
     private readonly logger = new Logger(SyncProposalsDataService.name);
 
+    private openRunTimestamp = -1;
+
     public constructor(
         private proposalsProvider: ProposalsProvider,
         private proposalRepository: DaoProposalRepository,
@@ -30,6 +32,12 @@ export class SyncProposalsDataService {
     })
     public async execute(): Promise<void> {
         this.logger.log('Start syncing Proposals from Airtable Job.');
+
+        if (this.openRunTimestamp === -1) {
+            // Only reset if last run was successful
+            this.openRunTimestamp = Date.now();
+        }
+
         const databaseRounds: Round[] = await this.roundRepository.getAll({
             sort: {
                 round: 1,
@@ -78,6 +86,11 @@ export class SyncProposalsDataService {
             }
         }
 
+        this.openRunTimestamp = -1;
         this.logger.log('Finish syncing Proposals from Airtable Job.');
+    }
+
+    public getOpenRunTimestamp(): number {
+        return this.openRunTimestamp;
     }
 }
