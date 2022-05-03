@@ -3,72 +3,76 @@ import { EarmarkTypeEnum } from '../../database/enums/earmark-type.enum';
 import { leaderboardStrategyInterface } from '../interfaces/leaderboard-strategy.interface';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
-import { CalculateNeededVotesService } from '../services/calculate-needed-votes.service';
 
 @Injectable()
 export class EarmarkedProposalStrategy implements leaderboardStrategyInterface {
-    constructor(private calculateNeededVotesService: CalculateNeededVotesService) {}
-
-    public canHandle(proposal: LeaderboardProposal, leaderboard: Leaderboard): boolean {
-        if (
-            !proposal.isEarmarked ||
-            proposal.yesVotes <= proposal.noVotes ||
-            proposal.effectiveVotes <= 0
-        ) {
-            return false;
-        }
-
-        return (
-            leaderboard.grantPools[proposal.earmarkType]?.remainingFunding > 0 ||
-            leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding > 0
-        );
+    public canHandle(proposal: LeaderboardProposal): boolean {
+        return proposal.isEarmarked;
     }
 
     public execute(proposal: LeaderboardProposal, leaderboard: Leaderboard): Leaderboard {
-        leaderboard.maxVotes = 
-            Math.max(leaderboard.maxVotes, proposal.yesVotes, proposal.noVotes);
+        leaderboard.maxVotes = Math.max(leaderboard.maxVotes, proposal.yesVotes, proposal.noVotes);
 
-        let remainingRequestedFunding: number =
-            proposal.requestedFunding - proposal.receivedFunding;
+        let remainingRequestedFunding: number = proposal.requestedFunding;
 
         const proposalEarmark = proposal.earmarkType;
+        const earmarkedFundingPerVote =
+            leaderboard.grantPools[proposalEarmark].relevantFunding /
+            leaderboard.grantPools[proposalEarmark].relevantEffectiveVotes;
+
+        const potentialEamarkFunding: number = 
+            leaderboard.grantPools[proposalEarmark].relevantEffectiveVotes === proposal.effectiveVotes
+            ? leaderboard.grantPools[proposalEarmark].relevantFunding
+            : earmarkedFundingPerVote * proposal.effectiveVotes;
+
         const receivingEarmarkFunding: number = Math.min(
-            remainingRequestedFunding,
-            leaderboard.grantPools[proposalEarmark].remainingFunding,
-        );
-
-        if (receivingEarmarkFunding > 0) {
-            remainingRequestedFunding -= receivingEarmarkFunding;
-            proposal.addToGrantPoolShare(proposalEarmark, receivingEarmarkFunding);
-
-            leaderboard.grantPools[proposalEarmark].remainingFunding -=
-                receivingEarmarkFunding;
-            leaderboard.grantPools[proposalEarmark].potentialRemainingFunding -=
-                receivingEarmarkFunding;
-        }
-
-        if (remainingRequestedFunding > 0) {
-            const receivingGeneralFunding: number = Math.min(
                 remainingRequestedFunding,
-                leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding,
+                potentialEamarkFunding,
             );
 
-            if (receivingGeneralFunding > 0) {
-                remainingRequestedFunding -= receivingGeneralFunding;
-                proposal.addToGrantPoolShare(EarmarkTypeEnum.General, receivingGeneralFunding);
+        remainingRequestedFunding -= receivingEarmarkFunding;
+        proposal.addToGrantPoolShare(proposalEarmark, receivingEarmarkFunding);
 
-                leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding -=
-                    receivingGeneralFunding;
-            }
+        leaderboard.grantPools[proposalEarmark].remainingFunding -= receivingEarmarkFunding;
+        leaderboard.grantPools[proposalEarmark].potentialRemainingFunding -=
+            receivingEarmarkFunding;
+
+        if (remainingRequestedFunding > 0) {
+            const generalFundingPerVote =
+                leaderboard.grantPools[EarmarkTypeEnum.General].relevantFunding /
+                leaderboard.grantPools[EarmarkTypeEnum.General].relevantEffectiveVotes;
+
+            const potentialGeneralFunding: number = 
+                leaderboard.grantPools[EarmarkTypeEnum.General].relevantEffectiveVotes === proposal.effectiveVotes
+                ? leaderboard.grantPools[EarmarkTypeEnum.General].relevantFunding
+                : generalFundingPerVote * proposal.effectiveVotes;
+            
+            const receivingGeneralFunding: number = Math.min(
+                remainingRequestedFunding,
+                potentialGeneralFunding,
+            );
+
+            remainingRequestedFunding -= receivingGeneralFunding;
+            proposal.addToGrantPoolShare(EarmarkTypeEnum.General, receivingGeneralFunding);
+
+            leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding = Math.max(
+                leaderboard.grantPools[EarmarkTypeEnum.General].remainingFunding -
+                    receivingGeneralFunding,
+                0,
+            );
         }
 
         proposal.receivedFunding = proposal.requestedFunding - remainingRequestedFunding;
 
         if (remainingRequestedFunding === 0) {
-            leaderboard.addToFundedProposals(proposal);
+            leaderboard.fundedProposals.push(proposal);
         } else {
-            proposal.neededVotes = this.calculateNeededVotesService.execute(proposal, leaderboard);
             leaderboard.addToPartiallyFundedProposals(proposal);
+        }
+
+        for (const grantPool of [EarmarkTypeEnum.General, proposalEarmark]) {
+            leaderboard.grantPools[grantPool].relevantFunding -= proposal.grantPoolShare[grantPool] ?? 0;
+            leaderboard.grantPools[grantPool].relevantEffectiveVotes -= proposal.effectiveVotes;
         }
 
         return leaderboard;

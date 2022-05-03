@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { RemainingFundingStrategyEnum } from '../../database/enums/remaining-funding-strategy.enum';
-import { FindQuery } from '../../database/interfaces/find-query.interface';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
 import { RoundRepository } from '../../database/repositories/round.repository';
-import { Round, RoundType } from '../../database/schemas/round.schema';
+import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProposalBuilder } from '../builder/leaderboard-proposal.builder';
 import { InvalidProposalStates } from '../constants/invalid-proposal-states.constant';
 import { leaderboardStrategyInterface } from '../interfaces/leaderboard-strategy.interface';
@@ -28,7 +27,7 @@ export class GenerateLegacyLeaderboardService {
     public async execute(round?: number): Promise<Leaderboard> {
         const fundingRound: Round = await this.roundRepository.findOneRaw({
             find: { round: round },
-        } as FindQuery<RoundType>);
+        });
         let leaderboard: Leaderboard = await this.leaderboardCacheService.getFromCache(round);
 
         if (leaderboard) {
@@ -82,7 +81,7 @@ export class GenerateLegacyLeaderboardService {
     private assignFunding(leaderboard: Leaderboard, proposals: LeaderboardProposal[]): Leaderboard {
         for (let proposal of proposals) {
             let strategy: leaderboardStrategyInterface =
-                this.strategyCollection.findMatchingStrategy(proposal, leaderboard);
+                this.strategyCollection.findMatchingStrategy(proposal);
 
             leaderboard = strategy.execute(proposal, leaderboard);
         }

@@ -80,6 +80,12 @@ export class DaoProposal {
         type: FundingSchema,
     })
     @ApiProperty()
+    minimumRequestedFunding: Funding;
+
+    @Prop({
+        type: FundingSchema,
+    })
+    @ApiProperty()
     receivedFunding: Funding;
 
     @Prop({
