@@ -2,13 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { S3ImageManagementService } from '../../aws/s3/services/s3-image-management.service';
 import { ImageRepository } from '../../database/repositories/image.repository';
 import { ProjectRepository } from '../../database/repositories/project.repository';
-import { Image } from '../../database/schemas/image.schema';
 import { UpdatedProject } from '../models/updated-project.model';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class UpdateProjectService {
-    static MAX_PICTURES_AMOUNT = 8;
-
     public constructor(
         private projectRepository: ProjectRepository,
         private imageRepository: ImageRepository,
@@ -16,7 +14,7 @@ export class UpdateProjectService {
     ) {}
 
     public async execute(updatedProject: UpdatedProject): Promise<void> {
-        const dbProject = await this.projectRepository.findOne({
+        const dbProject = await this.projectRepository.findOneRaw({
             find: { id: updatedProject.id },
         });
 
@@ -29,57 +27,58 @@ export class UpdateProjectService {
         dbProject.category = updatedProject.category ?? dbProject.category;
         dbProject.socialMedia = updatedProject.socialMedia ?? dbProject.socialMedia;
 
-        if (updatedProject.deletedImages) {
-            for (const imageId of updatedProject.deletedImages) {
-                for (const [index, dbImage] of dbProject.images.entries()) {
-                    if (dbImage.id === imageId) {
-                        await this.s3ImageManagementService.deleteFileOnS3(dbImage as Image);
-
-                        dbProject.images.splice(index, 1);
-                    }
-                }
-            }
-        }
-
-        if (updatedProject.newImages) {
-            if (!dbProject.images) {
-                dbProject.images = [];
-            }
-
-            for (const image of updatedProject.newImages) {
-                const unassignedImage = await this.imageRepository.findOneRaw({
-                    find: { id: image },
+        if (updatedProject.logo) {
+            // Delete old logo
+            if (dbProject.logo) {
+                const oldLogo = await this.imageRepository.findOneRaw({
+                    find: { _id: dbProject.logo },
                 });
 
-                dbProject.images = dbProject.images as Image[];
-                dbProject.images.push(unassignedImage);
+                await this.s3ImageManagementService.deleteFileOnS3(oldLogo);
+                await this.imageRepository.delete({ find: { _id: oldLogo._id } });
+                dbProject.logo = undefined;
+            }
 
-                // Delete previous images if we reach the limit
-                if (dbProject.images.length > UpdateProjectService.MAX_PICTURES_AMOUNT) {
-                    const oldestImage = dbProject.images[0];
+            // Set new logo - if present
+            if (updatedProject.logo.id) {
+                // TODO: We need to verify that the image has not been used yet
+                const newLogo = await this.imageRepository.findOneRaw({
+                    find: { id: updatedProject.logo.id },
+                });
 
-                    await this.s3ImageManagementService.deleteFileOnS3(oldestImage as Image);
+                dbProject.logo = newLogo._id;
+            }
+        }
 
-                    dbProject.images.splice(0, 1);
+        if (updatedProject.images) {
+            dbProject.images = (dbProject.images as Types.ObjectId[]) ?? [];
+            const oldImageIds = [...dbProject.images];
+
+            for (const image of updatedProject.images) {
+                const imageModel = await this.imageRepository.findOneRaw({
+                    find: { id: image.id },
+                });
+                const index = oldImageIds.findIndex((id) => id.equals(imageModel._id));
+
+                if (index > -1) {
+                    // Existing image and we want to keep it
+                    oldImageIds.splice(index, 1);
+                } else {
+                    // New image
+                    // TODO: We need to verify that the image has not been used yet
+                    dbProject.images.push(imageModel._id);
                 }
             }
-        }
 
-        if (updatedProject.logo) {
-            if (dbProject.logo) {
-                await this.s3ImageManagementService.deleteFileOnS3(dbProject.logo as Image);
+            for (const id of oldImageIds) {
+                const imageModel = await this.imageRepository.findOneRaw({
+                    find: { _id: id },
+                });
+                await this.s3ImageManagementService.deleteFileOnS3(imageModel);
+                await this.imageRepository.delete({ find: { _id: id } });
+                const index = dbProject.images.findIndex((el) => el.equals(id));
+                dbProject.images.splice(index, 1);
             }
-
-            const unassignedImage = await this.imageRepository.findOne({
-                find: { id: updatedProject.logo },
-            });
-
-            dbProject.logo = unassignedImage;
-        }
-
-        if (updatedProject.deleteLogo) {
-            await this.s3ImageManagementService.deleteFileOnS3(dbProject.logo as Image);
-            dbProject.logo = undefined;
         }
 
         await this.projectRepository.update(dbProject);

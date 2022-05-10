@@ -1,9 +1,4 @@
-import {
-    CanActivate,
-    ExecutionContext,
-    Injectable,
-    UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 
 @Injectable()
@@ -14,12 +9,12 @@ export class ProjectGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
 
-        if (!user || !request.Body.id) {
+        if (!user || !request.body.id) {
             throw new UnauthorizedException();
         }
 
         const project = await this.projectRepository.findOne({
-            find: { id: request.Body.id },
+            find: { id: request.body.id },
         });
 
         if (project?.accessAddresses?.includes(user.wallet.toLowerCase())) {

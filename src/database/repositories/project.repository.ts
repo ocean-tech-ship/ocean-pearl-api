@@ -158,9 +158,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
 
     public async update(model: Project): Promise<boolean> {
         try {
+            // Need overwrite to unset specific fields via 'undefined' value
             const response: ProjectType = await this.model.findOneAndUpdate(
                 { id: model.id },
                 model,
+                {
+                    overwrite: true,
+                },
             );
 
             return response !== null;

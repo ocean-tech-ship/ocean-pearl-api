@@ -26,16 +26,17 @@ export class ManagedProjectMapper {
             teamName: project.teamName,
         } as AssociatedProject;
 
-        if (project.images.length > 0) {
+        if (project.images?.length > 0) {
             project.images = project.images as Image[];
-            mappedProject.images = project.images?.map((image: Image) => {
-                return {
-                    id: image.id,
-                    url: image.url,
-                };
-            }) ?? [];
+            mappedProject.images =
+                project.images?.map((image: Image) => {
+                    return {
+                        id: image.id,
+                        url: image.url,
+                    };
+                }) ?? [];
         }
 
         return mappedProject;
     }
-} 
+}
