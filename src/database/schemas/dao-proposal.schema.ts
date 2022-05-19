@@ -116,7 +116,7 @@ export class DaoProposal {
     @Prop({
         type: String,
         trim: true,
-        maxLength: 8192,
+        maxLength: 4096,
     })
     @ApiProperty()
     description: string;
