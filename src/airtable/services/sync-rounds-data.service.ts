@@ -18,6 +18,8 @@ export class SyncRoundsDataService {
     private readonly USD_OPTION_START_ROUND = 8;
     private readonly RECYCLING_START_ROUND = 13;
 
+    private openRunTimestamp = -1;
+
     public constructor(
         private roundsProvider: RoundsProvider,
         private roundsRepository: RoundRepository,
@@ -29,6 +31,11 @@ export class SyncRoundsDataService {
     })
     public async execute(): Promise<void> {
         this.logger.log('Start syncing Rounds from Airtable Job.');
+
+        if (this.openRunTimestamp === -1) {
+            // Only reset if last run was successful
+            this.openRunTimestamp = Date.now();
+        }
 
         const roundsResponse: AxiosResponse = await this.roundsProvider.fetch();
         const airtbaleRounds = roundsResponse.data.records;
@@ -43,7 +50,12 @@ export class SyncRoundsDataService {
             await this.syncRound(newRound);
         }
 
+        this.openRunTimestamp = -1;
         this.logger.log('Finish syncing Rounds from Airtable Job.');
+    }
+
+    public getOpenRunTimestamp(): number {
+        return this.openRunTimestamp;
     }
 
     private mapRound(round: any): Round {
