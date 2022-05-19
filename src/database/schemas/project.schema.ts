@@ -43,7 +43,7 @@ export class Project {
     @Prop({
         type: String,
         trim: true,
-        maxLength: 8192,
+        maxLength: 16384,
     })
     @ApiProperty()
     description: string;
