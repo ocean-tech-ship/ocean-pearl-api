@@ -30,7 +30,7 @@ export class Deliverable {
         type: String,
         required: true,
         trim: true,
-        maxLength: 8192,
+        maxLength: 16384,
     })
     @ApiProperty()
     description: string;
