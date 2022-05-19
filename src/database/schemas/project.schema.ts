@@ -43,7 +43,7 @@ export class Project {
     @Prop({
         type: String,
         trim: true,
-        maxLength: 8192,
+        maxLength: 4096,
     })
     @ApiProperty()
     description: string;
@@ -142,4 +142,5 @@ export class Project {
     updatedAt: Date;
 }
 
-export const ProjectSchema = SchemaFactory.createForClass(Project).plugin(PaginatePlugin);
+export const ProjectSchema =
+    SchemaFactory.createForClass(Project).plugin(PaginatePlugin);
