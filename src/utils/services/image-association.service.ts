@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Types } from 'mongoose';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
@@ -15,7 +14,7 @@ export class ImageAssociationService {
 
     public async isProjectPictureOwner(project: Project, image: Image): Promise<boolean> {
         for (const projectImage of [...project.images, project.logo]) {
-            if (projectImage as Types.ObjectId === image._id) {
+            if (projectImage.toString() === image._id.toString()) {
                 return true;
             }
         }
