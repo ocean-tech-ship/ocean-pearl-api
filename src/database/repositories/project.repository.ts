@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { QueryOptions, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { PaginateModel } from '../interfaces/paginate-model.interface';
@@ -156,15 +156,12 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async update(model: Project): Promise<boolean> {
+    public async update(model: Project, options: QueryOptions = { strict: false }): Promise<boolean> {
         try {
-            // Need overwrite to unset specific fields via 'undefined' value
             const response: ProjectType = await this.model.findOneAndUpdate(
                 { id: model.id },
                 model,
-                {
-                    overwrite: true,
-                },
+                options
             );
 
             return response !== null;
