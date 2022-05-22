@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, QueryOptions, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
@@ -47,7 +47,7 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         }
     }
 
-    async update(model: Session): Promise<boolean> {
+    async update(model: Session, options: QueryOptions = null): Promise<boolean> {
         try {
             const response: SessionType = await this.model.findOneAndUpdate(
                 {
@@ -55,6 +55,7 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
                     createdAt: model.createdAt,
                 },
                 model,
+                options,
             );
 
             return response !== null;
@@ -79,9 +80,7 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
                 throw new Error('Please specify a query');
             }
 
-            const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find,
-            );
+            const response: MongooseDeleteResponse = await this.model.deleteOne(query.find);
 
             return response.deletedCount === 1;
         } catch (error: any) {
@@ -95,8 +94,7 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
                 throw new Error('Please specify a query');
             }
 
-            const response: MongooseDeleteResponse =
-                await this.model.deleteMany(query.find);
+            const response: MongooseDeleteResponse = await this.model.deleteMany(query.find);
 
             return response.deletedCount > 0;
         } catch (error: any) {

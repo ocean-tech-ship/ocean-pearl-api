@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { QueryOptions, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { PaginateModel } from '../interfaces/paginate-model.interface';
@@ -40,6 +40,10 @@ export class DaoProposalRepository implements RepositoryInterface<DaoProposalTyp
                 })
                 .populate({
                     path: 'deliverables',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'images',
                     select: '-_id -__v',
                 })
                 .populate({
@@ -89,6 +93,10 @@ export class DaoProposalRepository implements RepositoryInterface<DaoProposalTyp
                     select: '-_id -__v',
                 })
                 .populate({
+                    path: 'images',
+                    select: '-_id -__v',
+                })
+                .populate({
                     path: 'fundingRound',
                     select: '-_id -__v',
                 })
@@ -122,6 +130,10 @@ export class DaoProposalRepository implements RepositoryInterface<DaoProposalTyp
                 })
                 .populate({
                     path: 'deliverables',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'images',
                     select: '-_id -__v',
                 })
                 .populate({
@@ -163,6 +175,10 @@ export class DaoProposalRepository implements RepositoryInterface<DaoProposalTyp
                         select: '-_id -__v',
                     },
                     {
+                        path: 'images',
+                        select: '-_id -__v',
+                    },
+                    {
                         path: 'fundingRound',
                         select: '-_id -__v',
                     },
@@ -174,11 +190,22 @@ export class DaoProposalRepository implements RepositoryInterface<DaoProposalTyp
         }
     }
 
-    public async update(model: DaoProposal): Promise<boolean> {
+    public async update(model: DaoProposal, options: QueryOptions = null): Promise<boolean> {
         try {
+            let deletedValues = undefined;
+            for (const [key, value] of Object.entries(model)) {
+                if (!value) {
+                    deletedValues[key] = value;
+                }
+            }
+
             const response: DaoProposal = await this.model.findOneAndUpdate(
                 { id: model.id },
-                model,
+                {
+                    $set: model,
+                    // $unset: deletedValues
+                },
+                options,
             );
 
             return response !== null;
