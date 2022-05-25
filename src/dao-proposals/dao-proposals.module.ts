@@ -7,9 +7,11 @@ import { GetLatestDaoProposalsService } from './services/get-latest-dao-proposal
 import { GetOpenDaoProposalsService } from './services/get-open-dao-proposals.service';
 import { DatabaseModule } from '../database/database.module';
 import { RoundsModule } from '../rounds/rounds.module';
+import { GetFulltextProposalService } from './services/get-fulltext-proposal.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-    imports: [DatabaseModule, RoundsModule],
+    imports: [HttpModule, DatabaseModule, RoundsModule],
     controllers: [DaoProposalsController],
     providers: [
         GetDaoProposalsByRoundService,
@@ -17,6 +19,7 @@ import { RoundsModule } from '../rounds/rounds.module';
         GetDaoProposalsService,
         GetOpenDaoProposalsService,
         GetLatestDaoProposalsService,
+        GetFulltextProposalService,
     ],
     exports: [
         GetDaoProposalsByRoundService,
@@ -24,6 +27,7 @@ import { RoundsModule } from '../rounds/rounds.module';
         GetDaoProposalsService,
         GetOpenDaoProposalsService,
         GetLatestDaoProposalsService,
+        GetFulltextProposalService,
     ],
 })
 export class DaoProposalsModule {}
