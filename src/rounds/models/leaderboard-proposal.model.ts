@@ -46,6 +46,9 @@ export class LeaderboardProposal {
     @ApiProperty()
     tags: string[];
 
+    @ApiProperty()
+    oceanProtocolPortUrl: string;
+
     constructor(attributes: Partial<LeaderboardProposal> = {}) {
         for (let key in attributes) {
             this[key] = attributes[key];
