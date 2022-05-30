@@ -192,19 +192,9 @@ export class DaoProposalRepository implements RepositoryInterface<DaoProposalTyp
 
     public async update(model: DaoProposal, options: QueryOptions = null): Promise<boolean> {
         try {
-            let deletedValues = undefined;
-            for (const [key, value] of Object.entries(model)) {
-                if (!value) {
-                    deletedValues[key] = value;
-                }
-            }
-
             const response: DaoProposal = await this.model.findOneAndUpdate(
                 { id: model.id },
-                {
-                    $set: model,
-                    // $unset: deletedValues
-                },
+                model,
                 options,
             );
 
