@@ -15,6 +15,7 @@ import { DaoProposal } from '../../../../database/schemas/dao-proposal.schema';
 import { Funding } from '../../../../database/schemas/funding.schema';
 import { Project } from '../../../../database/schemas/project.schema';
 import { Round } from '../../../../database/schemas/round.schema';
+import { Image } from '../../../../database/schemas/image.schema';
 import { LeaderboardProposalBuilder } from '../../../builder/leaderboard-proposal.builder';
 import { RoundStatusEnum } from '../../../enums/round-status.enum';
 import { LeaderboardMapper } from '../../../mapper/leaderboard.mapper';
@@ -214,7 +215,9 @@ describe('GenerateLeaderboardService', () => {
                         project: new LeaderboardProject({
                             id: PROJECT_ID,
                             title: 'Ocean Pearl Project',
-                            logoUrl: 'urlToLogo.com',
+                            logo: {
+                                url: 'urlToLogo.com',
+                            } as Image,
                             completedProposals: 4,
                         }),
                         requestedFunding: 50000,
@@ -233,7 +236,9 @@ describe('GenerateLeaderboardService', () => {
                         project: new LeaderboardProject({
                             id: PROJECT_ID,
                             title: 'Ocean Pearl Project',
-                            logoUrl: 'urlToLogo.com',
+                            logo: {
+                                url: 'urlToLogo.com',
+                            } as Image,
                             completedProposals: 4,
                         }),
                         isEarmarked: true,
@@ -256,7 +261,9 @@ describe('GenerateLeaderboardService', () => {
                         project: new LeaderboardProject({
                             id: PROJECT_ID,
                             title: 'Ocean Pearl Project',
-                            logoUrl: 'urlToLogo.com',
+                            logo: {
+                                url: 'urlToLogo.com',
+                            } as Image,
                             completedProposals: 4,
                         }),
                         requestedFunding: 50000,
@@ -280,7 +287,9 @@ describe('GenerateLeaderboardService', () => {
                         project: new LeaderboardProject({
                             id: PROJECT_ID,
                             title: 'Ocean Pearl Project',
-                            logoUrl: 'urlToLogo.com',
+                            logo: {
+                                url: 'urlToLogo.com',
+                            } as Image,
                             completedProposals: 4,
                         }),
                         requestedFunding: 50000,
@@ -300,7 +309,9 @@ describe('GenerateLeaderboardService', () => {
                         project: new LeaderboardProject({
                             id: PROJECT_ID,
                             title: 'Ocean Pearl Project',
-                            logoUrl: 'urlToLogo.com',
+                            logo: {
+                                url: 'urlToLogo.com',
+                            } as Image,
                             completedProposals: 4,
                         }),
                         isEarmarked: true,
@@ -320,7 +331,9 @@ describe('GenerateLeaderboardService', () => {
                         project: new LeaderboardProject({
                             id: PROJECT_ID,
                             title: 'Ocean Pearl Project',
-                            logoUrl: 'urlToLogo.com',
+                            logo: {
+                                url: 'urlToLogo.com',
+                            } as Image,
                             completedProposals: 4,
                         }),
                         requestedFunding: 40000,
