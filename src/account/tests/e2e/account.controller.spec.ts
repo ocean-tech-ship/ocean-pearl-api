@@ -58,7 +58,7 @@ describe('AccountController', () => {
 
     it('should throw bad request if image amount is exceeded', async () => {
         const images = [];
-        for (let i = 0; i < ImageUploadService.IMAGE_MAX_AMOUNT + 1; i++) {
+        for (let i = 0; i < 9; i++) {
             images.push({} as AssociatedImage);
         }
 
