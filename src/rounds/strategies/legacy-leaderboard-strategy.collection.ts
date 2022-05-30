@@ -14,9 +14,8 @@ export class LegacyLeaderboardStrategyCollection {
 
     public findMatchingStrategy(
         proposal: LeaderboardProposal,
-        leaderboard: Leaderboard,
     ): leaderboardStrategyInterface {
-        if (this.legacyEarmarkedProposalStrategy.canHandle(proposal, leaderboard)) {
+        if (this.legacyEarmarkedProposalStrategy.canHandle(proposal)) {
             return this.legacyEarmarkedProposalStrategy;
         }
 

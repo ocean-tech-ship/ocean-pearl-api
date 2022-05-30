@@ -7,7 +7,6 @@ import { Leaderboard } from '../../../models/leaderboard.model';
 import { EarmarkedProposalStrategy } from '../../../strategies/earmarked-proposal.strategy';
 import { GeneralProposalStrategy } from '../../../strategies/general-proposal.strategy';
 import { LeaderboardStrategyCollection } from '../../../strategies/leaderboard-strategy.collection';
-import { WontReceiveFundingStrategy } from '../../../strategies/wont-receive-funding.strategy';
 
 describe('LeaderboardStrategyCollection', () => {
     let module: TestingModule;
@@ -82,77 +81,6 @@ describe('LeaderboardStrategyCollection', () => {
             }),
             expected: GeneralProposalStrategy,
         },
-        'it should return the wont receive funding strategy: negative effective votes': {
-            proposal: new LeaderboardProposal({
-                requestedFunding: 20000,
-                effectiveVotes: -10000,
-                yesVotes: 0,
-                noVotes: 100000,
-            }),
-            leaderboard: new Leaderboard({
-                grantPools: {
-                    [EarmarkTypeEnum.NewEntrants]: new GrantPool({
-                        type: EarmarkTypeEnum.NewEntrants,
-                        totalFunding: 20000,
-                        remainingFunding: 20000,
-                    }),
-                    [EarmarkTypeEnum.General]: new GrantPool({
-                        type: EarmarkTypeEnum.General,
-                        totalFunding: 0,
-                        remainingFunding: 0,
-                    }),
-                },
-            }),
-            expected: WontReceiveFundingStrategy,
-        },
-        'it should return the wont receive funding strategy: earmarked with no funding': {
-            proposal: new LeaderboardProposal({
-                isEarmarked: true,
-                earmarkType: EarmarkTypeEnum.NewEntrants,
-                requestedFunding: 20000,
-                effectiveVotes: 10000,
-                yesVotes: 100000,
-                noVotes: 0,
-            }),
-            leaderboard: new Leaderboard({
-                grantPools: {
-                    [EarmarkTypeEnum.NewEntrants]: new GrantPool({
-                        type: EarmarkTypeEnum.NewEntrants,
-                        totalFunding: 20000,
-                        remainingFunding: 0,
-                    }),
-                    [EarmarkTypeEnum.General]: new GrantPool({
-                        type: EarmarkTypeEnum.General,
-                        totalFunding: 20000,
-                        remainingFunding: 0,
-                    }),
-                },
-            }),
-            expected: WontReceiveFundingStrategy,
-        },
-        'it should return the wont receive funding strategy: general with no funding': {
-            proposal: new LeaderboardProposal({
-                requestedFunding: 20000,
-                effectiveVotes: 10000,
-                yesVotes: 100000,
-                noVotes: 0,
-            }),
-            leaderboard: new Leaderboard({
-                grantPools: {
-                    [EarmarkTypeEnum.NewEntrants]: new GrantPool({
-                        type: EarmarkTypeEnum.NewEntrants,
-                        totalFunding: 20000,
-                        remainingFunding: 20000,
-                    }),
-                    [EarmarkTypeEnum.General]: new GrantPool({
-                        type: EarmarkTypeEnum.General,
-                        totalFunding: 20000,
-                        remainingFunding: 0,
-                    }),
-                },
-            }),
-            expected: WontReceiveFundingStrategy,
-        },
     };
 
     beforeAll(async () => {
@@ -174,7 +102,7 @@ describe('LeaderboardStrategyCollection', () => {
     it.each(Object.entries(findMatchingStrategyDataProvider))(
         '%s',
         (description, { proposal, leaderboard, expected }) => {
-            expect(service.findMatchingStrategy(proposal, leaderboard)).toBeInstanceOf(expected);
+            expect(service.findMatchingStrategy(proposal)).toBeInstanceOf(expected);
         },
     );
 });

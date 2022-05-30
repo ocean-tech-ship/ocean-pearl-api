@@ -16,12 +16,16 @@ import { SingleMissmatchedProposalStrategy } from './strategies/single-missmatch
 import { StrategyCollection } from './strategies/strategy.collection';
 import { UpdateProposalStrategy } from './strategies/update-proposal.strategy';
 import { HttpModule } from '@nestjs/axios';
+import { HealthController } from './controllers/health.controller';
+import { SyncProcessHealthService } from './services/sync-process-health.service';
 
 @Module({
     imports: [HttpModule, DatabaseModule],
+    controllers: [HealthController],
     providers: [
         SyncProposalsDataService,
         SyncRoundsDataService,
+        SyncProcessHealthService,
         ProposalsProvider,
         RoundsProvider,
         AirtableUrlBuilder,

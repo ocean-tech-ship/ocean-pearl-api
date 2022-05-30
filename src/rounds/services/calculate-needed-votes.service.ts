@@ -5,6 +5,7 @@ import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
 import { Leaderboard } from '../models/leaderboard.model';
 import { NeededVotes } from '../models/neede-votes.model';
 
+// @Deprecated this logic is not suited for the QF
 Injectable();
 export class CalculateNeededVotesService {
     public execute(proposal: LeaderboardProposal, leaderboard: Leaderboard): NeededVotes {

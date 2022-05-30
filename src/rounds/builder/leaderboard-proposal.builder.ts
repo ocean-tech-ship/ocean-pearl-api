@@ -48,6 +48,13 @@ export class LeaderboardProposalBuilder {
             tags: [proposal.category],
         });
 
+        if (proposal.minimumRequestedFunding) {
+            mappedLeaderboardProposal.minimumRequestedFunding =
+                round.paymentOption === PaymentOptionEnum.Usd
+                    ? proposal.minimumRequestedFunding.usd
+                    : proposal.minimumRequestedFunding.ocean;
+        }
+
         if (proposal.earmark) {
             mappedLeaderboardProposal.isEarmarked = true;
             mappedLeaderboardProposal.earmarkType = proposal.earmark;

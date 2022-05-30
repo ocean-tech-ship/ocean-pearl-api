@@ -95,6 +95,10 @@ describe('GenerateLegacyLeaderboardService', () => {
                     usd: 50000,
                     ocean: 0,
                 },
+                minimumRequestedFunding: {
+                    usd: 0,
+                    ocean: 0,
+                },
                 receivedFunding: {
                     usd: 50000,
                     ocean: 0,
@@ -111,6 +115,10 @@ describe('GenerateLegacyLeaderboardService', () => {
                     usd: 20000,
                     ocean: 0,
                 },
+                minimumRequestedFunding: {
+                    usd: 0,
+                    ocean: 0,
+                },
                 receivedFunding: {
                     usd: 20000,
                     ocean: 0,
@@ -123,9 +131,13 @@ describe('GenerateLegacyLeaderboardService', () => {
                 id: 'D5C50B1aF3',
                 title: 'Ocean Pearl Proposal 3',
                 yesVotes: 10000,
-                noVotes: 100000,
+                noVotes: 120000,
                 requestedFunding: {
                     usd: 40000,
+                    ocean: 0,
+                },
+                minimumRequestedFunding: {
+                    usd: 0,
                     ocean: 0,
                 },
                 receivedFunding: new Funding(),
@@ -139,6 +151,10 @@ describe('GenerateLegacyLeaderboardService', () => {
                 noVotes: 10000,
                 receivedFunding: {
                     usd: 30000,
+                    ocean: 0,
+                },
+                minimumRequestedFunding: {
+                    usd: 0,
                     ocean: 0,
                 },
                 requestedFunding: {
@@ -157,6 +173,10 @@ describe('GenerateLegacyLeaderboardService', () => {
                     usd: 50000,
                     ocean: 0,
                 },
+                minimumRequestedFunding: {
+                    usd: 0,
+                    ocean: 0,
+                },
                 receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
             },
@@ -168,6 +188,10 @@ describe('GenerateLegacyLeaderboardService', () => {
                 noVotes: 100000,
                 requestedFunding: {
                     usd: 20000,
+                    ocean: 0,
+                },
+                minimumRequestedFunding: {
+                    usd: 0,
                     ocean: 0,
                 },
                 receivedFunding: new Funding(),
@@ -233,6 +257,7 @@ describe('GenerateLegacyLeaderboardService', () => {
                             completedProposals: 4,
                         }),
                         requestedFunding: 50000,
+                        minimumRequestedFunding: 0,
                         receivedFunding: 50000,
                         grantPoolShare: {
                             [EarmarkTypeEnum.General]: 50000,
@@ -256,6 +281,7 @@ describe('GenerateLegacyLeaderboardService', () => {
                         isEarmarked: true,
                         earmarkType: EarmarkTypeEnum.NewEntrants,
                         requestedFunding: 20000,
+                        minimumRequestedFunding: 0,
                         receivedFunding: 20000,
                         grantPoolShare: {
                             [EarmarkTypeEnum.NewEntrants]: 20000,
@@ -279,6 +305,7 @@ describe('GenerateLegacyLeaderboardService', () => {
                             completedProposals: 4,
                         }),
                         requestedFunding: 50000,
+                        minimumRequestedFunding: 0,
                         receivedFunding: 30000,
                         grantPoolShare: {
                             [EarmarkTypeEnum.General]: 30000,
@@ -302,6 +329,7 @@ describe('GenerateLegacyLeaderboardService', () => {
                             completedProposals: 4,
                         }),
                         requestedFunding: 50000,
+                        minimumRequestedFunding: 0,
                         receivedFunding: 0,
                         yesVotes: 100000,
                         noVotes: 55000,
@@ -322,6 +350,7 @@ describe('GenerateLegacyLeaderboardService', () => {
                         isEarmarked: true,
                         earmarkType: EarmarkTypeEnum.NewEntrants,
                         requestedFunding: 20000,
+                        minimumRequestedFunding: 0,
                         receivedFunding: 0,
                         yesVotes: 10000,
                         noVotes: 100000,
@@ -340,10 +369,11 @@ describe('GenerateLegacyLeaderboardService', () => {
                             completedProposals: 4,
                         }),
                         requestedFunding: 40000,
+                        minimumRequestedFunding: 0,
                         receivedFunding: 0,
                         yesVotes: 10000,
-                        noVotes: 100000,
-                        effectiveVotes: -90000,
+                        noVotes: 120000,
+                        effectiveVotes: -110000,
                         tags: [CategoryEnum.CoreSoftware],
                     }),
                 ],
@@ -351,16 +381,22 @@ describe('GenerateLegacyLeaderboardService', () => {
                 overallFunding: 100000,
                 overallRequestedFunding: 230000,
                 round: 10,
-                totalVotes: 805000,
+                totalVotes: 825000,
                 grantPools: {
                     [EarmarkTypeEnum.NewEntrants]: {
                         type: EarmarkTypeEnum.NewEntrants,
                         totalFunding: 20000,
+                        totalEffectiveVotes: 0,
+                        relevantEffectiveVotes: 0,
+                        relevantFunding: 20000,
                         remainingFunding: 0,
                         potentialRemainingFunding: 0,
                     },
                     [EarmarkTypeEnum.General]: {
                         type: EarmarkTypeEnum.General,
+                        totalEffectiveVotes: 0,
+                        relevantEffectiveVotes: 0,
+                        relevantFunding: 80000,
                         totalFunding: 80000,
                         remainingFunding: 0,
                     },
