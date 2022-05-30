@@ -1,19 +1,20 @@
+import { CanActivate, INestApplication, ValidationPipe } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
+import { nanoid } from 'nanoid';
 import * as request from 'supertest';
 import { AppModule } from '../../../app.module';
 import { AwsModule } from '../../../aws/aws.module';
 import { DatabaseModule } from '../../../database/database.module';
+import { ImageAssociationService } from '../../../utils/services/image-association.service';
 import { AccountController } from '../../controllers/account.controller';
 import { ProjectGuard } from '../../guards/project.guard';
 import { ManagedProjectMapper } from '../../mapper/managed-project.mapper';
-import { GetAssociatedProjectsService } from '../../services/get-associated-projects.service';
-import { UpdateProjectService } from '../../services/update-project.service';
 import { AssociatedImage } from '../../models/associated-project.model';
-import { ImageUploadService } from '../../services/image-upload.service';
-import { CanActivate, INestApplication, ValidationPipe } from '@nestjs/common';
 import { UpdatedProject } from '../../models/updated-project.model';
-import { AuthGuard } from '@nestjs/passport';
-import { nanoid } from 'nanoid';
+import { GetAssociatedProjectsService } from '../../services/get-associated-projects.service';
+import { ImageUploadService } from '../../services/image-upload.service';
+import { UpdateProjectService } from '../../services/update-project.service';
 
 describe('AccountController', () => {
     let app: INestApplication;
@@ -28,6 +29,7 @@ describe('AccountController', () => {
             controllers: [AccountController],
             providers: [
                 GetAssociatedProjectsService,
+                ImageAssociationService,
                 UpdateProjectService,
                 ManagedProjectMapper,
                 ProjectGuard,
