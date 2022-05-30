@@ -18,13 +18,14 @@ import { UpdateProjectService } from '../../services/update-project.service';
 
 describe('AccountController', () => {
     let app: INestApplication;
+    let module: TestingModule;
 
     let controller: AccountController;
 
     beforeEach(async () => {
         const mockGuard: CanActivate = { canActivate: jest.fn(() => true) };
 
-        const module: TestingModule = await Test.createTestingModule({
+        module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule, AwsModule],
             controllers: [AccountController],
             providers: [
@@ -50,6 +51,7 @@ describe('AccountController', () => {
 
     afterAll(async () => {
         await app.close();
+        await module.close();
     });
 
     it('should be defined', () => {
@@ -58,7 +60,7 @@ describe('AccountController', () => {
 
     it('should throw bad request if image amount is exceeded', async () => {
         const images = [];
-        for (let i = 0; i < 9; i++) {
+        for (let i = 0; i < ImageUploadService.IMAGE_MAX_AMOUNT + 1; i++) {
             images.push({} as AssociatedImage);
         }
 
