@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { EarmarkTypeEnum } from '../../../../database/enums/earmark-type.enum';
 import { LeaderboardProposal } from '../../../models/leaderboard-proposal.model';
-import { Leaderboard } from '../../../models/leaderboard.model';
 import { LegacyEarmarkedProposalStrategy } from '../../../strategies/legacy-earmarked-proposal.strategy';
 import { LegacyGeneralProposalStrategy } from '../../../strategies/legacy-general-proposal.strategy';
 import { LegacyLeaderboardStrategyCollection } from '../../../strategies/legacy-leaderboard-strategy.collection';
@@ -21,12 +20,10 @@ describe('LegacyLeaderboardStrategyCollection', () => {
                 yesVotes: 100000,
                 noVotes: 0,
             }),
-            leaderboard: new Leaderboard(),
             expected: LegacyEarmarkedProposalStrategy,
         },
         'it should return the general strategy': {
             proposal: new LeaderboardProposal(),
-            leaderboard: new Leaderboard(),
             expected: LegacyGeneralProposalStrategy,
         },
     };
@@ -51,8 +48,8 @@ describe('LegacyLeaderboardStrategyCollection', () => {
 
     it.each(Object.entries(findMatchingStrategyDataProvider))(
         '%s',
-        (description, { proposal, leaderboard, expected }) => {
-            expect(service.findMatchingStrategy(proposal, leaderboard)).toBeInstanceOf(expected);
+        (description, { proposal, expected }) => {
+            expect(service.findMatchingStrategy(proposal)).toBeInstanceOf(expected);
         },
     );
 });

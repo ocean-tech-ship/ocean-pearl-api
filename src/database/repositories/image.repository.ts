@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, QueryOptions, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
@@ -89,11 +89,12 @@ export class ImageRepository
         }
     }
 
-    public async update(model: Image): Promise<boolean> {
+    public async update(model: Image, options: QueryOptions = null): Promise<boolean> {
         try {
             const response: Image = await this.model.findOneAndUpdate(
                 { id: model.id },
                 model,
+                options
             );
 
             return response !== null;

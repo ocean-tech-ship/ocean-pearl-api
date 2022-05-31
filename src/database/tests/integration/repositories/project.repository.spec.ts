@@ -18,7 +18,9 @@ describe('ProjectRepository', () => {
         title: 'Best project ever',
         description: 'Still the best project ever.',
         oneLiner: 'Best project as one liner',
-        socialMedia: {} as SocialMedia,
+        socialMedia: {
+            twitter: 'test.twitter.com',
+        } as SocialMedia,
         category: CategoryEnum.CoreSoftware,
         logo: new Types.ObjectId('123456789101112131415161'),
         associatedAddresses: ['0x967da4048cD07aB37855c090aAF366e4ce1b9F48'],
@@ -68,7 +70,9 @@ describe('ProjectRepository', () => {
                 id: PROJECT_ID,
                 title: 'Best project ever',
                 description: 'Still the best project ever.',
-                socialMedia: {},
+                socialMedia: {
+                    twitter: 'test.twitter.com',
+                },
                 logo: null,
                 category: CategoryEnum.CoreSoftware,
             });

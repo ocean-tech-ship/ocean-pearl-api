@@ -1,7 +1,7 @@
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { Connection } from 'mongoose';
+import { Connection, Model } from 'mongoose';
 import { MigrationStatusEnum } from '../enums/migration-status.enum';
 import { MigrationInterface } from '../interfaces/migration.interface';
 import { Migration } from '../schemas/migration.schema';
@@ -23,7 +23,7 @@ export class MigrationService implements OnModuleInit {
 
         this.migrations.sort(
             (current: MigrationInterface, next: MigrationInterface) =>
-            current.getVersion() - next.getVersion(),
+                current.getVersion() - next.getVersion(),
         );
 
         try {
@@ -53,9 +53,7 @@ export class MigrationService implements OnModuleInit {
                     { upsert: true },
                 );
 
-                this.logger.log(
-                    `Migration ${migration.getVersion()} UP finished.`,
-                );
+                this.logger.log(`Migration ${migration.getVersion()} UP finished.`);
             }
         } catch (error) {
             throw error;
@@ -70,7 +68,7 @@ export class MigrationService implements OnModuleInit {
     })
     public async down(): Promise<void> {
         this.logger.log('Starting Migrations Down.');
-        const migrationModel = this.connection.model('Migration');
+        const migrationModel: Model<any> = this.connection.model('Migration');
 
         try {
             for (const migration of this.migrations) {
@@ -89,9 +87,7 @@ export class MigrationService implements OnModuleInit {
                     status: MigrationStatusEnum.Down,
                 } as Migration);
 
-                this.logger.log(
-                    `Migration ${migration.getVersion()} DOWN finished.`,
-                );
+                this.logger.log(`Migration ${migration.getVersion()} DOWN finished.`);
             }
         } catch (error) {
             throw error;
@@ -105,9 +101,7 @@ export class MigrationService implements OnModuleInit {
         const fs = require('fs');
         const directoryPath = path.join(__dirname, '../migrations/');
 
-        const files = fs
-            .readdirSync(directoryPath)
-            .filter((file: any) => file.endsWith('.js'));
+        const files = fs.readdirSync(directoryPath).filter((file: any) => file.endsWith('.js'));
 
         for (const file of files) {
             const migration = await import(directoryPath + file);

@@ -80,6 +80,12 @@ export class DaoProposal {
         type: FundingSchema,
     })
     @ApiProperty()
+    minimumRequestedFunding: Funding;
+
+    @Prop({
+        type: FundingSchema,
+    })
+    @ApiProperty()
     receivedFunding: Funding;
 
     @Prop({
@@ -110,7 +116,7 @@ export class DaoProposal {
     @Prop({
         type: String,
         trim: true,
-        maxLength: 4096,
+        maxLength: 16384,
     })
     @ApiProperty()
     description: string;

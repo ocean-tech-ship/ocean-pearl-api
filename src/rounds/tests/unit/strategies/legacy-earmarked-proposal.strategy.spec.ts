@@ -21,12 +21,10 @@ describe('LegacyEarmarkedProposalStrategy', () => {
                 yesVotes: 100000,
                 noVotes: 0,
             }),
-            leaderboard: new Leaderboard(),
             expected: true,
         },
         'should not be able to handle: not earmarked': {
             proposal: new LeaderboardProposal(),
-            leaderboard: new Leaderboard(),
             expected: false,
         },
     };
@@ -474,8 +472,8 @@ describe('LegacyEarmarkedProposalStrategy', () => {
 
     it.each(Object.entries(canHandleDataProvider))(
         '%s',
-        (description, { proposal, leaderboard, expected }) => {
-            expect(service.canHandle(proposal, leaderboard)).toEqual(expected);
+        (description, { proposal, expected }) => {
+            expect(service.canHandle(proposal)).toEqual(expected);
         },
     );
 

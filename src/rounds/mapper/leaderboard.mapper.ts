@@ -23,13 +23,14 @@ export class LeaderboardMapper {
             round: round.round,
         });
 
-        for (const [type, pool] of Object.entries(round.grantPools)) {
+        for (const pool of Object.values(round.grantPools)) {
             const totalFunding = isPaymentOptionUsd ? pool.fundingUsd : pool.fundingOcean;
 
             mappedLeaderboard.grantPools[pool.type] = new GrantPool({
                 type: pool.type,
                 totalFunding: totalFunding,
                 remainingFunding: totalFunding,
+                relevantFunding: totalFunding,
                 potentialRemainingFunding: totalFunding,
             });
 
@@ -43,6 +44,7 @@ export class LeaderboardMapper {
         mappedLeaderboard.grantPools[EarmarkTypeEnum.General] = new GrantPool({
             type: EarmarkTypeEnum.General,
             totalFunding: totalGeneralFunding,
+            relevantFunding: totalGeneralFunding,
             remainingFunding: totalGeneralFunding,
         });
 

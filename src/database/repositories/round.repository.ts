@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, QueryOptions, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
@@ -64,12 +64,12 @@ export class RoundRepository implements RepositoryInterface<RoundType> {
         }
     }
 
-    public async update(model: Round): Promise<boolean> {
+    public async update(model: Round, options: QueryOptions = null): Promise<boolean> {
         try {
             const response: Round = await this.model.findOneAndUpdate(
                 { id: model.id },
                 model,
-                { upsert: true },
+                options
             );
 
             return response !== null;

@@ -8,6 +8,7 @@ import { Project } from '../../database/schemas/project.schema';
 import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProject } from '../models/leaderboard-project.model';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
+import { AssociatedImage } from '../../account/models/associated-project.model';
 
 @Injectable()
 export class LeaderboardProposalBuilder {
@@ -47,14 +48,20 @@ export class LeaderboardProposalBuilder {
             tags: [proposal.category],
         });
 
+        if (proposal.minimumRequestedFunding) {
+            mappedLeaderboardProposal.minimumRequestedFunding =
+                round.paymentOption === PaymentOptionEnum.Usd
+                    ? proposal.minimumRequestedFunding.usd
+                    : proposal.minimumRequestedFunding.ocean;
+        }
+
         if (proposal.earmark) {
             mappedLeaderboardProposal.isEarmarked = true;
             mappedLeaderboardProposal.earmarkType = proposal.earmark;
         }
 
         if (project.logo) {
-            project.logo = project.logo as Image;
-            mappedLeaderboardProposal.project.logoUrl = project.logo.url;
+            mappedLeaderboardProposal.project.logo = project.logo as Image;
         }
 
         return mappedLeaderboardProposal;

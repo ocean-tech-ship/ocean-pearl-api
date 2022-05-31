@@ -16,6 +16,7 @@ import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-s
 import { StandingEnum } from '../../../../database/enums/standing.enum';
 import { LeaderboardProject } from '../../../models/leaderboard-project.model';
 import { Funding } from '../../../../database/schemas/funding.schema';
+import { Image } from '../../../../database/schemas/image.schema';
 
 describe('LeaderboardProposalBuilder', () => {
     let module: TestingModule;
@@ -36,6 +37,10 @@ describe('LeaderboardProposalBuilder', () => {
                 requestedFunding: {
                     usd: 1000,
                     ocean: 2000,
+                },
+                minimumRequestedFunding: {
+                    usd: 100,
+                    ocean: 200,
                 },
                 receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
@@ -76,10 +81,13 @@ describe('LeaderboardProposalBuilder', () => {
                 project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
-                    logoUrl: 'urlToLogo.com',
+                    logo: {
+                        url: 'urlToLogo.com',
+                    } as Image,
                     completedProposals: 4,
                 }),
                 requestedFunding: 1000,
+                minimumRequestedFunding: 100,
                 receivedFunding: 0,
                 yesVotes: 100000,
                 noVotes: 10000,
@@ -98,6 +106,10 @@ describe('LeaderboardProposalBuilder', () => {
                 requestedFunding: {
                     usd: 1000,
                     ocean: 2000,
+                },
+                minimumRequestedFunding: {
+                    usd: 100,
+                    ocean: 200,
                 },
                 receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
@@ -131,10 +143,13 @@ describe('LeaderboardProposalBuilder', () => {
                 project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
-                    logoUrl: 'urlToLogo.com',
+                    logo: {
+                        url: 'urlToLogo.com',
+                    } as Image,
                     completedProposals: 2,
                 }),
                 requestedFunding: 2000,
+                minimumRequestedFunding: 200,
                 receivedFunding: 0,
                 yesVotes: 100000,
                 noVotes: 10000,
@@ -152,6 +167,10 @@ describe('LeaderboardProposalBuilder', () => {
                 requestedFunding: {
                     usd: 1000,
                     ocean: 2000,
+                },
+                minimumRequestedFunding: {
+                    usd: 100,
+                    ocean: 200,
                 },
                 receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
@@ -179,10 +198,13 @@ describe('LeaderboardProposalBuilder', () => {
                 project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
-                    logoUrl: 'urlToLogo.com',
+                    logo: {
+                        url: 'urlToLogo.com',
+                    } as Image,
                     completedProposals: 0,
                 }),
                 requestedFunding: 1000,
+                minimumRequestedFunding: 100,
                 receivedFunding: 0,
                 yesVotes: 100000,
                 noVotes: 10000,
@@ -200,6 +222,10 @@ describe('LeaderboardProposalBuilder', () => {
                 requestedFunding: {
                     usd: 1000,
                     ocean: 2000,
+                },
+                minimumRequestedFunding: {
+                    usd: 100,
+                    ocean: 200,
                 },
                 receivedFunding: new Funding(),
                 category: CategoryEnum.Outreach,
@@ -236,10 +262,13 @@ describe('LeaderboardProposalBuilder', () => {
                 project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
-                    logoUrl: 'urlToLogo.com',
+                    logo: {
+                        url: 'urlToLogo.com',
+                    } as Image,
                     completedProposals: 3,
                 }),
                 requestedFunding: 1000,
+                minimumRequestedFunding: 100,
                 receivedFunding: 0,
                 yesVotes: 100000,
                 noVotes: 10000,
@@ -257,6 +286,10 @@ describe('LeaderboardProposalBuilder', () => {
                 requestedFunding: {
                     usd: 1000,
                     ocean: 2000,
+                },
+                minimumRequestedFunding: {
+                    usd: 100,
+                    ocean: 200,
                 },
                 receivedFunding: new Funding(),
                 earmark: EarmarkTypeEnum.NewEntrants,
@@ -301,10 +334,13 @@ describe('LeaderboardProposalBuilder', () => {
                 project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
-                    logoUrl: 'urlToLogo.com',
+                    logo: {
+                        url: 'urlToLogo.com',
+                    } as Image,
                     completedProposals: 5,
                 }),
                 requestedFunding: 1000,
+                minimumRequestedFunding: 100,
                 receivedFunding: 0,
                 yesVotes: 100000,
                 noVotes: 10000,

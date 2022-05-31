@@ -7,7 +7,7 @@ const airtableData = {
     'Project Name': 'Test',
     'Grant Category': 'DAO',
     'One Liner': 'Test Project One Liner',
-    'Wallet Address': faker.datatype.hexaDecimal(42),
+    'Wallet Address': faker.datatype.hexadecimal(42),
     'Payment Wallets':
         '0xddede3ad5Ad1B9554cCE67b1F5AccAcCbf2ea37Ec7\n0x5cD036ADE2aC359Facf197c7e3aa9CEE477f3B04a2\n0xc6db676ABB0CCb2cdE3e77cafF27DAed5D5e875b5F',
     'Team Name (from Login Email)': [faker.company.companyName()],
