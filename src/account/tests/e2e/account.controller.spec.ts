@@ -22,7 +22,7 @@ describe('AccountController', () => {
 
     let controller: AccountController;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const mockGuard: CanActivate = { canActivate: jest.fn(() => true) };
 
         module = await Test.createTestingModule({
