@@ -82,6 +82,14 @@ export class SocialMedia {
     })
     @ApiProperty()
     medium: string;
+
+    @Prop({
+        type: String,
+        maxlength: 128,
+        trim: true,
+    })
+    @ApiProperty()
+    instagram: string;
 }
 
 export const SocialMediaSchema = SchemaFactory.createForClass(SocialMedia);
