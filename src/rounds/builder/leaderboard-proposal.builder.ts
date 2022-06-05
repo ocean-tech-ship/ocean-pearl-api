@@ -44,6 +44,7 @@ export class LeaderboardProposalBuilder {
                 round.round,
             ),
             tags: [proposal.category],
+            oceanProtocolPortUrl: proposal.oceanProtocolPortUrl,
         });
 
         if (proposal.minimumRequestedFunding) {
