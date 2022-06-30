@@ -5,7 +5,7 @@ import { CategoryEnum } from '../enums/category.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
 import { DaoProposal } from './dao-proposal.schema';
-import { Picture, PictureSchema } from './picture.schema';
+import { Image as Image } from './image.schema';
 import { SocialMedia, SocialMediaSchema } from './social-media.schema';
 
 export type ProjectType = Project & Document;
@@ -93,17 +93,28 @@ export class Project {
     socialMedia: SocialMedia;
 
     @Prop({
-        type: PictureSchema,
+        type: Types.ObjectId,
+        ref: 'Image',
     })
-    @ApiProperty()
-    logo: Picture;
+    @ApiProperty({
+        type: Image,
+    })
+    logo: Image | Types.ObjectId;
 
     @Prop({
-        type: [PictureSchema],
-        default: [],
+        type: [
+            {
+                type: Types.ObjectId,
+                ref: 'Image',
+            },
+        ],
+        default: void 0,
     })
-    @ApiProperty()
-    pictures: Picture[];
+    @ApiProperty({
+        type: Image,
+        isArray: true,
+    })
+    images: Image[] | Types.ObjectId[];
 
     @Prop({
         type: [

@@ -12,12 +12,15 @@ import { SessionSchema } from './schemas/session.schema';
 import { SessionRepository } from './repositories/session.repository';
 import { MigrationSchema } from './schemas/migration.schema';
 import { MigrationService } from './services/migrations.service';
+import { ImageSchema } from './schemas/image.schema';
+import { ImageRepository } from './repositories/image.repository';
 
 @Module({
     imports: [
         MongooseModule.forFeature([
             { name: 'DaoProposal', schema: DaoProposalSchema },
             { name: 'Deliverable', schema: DeliverableSchema },
+            { name: 'Image', schema: ImageSchema },
             { name: 'Project', schema: ProjectSchema },
             { name: 'Round', schema: RoundSchema },
             { name: 'Session', schema: SessionSchema },
@@ -31,6 +34,7 @@ import { MigrationService } from './services/migrations.service';
         DeliverableRepository,
         SessionRepository,
         MigrationService,
+        ImageRepository
     ],
     exports: [
         DaoProposalRepository,
@@ -38,6 +42,7 @@ import { MigrationService } from './services/migrations.service';
         RoundRepository,
         DeliverableRepository,
         SessionRepository,
+        ImageRepository
     ],
 })
 export class DatabaseModule {}

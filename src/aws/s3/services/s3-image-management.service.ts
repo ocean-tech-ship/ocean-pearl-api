@@ -1,13 +1,19 @@
-import { DeleteObjectCommand, DeleteObjectCommandInput, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+    DeleteObjectCommand,
+    DeleteObjectCommandInput,
+    PutObjectCommand,
+    S3Client,
+} from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { nanoid } from '../../../database/functions/nano-id.function';
-import { Picture } from '../../../database/schemas/picture.schema';
+import { Image } from '../../../database/schemas/image.schema';
 import { FileExtensionsMap } from '../constants/file-extensions-map.const';
 import { MimeTypesMap } from '../constants/mime-types-map.const';
 import { FileExtensionsEnum } from '../enums/file-extensions.enum';
 import { MimeTypesEnum } from '../enums/mime-types.enum';
 import { S3FileUploadPayload } from '../interfaces/s3-file-upload-payload.interface';
+import { AwsImageData } from '../models/aws-image-data.model';
 
 @Injectable()
 export class S3ImageManagementService {
@@ -20,37 +26,33 @@ export class S3ImageManagementService {
         },
     });
 
-    public constructor(
-        private configService: ConfigService
-    ) {}
+    public constructor(private configService: ConfigService) {}
 
     public async uploadImageToS3(
         imageBytes: any,
         imageMimeType: MimeTypesEnum,
-        projectOrProposalId: string,
-    ): Promise<Picture> {
+    ): Promise<AwsImageData> {
         const imageId: string = nanoid();
-        const key = `${projectOrProposalId}-${imageId}`;
         const imageFileExtension = FileExtensionsMap[imageMimeType];
 
         try {
-            await this.uploadFileToS3(imageBytes, key, imageFileExtension);
+            await this.uploadFileToS3(imageBytes, imageId, imageFileExtension);
 
-            return {
-                key,
+            return new AwsImageData({
+                id: imageId,
                 fileExtension: imageFileExtension,
-                url: `${this.configService.get<string>('CDN_URL')}${key}.${imageFileExtension}`,  
-            };
+                url: `${this.configService.get<string>('CDN_URL')}${imageId}.${imageFileExtension}`,
+            });
         } catch (error) {
             throw error;
         }
     }
 
-    public async deleteFileOnS3(picture: Picture): Promise<void> {
+    public async deleteFileOnS3(image: Image): Promise<void> {
         const command = new DeleteObjectCommand({
             Bucket: this.configService.get<string>('S3_BUCKET'),
-            Key: `${this.s3Path}${picture.key}.${picture.fileExtension}`,
-        } as DeleteObjectCommandInput)
+            Key: `${this.s3Path}${image.key}.${image.fileExtension}`,
+        } as DeleteObjectCommandInput);
 
         try {
             await this.client.send(command);

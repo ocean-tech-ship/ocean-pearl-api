@@ -3,10 +3,12 @@ import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { StandingEnum } from '../../database/enums/standing.enum';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
+import { Image } from '../../database/schemas/image.schema';
 import { Project } from '../../database/schemas/project.schema';
 import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProject } from '../models/leaderboard-project.model';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
+import { AssociatedImage } from '../../account/models/associated-project.model';
 
 @Injectable()
 export class LeaderboardProposalBuilder {
@@ -60,7 +62,7 @@ export class LeaderboardProposalBuilder {
         }
 
         if (project.logo) {
-            mappedLeaderboardProposal.project.logoUrl = project.logo.url;
+            mappedLeaderboardProposal.project.logo = project.logo as Image;
         }
 
         return mappedLeaderboardProposal;

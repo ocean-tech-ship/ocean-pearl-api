@@ -3,7 +3,6 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { AxiosResponse } from 'axios';
 import { PaymentOptionEnum } from '../../database/enums/payment-option.enum';
 import { RemainingFundingStrategyEnum } from '../../database/enums/remaining-funding-strategy.enum';
-import { FindQuery } from '../../database/interfaces/find-query.interface';
 import { RoundRepository } from '../../database/repositories/round.repository';
 import { GrantPool } from '../../database/schemas/grant-pool.schema';
 import { GrantPoolsType, Round, RoundType } from '../../database/schemas/round.schema';
@@ -159,14 +158,13 @@ export class SyncRoundsDataService {
     }
 
     private async syncRound(round: Round): Promise<void> {
-        const findQuery = {
+        const databaseRound: Round = await this.roundsRepository.findOne({
             find: {
                 round: round.round,
             },
-        } as FindQuery<RoundType>;
-        const databaseRound: Round = await this.roundsRepository.findOne(findQuery);
+        });
 
-        if (databaseRound == null) {
+        if (databaseRound === null) {
             await this.roundsRepository.create(round);
         } else {
             round.id = databaseRound?.id ?? undefined;

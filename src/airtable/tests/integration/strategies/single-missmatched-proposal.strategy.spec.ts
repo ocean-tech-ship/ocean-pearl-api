@@ -30,7 +30,7 @@ describe('SingleMissmatchedProposalStrategy', () => {
     it('should be able to handle', () => {
         expect(
             service.canHandle(null, {
-                project: faker.datatype.hexaDecimal(10),
+                project: faker.datatype.hexadecimal(10),
             } as unknown as DaoProposal),
         ).resolves.toBeTruthy();
     });
@@ -39,7 +39,7 @@ describe('SingleMissmatchedProposalStrategy', () => {
         expect(
             service.canHandle(
                 {} as Project,
-                { project: faker.datatype.hexaDecimal(10) } as unknown as DaoProposal,
+                { project: faker.datatype.hexadecimal(10) } as unknown as DaoProposal,
             ),
         ).resolves.toBeFalsy();
     });

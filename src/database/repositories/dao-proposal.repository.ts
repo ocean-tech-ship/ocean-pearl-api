@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { QueryOptions, Types } from 'mongoose';
 import { FindQuery } from '../interfaces/find-query.interface';
 import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.interface';
 import { PaginateModel } from '../interfaces/paginate-model.interface';
@@ -9,17 +9,13 @@ import { PaginatedResponse } from '../models/paginated-response.model';
 import { DaoProposal, DaoProposalType } from '../schemas/dao-proposal.schema';
 
 @Injectable()
-export class DaoProposalRepository
-    implements RepositoryInterface<DaoProposalType>
-{
+export class DaoProposalRepository implements RepositoryInterface<DaoProposalType> {
     constructor(
         @InjectModel('DaoProposal')
         private model: PaginateModel<DaoProposalType>,
     ) {}
 
-    public async findOne(
-        query: FindQuery<DaoProposalType>,
-    ): Promise<DaoProposal> {
+    public async findOne(query: FindQuery<DaoProposalType>): Promise<DaoProposal> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
@@ -31,9 +27,23 @@ export class DaoProposalRepository
                 .populate({
                     path: 'project',
                     select: '-daoProposals -_id -__v',
+                    populate: [
+                        {
+                            path: 'logo',
+                            select: '-_id -__v',
+                        },
+                        {
+                            path: 'images',
+                            select: '-_id -__v',
+                        },
+                    ],
                 })
                 .populate({
                     path: 'deliverables',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'images',
                     select: '-_id -__v',
                 })
                 .populate({
@@ -47,9 +57,7 @@ export class DaoProposalRepository
         }
     }
 
-    public async findOneRaw(
-        query: FindQuery<DaoProposalType>,
-    ): Promise<DaoProposal> {
+    public async findOneRaw(query: FindQuery<DaoProposalType>): Promise<DaoProposal> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
@@ -69,9 +77,23 @@ export class DaoProposalRepository
                 .populate({
                     path: 'project',
                     select: '-daoProposals -_id -__v',
+                    populate: [
+                        {
+                            path: 'logo',
+                            select: '-_id -__v',
+                        },
+                        {
+                            path: 'images',
+                            select: '-_id -__v',
+                        },
+                    ],
                 })
                 .populate({
                     path: 'deliverables',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'images',
                     select: '-_id -__v',
                 })
                 .populate({
@@ -85,9 +107,7 @@ export class DaoProposalRepository
         }
     }
 
-    public async getAll(
-        query?: FindQuery<DaoProposalType>,
-    ): Promise<DaoProposal[]> {
+    public async getAll(query?: FindQuery<DaoProposalType>): Promise<DaoProposal[]> {
         try {
             return await this.model
                 .find(query?.find || {})
@@ -97,9 +117,23 @@ export class DaoProposalRepository
                 .populate({
                     path: 'project',
                     select: '-daoProposals -_id -__v',
+                    populate: [
+                        {
+                            path: 'logo',
+                            select: '-_id -__v',
+                        },
+                        {
+                            path: 'images',
+                            select: '-_id -__v',
+                        },
+                    ],
                 })
                 .populate({
                     path: 'deliverables',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'images',
                     select: '-_id -__v',
                 })
                 .populate({
@@ -125,9 +159,23 @@ export class DaoProposalRepository
                     {
                         path: 'project',
                         select: '-daoProposals -_id -__v',
+                        populate: [
+                            {
+                                path: 'logo',
+                                select: '-_id -__v',
+                            },
+                            {
+                                path: 'images',
+                                select: '-_id -__v',
+                            },
+                        ],
                     },
                     {
                         path: 'deliverables',
+                        select: '-_id -__v',
+                    },
+                    {
+                        path: 'images',
                         select: '-_id -__v',
                     },
                     {
@@ -142,11 +190,12 @@ export class DaoProposalRepository
         }
     }
 
-    public async update(model: DaoProposal): Promise<boolean> {
+    public async update(model: DaoProposal, options: QueryOptions = null): Promise<boolean> {
         try {
             const response: DaoProposal = await this.model.findOneAndUpdate(
                 { id: model.id },
                 model,
+                options,
             );
 
             return response !== null;
@@ -171,9 +220,7 @@ export class DaoProposalRepository
                 throw new Error('Please specify a query');
             }
 
-            const response: MongooseDeleteResponse = await this.model.deleteOne(
-                query.find,
-            );
+            const response: MongooseDeleteResponse = await this.model.deleteOne(query.find);
 
             return response.deletedCount === 1;
         } catch (error: any) {
@@ -181,16 +228,13 @@ export class DaoProposalRepository
         }
     }
 
-    public async deleteMany(
-        query: FindQuery<DaoProposalType>,
-    ): Promise<boolean> {
+    public async deleteMany(query: FindQuery<DaoProposalType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
             }
 
-            const response: MongooseDeleteResponse =
-                await this.model.deleteMany(query.find);
+            const response: MongooseDeleteResponse = await this.model.deleteMany(query.find);
 
             return response.deletedCount > 0;
         } catch (error: any) {

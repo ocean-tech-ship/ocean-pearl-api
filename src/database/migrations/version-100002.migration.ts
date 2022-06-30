@@ -45,6 +45,6 @@ export default class Version100002 implements MigrationInterface {
 
     public async down(connection: Connection): Promise<void> {
         // if possible add code that will revert the migration
-        throw new Error(`Can\'t revert migration ${this.getVersion}!`);
+        throw new Error(`Can\'t revert migration ${this.getVersion()}!`);
     }
 }

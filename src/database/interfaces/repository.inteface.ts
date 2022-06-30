@@ -1,4 +1,4 @@
-import { Document, Model, Types } from 'mongoose';
+import { Document, Model, QueryOptions, Types } from 'mongoose';
 import { FindQuery } from './find-query.interface';
 
 export interface RepositoryInterface<T extends Document> {
@@ -10,7 +10,7 @@ export interface RepositoryInterface<T extends Document> {
 
     findOneRaw(query: FindQuery<T>): Promise<any>;
 
-    update(model: T): Promise<boolean>;
+    update(model: T, options: QueryOptions): Promise<boolean>;
 
     create(model: T): Promise<Types.ObjectId>;
 
