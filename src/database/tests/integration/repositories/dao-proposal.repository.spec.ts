@@ -25,7 +25,7 @@ describe('DaoProposalRepository', () => {
         title: 'The Title of the Proposal',
         description: 'Here stands a description',
         category: CategoryEnum.BuildAndIntegrate,
-        walletAddress: faker.datatype.hexaDecimal(42).toLowerCase(),
+        walletAddress: faker.datatype.hexadecimal(42).toLowerCase(),
         yesVotes: 100000,
         noVotes: 20,
         status: DaoProposalStatusEnum.Running,
@@ -42,7 +42,7 @@ describe('DaoProposalRepository', () => {
         ipfsHash: '',
         snapshotBlock: 123456789,
         voteUrl: '',
-        pictures: [],
+        images: [],
     } as DaoProposal;
 
     let module: TestingModule;

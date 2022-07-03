@@ -9,17 +9,20 @@ import { ManagedProjectMapper } from './mapper/managed-project.mapper';
 import { GetAssociatedProjectsService } from './services/get-associated-projects.service';
 import { UpdateProjectService } from './services/update-project.service';
 import { UtilsModule } from '../utils/utils.module';
-import { PicturesService } from '../utils/services/pictures.service';
+import { ImageOptimizationService } from '../utils/services/image-optimization.service';
+import { ImageUploadService } from './services/image-upload.service';
+import { ImageController } from './controllers/image.controller';
 
 @Module({
     imports: [AuthModule, DatabaseModule, AwsModule, UtilsModule],
-    controllers: [AccountController, AuthController],
+    controllers: [AccountController, AuthController, ImageController],
     providers: [
         GetAssociatedProjectsService,
         ManagedProjectMapper,
         UpdateProjectService,
         ProjectGuard,
-        PicturesService,
+        ImageOptimizationService,
+        ImageUploadService,
     ],
 })
 export class AccountModule {}

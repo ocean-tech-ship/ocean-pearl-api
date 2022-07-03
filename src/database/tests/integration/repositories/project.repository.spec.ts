@@ -4,12 +4,9 @@ import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../database.module';
 import { CategoryEnum } from '../../../enums/category.enum';
 import { nanoid } from '../../../functions/nano-id.function';
-import { Picture } from '../../../schemas/picture.schema';
 import { ProjectRepository } from '../../../repositories/project.repository';
 import { Project } from '../../../schemas/project.schema';
 import { SocialMedia } from '../../../schemas/social-media.schema';
-import { FileExtensionsEnum } from '../../../../aws/s3/enums/file-extensions.enum';
-import { faker } from '@faker-js/faker';
 
 const PROJECT_ID: string = nanoid();
 const PROJECT_MONGO_ID: Types.ObjectId = new Types.ObjectId();
@@ -21,13 +18,11 @@ describe('ProjectRepository', () => {
         title: 'Best project ever',
         description: 'Still the best project ever.',
         oneLiner: 'Best project as one liner',
-        socialMedia: {} as SocialMedia,
+        socialMedia: {
+            twitter: 'test.twitter.com',
+        } as SocialMedia,
         category: CategoryEnum.CoreSoftware,
-        logo: {
-            key: faker.datatype.hexaDecimal(21),
-            url: faker.internet.url(),
-            fileExtension: FileExtensionsEnum.Jpeg,
-        } as Picture,
+        logo: new Types.ObjectId('123456789101112131415161'),
         associatedAddresses: ['0x967da4048cD07aB37855c090aAF366e4ce1b9F48'],
         paymentWalletsAddresses: [
             '0x967da4048cD07aB37855c090aAF366e4ce1b9F42',
@@ -75,12 +70,10 @@ describe('ProjectRepository', () => {
                 id: PROJECT_ID,
                 title: 'Best project ever',
                 description: 'Still the best project ever.',
-                socialMedia: {},
-                logo: {
-                    key: project.logo.key,
-                    url: project.logo.url,
-                    fileExtension: project.logo.fileExtension,
+                socialMedia: {
+                    twitter: 'test.twitter.com',
                 },
+                logo: null,
                 category: CategoryEnum.CoreSoftware,
             });
         });

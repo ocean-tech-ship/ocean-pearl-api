@@ -16,6 +16,7 @@ import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-s
 import { StandingEnum } from '../../../../database/enums/standing.enum';
 import { LeaderboardProject } from '../../../models/leaderboard-project.model';
 import { Funding } from '../../../../database/schemas/funding.schema';
+import { Image } from '../../../../database/schemas/image.schema';
 
 describe('LeaderboardProposalBuilder', () => {
     let module: TestingModule;
@@ -80,7 +81,9 @@ describe('LeaderboardProposalBuilder', () => {
                 project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
-                    logoUrl: 'urlToLogo.com',
+                    logo: {
+                        url: 'urlToLogo.com',
+                    } as Image,
                     completedProposals: 4,
                 }),
                 requestedFunding: 1000,
@@ -140,7 +143,9 @@ describe('LeaderboardProposalBuilder', () => {
                 project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
-                    logoUrl: 'urlToLogo.com',
+                    logo: {
+                        url: 'urlToLogo.com',
+                    } as Image,
                     completedProposals: 2,
                 }),
                 requestedFunding: 2000,
@@ -193,7 +198,9 @@ describe('LeaderboardProposalBuilder', () => {
                 project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
-                    logoUrl: 'urlToLogo.com',
+                    logo: {
+                        url: 'urlToLogo.com',
+                    } as Image,
                     completedProposals: 0,
                 }),
                 requestedFunding: 1000,
@@ -255,7 +262,9 @@ describe('LeaderboardProposalBuilder', () => {
                 project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
-                    logoUrl: 'urlToLogo.com',
+                    logo: {
+                        url: 'urlToLogo.com',
+                    } as Image,
                     completedProposals: 3,
                 }),
                 requestedFunding: 1000,
@@ -325,7 +334,9 @@ describe('LeaderboardProposalBuilder', () => {
                 project: new LeaderboardProject({
                     id: PROJECT_ID,
                     title: 'Ocean Pearl Project',
-                    logoUrl: 'urlToLogo.com',
+                    logo: {
+                        url: 'urlToLogo.com',
+                    } as Image,
                     completedProposals: 5,
                 }),
                 requestedFunding: 1000,
