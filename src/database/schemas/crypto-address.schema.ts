@@ -1,15 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { SupportedNetworksEnum } from '../enums/supported-networks.enum';
 
 @Schema({ _id: false })
 export class CryptoAddress {
     @Prop({
         type: String,
-        length: 128,
-        required: true
+        enum: SupportedNetworksEnum,
+        default: SupportedNetworksEnum.Mainnet,
+        required: true,
     })
     @ApiProperty()
-    network: string;
+    network: SupportedNetworksEnum = SupportedNetworksEnum.Mainnet;
 
     @Prop({
         type: String,
