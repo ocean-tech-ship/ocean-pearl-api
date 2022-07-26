@@ -1,6 +1,5 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
-import { RoundStatusEnum } from '../enums/round-status.enum';
 import { Leaderboard } from '../models/leaderboard.model';
 
 @Injectable()
@@ -18,9 +17,7 @@ export class LeaderboardCacheService {
     }
 
     public async getFromCache(round: number): Promise<Leaderboard> {
-        return await this.cacheManager.get<Leaderboard>(
-            this.generateCacheKey(round),
-        );
+        return await this.cacheManager.get<Leaderboard>(this.generateCacheKey(round));
     }
 
     public async removeFromCache(round: number): Promise<void> {
@@ -32,7 +29,14 @@ export class LeaderboardCacheService {
     }
 
     private calculateTtl(leaderboard: Leaderboard): number {
-        if (leaderboard.status === RoundStatusEnum.VotingFinished) {
+        const currentDate = new Date();
+        const dateOneWeekAgo = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate() - 7,
+        );
+
+        if (leaderboard.votingEndDate < dateOneWeekAgo) {
             return this.ONE_DAY_TTL;
         }
 
