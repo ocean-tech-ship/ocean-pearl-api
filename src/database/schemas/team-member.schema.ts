@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { MediaHandlesEnum } from '../enums/media-handles.enum';
 
 @Schema({ _id: false })
 export class TeamMember {
     @Prop({
         type: String,
         length: 128,
-        required: true
+        required: true,
     })
     @ApiProperty()
     name: string;
@@ -26,10 +27,15 @@ export class TeamMember {
     affiliation: string;
 
     @Prop({
-        type: () => new Map<string, string>()
+        type: () => new Map<MediaHandlesEnum, string>(),
+        of: {
+            type: String,
+            maxlength: 128,
+            trim: true,
+        },
     })
     @ApiProperty()
-    links: Map<string, string>;
+    mediaHandles: Map<MediaHandlesEnum, string>;
 
     @Prop({
         type: String,
