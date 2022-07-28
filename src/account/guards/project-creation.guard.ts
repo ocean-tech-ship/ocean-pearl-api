@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { WalletInfoService } from '../../utils/wallet/services/wallet-info.service';
 
@@ -15,6 +15,10 @@ export class ProjectCreationGuard implements CanActivate {
     public async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
+
+        if (await this.projectRepository.getModel().exists({ title: request.body.name })) {
+            new BadRequestException('The name for the Project is already taken.');
+        }
 
         const walletInfo = await this.walletInfoService.getCompleteInfo(user.wallet);
         const createdProjects = await this.projectRepository.getAll({
