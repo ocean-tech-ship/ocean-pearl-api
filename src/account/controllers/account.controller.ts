@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, Put, Req, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    Put,
+    Req,
+    UseGuards,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiBody,
@@ -9,11 +19,14 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthenticatedUser } from '../../auth/models/authenticated-user.model';
+import { WalletInfo } from '../../utils/wallet/models/wallet-info.model';
+import { WalletInfoParam } from '../../utils/wallet/decorators/wallet-info-parameter.decorator';
 import { ProjectCreationGuard } from '../guards/project-creation.guard';
 import { ProjectGuard } from '../guards/project.guard';
 import { AssociatedProject } from '../models/associated-project.model';
 import { CreateProject } from '../models/create-project.model';
 import { UpdatedProject } from '../models/updated-project.model';
+import { CreateProjectService } from '../services/create-project.service';
 import { GetAssociatedProjectsService } from '../services/get-associated-projects.service';
 import { UpdateProjectService } from '../services/update-project.service';
 
@@ -24,6 +37,7 @@ export class AccountController {
     public constructor(
         private getAssociatedProjectsService: GetAssociatedProjectsService,
         private updateProjectService: UpdateProjectService,
+        private createProjectService: CreateProjectService,
     ) {}
 
     @Get()
@@ -56,7 +70,7 @@ export class AccountController {
         };
     }
 
-    @Put('/project')
+    @Put('/projects')
     @ApiBody({
         type: UpdatedProject,
     })
@@ -82,9 +96,21 @@ export class AccountController {
     @ApiBody({
         type: CreateProject,
     })
+    @UsePipes(new ValidationPipe({ transform: true }))
     @UseGuards(ProjectCreationGuard)
-    public async createProject(@Req() request: Request, @Body() test: any): Promise<void> {
-        console.log('CONTROLLER');
-        console.log(test);
+    public async createProject(
+        @Req() request: Request,
+        @Body() project: CreateProject,
+        @WalletInfoParam() walletInfo: WalletInfo,
+    ): Promise<AssociatedProject[]> {
+        try {
+            await this.createProjectService.execute(project, walletInfo);
+
+            const user = request.user as AuthenticatedUser;
+
+            return await this.getAssociatedProjectsService.execute(user.wallet);
+        } catch (error) {
+            throw error;
+        }
     }
 }
