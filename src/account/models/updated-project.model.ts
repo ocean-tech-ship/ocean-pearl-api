@@ -10,9 +10,11 @@ import {
     MaxLength,
 } from 'class-validator';
 import { CategoryEnum } from '../../database/enums/category.enum';
-import { SocialMedia } from '../../database/schemas/social-media.schema';
 import { AssociatedImage } from './associated-project.model';
 import { ImageUploadService } from '../services/image-upload.service';
+import { CryptoAddress } from '../../database/schemas/crypto-address.schema';
+import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
+import { Type } from 'class-transformer';
 
 export class UpdatedProject {
     @ApiProperty({
@@ -60,14 +62,24 @@ export class UpdatedProject {
     @ArrayNotEmpty({
         message: 'At least one address must be specified',
     })
-    accessAddresses: string[];
+    accessAddresses: CryptoAddress[];
 
     @ApiProperty({
-        type: SocialMedia,
+        type: Object,
+        additionalProperties: {
+            type: 'string',
+        },
+        default: {
+            [MediaHandlesEnum.Twitter]: 'Oceanpearl.io',
+        },
+    })
+    @Type(() => String)
+    @MaxLength(128, {
+        each: true,
     })
     @IsOptional()
     @IsObject()
-    socialMedia: SocialMedia;
+    mediaHandles: Map<MediaHandlesEnum, string>;
 
     @ApiProperty()
     @IsOptional()

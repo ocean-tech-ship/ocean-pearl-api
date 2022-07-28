@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CategoryEnum } from '../../database/enums/category.enum';
-import { SocialMedia } from '../../database/schemas/social-media.schema';
+import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
+import { CryptoAddress } from '../../database/schemas/crypto-address.schema';
 
 export class AssociatedImage {
     @ApiProperty()
@@ -27,10 +28,15 @@ export class AssociatedProject {
     category: CategoryEnum;
 
     @ApiProperty()
-    accessAddresses: string[];
+    accessAddresses: CryptoAddress[];
 
-    @ApiProperty()
-    socialMedia: SocialMedia;
+    @ApiProperty({
+        type: Object,
+        additionalProperties: {
+            type: 'string',
+        },
+    })
+    mediaHandles: Map<MediaHandlesEnum, string>;
 
     @ApiProperty()
     logo: AssociatedImage;
