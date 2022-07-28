@@ -6,12 +6,14 @@ import * as request from 'supertest';
 import { AppModule } from '../../../app.module';
 import { AwsModule } from '../../../aws/aws.module';
 import { DatabaseModule } from '../../../database/database.module';
-import { ImageAssociationService } from '../../../utils/services/image-association.service';
+import { ImageAssociationService } from '../../../utils/image/services/image-association.service';
+import { WalletUtilsModule } from '../../../utils/wallet/wallet-utils.module';
 import { AccountController } from '../../controllers/account.controller';
 import { ProjectGuard } from '../../guards/project.guard';
 import { ManagedProjectMapper } from '../../mapper/managed-project.mapper';
 import { AssociatedImage } from '../../models/associated-project.model';
 import { UpdatedProject } from '../../models/updated-project.model';
+import { CreateProjectService } from '../../services/create-project.service';
 import { GetAssociatedProjectsService } from '../../services/get-associated-projects.service';
 import { ImageUploadService } from '../../services/image-upload.service';
 import { UpdateProjectService } from '../../services/update-project.service';
@@ -26,12 +28,13 @@ describe('AccountController', () => {
         const mockGuard: CanActivate = { canActivate: jest.fn(() => true) };
 
         module = await Test.createTestingModule({
-            imports: [DatabaseModule, AppModule, AwsModule],
+            imports: [DatabaseModule, AppModule, AwsModule, WalletUtilsModule],
             controllers: [AccountController],
             providers: [
                 GetAssociatedProjectsService,
                 ImageAssociationService,
                 UpdateProjectService,
+                CreateProjectService,
                 ManagedProjectMapper,
                 ProjectGuard,
             ],
@@ -69,7 +72,7 @@ describe('AccountController', () => {
             images,
         } as UpdatedProject;
 
-        const response = await request(app.getHttpServer()).put('/account/project').send(body);
+        const response = await request(app.getHttpServer()).put('/account/projects').send(body);
         expect(response.status).toBe(400);
     });
 });

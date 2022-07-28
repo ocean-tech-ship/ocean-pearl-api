@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { AwsModule } from '../../../../aws/aws.module';
 import { DatabaseModule } from '../../../../database/database.module';
-import { UtilsModule } from '../../../../utils/utils.module';
+import { ImageUtilsModule } from '../../../../utils/image/image-utils.module';
 import { ImageUploadService } from '../../../services/image-upload.service';
 
 describe('ImageUploadService', () => {
@@ -11,7 +11,7 @@ describe('ImageUploadService', () => {
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
-            imports: [DatabaseModule, AppModule, AwsModule, UtilsModule],
+            imports: [DatabaseModule, AppModule, AwsModule, ImageUtilsModule],
             providers: [ImageUploadService],
         }).compile();
 

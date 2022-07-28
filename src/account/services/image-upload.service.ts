@@ -3,7 +3,7 @@ import { MimeTypesEnum } from '../../aws/s3/enums/mime-types.enum';
 import { S3ImageManagementService } from '../../aws/s3/services/s3-image-management.service';
 import { ImageRepository } from '../../database/repositories/image.repository';
 import { Image } from '../../database/schemas/image.schema';
-import { ImageOptimizationService } from '../../utils/services/image-optimization.service';
+import { ImageOptimizationService } from '../../utils/image/services/image-optimization.service';
 import { AssociatedImage } from '../models/associated-project.model';
 
 @Injectable()

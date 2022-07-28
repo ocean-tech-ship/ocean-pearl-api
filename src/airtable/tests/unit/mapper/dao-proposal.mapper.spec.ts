@@ -6,6 +6,7 @@ import { FundamentalMetricEnum } from '../../../../database/enums/fundamental-me
 import { StandingEnum } from '../../../../database/enums/standing.enum';
 import { DaoProposalMapper } from '../../../mapper/dao-proposal.mapper';
 import { faker } from '@faker-js/faker';
+import { CryptoAddress } from '../../../../database/schemas/crypto-address.schema';
 
 const AIRTABLE_ID = faker.datatype.hexadecimal(10);
 const ROUND_ID = new Types.ObjectId(faker.datatype.hexadecimal(10));
@@ -72,7 +73,7 @@ describe('DaoProposalMapper', () => {
             },
             minimumRequestedFunding: {
                 usd: 840,
-                ocean: 1000
+                ocean: 1000,
             },
             snapshotBlock: airtableData['Snapshot Block'],
             standing: StandingEnum.Completed,
@@ -80,15 +81,17 @@ describe('DaoProposalMapper', () => {
             title: 'Test',
             voteUrl: '',
             yesVotes: 4200000,
-            walletAddress: airtableData['Wallet Address'].toLowerCase(),
+            walletAddress: new CryptoAddress({
+                address: airtableData['Wallet Address'].toLowerCase(),
+            }),
         });
     });
 
     it('should use "received ocean" for the "requested ocean" value', () => {
         airtableData['OCEAN Requested'] = 0;
 
-        expect(
-            service.map(airtableData, AIRTABLE_ID, ROUND_ID).requestedFunding.ocean,
-        ).toEqual(10000);
+        expect(service.map(airtableData, AIRTABLE_ID, ROUND_ID).requestedFunding.ocean).toEqual(
+            10000,
+        );
     });
 });

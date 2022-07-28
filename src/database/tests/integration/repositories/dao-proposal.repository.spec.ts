@@ -10,6 +10,7 @@ import { nanoid } from '../../../functions/nano-id.function';
 import { DaoProposalRepository } from '../../../repositories/dao-proposal.repository';
 import { DaoProposal } from '../../../schemas/dao-proposal.schema';
 import { faker } from '@faker-js/faker';
+import { CryptoAddress } from '../../../schemas/crypto-address.schema';
 
 const DAO_PROPOSAL_ID: string = nanoid();
 const DAO_PROPOSAL_MONGO_ID: Types.ObjectId = new Types.ObjectId();
@@ -25,14 +26,14 @@ describe('DaoProposalRepository', () => {
         title: 'The Title of the Proposal',
         description: 'Here stands a description',
         category: CategoryEnum.BuildAndIntegrate,
-        walletAddress: faker.datatype.hexadecimal(42).toLowerCase(),
+        walletAddress: new CryptoAddress({ address: faker.datatype.hexadecimal(42).toLowerCase() }),
         yesVotes: 100000,
         noVotes: 20,
         status: DaoProposalStatusEnum.Running,
         deliverables: [new Types.ObjectId()],
         requestedFunding: {
             usd: 8400,
-            ocean: 10000, 
+            ocean: 10000,
         },
         receivedFunding: {
             usd: 8400,

@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { FundamentalMetricEnum } from '../../database/enums/fundamental-metric.enum';
 import { StandingEnum } from '../../database/enums/standing.enum';
+import { CryptoAddress } from '../../database/schemas/crypto-address.schema';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { CategoryMap } from '../constants/category-map.constant';
 import { EarmarkTypeMap } from '../constants/earmark-type-map.constant';
@@ -25,7 +26,7 @@ export class DaoProposalMapper {
             oneLiner: airtableData['One Liner'],
             description: airtableData['Overview'],
             standing: StandingMap[airtableData['Proposal Standing']] ?? StandingEnum.Unreported,
-            walletAddress: airtableData['Wallet Address'].toLowerCase(),
+            walletAddress: new CryptoAddress({ address: airtableData['Wallet Address'].toLowerCase()}),
             fundamentalMetric:
                 FundamentalMetricsMap[airtableData['Fundamental Metric']] ??
                 FundamentalMetricEnum.Other,

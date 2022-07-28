@@ -1,4 +1,4 @@
-import { MimeTypesEnum } from '../../aws/s3/enums/mime-types.enum';
+import { MimeTypesEnum } from '../../../aws/s3/enums/mime-types.enum';
 
 export class ImageData {
     data: Buffer;

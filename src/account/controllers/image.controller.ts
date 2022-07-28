@@ -12,7 +12,7 @@ import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiTags } from '@nestjs/swagg
 import { AssociatedImage } from '../models/associated-project.model';
 import { ImageUploadService } from '../services/image-upload.service';
 
-@ApiTags('account')
+@ApiTags('images')
 @UseGuards(AuthGuard('jwt-refresh'))
 @Controller('account')
 export class ImageController {

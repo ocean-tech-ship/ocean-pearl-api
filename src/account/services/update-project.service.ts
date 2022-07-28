@@ -4,8 +4,8 @@ import { ImageRepository } from '../../database/repositories/image.repository';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { UpdatedProject } from '../models/updated-project.model';
 import { Types } from 'mongoose';
-import { ImageAssociationService } from '../../utils/services/image-association.service';
 import { Project } from '../../database/schemas/project.schema';
+import { ImageAssociationService } from '../../utils/image/services/image-association.service';
 
 @Injectable()
 export class UpdateProjectService {
@@ -22,13 +22,16 @@ export class UpdateProjectService {
         });
 
         dbProject.accessAddresses =
-            updatedProject.accessAddresses?.map((address) => address.toLowerCase()) ??
+            updatedProject.accessAddresses?.map((address) => {
+                address.address.toLowerCase()
+                return address;
+            }) ??
             dbProject.accessAddresses;
 
         dbProject.description = updatedProject.description ?? dbProject.description;
         dbProject.oneLiner = updatedProject.oneLiner ?? dbProject.oneLiner;
         dbProject.category = updatedProject.category ?? dbProject.category;
-        dbProject.socialMedia = updatedProject.socialMedia ?? dbProject.socialMedia;
+        dbProject.mediaHandles = updatedProject.mediaHandles ?? dbProject.mediaHandles;
 
         dbProject = await this.updateLogo(dbProject, updatedProject);
         dbProject = await this.updateImages(dbProject, updatedProject);

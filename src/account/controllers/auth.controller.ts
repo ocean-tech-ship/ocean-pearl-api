@@ -25,7 +25,7 @@ import { VerifyLoginService } from '../../auth/services/verify-login.service';
 import { SessionRepository } from '../../database/repositories/session.repository';
 import { Session } from '../../database/schemas/session.schema';
 
-@ApiTags('account')
+@ApiTags('auth')
 @Controller('account')
 export class AuthController {
     constructor(

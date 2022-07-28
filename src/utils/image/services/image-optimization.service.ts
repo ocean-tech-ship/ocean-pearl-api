@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ImageData } from '../models/image-data.model';
-import { MimeTypesEnum } from '../../aws/s3/enums/mime-types.enum';
 import { optimize, OptimizedSvg } from 'svgo';
 import * as sharp from 'sharp';
-import { MimeTypesMap } from '../../aws/s3/constants/mime-types-map.const';
+import { MimeTypesEnum } from '../../../aws/s3/enums/mime-types.enum';
+import { MimeTypesMap } from '../../../aws/s3/constants/mime-types-map.const';
 
 @Injectable()
 export class ImageOptimizationService {

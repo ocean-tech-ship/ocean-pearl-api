@@ -2,13 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../app.module';
 import { AwsModule } from '../../../aws/aws.module';
 import { DatabaseModule } from '../../../database/database.module';
-import { AccountController } from '../../controllers/account.controller';
-import { ProjectGuard } from '../../guards/project.guard';
-import { ManagedProjectMapper } from '../../mapper/managed-project.mapper';
-import { GetAssociatedProjectsService } from '../../services/get-associated-projects.service';
-import { UpdateProjectService } from '../../services/update-project.service';
-import { UtilsModule } from '../../../utils/utils.module';
+import { ImageUtilsModule } from '../../../utils/image/image-utils.module';
 import { ImageController } from '../../controllers/image.controller';
+import { ImageUploadService } from '../../services/image-upload.service';
 
 describe('ImageController', () => {
     let module: TestingModule;
@@ -16,13 +12,10 @@ describe('ImageController', () => {
 
     beforeEach(async () => {
         module = await Test.createTestingModule({
-            imports: [DatabaseModule, AppModule, AwsModule, UtilsModule],
-            controllers: [AccountController],
+            imports: [DatabaseModule, AppModule, AwsModule, ImageUtilsModule],
+            controllers: [ImageController],
             providers: [
-                GetAssociatedProjectsService,
-                UpdateProjectService,
-                ManagedProjectMapper,
-                ProjectGuard,
+                ImageUploadService
             ],
         }).compile();
 
