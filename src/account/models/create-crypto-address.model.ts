@@ -1,13 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Length } from 'class-validator';
+import { IsEnum, IsString, Length } from 'class-validator';
+import { SupportedNetworksEnum } from '../../database/enums/supported-networks.enum';
 
 export class CreateCryptoAddress {
     @ApiProperty({
-        default: 'Add the network e.g. ethereum.',
+        default: SupportedNetworksEnum.Mainnet,
+        type: String,
+        enum: SupportedNetworksEnum
     })
+    @IsEnum(SupportedNetworksEnum)
     @IsString()
     @Length(0, 128)
-    network: string;
+    network: SupportedNetworksEnum;
 
     @ApiProperty({
         default: 'Add the address.',
