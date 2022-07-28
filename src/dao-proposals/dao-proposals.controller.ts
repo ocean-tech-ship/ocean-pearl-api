@@ -1,18 +1,19 @@
 import {
-    Controller, Get,
+    Controller,
+    Get,
     HttpException,
     HttpStatus,
     Param,
     Query,
     UsePipes,
-    ValidationPipe
+    ValidationPipe,
 } from '@nestjs/common';
 import {
     ApiBadRequestResponse,
     ApiNotFoundResponse,
     ApiOkResponse,
     ApiTags,
-    getSchemaPath
+    getSchemaPath,
 } from '@nestjs/swagger';
 import { Pagination } from '../database/models/pagination.model';
 import { DaoProposal } from '../database/schemas/dao-proposal.schema';
@@ -20,6 +21,7 @@ import { GetCurrentRoundService } from '../rounds/services/get-current-round.ser
 import { ProposalFilterQuery } from './models/proposal-filter-query.model';
 import { GetDaoProposalByIdService } from './services/get-dao-proposal-by-id.service';
 import { GetDaoProposalsService } from './services/get-dao-proposals.service';
+import { GetFulltextProposalService } from './services/get-fulltext-proposal.service';
 
 @ApiTags('proposals')
 @Controller('dao-proposals')
@@ -28,6 +30,7 @@ export class DaoProposalsController {
         private getDaoProposalsService: GetDaoProposalsService,
         private getDaoProposalByIdService: GetDaoProposalByIdService,
         private getCurrentRoundService: GetCurrentRoundService,
+        private getFulltextProposalService: GetFulltextProposalService,
     ) {}
 
     @Get('')
@@ -51,17 +54,13 @@ export class DaoProposalsController {
         },
     })
     @UsePipes(new ValidationPipe({ transform: true }))
-    public async getDaoProposals(
-        @Query() proposalFilterQuery: ProposalFilterQuery,
-    ): Promise<{
+    public async getDaoProposals(@Query() proposalFilterQuery: ProposalFilterQuery): Promise<{
         docs: DaoProposal[];
         pagination: Pagination;
         maxRounds: number;
     }> {
         try {
-            const paginatedData = await this.getDaoProposalsService.execute(
-                proposalFilterQuery,
-            );
+            const paginatedData = await this.getDaoProposalsService.execute(proposalFilterQuery);
 
             return {
                 docs: paginatedData.docs,
@@ -79,9 +78,7 @@ export class DaoProposalsController {
         type: DaoProposal,
         description: 'Returns a single Proposal',
     })
-    public async getDaoProposalById(
-        @Param('id') id: string,
-    ): Promise<DaoProposal> {
+    public async getDaoProposalById(@Param('id') id: string): Promise<DaoProposal> {
         try {
             const proposal = await this.getDaoProposalByIdService.execute(id);
 
@@ -97,6 +94,29 @@ export class DaoProposalsController {
 
             return proposal;
         } catch (error: any) {
+            throw error;
+        }
+    }
+
+    @Get(':id/fulltext')
+    @ApiNotFoundResponse()
+    @ApiOkResponse()
+    public async getFulltextProposalById(@Param('id') id: string): Promise<any> {
+        const proposal = await this.getDaoProposalById(id);
+
+        try {
+            return await this.getFulltextProposalService.execute(proposal);
+        } catch (error: any) {
+            if (error.response?.status === HttpStatus.NOT_FOUND) {
+                throw new HttpException(
+                    {
+                        status: HttpStatus.NOT_FOUND,
+                        error: `No text was found for proposal with id: ${id}`,
+                    },
+                    HttpStatus.NOT_FOUND,
+                );
+            }
+
             throw error;
         }
     }
