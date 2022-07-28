@@ -1,16 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsOptional, IsString, Length, MaxLength } from 'class-validator';
+import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
 
 export class CreateTeamMember {
     @ApiProperty({
-        default: 'Add the meber\'s name.',
+        default: 'Add the member\'s name.',
     })
     @IsString()
     @Length(0, 128)
     name: string;
 
     @ApiProperty({
-        default: 'Add a role (at least one must be \'project lead\').',
+        default: 'project lead',
+        description: 'Add a role (at least one must be \'project lead\').'
     })
     @IsString()
     @Length(0, 128)
@@ -25,21 +28,26 @@ export class CreateTeamMember {
     affiliation: string;
 
     @ApiProperty({
-        type: () => new Map<string, string>(),
+        type: Object,
+        additionalProperties: {
+            type: 'string' ,
+        },
         default: {
-            Oceanpearl: 'Oceanpearl.io',
+            [MediaHandlesEnum.Twitter]: 'Oceanpearl.io',
         },
     })
+    @Type(() => String)
     @MaxLength(128, {
         each: true,
-      })
+    })
     @IsOptional()
-    links: Map<string, string>;
+    mediaHandles: Map<MediaHandlesEnum, string>;
 
     @ApiProperty({
-        default: 'Add the project name.',
+        default: 'Short description of the background.',
     })
     @IsString()
     @Length(0, 2048)
+    @IsOptional()
     background: string;
 }
