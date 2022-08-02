@@ -4,4 +4,5 @@ export const StandingMap = {
     'Completed': StandingEnum.Completed,
     'In Progress': StandingEnum.InProgress,
     'Unreported': StandingEnum.Unreported,
+    'No Ocean': StandingEnum.NoOcean,
 };
