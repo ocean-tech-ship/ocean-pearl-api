@@ -33,7 +33,7 @@ export class ProjectCreationGuard implements CanActivate {
             );
         }
 
-        if (createdProjects.length > this.maxProjectAmount) {
+        if (createdProjects.length >= this.maxProjectAmount) {
             throw new ForbiddenException(
                 `Users can only create up to ${this.maxProjectAmount} projects.`,
             );
