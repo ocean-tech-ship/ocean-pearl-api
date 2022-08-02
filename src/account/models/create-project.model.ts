@@ -23,7 +23,7 @@ export class CreateProject {
     })
     @IsString()
     @Length(0, 64)
-    name: string;
+    title: string;
 
     @ApiProperty({
         default: 'Add a oneliner.',

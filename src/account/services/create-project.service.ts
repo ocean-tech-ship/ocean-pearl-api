@@ -26,7 +26,7 @@ export class CreateProjectService {
         try {
             const newProject = new Project({
                 author: walletInfo.address,
-                title: createProject.name,
+                title: createProject.title,
                 oneLiner: createProject.oneLiner,
                 description: createProject.description,
                 category: createProject.category,
