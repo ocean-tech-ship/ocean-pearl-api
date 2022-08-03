@@ -31,7 +31,7 @@ export class CreateProjectService {
                 description: createProject.description,
                 category: createProject.category,
                 mediaHandles: createProject.mediaHandles ?? new Map<MediaHandlesEnum, string>(),
-                teamName: createProject.teamName,
+                teamName: createProject.teamName ?? createProject.title,
             });
 
             await this.addlogo(newProject, createProject);
@@ -82,17 +82,25 @@ export class CreateProjectService {
     }
 
     private addCryptoAddresses(newProject: Project, createProject: CreateProject): void {
-        for (const cryptoAddress of createProject.accessAddresses) {
-            const newAddress = new CryptoAddress(cryptoAddress);
-            newProject.accessAddresses.push(newAddress);
-            newProject.associatedAddresses.push(newAddress);
+        if (createProject.accessAddresses) {
+            for (const cryptoAddress of createProject.accessAddresses) {
+                const newAddress = new CryptoAddress(cryptoAddress);
+                newProject.accessAddresses.push(newAddress);
+                newProject.associatedAddresses.push(newAddress);
+            }
         }
 
-        for (const cryptoAddress of createProject.paymentAddresses) {
-            const newAddress = new CryptoAddress(cryptoAddress);
-            newProject.paymentAddresses.push(newAddress);
-            newProject.associatedAddresses.push(newAddress);
+        // Ensure that at least the author's address has access
+        if (!newProject.accessAddresses.includes(newProject.author)) {
+            newProject.accessAddresses.push(newProject.author);
+            newProject.associatedAddresses.push(newProject.author);
         }
+
+        // for (const cryptoAddress of createProject.paymentAddresses) {
+        //     const newAddress = new CryptoAddress(cryptoAddress);
+        //     newProject.paymentAddresses.push(newAddress);
+        //     newProject.associatedAddresses.push(newAddress);
+        // }
     }
 
     // We might need this later

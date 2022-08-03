@@ -52,16 +52,17 @@ export class CreateProject {
         isArray: true,
     })
     @IsArray()
+    @IsOptional()
     @ValidateNested()
     accessAddresses: CreateCryptoAddress[];
 
-    @ApiProperty({
-        type: CreateCryptoAddress,
-        isArray: true,
-    })
-    @IsArray()
-    @ValidateNested()
-    paymentAddresses: CreateCryptoAddress[];
+    // @ApiProperty({
+    //     type: CreateCryptoAddress,
+    //     isArray: true,
+    // })
+    // @IsArray()
+    // @ValidateNested()
+    // paymentAddresses: CreateCryptoAddress[];
 
     @ApiProperty({
         type: Object,
@@ -107,6 +108,7 @@ export class CreateProject {
         default: 'Add a team name.',
     })
     @IsString()
+    @IsOptional()
     @Length(0, 256)
     teamName: string;
 }
