@@ -39,7 +39,7 @@ export class ProjectCreationGuard implements CanActivate {
             );
         }
 
-        request.wallatInfo = walletInfo;
+        request.walletInfo = walletInfo;
 
         return true;
     }
