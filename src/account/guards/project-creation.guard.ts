@@ -17,7 +17,7 @@ export class ProjectCreationGuard implements CanActivate {
         const user = request.user;
 
         if (await this.projectRepository.getModel().exists({ title: request.body.title })) {
-            new BadRequestException('The name for the Project is already taken.');
+            throw new BadRequestException('The name for the Project is already taken.');
         }
 
         const walletInfo = await this.walletInfoService.getCompleteInfo(user.wallet);
