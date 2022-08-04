@@ -3,6 +3,7 @@ import { CategoryEnum } from '../../../../database/enums/category.enum';
 import { ProjectMapper } from '../../../mapper/project.mapper';
 import { faker } from '@faker-js/faker';
 import { CryptoAddress } from '../../../../database/schemas/crypto-address.schema';
+import { OriginEnum } from '../../../../database/enums/origin.enum';
 
 const airtableData = {
     'Project Name': 'Test',
@@ -56,6 +57,7 @@ describe('ProjectMapper', () => {
             ],
             teamName: airtableData['Team Name (from Login Email)'][0],
             daoProposals: [],
+            origin: OriginEnum.OceanDao,
         });
     });
 
