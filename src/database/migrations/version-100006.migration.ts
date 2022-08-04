@@ -2,7 +2,7 @@ import { Connection } from 'mongoose';
 import { OriginEnum } from '../enums/origin.enum';
 import { MigrationInterface } from '../interfaces/migration.interface';
 
-export default class Version100005 implements MigrationInterface {
+export default class Version100006 implements MigrationInterface {
     public getVersion(): number {
         // count this number up with each migration
         return 100006;
