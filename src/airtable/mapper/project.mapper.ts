@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CategoryEnum } from '../../database/enums/category.enum';
+import { OriginEnum } from '../../database/enums/origin.enum';
 import { CryptoAddress } from '../../database/schemas/crypto-address.schema';
 import { Project } from '../../database/schemas/project.schema';
 import { CategoryMap } from '../constants/category-map.constant';
@@ -26,6 +27,7 @@ export class ProjectMapper {
                 : airtableData['Project Name'].trim(),
             createdAt: new Date(airtableData['Created Date']),
             daoProposals: [],
+            origin: OriginEnum.OceanDao,
         } as Project;
     }
 }
