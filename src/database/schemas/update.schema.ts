@@ -1,8 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
+import { ReviewStatusEnum } from '../enums/review-status.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
+import { CryptoAddress } from './crypto-address.schema';
+import { Project } from './project.schema';
 
 export type UpdateType = Update & Document;
 
@@ -19,13 +22,33 @@ export class Update {
     id: string;
 
     @Prop({
-        type: String,
+        type: Types.ObjectId,
+        ref: 'Project',
+        required: true,
+    })
+    @ApiProperty({
+        type: Project,
+    })
+    project: Project | Types.ObjectId;
+
+    @Prop({
+        type: CryptoAddress,
         required: true,
         trim: true,
         maxLength: 256,
     })
     @ApiProperty()
-    author: string;
+    author: CryptoAddress;
+
+    @Prop({
+        type: String,
+        enum: ReviewStatusEnum,
+        default: ReviewStatusEnum.Pending,
+    })
+    @ApiProperty({
+        enum: ReviewStatusEnum,
+    })
+    reviewStatus: ReviewStatusEnum = ReviewStatusEnum.Pending;
 
     @Prop({
         type: String,
