@@ -13,7 +13,7 @@ export class GetAssociatedProjectsService {
 
     public async execute(walletAddress: string): Promise<AssociatedProject[]> {
         const associatedProjects = await this.projectRepository.getAll({
-            find: { accessAddresses: walletAddress.toLocaleLowerCase() },
+            find: { 'accessAddresses.address': walletAddress.toLocaleLowerCase() },
         });
 
         if (!associatedProjects) {

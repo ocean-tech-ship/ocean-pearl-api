@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../../../app.module';
-import { AwsModule } from '../../../../aws/aws.module';
-import { DatabaseModule } from '../../../../database/database.module';
+import { AppModule } from '../../../../../app.module';
+import { AwsModule } from '../../../../../aws/aws.module';
+import { DatabaseModule } from '../../../../../database/database.module';
 import { ImageAssociationService } from '../../../services/image-association.service';
 import { ImageCleanupService } from '../../../services/image-cleanup.service';
 

@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
 import { DeliverableRepository } from '../../database/repositories/deliverable.repository';
 import { ProjectRepository } from '../../database/repositories/project.repository';
+import { CryptoAddress } from '../../database/schemas/crypto-address.schema';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { Deliverable } from '../../database/schemas/deliverable.schema';
 import { Project } from '../../database/schemas/project.schema';
@@ -18,10 +19,7 @@ export class NewProposalStrategy implements StrategyInterface {
         private proposalRepository: DaoProposalRepository,
     ) {}
 
-    public async canHandle(
-        project: Project,
-        proposal: DaoProposal,
-    ): Promise<boolean> {
+    public async canHandle(project: Project, proposal: DaoProposal): Promise<boolean> {
         return project !== null && proposal === null;
     }
 
@@ -31,50 +29,42 @@ export class NewProposalStrategy implements StrategyInterface {
         newProposal: DaoProposal,
         airtableData: any,
     ): Promise<void> {
-        const newDeliverable: Deliverable = this.deliverableMapper.map(
-            airtableData,
-        );
+        const newDeliverable: Deliverable = this.deliverableMapper.map(airtableData);
 
         newProposal.project = project._id;
         newProposal.deliverables = newProposal.deliverables as Types.ObjectId[];
-        newProposal.deliverables.push(
-            await this.deliverableRepository.create(newDeliverable),
-        );
+        newProposal.deliverables.push(await this.deliverableRepository.create(newDeliverable));
 
         project.daoProposals = project.daoProposals as Types.ObjectId[];
-        project.daoProposals.push(
-            await this.proposalRepository.create(newProposal),
-        );
+        project.daoProposals.push(await this.proposalRepository.create(newProposal));
 
         if (
-            !project.associatedAddresses.includes(
-                newProposal.walletAddress.toLowerCase(),
+            !project.associatedAddresses.filter(
+                (address: CryptoAddress) => newProposal.walletAddress.address === address.address,
             )
         ) {
-            project.associatedAddresses.unshift(
-                newProposal.walletAddress.toLowerCase(),
-            );
+            project.associatedAddresses.unshift(newProposal.walletAddress);
         }
 
         if (
-            !project.accessAddresses.includes(
-                newProposal.walletAddress.toLowerCase(),
+            !project.accessAddresses.filter(
+                (address: CryptoAddress) => newProposal.walletAddress.address === address.address,
             )
         ) {
-            project.accessAddresses.unshift(
-                newProposal.walletAddress.toLowerCase(),
-            );
+            project.accessAddresses.unshift(newProposal.walletAddress);
         }
 
         const paymentWallets = airtableData['Payment Wallets']
-        ? airtableData['Payment Wallets']
-              .split('\n')
-              .map((address) => address.toLowerCase())
-        : [];
+            ? airtableData['Payment Wallets'].split('\n').map((address) => address.toLowerCase())
+            : [];
 
-        for (const address of paymentWallets) {
-            if (!project.paymentWalletsAddresses.includes(address)) {
-                project.paymentWalletsAddresses.unshift(address);
+        for (const newAddress of paymentWallets) {
+            if (
+                !project.paymentAddresses.filter(
+                    (address: CryptoAddress) => address.address === newAddress,
+                )
+            ) {
+                project.paymentAddresses.unshift(new CryptoAddress({ address: newAddress }));
             }
         }
 

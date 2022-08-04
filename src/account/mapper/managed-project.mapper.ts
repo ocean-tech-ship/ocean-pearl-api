@@ -14,8 +14,9 @@ export class ManagedProjectMapper {
             description: project.description,
             oneLiner: project.oneLiner,
             category: project.category,
+            author: project.author,
             accessAddresses: project.accessAddresses,
-            socialMedia: project.socialMedia ?? {},
+            mediaHandles: project.mediaHandles ?? {},
             logo: project.logo
                 ? {
                       id: project.logo.id,

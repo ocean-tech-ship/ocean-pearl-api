@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
@@ -29,6 +29,8 @@ async function bootstrap() {
     const configService = app.get<ConfigService>(ConfigService);
 
     await app.listen(configService.get('PORT') || 3001);
-    console.log(`Application is running on: ${await app.getUrl()}`);
+    Logger.log(
+        `🚀 Application is running on: http://localhost:${configService.get('PORT') || 3001}`
+      );
 }
 bootstrap();
