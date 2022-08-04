@@ -23,6 +23,11 @@ export class CryptoAddress {
 
     public constructor(attributes: Partial<CryptoAddress> = {}) {
         for (let key in attributes) {
+            if (key === 'address') {
+                this[key] = attributes[key].toLowerCase();
+                continue;
+            }
+
             this[key] = attributes[key];
         }
     }
