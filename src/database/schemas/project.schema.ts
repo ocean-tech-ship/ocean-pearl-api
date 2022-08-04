@@ -3,12 +3,15 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { CategoryEnum } from '../enums/category.enum';
 import { MediaHandlesEnum } from '../enums/media-handles.enum';
+import { OriginEnum } from '../enums/origin.enum';
+import { ReviewStatusEnum } from '../enums/review-status.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
 import { CryptoAddress } from './crypto-address.schema';
 import { DaoProposal } from './dao-proposal.schema';
 import { Image as Image } from './image.schema';
 import { TeamMember, TeamMemberSchema } from './team-member.schema';
+import { Update } from './update.schema';
 
 export type ProjectType = Project & Document;
 
@@ -29,6 +32,24 @@ export class Project {
     })
     @ApiProperty()
     author: CryptoAddress;
+
+    @Prop({
+        type: String,
+        enum: ReviewStatusEnum,
+    })
+    @ApiProperty({
+        enum: ReviewStatusEnum,
+    })
+    reviewStatus: ReviewStatusEnum;
+
+    @Prop({
+        type: String,
+        enum: OriginEnum,
+    })
+    @ApiProperty({
+        enum: ReviewStatusEnum,
+    })
+    origin: OriginEnum;
 
     @Prop({
         type: String,
@@ -155,11 +176,19 @@ export class Project {
     members: TeamMember[] = [];
 
     @Prop({
-        type: Boolean,
-        default: false,
+        type: [
+            {
+                type: Types.ObjectId,
+                ref: 'Update',
+            },
+        ],
+        default: void 0,
     })
-    @ApiProperty()
-    featured: boolean;
+    @ApiProperty({
+        type: Update,
+        isArray: true,
+    })
+    updates: Update[] | Types.ObjectId[];
 
     @ApiProperty()
     createdAt: Date;
