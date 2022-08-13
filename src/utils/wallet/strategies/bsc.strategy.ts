@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { formatEther } from 'ethers/lib/utils';
 import { SupportedNetworksEnum } from '../../../database/enums/supported-networks.enum';
-import { CryptoAddress } from '../../../database/schemas/crypto-address.schema';
+import { ChainedAddress } from '../models/chained-address.model';
 import { WalletInfoStrategy } from '../interfaces/wallet-info-strategy.interface';
 import { balanceOfAbi } from '../constants/balanceOfAbi.constant';
 import { Contract, ethers } from 'ethers';
 
 @Injectable()
-export class BinanceSmartChainStrategy implements WalletInfoStrategy {
+export class BscStrategy implements WalletInfoStrategy {
     private readonly oceanContractAddress = '0xDCe07662CA8EbC241316a15B611c89711414Dd1a';
     private readonly polygonRpcUrl = 'https://bsc-dataseed.binance.org/';
-    public readonly network = SupportedNetworksEnum.BinanceSmartChain;
+    public readonly network = SupportedNetworksEnum.BSC;
 
-    public canHandle(wallet: CryptoAddress): boolean {
-        return wallet.network === this.network;
+    public canHandle(chainedAddress: ChainedAddress): boolean {
+        return chainedAddress.network === this.network;
     }
 
     public async getBalance(address: string): Promise<number> {

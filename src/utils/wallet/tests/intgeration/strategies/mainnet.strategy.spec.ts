@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../../app.module';
-import { MainnetStrategy } from '../../../strategies/mainnet.strategy';
+import { EthereumStrategy } from '../../../strategies/ethereum.strategy';
 import { WalletUtilsModule } from '../../../wallet-utils.module';
 
 describe('WalletInfoStrategyCollection', () => {
     let module: TestingModule;
-    let service: MainnetStrategy;
+    let service: EthereumStrategy;
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
             imports: [AppModule, WalletUtilsModule],
         }).compile();
 
-        service = module.get<MainnetStrategy>(MainnetStrategy);
+        service = module.get<EthereumStrategy>(EthereumStrategy);
     });
 
     afterAll(async () => {

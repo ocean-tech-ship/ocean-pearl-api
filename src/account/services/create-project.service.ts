@@ -3,17 +3,18 @@ import { Types } from 'mongoose';
 import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
 import { ImageRepository } from '../../database/repositories/image.repository';
 import { ProjectRepository } from '../../database/repositories/project.repository';
-import { CryptoAddress } from '../../database/schemas/crypto-address.schema';
 import { Project } from '../../database/schemas/project.schema';
 import { ImageAssociationService } from '../../utils/image/services/image-association.service';
 import { WalletInfo } from '../../utils/wallet/models/wallet-info.model';
 import { CreateProject } from '../models/create-project.model';
+import { AddressFormatService } from '../../utils/wallet/services/address-format.service';
 
 @Injectable()
 export class CreateProjectService {
-    private readonly projectLeadRole = 'project lead';
+    // private readonly projectLeadRole = 'project lead';
 
     public constructor(
+        private addressFormatService: AddressFormatService,
         private projectRepository: ProjectRepository,
         private imageAssociationService: ImageAssociationService,
         private imageRepository: ImageRepository,
@@ -26,6 +27,8 @@ export class CreateProjectService {
         try {
             const newProject = new Project({
                 author: walletInfo.address,
+                associatedAddresses: [walletInfo.address, ...(createProject.accessAddresses ?? [])],
+                accessAddresses: [walletInfo.address, ...(createProject.accessAddresses ?? [])],
                 title: createProject.title,
                 oneLiner: createProject.oneLiner,
                 description: createProject.description,
@@ -34,9 +37,8 @@ export class CreateProjectService {
                 teamName: createProject.teamName ?? createProject.title,
             });
 
-            await this.addlogo(newProject, createProject);
+            await this.addLogo(newProject, createProject);
             await this.addImages(newProject, createProject);
-            this.addCryptoAddresses(newProject, createProject);
 
             return (await this.projectRepository.create(newProject))._id;
         } catch (error) {
@@ -44,7 +46,7 @@ export class CreateProjectService {
         }
     }
 
-    private async addlogo(newProject: Project, createProject: CreateProject): Promise<void> {
+    private async addLogo(newProject: Project, createProject: CreateProject): Promise<void> {
         if (createProject.logo) {
             if (Object.keys(createProject.logo).length !== 0) {
                 const newLogo = await this.imageRepository.findOneRaw({
@@ -79,28 +81,6 @@ export class CreateProjectService {
                 newProject.images.push(newImage._id);
             }
         }
-    }
-
-    private addCryptoAddresses(newProject: Project, createProject: CreateProject): void {
-        if (createProject.accessAddresses) {
-            for (const cryptoAddress of createProject.accessAddresses) {
-                const newAddress = new CryptoAddress(cryptoAddress);
-                newProject.accessAddresses.push(newAddress);
-                newProject.associatedAddresses.push(newAddress);
-            }
-        }
-
-        // Ensure that at least the author's address has access
-        if (!newProject.accessAddresses.includes(newProject.author)) {
-            newProject.accessAddresses.push(newProject.author);
-            newProject.associatedAddresses.push(newProject.author);
-        }
-
-        // for (const cryptoAddress of createProject.paymentAddresses) {
-        //     const newAddress = new CryptoAddress(cryptoAddress);
-        //     newProject.paymentAddresses.push(newAddress);
-        //     newProject.associatedAddresses.push(newAddress);
-        // }
     }
 
     // We might need this later

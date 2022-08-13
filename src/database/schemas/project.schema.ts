@@ -7,7 +7,6 @@ import { OriginEnum } from '../enums/origin.enum';
 import { ReviewStatusEnum } from '../enums/review-status.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
-import { CryptoAddress } from './crypto-address.schema';
 import { DaoProposal } from './dao-proposal.schema';
 import { Image as Image } from './image.schema';
 import { TeamMember, TeamMemberSchema } from './team-member.schema';
@@ -28,10 +27,12 @@ export class Project {
     id: string;
 
     @Prop({
-        type: CryptoAddress
+        type: String,
+        trim: true,
+        maxlength: 42,
     })
     @ApiProperty()
-    author: CryptoAddress;
+    author: string;
 
     @Prop({
         type: String,
@@ -87,27 +88,44 @@ export class Project {
 
     @Prop([
         {
-            type: CryptoAddress,
+            type: String,
+            trim: true,
+            maxlength: 42,
         },
     ])
-    @ApiProperty()
-    associatedAddresses: CryptoAddress[] = [];
+    @ApiProperty({
+        isArray: true,
+        type: String,
+        maxLength: 42,
+    })
+    associatedAddresses: string[] = [];
 
     @Prop([
         {
-            type: CryptoAddress,
+            type: String,
+            trim: true,
+            maxlength: 42,
         },
     ])
-    @ApiProperty()
-    accessAddresses: CryptoAddress[] = [];
+    @ApiProperty({
+        isArray: true,
+        type: String,
+        maxLength: 42,
+    })
+    accessAddresses: string[] = [];
 
     @Prop([
         {
-            type: CryptoAddress,
+            type: String,
+            trim: true,
+            maxlength: 42,
         },
     ])
-    @ApiProperty()
-    paymentAddresses: CryptoAddress[] = [];
+    @ApiProperty({
+        isArray: true,
+        type: String,
+    })
+    paymentAddresses: string[] = [];
 
     @Prop({
         type: () => new Map<MediaHandlesEnum, string>(),
@@ -163,15 +181,17 @@ export class Project {
         type: String,
         required: true,
         trim: true,
-        maxlength: 256
+        maxlength: 256,
     })
     @ApiProperty()
     teamName: string;
 
-    @Prop([{
-        type: TeamMember,
-        of: TeamMemberSchema,
-    }])
+    @Prop([
+        {
+            type: TeamMember,
+            of: TeamMemberSchema,
+        },
+    ])
     @ApiProperty()
     members: TeamMember[] = [];
 
@@ -197,7 +217,7 @@ export class Project {
     updatedAt: Date;
 
     public constructor(attributes: Partial<Project> = {}) {
-        for (let key in attributes) {
+        for (const key in attributes) {
             this[key] = attributes[key];
         }
     }

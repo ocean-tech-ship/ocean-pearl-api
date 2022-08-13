@@ -8,7 +8,6 @@ import { FundamentalMetricEnum } from '../enums/fundamental-metric.enum';
 import { StandingEnum } from '../enums/standing.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
-import { CryptoAddress } from './crypto-address.schema';
 import { Deliverable } from './deliverable.schema';
 import { Funding, FundingSchema } from './funding.schema';
 import { Image } from './image.schema';
@@ -151,10 +150,12 @@ export class DaoProposal {
     oceanProtocolPortUrl: string;
 
     @Prop({
-        type: CryptoAddress,
+        type: String,
+        trim: true,
+        maxlength: 42,
     })
     @ApiProperty()
-    walletAddress: CryptoAddress;
+    author: string;
 
     @Prop({
         type: [

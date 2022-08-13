@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { formatEther } from 'ethers/lib/utils';
 import { SupportedNetworksEnum } from '../../../database/enums/supported-networks.enum';
-import { CryptoAddress } from '../../../database/schemas/crypto-address.schema';
 import { WalletInfoStrategy } from '../interfaces/wallet-info-strategy.interface';
+import { ChainedAddress } from '../models/chained-address.model';
 import { balanceOfAbi } from '../constants/balanceOfAbi.constant';
 import { Contract, ethers } from 'ethers';
 
@@ -12,8 +12,8 @@ export class PolygonStrategy implements WalletInfoStrategy {
     private readonly polygonRpcUrl = 'https://polygon-rpc.com';
     public readonly network = SupportedNetworksEnum.Polygon;
 
-    public canHandle(wallet: CryptoAddress): boolean {
-        return wallet.network === this.network;
+    public canHandle(chainedAddress: ChainedAddress): boolean {
+        return chainedAddress.network === this.network;
     }
 
     public async getBalance(address: string): Promise<number> {

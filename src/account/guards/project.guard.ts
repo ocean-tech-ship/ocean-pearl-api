@@ -1,6 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ProjectRepository } from '../../database/repositories/project.repository';
-import { CryptoAddress } from '../../database/schemas/crypto-address.schema';
 
 @Injectable()
 export class ProjectGuard implements CanActivate {
@@ -18,12 +17,7 @@ export class ProjectGuard implements CanActivate {
             find: { id: request.body.id },
         });
 
-        if (
-            project?.accessAddresses?.find(
-                (cryptoAddress: CryptoAddress) =>
-                    cryptoAddress.address === user.wallet.toLowerCase(),
-            )
-        ) {
+        if (project?.accessAddresses?.includes(user.wallet)) {
             return true;
         }
 

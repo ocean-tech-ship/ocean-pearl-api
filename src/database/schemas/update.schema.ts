@@ -4,7 +4,6 @@ import { Document, Types } from 'mongoose';
 import { ReviewStatusEnum } from '../enums/review-status.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
-import { CryptoAddress } from './crypto-address.schema';
 import { Project } from './project.schema';
 
 export type UpdateType = Update & Document;
@@ -32,13 +31,13 @@ export class Update {
     project: Project | Types.ObjectId;
 
     @Prop({
-        type: CryptoAddress,
+        type: String,
         required: true,
         trim: true,
-        maxLength: 256,
+        maxLength: 42,
     })
     @ApiProperty()
-    author: CryptoAddress;
+    author: string;
 
     @Prop({
         type: String,
@@ -82,7 +81,7 @@ export class Update {
     updatedAt: Date;
 
     constructor(attributes: Partial<Update> = {}) {
-        for (let key in attributes) {
+        for (const key in attributes) {
             this[key] = attributes[key];
         }
     }

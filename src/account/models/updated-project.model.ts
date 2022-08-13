@@ -9,12 +9,12 @@ import {
     IsString,
     MaxLength,
 } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { AssociatedImage } from './associated-project.model';
 import { ImageUploadService } from '../services/image-upload.service';
-import { CryptoAddress } from '../../database/schemas/crypto-address.schema';
 import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
-import { Type } from 'class-transformer';
+import { formatAddresses } from '../../utils/wallet/services/address-format.service';
 
 export class UpdatedProject {
     @ApiProperty({
@@ -62,7 +62,8 @@ export class UpdatedProject {
     @ArrayNotEmpty({
         message: 'At least one address must be specified',
     })
-    accessAddresses: CryptoAddress[];
+    @Transform(({ value }) => formatAddresses(value))
+    accessAddresses: string[];
 
     @ApiProperty({
         type: Object,

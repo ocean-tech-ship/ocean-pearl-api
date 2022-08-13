@@ -1,5 +1,5 @@
 export enum SupportedNetworksEnum {
-    Mainnet = 'mainnet',
+    Ethereum = 'ethereum',
     Polygon = 'polygon',
-    BinanceSmartChain = 'binanceSmartChain',
+    BSC = 'bsc',
 }

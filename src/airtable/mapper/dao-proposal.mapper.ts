@@ -3,16 +3,18 @@ import { Types } from 'mongoose';
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { FundamentalMetricEnum } from '../../database/enums/fundamental-metric.enum';
 import { StandingEnum } from '../../database/enums/standing.enum';
-import { CryptoAddress } from '../../database/schemas/crypto-address.schema';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
 import { CategoryMap } from '../constants/category-map.constant';
 import { EarmarkTypeMap } from '../constants/earmark-type-map.constant';
 import { FundamentalMetricsMap } from '../constants/fundamental-metrics-map.constant';
 import { StandingMap } from '../constants/standing-map.constant';
 import { StatesMap } from '../constants/states-map.constant';
+import { AddressFormatService } from '../../utils/wallet/services/address-format.service';
 
 @Injectable()
 export class DaoProposalMapper {
+    public constructor(private addressFormatService: AddressFormatService) {}
+
     public map(airtableData: any, airtableId: string, roundId: Types.ObjectId): DaoProposal {
         const mappedProposal: DaoProposal = {
             airtableId: airtableId,
@@ -26,7 +28,7 @@ export class DaoProposalMapper {
             oneLiner: airtableData['One Liner'],
             description: airtableData['Overview'],
             standing: StandingMap[airtableData['Proposal Standing']] ?? StandingEnum.Unreported,
-            walletAddress: new CryptoAddress({ address: airtableData['Wallet Address'].toLowerCase()}),
+            author: this.addressFormatService.execute(airtableData['Wallet Address']),
             fundamentalMetric:
                 FundamentalMetricsMap[airtableData['Fundamental Metric']] ??
                 FundamentalMetricEnum.Other,
