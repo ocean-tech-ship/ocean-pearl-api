@@ -48,7 +48,7 @@ export class Project {
         enum: OriginEnum,
     })
     @ApiProperty({
-        enum: ReviewStatusEnum,
+        enum: OriginEnum,
     })
     origin: OriginEnum;
 
