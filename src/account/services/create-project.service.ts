@@ -8,6 +8,8 @@ import { ImageAssociationService } from '../../utils/image/services/image-associ
 import { WalletInfo } from '../../utils/wallet/models/wallet-info.model';
 import { CreateProject } from '../models/create-project.model';
 import { AddressFormatService } from '../../utils/wallet/services/address-format.service';
+import { OriginEnum } from '../../database/enums/origin.enum';
+import { ReviewStatusEnum } from '../../database/enums/review-status.enum';
 
 @Injectable()
 export class CreateProjectService {
@@ -26,6 +28,8 @@ export class CreateProjectService {
     ): Promise<Types.ObjectId> {
         try {
             const newProject = new Project({
+                origin: OriginEnum.OceanPearl,
+                reviewStatus: ReviewStatusEnum.Pending,
                 author: walletInfo.address,
                 associatedAddresses: [walletInfo.address, ...(createProject.accessAddresses ?? [])],
                 accessAddresses: [walletInfo.address, ...(createProject.accessAddresses ?? [])],
