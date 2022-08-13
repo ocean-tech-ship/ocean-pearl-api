@@ -8,11 +8,12 @@ import { WalletInfoStrategyCollection } from './strategies/wallet-info-strategy.
 @Module({
     providers: [
         WalletInfoService,
+        AddressFormatService,
         WalletInfoStrategyCollection,
         BinanceSmartChainStrategy,
         PolygonStrategy,
         MainnetStrategy,
     ],
-    exports: [WalletInfoService],
+    exports: [WalletInfoService, AddressFormatService],
 })
 export class WalletUtilsModule {}
