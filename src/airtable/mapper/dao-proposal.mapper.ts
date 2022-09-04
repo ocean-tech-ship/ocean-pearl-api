@@ -4,19 +4,17 @@ import { CategoryEnum } from '../../database/enums/category.enum';
 import { FundamentalMetricEnum } from '../../database/enums/fundamental-metric.enum';
 import { StandingEnum } from '../../database/enums/standing.enum';
 import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
+import { Funding } from '../../database/schemas/funding.schema';
 import { CategoryMap } from '../constants/category-map.constant';
 import { EarmarkTypeMap } from '../constants/earmark-type-map.constant';
 import { FundamentalMetricsMap } from '../constants/fundamental-metrics-map.constant';
 import { StandingMap } from '../constants/standing-map.constant';
 import { StatesMap } from '../constants/states-map.constant';
-import { AddressFormatService } from '../../utils/wallet/services/address-format.service';
 
 @Injectable()
 export class DaoProposalMapper {
-    public constructor(private addressFormatService: AddressFormatService) {}
-
     public map(airtableData: any, airtableId: string, roundId: Types.ObjectId): DaoProposal {
-        const mappedProposal: DaoProposal = {
+        const mappedProposal: DaoProposal = new DaoProposal({
             airtableId: airtableId,
             title: airtableData['Project Name']?.trim(),
             status: StatesMap[airtableData['Proposal State']],
@@ -28,26 +26,26 @@ export class DaoProposalMapper {
             oneLiner: airtableData['One Liner'],
             description: airtableData['Overview'],
             standing: StandingMap[airtableData['Proposal Standing']] ?? StandingEnum.Unreported,
-            author: this.addressFormatService.execute(airtableData['Wallet Address']),
+            author: airtableData['Wallet Address'],
             fundamentalMetric:
                 FundamentalMetricsMap[airtableData['Fundamental Metric']] ??
                 FundamentalMetricEnum.Other,
-            requestedFunding: {
+            requestedFunding: new Funding({
                 usd: airtableData['USD Requested'] ? airtableData['USD Requested'] : 0,
                 ocean: airtableData['OCEAN Requested'] ? airtableData['OCEAN Requested'] : 0,
-            },
-            minimumRequestedFunding: {
+            }),
+            minimumRequestedFunding: new Funding({
                 usd: airtableData['Minimum USD Requested']
                     ? airtableData['Minimum USD Requested']
                     : 0,
                 ocean: airtableData['Minimum OCEAN Requested']
                     ? airtableData['Minimum OCEAN Requested']
                     : 0,
-            },
-            receivedFunding: {
+            }),
+            receivedFunding: new Funding({
                 usd: airtableData['USD Granted'] ? airtableData['USD Granted'] : 0,
                 ocean: airtableData['OCEAN Granted'] ? airtableData['OCEAN Granted'] : 0,
-            },
+            }),
             oceanProtocolPortUrl: airtableData['Proposal URL'] ?? '',
             snapshotBlock: airtableData['Snapshot Block'],
             ipfsHash: airtableData['ipfsHash'],
@@ -58,7 +56,7 @@ export class DaoProposalMapper {
             voteUrl: airtableData['Vote URL'] ?? '',
             deliverables: [],
             createdAt: new Date(airtableData['Created Date']),
-        } as DaoProposal;
+        });
 
         if (
             mappedProposal.requestedFunding.ocean === 0 &&
