@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { Document, Types } from 'mongoose';
+import { formatAddress } from '../../utils/wallet/services/address-format.service';
 import { CategoryEnum } from '../enums/category.enum';
 import { DaoProposalStatusEnum } from '../enums/dao-proposal-status.enum';
 import { EarmarkTypeEnum } from '../enums/earmark-type.enum';
@@ -155,6 +157,7 @@ export class DaoProposal {
         maxlength: 42,
     })
     @ApiProperty()
+    @Transform(({ value }) => formatAddress(value))
     author: string;
 
     @Prop({
@@ -218,6 +221,12 @@ export class DaoProposal {
     createdAt: Date;
 
     updatedAt: Date;
+
+    public constructor(attributes: Partial<DaoProposal> = {}) {
+        for (const key in attributes) {
+            this[key] = attributes[key];
+        }
+    }
 }
 
 export const DaoProposalSchema = SchemaFactory.createForClass(DaoProposal).plugin(PaginatePlugin);
