@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { Document, Types } from 'mongoose';
+import { formatAddress, formatAddresses } from '../../utils/wallet/services/address-format.service';
 import { CategoryEnum } from '../enums/category.enum';
 import { MediaHandlesEnum } from '../enums/media-handles.enum';
 import { OriginEnum } from '../enums/origin.enum';
@@ -32,6 +34,7 @@ export class Project {
         maxlength: 42,
     })
     @ApiProperty()
+    @Transform(({ value }) => formatAddress(value))
     author: string;
 
     @Prop({
@@ -98,6 +101,7 @@ export class Project {
         type: String,
         maxLength: 42,
     })
+    @Transform(({ value }) => formatAddresses(value))
     associatedAddresses: string[] = [];
 
     @Prop([
@@ -112,6 +116,7 @@ export class Project {
         type: String,
         maxLength: 42,
     })
+    @Transform(({ value }) => formatAddresses(value))
     accessAddresses: string[] = [];
 
     @Prop([
@@ -125,6 +130,7 @@ export class Project {
         isArray: true,
         type: String,
     })
+    @Transform(({ value }) => formatAddresses(value))
     paymentAddresses: string[] = [];
 
     @Prop({
