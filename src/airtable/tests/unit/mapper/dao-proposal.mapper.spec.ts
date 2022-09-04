@@ -1,12 +1,13 @@
+import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Wallet } from 'ethers';
 import { Types } from 'mongoose';
 import { CategoryEnum } from '../../../../database/enums/category.enum';
 import { DaoProposalStatusEnum } from '../../../../database/enums/dao-proposal-status.enum';
 import { FundamentalMetricEnum } from '../../../../database/enums/fundamental-metric.enum';
 import { StandingEnum } from '../../../../database/enums/standing.enum';
+import { formatAddress } from '../../../../utils/wallet/services/address-format.service';
 import { DaoProposalMapper } from '../../../mapper/dao-proposal.mapper';
-import { faker } from '@faker-js/faker';
-import { CryptoAddress } from '../../../../database/schemas/crypto-address.schema';
 
 const AIRTABLE_ID = faker.datatype.hexadecimal(10);
 const ROUND_ID = new Types.ObjectId(faker.datatype.hexadecimal(10));
@@ -18,7 +19,7 @@ const airtableData = {
     'One Liner': 'Test Project One Liner',
     'Overview': 'Test Project Overview',
     'Proposal Standing': 'Completed',
-    'Wallet Address': faker.datatype.hexadecimal(42),
+    'Wallet Address': Wallet.createRandom().address,
     'Fundamental Metric': 'MVP Launch',
     'OCEAN Requested': 10000,
     'OCEAN Granted': 10000,
@@ -81,9 +82,7 @@ describe('DaoProposalMapper', () => {
             title: 'Test',
             voteUrl: '',
             yesVotes: 4200000,
-            walletAddress: new CryptoAddress({
-                address: airtableData['Wallet Address'].toLowerCase(),
-            }),
+            author: formatAddress(airtableData['Wallet Address']),
         });
     });
 
