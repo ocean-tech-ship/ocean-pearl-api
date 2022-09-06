@@ -1,16 +1,22 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CategoryEnum } from '../../../../database/enums/category.enum';
-import { ProjectMapper } from '../../../mapper/project.mapper';
 import { faker } from '@faker-js/faker';
-import { CryptoAddress } from '../../../../database/schemas/crypto-address.schema';
+import { Test, TestingModule } from '@nestjs/testing';
+import { Wallet } from 'ethers';
+import { CategoryEnum } from '../../../../database/enums/category.enum';
+import { OriginEnum } from '../../../../database/enums/origin.enum';
+import {
+    formatAddress,
+    formatAddresses
+} from '../../../../utils/wallet/services/address-format.service';
+import { ProjectMapper } from '../../../mapper/project.mapper';
 
 const airtableData = {
     'Project Name': 'Test',
     'Grant Category': 'DAO',
     'One Liner': 'Test Project One Liner',
-    'Wallet Address': faker.datatype.hexadecimal(42),
-    'Payment Wallets':
-        '0xddede3ad5Ad1B9554cCE67b1F5AccAcCbf2ea37Ec7\n0x5cD036ADE2aC359Facf197c7e3aa9CEE477f3B04a2\n0xc6db676ABB0CCb2cdE3e77cafF27DAed5D5e875b5F',
+    'Wallet Address': Wallet.createRandom().address,
+    'Payment Wallets': `${Wallet.createRandom().address}\n${Wallet.createRandom().address}\n${
+        Wallet.createRandom().address
+    }`,
     'Team Name (from Login Email)': [faker.company.companyName()],
     'Created Date': faker.date.past(),
 };
@@ -32,30 +38,20 @@ describe('ProjectMapper', () => {
 
     it('should map correctly', () => {
         expect(service.map(airtableData)).toEqual({
-            accessAddresses: [
-                new CryptoAddress({ address: airtableData['Wallet Address'].toLowerCase() }),
-            ],
+            accessAddresses: formatAddresses([airtableData['Wallet Address']]),
+            author: formatAddress(airtableData['Wallet Address']),
             category: CategoryEnum.DAO,
             createdAt: airtableData['Created Date'],
             description: 'Test Project One Liner',
             oneLiner: 'Test Project One Liner',
             title: 'Test',
-            associatedAddresses: [
-                new CryptoAddress({ address: airtableData['Wallet Address'].toLowerCase() }),
-            ],
-            paymentAddresses: [
-                new CryptoAddress({
-                    address: '0xddede3ad5Ad1B9554cCE67b1F5AccAcCbf2ea37Ec7'.toLowerCase(),
-                }),
-                new CryptoAddress({
-                    address: '0x5cD036ADE2aC359Facf197c7e3aa9CEE477f3B04a2'.toLowerCase(),
-                }),
-                new CryptoAddress({
-                    address: '0xc6db676ABB0CCb2cdE3e77cafF27DAed5D5e875b5F'.toLowerCase(),
-                }),
-            ],
+            associatedAddresses: formatAddresses([airtableData['Wallet Address']]),
+            paymentAddresses: formatAddresses(airtableData['Payment Wallets'].split('\n')),
             teamName: airtableData['Team Name (from Login Email)'][0],
             daoProposals: [],
+            images: [],
+            members: [],
+            origin: OriginEnum.OceanDao,
         });
     });
 

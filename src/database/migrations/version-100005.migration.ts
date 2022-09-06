@@ -1,8 +1,10 @@
 import { Connection } from 'mongoose';
 import { MigrationInterface } from '../interfaces/migration.interface';
-import { CryptoAddress } from '../schemas/crypto-address.schema';
+import { AddressFormatService } from '../../utils/wallet/services/address-format.service';
 
 export default class Version100005 implements MigrationInterface {
+    private addressFormatService = new AddressFormatService();
+
     public getVersion(): number {
         // count this number up with each migration
         return 100005;
@@ -18,21 +20,21 @@ export default class Version100005 implements MigrationInterface {
         const projectModel = connection.model<any>('Project');
         const projects = await projectModel.find().lean();
 
-        for (let project of projects) {
+        for (const project of projects) {
             const newAccessAddresses = [];
             const newAssociatedAddresses = [];
             const newPaymentAddresses = [];
 
             for (const address of project.accessAddresses) {
-                newAccessAddresses.push(new CryptoAddress({ address: address }));
+                newAccessAddresses.push(this.addressFormatService.execute(address));
             }
 
             for (const address of project.associatedAddresses) {
-                newAssociatedAddresses.push(new CryptoAddress({ address: address }));
+                newAssociatedAddresses.push(this.addressFormatService.execute(address));
             }
 
             for (const address of project.paymentWalletsAddresses) {
-                newPaymentAddresses.push(new CryptoAddress({ address: address }));
+                newPaymentAddresses.push(this.addressFormatService.execute(address));
             }
 
             project.accessAddresses = newAccessAddresses;
@@ -40,8 +42,13 @@ export default class Version100005 implements MigrationInterface {
             project.paymentAddresses = newPaymentAddresses;
             project.mediaHandles = project.socialMedia;
 
+            if (project.author) {
+                project.author = this.addressFormatService.execute(project.author);
+            }
+
             delete project.paymentWalletsAddresses;
             delete project.socialMedia;
+
             await projectModel.updateOne(
                 { id: project.id },
                 {
@@ -57,13 +64,18 @@ export default class Version100005 implements MigrationInterface {
         const proposalModel = connection.model<any>('DaoProposal');
         const proposals = await proposalModel.find().lean();
 
-        for (let proposal of proposals) {
-            proposal.walletAddress = new CryptoAddress({ address: proposal.walletAddress });
+        for (const proposal of proposals) {
+            proposal.author = this.addressFormatService.execute(proposal.walletAddress);
+
+            delete proposal.walletAddress;
 
             await proposalModel.updateOne(
                 { id: proposal.id },
                 {
                     $set: proposal,
+                    $unset: {
+                        walletAddress: 1,
+                    },
                 },
                 { strict: false },
             );
@@ -75,21 +87,21 @@ export default class Version100005 implements MigrationInterface {
         const projectModel = connection.model<any>('Project');
         const projects = await projectModel.find().lean();
 
-        for (let project of projects) {
+        for (const project of projects) {
             const newAccessAddresses = [];
             const newAssociatedAddresses = [];
             const newPaymentAddresses = [];
 
             for (const address of project.accessAddresses) {
-                newAccessAddresses.push(address.address);
+                newAccessAddresses.push(address.toLowerCase());
             }
 
             for (const address of project.associatedAddresses) {
-                newAssociatedAddresses.push(address.address);
+                newAssociatedAddresses.push(address.toLowerCase());
             }
 
             for (const address of project.paymentAddresses) {
-                newPaymentAddresses.push(address.address);
+                newPaymentAddresses.push(address.toLowerCase());
             }
 
             project.accessAddresses = newAccessAddresses;
@@ -97,14 +109,20 @@ export default class Version100005 implements MigrationInterface {
             project.paymentWalletsAddresses = newPaymentAddresses;
             project.socialMedia = project.mediaHandles;
 
+            if (project.author) {
+                project.author = project.author.toLowerCase();
+            }
+
             delete project.paymentAddresses;
             delete project.mediaHandles;
+
             await projectModel.updateOne(
                 { id: project.id },
                 {
                     $set: project,
                     $unset: {
                         paymentAddresses: 1,
+                        mediaHandles: 1,
                     },
                 },
                 { strict: false },
@@ -114,13 +132,16 @@ export default class Version100005 implements MigrationInterface {
         const proposalModel = connection.model<any>('DaoProposal');
         const proposals = await proposalModel.find().lean();
 
-        for (let proposal of proposals) {
-            proposal.walletAddress = proposal.walletAddress.address;
+        for (const proposal of proposals) {
+            proposal.walletAddress = proposal.author.toLowerCase();
 
             await proposalModel.updateOne(
                 { id: proposal.id },
                 {
                     $set: proposal,
+                    $unset: {
+                        author: 1,
+                    },
                 },
                 { strict: false },
             );

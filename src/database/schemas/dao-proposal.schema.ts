@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { Document, Types } from 'mongoose';
+import { formatAddress } from '../../utils/wallet/services/address-format.service';
 import { CategoryEnum } from '../enums/category.enum';
 import { DaoProposalStatusEnum } from '../enums/dao-proposal-status.enum';
 import { EarmarkTypeEnum } from '../enums/earmark-type.enum';
@@ -8,7 +10,6 @@ import { FundamentalMetricEnum } from '../enums/fundamental-metric.enum';
 import { StandingEnum } from '../enums/standing.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
-import { CryptoAddress } from './crypto-address.schema';
 import { Deliverable } from './deliverable.schema';
 import { Funding, FundingSchema } from './funding.schema';
 import { Image } from './image.schema';
@@ -151,10 +152,13 @@ export class DaoProposal {
     oceanProtocolPortUrl: string;
 
     @Prop({
-        type: CryptoAddress,
+        type: String,
+        trim: true,
+        maxlength: 42,
     })
     @ApiProperty()
-    walletAddress: CryptoAddress;
+    @Transform(({ value }) => formatAddress(value))
+    author: string;
 
     @Prop({
         type: [
@@ -217,6 +221,12 @@ export class DaoProposal {
     createdAt: Date;
 
     updatedAt: Date;
+
+    public constructor(attributes: Partial<DaoProposal> = {}) {
+        for (const key in attributes) {
+            this[key] = attributes[key];
+        }
+    }
 }
 
 export const DaoProposalSchema = SchemaFactory.createForClass(DaoProposal).plugin(PaginatePlugin);

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CryptoAddress } from '../../../database/schemas/crypto-address.schema';
 import { WalletInfoStrategy } from '../interfaces/wallet-info-strategy.interface';
-import { BinanceSmartChainStrategy } from './binance-smart-chain.strategy';
-import { MainnetStrategy } from './mainnet.strategy';
+import { ChainedAddress } from '../models/chained-address.model';
+import { BscStrategy } from './bsc.strategy';
+import { EthereumStrategy } from './ethereum.strategy';
 import { PolygonStrategy } from './polygon.strategy';
 
 @Injectable()
@@ -10,20 +10,16 @@ export class WalletInfoStrategyCollection {
     private readonly strategies: WalletInfoStrategy[];
 
     public constructor(
-        private binanceSmartChainStrategy: BinanceSmartChainStrategy,
-        private mainnetStrategy: MainnetStrategy,
-        private polygonStrategy: PolygonStrategy
+        private bscStrategy: BscStrategy,
+        private ethereumStrategy: EthereumStrategy,
+        private polygonStrategy: PolygonStrategy,
     ) {
-        this.strategies = [
-            this.binanceSmartChainStrategy,
-            this.mainnetStrategy,
-            this.polygonStrategy
-        ]
+        this.strategies = [this.bscStrategy, this.ethereumStrategy, this.polygonStrategy];
     }
 
-    public getStrategy(address: CryptoAddress): WalletInfoStrategy {
+    public getStrategy(chainedAddress: ChainedAddress): WalletInfoStrategy {
         for (const strategy of this.strategies) {
-            if (strategy.canHandle(address)) {
+            if (strategy.canHandle(chainedAddress)) {
                 return strategy;
             }
         }

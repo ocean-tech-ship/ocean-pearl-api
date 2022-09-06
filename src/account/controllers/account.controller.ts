@@ -1,14 +1,4 @@
-import {
-    Body,
-    Controller,
-    Get,
-    Post,
-    Put,
-    Req,
-    UseGuards,
-    UsePipes,
-    ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiBody,
@@ -96,7 +86,6 @@ export class AccountController {
     @ApiBody({
         type: CreateProject,
     })
-    @UsePipes(new ValidationPipe({ transform: true }))
     @UseGuards(ProjectCreationGuard)
     public async createProject(
         @Req() request: Request,

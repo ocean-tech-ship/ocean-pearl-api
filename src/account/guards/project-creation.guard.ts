@@ -20,7 +20,7 @@ export class ProjectCreationGuard implements CanActivate {
             throw new BadRequestException('The name for the Project is already taken.');
         }
 
-        const walletInfo = await this.walletInfoService.getCompleteInfo(user.wallet.toLocaleLowerCase());
+        const walletInfo = await this.walletInfoService.getCompleteInfo(user.wallet);
         const createdProjects = await this.projectRepository.getAll({
             find: {
                 'author.address': user.wallet.toLocaleLowerCase(),

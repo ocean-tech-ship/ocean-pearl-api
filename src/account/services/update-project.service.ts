@@ -21,12 +21,7 @@ export class UpdateProjectService {
             find: { id: updatedProject.id },
         });
 
-        dbProject.accessAddresses =
-            updatedProject.accessAddresses?.map((address) => {
-                address.address.toLowerCase()
-                return address;
-            }) ??
-            dbProject.accessAddresses;
+        dbProject.accessAddresses = updatedProject.accessAddresses ?? dbProject.accessAddresses;
 
         dbProject.description = updatedProject.description ?? dbProject.description;
         dbProject.oneLiner = updatedProject.oneLiner ?? dbProject.oneLiner;
@@ -96,7 +91,7 @@ export class UpdateProjectService {
             }
 
             for (const oldImageId of oldImages) {
-                let deleteOldImage: boolean = true;
+                let deleteOldImage = true;
                 for (const newImageId of newImages) {
                     if (newImageId.toString() === oldImageId.toString()) {
                         deleteOldImage = false;

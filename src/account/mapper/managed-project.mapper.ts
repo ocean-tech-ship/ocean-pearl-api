@@ -10,6 +10,8 @@ export class ManagedProjectMapper {
 
         const mappedProject = {
             id: project.id,
+            reviewStatus: project.reviewStatus,
+            origin: project.origin,
             title: project.title,
             description: project.description,
             oneLiner: project.oneLiner,

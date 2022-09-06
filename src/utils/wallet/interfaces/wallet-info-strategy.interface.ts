@@ -1,8 +1,8 @@
 import { SupportedNetworksEnum } from '../../../database/enums/supported-networks.enum';
-import { CryptoAddress } from '../../../database/schemas/crypto-address.schema';
+import { ChainedAddress } from '../models/chained-address.model';
 
 export interface WalletInfoStrategy {
     network: SupportedNetworksEnum;
-    canHandle(wallet: CryptoAddress): boolean;
+    canHandle(chainedAddress: ChainedAddress): boolean;
     getBalance(address: string): Promise<number>;
 }

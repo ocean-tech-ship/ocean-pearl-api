@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
     ArrayMaxSize,
     IsArray,
@@ -9,13 +9,12 @@ import {
     IsString,
     Length,
     MaxLength,
-    ValidateNested,
 } from 'class-validator';
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
 import { ImageUploadService } from '../services/image-upload.service';
 import { AssociatedImage } from './associated-project.model';
-import { CreateCryptoAddress } from './create-crypto-address.model';
+import { formatAddresses } from '../../utils/wallet/services/address-format.service';
 
 export class CreateProject {
     @ApiProperty({
@@ -48,21 +47,12 @@ export class CreateProject {
     category: CategoryEnum;
 
     @ApiProperty({
-        type: CreateCryptoAddress,
         isArray: true,
     })
     @IsArray()
     @IsOptional()
-    @ValidateNested()
-    accessAddresses: CreateCryptoAddress[];
-
-    // @ApiProperty({
-    //     type: CreateCryptoAddress,
-    //     isArray: true,
-    // })
-    // @IsArray()
-    // @ValidateNested()
-    // paymentAddresses: CreateCryptoAddress[];
+    @Transform(({ value }) => formatAddresses(value))
+    accessAddresses: string[];
 
     @ApiProperty({
         type: Object,

@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
-import { CryptoAddress } from '../../database/schemas/crypto-address.schema';
-import { Prop } from '@nestjs/mongoose';
+import { ReviewStatusEnum } from '../../database/enums/review-status.enum';
+import { OriginEnum } from '../../database/enums/origin.enum';
 
 export class AssociatedImage {
     @ApiProperty()
@@ -16,8 +16,23 @@ export class AssociatedProject {
     @ApiProperty()
     id: string;
 
+    @ApiProperty({
+        enum: ReviewStatusEnum,
+        enumName: 'ReviewStatus',
+    })
+    reviewStatus: ReviewStatusEnum;
+
+    @ApiProperty({
+        enum: OriginEnum,
+        enumName: 'Origin',
+    })
+    origin: OriginEnum;
+
     @ApiProperty()
     title: string;
+
+    @ApiProperty()
+    oneLiner: string;
 
     @ApiProperty()
     description: string;
@@ -28,11 +43,11 @@ export class AssociatedProject {
     })
     category: CategoryEnum;
 
-    @ApiProperty({ type: CryptoAddress })
-    author: CryptoAddress;
-    
     @ApiProperty()
-    accessAddresses: CryptoAddress[];
+    author: string;
+
+    @ApiProperty()
+    accessAddresses: string[];
 
     @ApiProperty({
         type: Object,

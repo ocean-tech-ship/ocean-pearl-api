@@ -1,14 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { Document, Types } from 'mongoose';
+import { formatAddress, formatAddresses } from '../../utils/wallet/services/address-format.service';
 import { CategoryEnum } from '../enums/category.enum';
 import { MediaHandlesEnum } from '../enums/media-handles.enum';
+import { OriginEnum } from '../enums/origin.enum';
+import { ReviewStatusEnum } from '../enums/review-status.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
-import { CryptoAddress } from './crypto-address.schema';
 import { DaoProposal } from './dao-proposal.schema';
 import { Image as Image } from './image.schema';
 import { TeamMember, TeamMemberSchema } from './team-member.schema';
+import { Update } from './update.schema';
 
 export type ProjectType = Project & Document;
 
@@ -25,10 +29,31 @@ export class Project {
     id: string;
 
     @Prop({
-        type: CryptoAddress
+        type: String,
+        trim: true,
+        maxlength: 42,
     })
     @ApiProperty()
-    author: CryptoAddress;
+    @Transform(({ value }) => formatAddress(value))
+    author: string;
+
+    @Prop({
+        type: String,
+        enum: ReviewStatusEnum,
+    })
+    @ApiProperty({
+        enum: ReviewStatusEnum,
+    })
+    reviewStatus: ReviewStatusEnum;
+
+    @Prop({
+        type: String,
+        enum: OriginEnum,
+    })
+    @ApiProperty({
+        enum: OriginEnum,
+    })
+    origin: OriginEnum;
 
     @Prop({
         type: String,
@@ -66,27 +91,47 @@ export class Project {
 
     @Prop([
         {
-            type: CryptoAddress,
+            type: String,
+            trim: true,
+            maxlength: 42,
         },
     ])
-    @ApiProperty()
-    associatedAddresses: CryptoAddress[] = [];
+    @ApiProperty({
+        isArray: true,
+        type: String,
+        maxLength: 42,
+    })
+    @Transform(({ value }) => formatAddresses(value))
+    associatedAddresses: string[] = [];
 
     @Prop([
         {
-            type: CryptoAddress,
+            type: String,
+            trim: true,
+            maxlength: 42,
         },
     ])
-    @ApiProperty()
-    accessAddresses: CryptoAddress[] = [];
+    @ApiProperty({
+        isArray: true,
+        type: String,
+        maxLength: 42,
+    })
+    @Transform(({ value }) => formatAddresses(value))
+    accessAddresses: string[] = [];
 
     @Prop([
         {
-            type: CryptoAddress,
+            type: String,
+            trim: true,
+            maxlength: 42,
         },
     ])
-    @ApiProperty()
-    paymentAddresses: CryptoAddress[] = [];
+    @ApiProperty({
+        isArray: true,
+        type: String,
+    })
+    @Transform(({ value }) => formatAddresses(value))
+    paymentAddresses: string[] = [];
 
     @Prop({
         type: () => new Map<MediaHandlesEnum, string>(),
@@ -142,24 +187,34 @@ export class Project {
         type: String,
         required: true,
         trim: true,
-        maxlength: 256
+        maxlength: 256,
     })
     @ApiProperty()
     teamName: string;
 
-    @Prop([{
-        type: TeamMember,
-        of: TeamMemberSchema,
-    }])
+    @Prop([
+        {
+            type: TeamMember,
+            of: TeamMemberSchema,
+        },
+    ])
     @ApiProperty()
     members: TeamMember[] = [];
 
     @Prop({
-        type: Boolean,
-        default: false,
+        type: [
+            {
+                type: Types.ObjectId,
+                ref: 'Update',
+            },
+        ],
+        default: void 0,
     })
-    @ApiProperty()
-    featured: boolean;
+    @ApiProperty({
+        type: Update,
+        isArray: true,
+    })
+    updates: Update[] | Types.ObjectId[];
 
     @ApiProperty()
     createdAt: Date;
@@ -168,7 +223,7 @@ export class Project {
     updatedAt: Date;
 
     public constructor(attributes: Partial<Project> = {}) {
-        for (let key in attributes) {
+        for (const key in attributes) {
             this[key] = attributes[key];
         }
     }

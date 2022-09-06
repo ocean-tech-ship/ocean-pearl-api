@@ -22,7 +22,7 @@ async function bootstrap() {
     });
     SwaggerModule.setup('api', app, document);
 
-    app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalPipes(new ValidationPipe({ transform: true }));
     app.enableCors({ origin: true, credentials: true });
     app.use(cookieParser());
 
@@ -30,7 +30,7 @@ async function bootstrap() {
 
     await app.listen(configService.get('PORT') || 3001);
     Logger.log(
-        `🚀 Application is running on: http://localhost:${configService.get('PORT') || 3001}`
-      );
+        `🚀 Application is running on: http://localhost:${configService.get('PORT') || 3001}`,
+    );
 }
 bootstrap();
