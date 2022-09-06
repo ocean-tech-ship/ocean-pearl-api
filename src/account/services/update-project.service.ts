@@ -4,8 +4,8 @@ import { ImageRepository } from '../../database/repositories/image.repository';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { UpdatedProject } from '../models/updated-project.model';
 import { Types } from 'mongoose';
-import { ImageAssociationService } from '../../utils/services/image-association.service';
 import { Project } from '../../database/schemas/project.schema';
+import { ImageAssociationService } from '../../utils/image/services/image-association.service';
 
 @Injectable()
 export class UpdateProjectService {
@@ -21,14 +21,12 @@ export class UpdateProjectService {
             find: { id: updatedProject.id },
         });
 
-        dbProject.accessAddresses =
-            updatedProject.accessAddresses?.map((address) => address.toLowerCase()) ??
-            dbProject.accessAddresses;
+        dbProject.accessAddresses = updatedProject.accessAddresses ?? dbProject.accessAddresses;
 
         dbProject.description = updatedProject.description ?? dbProject.description;
         dbProject.oneLiner = updatedProject.oneLiner ?? dbProject.oneLiner;
         dbProject.category = updatedProject.category ?? dbProject.category;
-        dbProject.socialMedia = updatedProject.socialMedia ?? dbProject.socialMedia;
+        dbProject.mediaHandles = updatedProject.mediaHandles ?? dbProject.mediaHandles;
 
         dbProject = await this.updateLogo(dbProject, updatedProject);
         dbProject = await this.updateImages(dbProject, updatedProject);
@@ -93,7 +91,7 @@ export class UpdateProjectService {
             }
 
             for (const oldImageId of oldImages) {
-                let deleteOldImage: boolean = true;
+                let deleteOldImage = true;
                 for (const newImageId of newImages) {
                     if (newImageId.toString() === oldImageId.toString()) {
                         deleteOldImage = false;

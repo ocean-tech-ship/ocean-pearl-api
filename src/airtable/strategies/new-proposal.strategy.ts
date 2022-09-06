@@ -18,10 +18,7 @@ export class NewProposalStrategy implements StrategyInterface {
         private proposalRepository: DaoProposalRepository,
     ) {}
 
-    public async canHandle(
-        project: Project,
-        proposal: DaoProposal,
-    ): Promise<boolean> {
+    public async canHandle(project: Project, proposal: DaoProposal): Promise<boolean> {
         return project !== null && proposal === null;
     }
 
@@ -31,50 +28,30 @@ export class NewProposalStrategy implements StrategyInterface {
         newProposal: DaoProposal,
         airtableData: any,
     ): Promise<void> {
-        const newDeliverable: Deliverable = this.deliverableMapper.map(
-            airtableData,
-        );
+        const newDeliverable: Deliverable = this.deliverableMapper.map(airtableData);
 
         newProposal.project = project._id;
         newProposal.deliverables = newProposal.deliverables as Types.ObjectId[];
-        newProposal.deliverables.push(
-            await this.deliverableRepository.create(newDeliverable),
-        );
+        newProposal.deliverables.push(await this.deliverableRepository.create(newDeliverable));
 
         project.daoProposals = project.daoProposals as Types.ObjectId[];
-        project.daoProposals.push(
-            await this.proposalRepository.create(newProposal),
-        );
+        project.daoProposals.push(await this.proposalRepository.create(newProposal));
 
-        if (
-            !project.associatedAddresses.includes(
-                newProposal.walletAddress.toLowerCase(),
-            )
-        ) {
-            project.associatedAddresses.unshift(
-                newProposal.walletAddress.toLowerCase(),
-            );
+        if (!project.associatedAddresses.filter((address) => newProposal.author === address)) {
+            project.associatedAddresses.unshift(newProposal.author);
         }
 
-        if (
-            !project.accessAddresses.includes(
-                newProposal.walletAddress.toLowerCase(),
-            )
-        ) {
-            project.accessAddresses.unshift(
-                newProposal.walletAddress.toLowerCase(),
-            );
+        if (!project.accessAddresses.filter((address) => newProposal.author === address)) {
+            project.accessAddresses.unshift(newProposal.author);
         }
 
         const paymentWallets = airtableData['Payment Wallets']
-        ? airtableData['Payment Wallets']
-              .split('\n')
-              .map((address) => address.toLowerCase())
-        : [];
+            ? airtableData['Payment Wallets'].split('\n').map((address) => address.toLowerCase())
+            : [];
 
-        for (const address of paymentWallets) {
-            if (!project.paymentWalletsAddresses.includes(address)) {
-                project.paymentWalletsAddresses.unshift(address);
+        for (const newAddress of paymentWallets) {
+            if (!project.paymentAddresses.filter((address) => address === newAddress)) {
+                project.paymentAddresses.unshift(newAddress);
             }
         }
 

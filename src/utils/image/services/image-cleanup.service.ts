@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { S3ImageManagementService } from '../../aws/s3/services/s3-image-management.service';
-import { ImageRepository } from '../../database/repositories/image.repository';
-import { Image } from '../../database/schemas/image.schema';
+import { S3ImageManagementService } from '../../../aws/s3/services/s3-image-management.service';
+import { ImageRepository } from '../../../database/repositories/image.repository';
+import { Image } from '../../../database/schemas/image.schema';
 import { ImageAssociationService } from './image-association.service';
 
 @Injectable()

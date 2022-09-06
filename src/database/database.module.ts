@@ -14,6 +14,7 @@ import { MigrationSchema } from './schemas/migration.schema';
 import { MigrationService } from './services/migrations.service';
 import { ImageSchema } from './schemas/image.schema';
 import { ImageRepository } from './repositories/image.repository';
+import { UpdateSchema } from './schemas/update.schema';
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { ImageRepository } from './repositories/image.repository';
             { name: 'Deliverable', schema: DeliverableSchema },
             { name: 'Image', schema: ImageSchema },
             { name: 'Project', schema: ProjectSchema },
+            { name: 'Update', schema: UpdateSchema },
             { name: 'Round', schema: RoundSchema },
             { name: 'Session', schema: SessionSchema },
             { name: 'Migration', schema: MigrationSchema },

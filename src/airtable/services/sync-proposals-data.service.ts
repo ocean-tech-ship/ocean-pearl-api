@@ -52,6 +52,11 @@ export class SyncProposalsDataService {
             );
             const proposals: any = proposalsResponse.data.records;
 
+            if (proposals.length === 0) {
+                await new Promise(() => setTimeout(_ => _, 2000));
+                continue;
+            }
+
             for (let proposal of proposals) {
                 const {
                     id: proposalAirtableID,

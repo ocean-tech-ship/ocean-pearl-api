@@ -17,7 +17,7 @@ export class ProjectGuard implements CanActivate {
             find: { id: request.body.id },
         });
 
-        if (project?.accessAddresses?.includes(user.wallet.toLowerCase())) {
+        if (project?.accessAddresses?.includes(user.wallet)) {
             return true;
         }
 

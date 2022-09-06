@@ -15,6 +15,7 @@ export class MigrationService implements OnModuleInit {
     public async onModuleInit(): Promise<void> {
         await this.initMigrations();
         await this.up();
+        await this.down();
     }
 
     public async up(): Promise<void> {

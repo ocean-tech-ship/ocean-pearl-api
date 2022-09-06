@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { DaoProposalRepository } from '../../database/repositories/dao-proposal.repository';
-import { ProjectRepository } from '../../database/repositories/project.repository';
-import { DaoProposal } from '../../database/schemas/dao-proposal.schema';
-import { Image } from '../../database/schemas/image.schema';
-import { Project } from '../../database/schemas/project.schema';
+import { DaoProposalRepository } from '../../../database/repositories/dao-proposal.repository';
+import { ProjectRepository } from '../../../database/repositories/project.repository';
+import { DaoProposal } from '../../../database/schemas/dao-proposal.schema';
+import { Project } from '../../../database/schemas/project.schema';
+import { Image } from '../../../database/schemas/image.schema';
 
 @Injectable()
 export class ImageAssociationService {
     public constructor(
         private projectRepository: ProjectRepository,
-        private proposalRepository: DaoProposalRepository    
+        private proposalRepository: DaoProposalRepository,
     ) {}
 
     public async isProjectPictureOwner(project: Project, image: Image): Promise<boolean> {
