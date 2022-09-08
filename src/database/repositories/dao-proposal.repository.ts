@@ -11,7 +11,7 @@ import { DaoProposal, DaoProposalType } from '../schemas/dao-proposal.schema';
 @Injectable()
 export class DaoProposalRepository implements RepositoryInterface<DaoProposalType> {
     constructor(
-        @InjectModel('DaoProposal')
+        @InjectModel(DaoProposal.name)
         private model: PaginateModel<DaoProposalType>,
     ) {}
 

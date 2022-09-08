@@ -11,7 +11,7 @@ export class DeliverableRepository
     implements RepositoryInterface<DeliverableType>
 {
     constructor(
-        @InjectModel('Deliverable') private model: Model<DeliverableType>,
+        @InjectModel(Deliverable.name) private model: Model<DeliverableType>,
     ) {}
 
     public async findOne(

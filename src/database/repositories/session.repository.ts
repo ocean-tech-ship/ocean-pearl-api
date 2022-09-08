@@ -8,7 +8,7 @@ import { Session, SessionType } from '../schemas/session.schema';
 
 @Injectable()
 export class SessionRepository implements RepositoryInterface<SessionType> {
-    constructor(@InjectModel('Session') private model: Model<SessionType>) {}
+    constructor(@InjectModel(Session.name) private model: Model<SessionType>) {}
 
     public async getByID(id: string): Promise<Session> {
         try {

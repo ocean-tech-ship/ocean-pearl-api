@@ -10,7 +10,7 @@ import { Project, ProjectType } from '../schemas/project.schema';
 
 @Injectable()
 export class ProjectRepository implements RepositoryInterface<ProjectType> {
-    constructor(@InjectModel('Project') private model: PaginateModel<ProjectType>) {}
+    constructor(@InjectModel(Project.name) private model: PaginateModel<ProjectType>) {}
 
     public async findOne(query: FindQuery<ProjectType>): Promise<Project> {
         try {

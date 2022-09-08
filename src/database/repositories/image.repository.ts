@@ -11,7 +11,7 @@ export class ImageRepository
     implements RepositoryInterface<ImageType>
 {
     constructor(
-        @InjectModel('Image') private model: Model<ImageType>,
+        @InjectModel(Image.name) private model: Model<ImageType>,
     ) {}
 
     public async findOne(

@@ -8,7 +8,7 @@ import { Round, RoundType } from '../schemas/round.schema';
 
 @Injectable()
 export class RoundRepository implements RepositoryInterface<RoundType> {
-    constructor(@InjectModel('Round') private model: Model<RoundType>) {}
+    constructor(@InjectModel(Round.name) private model: Model<RoundType>) {}
 
     public async findOne(query: FindQuery<RoundType>): Promise<Round> {
         try {
