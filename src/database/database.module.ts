@@ -2,31 +2,32 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DaoProposalRepository } from './repositories/dao-proposal.repository';
 import { DeliverableRepository } from './repositories/deliverable.repository';
+import { ImageRepository } from './repositories/image.repository';
 import { ProjectRepository } from './repositories/project.repository';
 import { RoundRepository } from './repositories/round.repository';
-import { DaoProposalSchema } from './schemas/dao-proposal.schema';
-import { DeliverableSchema } from './schemas/deliverable.schema';
-import { ProjectSchema } from './schemas/project.schema';
-import { RoundSchema } from './schemas/round.schema';
-import { SessionSchema } from './schemas/session.schema';
 import { SessionRepository } from './repositories/session.repository';
-import { MigrationSchema } from './schemas/migration.schema';
+import { PostRepository } from './repositories/post.repository';
+import { DaoProposal, DaoProposalSchema } from './schemas/dao-proposal.schema';
+import { Deliverable, DeliverableSchema } from './schemas/deliverable.schema';
+import { Image, ImageSchema } from './schemas/image.schema';
+import { Migration, MigrationSchema } from './schemas/migration.schema';
+import { Post, PostSchema } from './schemas/post.schema';
+import { Project, ProjectSchema } from './schemas/project.schema';
+import { Round, RoundSchema } from './schemas/round.schema';
+import { Session, SessionSchema } from './schemas/session.schema';
 import { MigrationService } from './services/migrations.service';
-import { ImageSchema } from './schemas/image.schema';
-import { ImageRepository } from './repositories/image.repository';
-import { UpdateSchema } from './schemas/update.schema';
 
 @Module({
     imports: [
         MongooseModule.forFeature([
-            { name: 'DaoProposal', schema: DaoProposalSchema },
-            { name: 'Deliverable', schema: DeliverableSchema },
-            { name: 'Image', schema: ImageSchema },
-            { name: 'Project', schema: ProjectSchema },
-            { name: 'Update', schema: UpdateSchema },
-            { name: 'Round', schema: RoundSchema },
-            { name: 'Session', schema: SessionSchema },
-            { name: 'Migration', schema: MigrationSchema },
+            { name: DaoProposal.name, schema: DaoProposalSchema },
+            { name: Deliverable.name, schema: DeliverableSchema },
+            { name: Image.name, schema: ImageSchema },
+            { name: Project.name, schema: ProjectSchema },
+            { name: Post.name, schema: PostSchema },
+            { name: Round.name, schema: RoundSchema },
+            { name: Session.name, schema: SessionSchema },
+            { name: Migration.name, schema: MigrationSchema },
         ]),
     ],
     providers: [
@@ -36,7 +37,8 @@ import { UpdateSchema } from './schemas/update.schema';
         DeliverableRepository,
         SessionRepository,
         MigrationService,
-        ImageRepository
+        ImageRepository,
+        PostRepository,
     ],
     exports: [
         DaoProposalRepository,
@@ -44,7 +46,8 @@ import { UpdateSchema } from './schemas/update.schema';
         RoundRepository,
         DeliverableRepository,
         SessionRepository,
-        ImageRepository
+        ImageRepository,
+        PostRepository,
     ],
 })
 export class DatabaseModule {}
