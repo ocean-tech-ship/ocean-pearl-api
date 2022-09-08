@@ -16,7 +16,7 @@ import { ProjectCreationGuard } from './guards/project-creation.guard';
 import { ImageOptimizationService } from '../utils/image/services/image-optimization.service';
 import { WalletUtilsModule } from '../utils/wallet/wallet-utils.module';
 import { CreatePostService } from './services/create-post.service';
-import { WalletInfoInterceptor } from './interceptor/wallet-info.interceptor';
+import { WalletInfoInterceptor } from './interceptors/wallet-info.interceptor';
 import { PostController } from './controllers/post.controller';
 
 @Module({

@@ -12,7 +12,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { WalletInfoParam } from '../../utils/wallet/decorators/wallet-info-parameter.decorator';
 import { WalletInfo } from '../../utils/wallet/models/wallet-info.model';
-import { WalletInfoInterceptor } from '../interceptor/wallet-info.interceptor';
+import { WalletInfoInterceptor } from '../interceptors/wallet-info.interceptor';
 import { NewPost } from '../models/new-post.model';
 import { CreatePostService } from '../services/create-post.service';
 
