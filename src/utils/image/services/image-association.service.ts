@@ -4,12 +4,15 @@ import { ProjectRepository } from '../../../database/repositories/project.reposi
 import { DaoProposal } from '../../../database/schemas/dao-proposal.schema';
 import { Project } from '../../../database/schemas/project.schema';
 import { Image } from '../../../database/schemas/image.schema';
+import { Post } from '../../../database/schemas/post.schema';
+import { PostRepository } from '../../../database/repositories/post.repository';
 
 @Injectable()
 export class ImageAssociationService {
     public constructor(
         private projectRepository: ProjectRepository,
         private proposalRepository: DaoProposalRepository,
+        private postRepository: PostRepository,
     ) {}
 
     public async isProjectPictureOwner(project: Project, image: Image): Promise<boolean> {
@@ -33,6 +36,10 @@ export class ImageAssociationService {
             find: { images: image._id },
         });
 
-        return !associatedProject && !associatedProposal;
+        const associatedPost: Post = await this.postRepository.findOneRaw({
+            find: { images: image._id },
+        });
+
+        return !associatedProject && !associatedProposal && !associatedPost;
     }
 }
