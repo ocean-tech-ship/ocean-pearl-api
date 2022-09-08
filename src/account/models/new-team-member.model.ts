@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 import { IsOptional, IsString, Length, MaxLength } from 'class-validator';
 import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
 
-export class CreateTeamMember {
+export class NewTeamMember {
     @ApiProperty({
         default: 'Add the member\'s name.',
     })

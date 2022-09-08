@@ -9,12 +9,12 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthenticatedUser } from '../../auth/models/authenticated-user.model';
-import { WalletInfo } from '../../utils/wallet/models/wallet-info.model';
 import { WalletInfoParam } from '../../utils/wallet/decorators/wallet-info-parameter.decorator';
+import { WalletInfo } from '../../utils/wallet/models/wallet-info.model';
 import { ProjectCreationGuard } from '../guards/project-creation.guard';
 import { ProjectGuard } from '../guards/project.guard';
 import { AssociatedProject } from '../models/associated-project.model';
-import { CreateProject } from '../models/create-project.model';
+import { NewProject } from '../models/new-project.model';
 import { UpdatedProject } from '../models/updated-project.model';
 import { CreateProjectService } from '../services/create-project.service';
 import { GetAssociatedProjectsService } from '../services/get-associated-projects.service';
@@ -84,12 +84,14 @@ export class AccountController {
 
     @Post('/projects')
     @ApiBody({
-        type: CreateProject,
+        type: NewProject,
     })
+    @ApiOkResponse({ description: 'Ok.' })
+    @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
     @UseGuards(ProjectCreationGuard)
     public async createProject(
         @Req() request: Request,
-        @Body() project: CreateProject,
+        @Body() project: NewProject,
         @WalletInfoParam() walletInfo: WalletInfo,
     ): Promise<AssociatedProject[]> {
         try {
