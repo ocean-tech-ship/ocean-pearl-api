@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
+import { ImageUtilsModule } from '../../../../utils/image/image-utils.module';
 import { CreateProjectService } from '../../../services/create-project.service';
 
 describe('CreateProjectService', () => {
@@ -9,7 +10,7 @@ describe('CreateProjectService', () => {
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
-            imports: [DatabaseModule, AppModule],
+            imports: [DatabaseModule, AppModule, ImageUtilsModule],
         }).compile();
 
         service = module.get<CreateProjectService>(CreateProjectService);
