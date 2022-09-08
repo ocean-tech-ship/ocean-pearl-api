@@ -12,7 +12,7 @@ import { PaginatePlugin } from '../plugins/pagination.plugin';
 import { DaoProposal } from './dao-proposal.schema';
 import { Image as Image } from './image.schema';
 import { TeamMember, TeamMemberSchema } from './team-member.schema';
-import { Update } from './update.schema';
+import { Post } from './post.schema';
 
 export type ProjectType = Project & Document;
 
@@ -205,16 +205,16 @@ export class Project {
         type: [
             {
                 type: Types.ObjectId,
-                ref: 'Update',
+                ref: 'Post',
             },
         ],
         default: void 0,
     })
     @ApiProperty({
-        type: Update,
+        type: Post,
         isArray: true,
     })
-    updates: Update[] | Types.ObjectId[];
+    posts: Post[] | Types.ObjectId[];
 
     @ApiProperty()
     createdAt: Date;
