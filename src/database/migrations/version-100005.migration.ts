@@ -55,6 +55,7 @@ export default class Version100005 implements MigrationInterface {
                     $set: project,
                     $unset: {
                         paymentWalletsAddresses: 1,
+                        socialMedia: 1,
                     },
                 },
                 { strict: false },
@@ -135,6 +136,7 @@ export default class Version100005 implements MigrationInterface {
         for (const proposal of proposals) {
             proposal.walletAddress = proposal.author.toLowerCase();
 
+            delete proposal.author;
             await proposalModel.updateOne(
                 { id: proposal.id },
                 {
