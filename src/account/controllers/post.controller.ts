@@ -36,7 +36,7 @@ export class PostController {
         @WalletInfoParam() walletInfo: WalletInfo,
     ): Promise<void> {
         try {
-            this.createPostService.execute(post, walletInfo);
+            await this.createPostService.execute(post, walletInfo);
         } catch (error) {
             throw error;
         }

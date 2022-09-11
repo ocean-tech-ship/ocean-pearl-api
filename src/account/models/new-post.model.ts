@@ -7,7 +7,7 @@ export class NewPost {
     @ApiProperty()
     @IsString()
     @Length(10)
-    project: String;
+    project: string;
 
     @ApiProperty()
     @IsString()
@@ -28,7 +28,7 @@ export class NewPost {
     images: AssociatedImage[];
 
     constructor(attributes: Partial<NewPost> = {}) {
-        for (let key in attributes) {
+        for (const key in attributes) {
             this[key] = attributes[key];
         }
     }
