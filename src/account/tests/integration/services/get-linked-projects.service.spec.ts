@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
-import { GetAssociatedProjectsService } from '../../../services/get-associated-projects.service';
+import { GetLinkedProjectsService } from '../../../services/get-linked-projects.service';
 
-describe('GetAssociatedProjectsService', () => {
+describe('GetLinkedProjectsService', () => {
     let module: TestingModule;
-    let service: GetAssociatedProjectsService;
+    let service: GetLinkedProjectsService;
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule],
         }).compile();
 
-        service = module.get<GetAssociatedProjectsService>(
-            GetAssociatedProjectsService,
+        service = module.get<GetLinkedProjectsService>(
+            GetLinkedProjectsService,
         );
     });
 

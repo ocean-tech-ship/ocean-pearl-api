@@ -6,7 +6,7 @@ import { AccountController } from './controllers/account.controller';
 import { AuthController } from './controllers/auth.controller';
 import { ProjectGuard } from './guards/project.guard';
 import { ManagedProjectMapper } from './mapper/managed-project.mapper';
-import { GetAssociatedProjectsService } from './services/get-associated-projects.service';
+import { GetLinkedProjectsService } from './services/get-linked-projects.service';
 import { UpdateProjectService } from './services/update-project.service';
 import { ImageUtilsModule } from '../utils/image/image-utils.module';
 import { ImageUploadService } from './services/image-upload.service';
@@ -23,7 +23,7 @@ import { PostController } from './controllers/post.controller';
     imports: [AuthModule, DatabaseModule, AwsModule, ImageUtilsModule, WalletUtilsModule],
     controllers: [AccountController, AuthController, ImageController, PostController],
     providers: [
-        GetAssociatedProjectsService,
+        GetLinkedProjectsService,
         ManagedProjectMapper,
         UpdateProjectService,
         CreateProjectService,

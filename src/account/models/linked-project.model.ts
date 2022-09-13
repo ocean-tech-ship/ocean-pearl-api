@@ -4,7 +4,7 @@ import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
 import { ReviewStatusEnum } from '../../database/enums/review-status.enum';
 import { OriginEnum } from '../../database/enums/origin.enum';
 
-export class AssociatedImage {
+export class LinkedImage {
     @ApiProperty()
     id: string;
 
@@ -12,7 +12,7 @@ export class AssociatedImage {
     url: string;
 }
 
-export class AssociatedProject {
+export class LinkedProject {
     @ApiProperty()
     id: string;
 
@@ -58,13 +58,13 @@ export class AssociatedProject {
     mediaHandles: Map<MediaHandlesEnum, string>;
 
     @ApiProperty()
-    logo: AssociatedImage;
+    logo: LinkedImage;
 
     @ApiProperty({
-        type: AssociatedImage,
+        type: LinkedImage,
         isArray: true,
     })
-    images: AssociatedImage[];
+    images: LinkedImage[];
 
     @ApiProperty()
     teamName: string;

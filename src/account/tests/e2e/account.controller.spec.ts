@@ -11,10 +11,10 @@ import { WalletUtilsModule } from '../../../utils/wallet/wallet-utils.module';
 import { AccountController } from '../../controllers/account.controller';
 import { ProjectGuard } from '../../guards/project.guard';
 import { ManagedProjectMapper } from '../../mapper/managed-project.mapper';
-import { AssociatedImage } from '../../models/associated-project.model';
+import { LinkedImage } from '../../models/linked-project.model';
 import { UpdatedProject } from '../../models/updated-project.model';
 import { CreateProjectService } from '../../services/create-project.service';
-import { GetAssociatedProjectsService } from '../../services/get-associated-projects.service';
+import { GetLinkedProjectsService } from '../../services/get-linked-projects.service';
 import { ImageUploadService } from '../../services/image-upload.service';
 import { UpdateProjectService } from '../../services/update-project.service';
 
@@ -31,7 +31,7 @@ describe('AccountController', () => {
             imports: [DatabaseModule, AppModule, AwsModule, WalletUtilsModule],
             controllers: [AccountController],
             providers: [
-                GetAssociatedProjectsService,
+                GetLinkedProjectsService,
                 ImageAssociationService,
                 UpdateProjectService,
                 CreateProjectService,
@@ -64,7 +64,7 @@ describe('AccountController', () => {
     it('should throw bad request if image amount is exceeded', async () => {
         const images = [];
         for (let i = 0; i < ImageUploadService.IMAGE_MAX_AMOUNT + 1; i++) {
-            images.push({} as AssociatedImage);
+            images.push({} as LinkedImage);
         }
 
         const body = {

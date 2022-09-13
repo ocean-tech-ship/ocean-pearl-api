@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Image } from '../../database/schemas/image.schema';
 import { Project } from '../../database/schemas/project.schema';
-import { AssociatedProject } from '../models/associated-project.model';
+import { LinkedProject } from '../models/linked-project.model';
 
 @Injectable()
 export class ManagedProjectMapper {
-    public map(project: Project): AssociatedProject {
+    public map(project: Project): LinkedProject {
         project.logo = project.logo as Image;
 
         const mappedProject = {
@@ -27,7 +27,7 @@ export class ManagedProjectMapper {
                 : {},
             images: [],
             teamName: project.teamName,
-        } as AssociatedProject;
+        } as LinkedProject;
 
         if (project.images?.length > 0) {
             project.images = project.images as Image[];
