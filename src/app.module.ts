@@ -18,6 +18,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { RoundsModule } from './rounds/rounds.module';
 import { ImageUtilsModule } from './utils/image/image-utils.module';
 import { WalletUtilsModule } from './utils/wallet/wallet-utils.module';
+import { TelegramUtilsModule } from './utils/telegram/telegram-utils.module';
 
 @Module({
     imports: [
@@ -55,6 +56,7 @@ import { WalletUtilsModule } from './utils/wallet/wallet-utils.module';
         RoundsModule,
         ImageUtilsModule,
         WalletUtilsModule,
+        TelegramUtilsModule,
     ],
     controllers: [AppController],
     providers: [
