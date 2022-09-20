@@ -5,12 +5,20 @@ import { Message, SendMessageOptions } from 'node-telegram-bot-api';
 
 @Injectable()
 export class TelegramBotService {
-    private readonly chat = this.configService.get('TELEGRAM_BOT_CHAT');
-    private readonly bot = new TelegramBot(this.configService.get('TELEGRAM_BOT_TOKEN'), {
-        polling: true,
-    });
+    private readonly chat: string | undefined;
+    private readonly bot: TelegramBot | undefined;
 
-    public constructor(private configService: ConfigService) {}
+    public constructor(private configService: ConfigService) {
+        const chat = this.configService.get('TELEGRAM_BOT_CHAT');
+        const token = this.configService.get('TELEGRAM_BOT_TOKEN');
+
+        if (chat && token) {
+            this.chat = chat;
+            this.bot = new TelegramBot(token, {
+                polling: true,
+            });
+        }
+    }
 
     getBot(): TelegramBot {
         return this.bot;

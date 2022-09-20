@@ -21,6 +21,8 @@ export class TelegramReviewService implements OnModuleInit {
     }
 
     onModuleInit(): any {
+        if (!this.bot) return;
+
         // Accept & Decline hooks
         this.bot.on('callback_query', async (query) => {
             const text = query.message.text;
