@@ -10,7 +10,7 @@ import { ImageAssociationService } from '../../../utils/image/services/image-ass
 import { WalletUtilsModule } from '../../../utils/wallet/wallet-utils.module';
 import { AccountController } from '../../controllers/account.controller';
 import { ProjectGuard } from '../../guards/project.guard';
-import { ManagedProjectMapper } from '../../mapper/managed-project.mapper';
+import { LinkedProjectMapper } from '../../mapper/linked-project.mapper';
 import { LinkedImage } from '../../models/linked-project.model';
 import { UpdatedProject } from '../../models/updated-project.model';
 import { CreateProjectService } from '../../services/create-project.service';
@@ -35,7 +35,7 @@ describe('AccountController', () => {
                 ImageAssociationService,
                 UpdateProjectService,
                 CreateProjectService,
-                ManagedProjectMapper,
+                LinkedProjectMapper,
                 ProjectGuard,
             ],
         })
