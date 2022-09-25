@@ -45,6 +45,10 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                     path: 'logo',
                     select: '-_id -__v',
                 })
+                .populate({
+                    path: 'posts',
+                    select: '-_id -__v',
+                })
                 .select('-_id -__v')
                 .exec();
         } catch (error: any) {
@@ -86,6 +90,10 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                     path: 'logo',
                     select: '-_id -__v',
                 })
+                .populate({
+                    path: 'posts',
+                    select: '-_id -__v',
+                })
                 .select('-_id -__v')
                 .exec();
         } catch (error: any) {
@@ -115,6 +123,10 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 })
                 .populate({
                     path: 'logo',
+                    select: '-_id -__v',
+                })
+                .populate({
+                    path: 'posts',
                     select: '-_id -__v',
                 })
                 .select('-_id -__v')
@@ -148,6 +160,10 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                         path: 'logo',
                         select: '-_id -__v',
                     },
+                    {
+                        path: 'posts',
+                        select: '-_id -__v',
+                    },
                 ],
                 select: '-_id -__v',
             });
@@ -156,12 +172,15 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async update(model: Project, options: QueryOptions = { strict: false }): Promise<boolean> {
+    public async update(
+        model: Project,
+        options: QueryOptions = { strict: false },
+    ): Promise<boolean> {
         try {
             const response: ProjectType = await this.model.findOneAndUpdate(
                 { id: model.id },
                 model,
-                options
+                options,
             );
 
             return response !== null;
@@ -180,7 +199,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async delete(query): Promise<boolean> {
+    public async delete(query: FindQuery<ProjectType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');

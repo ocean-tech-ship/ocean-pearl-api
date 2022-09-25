@@ -180,7 +180,7 @@ export class PostRepository implements RepositoryInterface<PostType> {
         }
     }
 
-    public async delete(query): Promise<boolean> {
+    public async delete(query: FindQuery<PostType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
