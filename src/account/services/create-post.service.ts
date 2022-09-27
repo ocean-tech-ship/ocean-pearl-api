@@ -1,13 +1,14 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { ProjectRepository } from '../../database/repositories/project.repository';
-import { PostRepository } from '../../database/repositories/post.repository';
-import { Post } from '../../database/schemas/post.schema';
-import { WalletInfo } from '../../utils/wallet/models/wallet-info.model';
-import { NewPost } from '../models/new-post.model';
 import { Types } from 'mongoose';
 import { ImageRepository } from '../../database/repositories/image.repository';
+import { PostRepository } from '../../database/repositories/post.repository';
+import { ProjectRepository } from '../../database/repositories/project.repository';
+import { Post } from '../../database/schemas/post.schema';
+import { Project } from '../../database/schemas/project.schema';
 import { ImageAssociationService } from '../../utils/image/services/image-association.service';
+import { WalletInfo } from '../../utils/wallet/models/wallet-info.model';
 import { LinkedImage } from '../models/linked-project.model';
+import { NewPost } from '../models/new-post.model';
 
 @Injectable()
 export class CreatePostService {
@@ -45,7 +46,9 @@ export class CreatePostService {
             newPost.images = await this.addImages(post.images);
         }
 
-        await this.postRepository.create(newPost);
+        const postId = await this.postRepository.create(newPost);
+        await this.linkPostToProject(linkedProject, postId);
+
         return;
     }
 
@@ -58,14 +61,23 @@ export class CreatePostService {
             });
 
             if (!(await this.imageAssociationService.isImageUnassociated(newImage))) {
-                throw new UnauthorizedException(
-                    'Image is already used by another entity.',
-                );
+                throw new UnauthorizedException('Image is already used by another entity.');
             }
 
             newImageIds.push(newImage._id);
         }
 
         return newImageIds;
+    }
+
+    private async linkPostToProject(linkedProject: Project, postId: Types.ObjectId): Promise<void> {
+        if (linkedProject.posts?.length > 0) {
+            linkedProject.posts = linkedProject.posts as Types.ObjectId[];
+            linkedProject.posts.push(postId);
+        } else {
+            linkedProject.posts = [postId];
+        }
+
+        await this.projectRepository.update(linkedProject);
     }
 }
