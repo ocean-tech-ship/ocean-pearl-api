@@ -136,6 +136,19 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
+    public async getAllRaw(query?: FindQuery<ProjectType>): Promise<Project[]> {
+        try {
+            return await this.model
+                .find(query?.find || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getPaginated(query: FindQuery<ProjectType>): Promise<PaginatedResponse<Project>> {
         try {
             return await this.model.paginate(query?.find || {}, {

@@ -120,6 +120,19 @@ export class PostRepository implements RepositoryInterface<PostType> {
         }
     }
 
+    public async getAllRaw(query?: FindQuery<PostType>): Promise<Post[]> {
+        try {
+            return await this.model
+                .find(query?.find || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async getPaginated(query: FindQuery<PostType>): Promise<PaginatedResponse<Post>> {
         try {
             return await this.model.paginate(query?.find || {}, {
