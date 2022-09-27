@@ -6,6 +6,8 @@ export interface RepositoryInterface<T extends Document> {
 
     getAll(query: FindQuery<T>): Promise<any[]>;
 
+    getAllRaw(query: FindQuery<T>): Promise<any[]>;
+
     findOne(query: FindQuery<T>): Promise<any>;
 
     findOneRaw(query: FindQuery<T>): Promise<any>;
