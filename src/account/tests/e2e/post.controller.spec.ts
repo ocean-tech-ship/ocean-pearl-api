@@ -7,6 +7,7 @@ import { WalletUtilsModule } from '../../../utils/wallet/wallet-utils.module';
 import { PostController } from '../../controllers/post.controller';
 import { WalletInfoInterceptor } from '../../interceptors/wallet-info.interceptor';
 import { CreatePostService } from '../../services/create-post.service';
+import { DeletePostService } from '../../services/delete-post.service';
 
 describe('PostController', () => {
     let module: TestingModule;
@@ -16,7 +17,7 @@ describe('PostController', () => {
         module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule, AwsModule, ImageUtilsModule, WalletUtilsModule],
             controllers: [PostController],
-            providers: [CreatePostService, WalletInfoInterceptor],
+            providers: [CreatePostService, WalletInfoInterceptor, DeletePostService],
         }).compile();
 
         controller = module.get<PostController>(PostController);
