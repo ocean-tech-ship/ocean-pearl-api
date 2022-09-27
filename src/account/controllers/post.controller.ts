@@ -22,7 +22,7 @@ import { CreatePostService } from '../services/create-post.service';
 import { DeletePostService } from '../services/delete-post.service';
 
 @ApiTags('posts')
-// @UseGuards(AuthGuard('jwt-refresh'))
+@UseGuards(AuthGuard('jwt-refresh'))
 @Controller('account')
 @Injectable()
 export class PostController {
@@ -60,7 +60,7 @@ export class PostController {
     @UseGuards(PostGuard)
     public async getLinkedPost(@PostParam() post: ProjectPost): Promise<void> {
         try {
-            this.deletePostService.execute(post);
+            await this.deletePostService.execute(post);
         } catch (error) {
             throw error;
         }
