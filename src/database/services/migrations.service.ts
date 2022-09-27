@@ -83,7 +83,7 @@ export class MigrationService implements OnModuleInit {
                 }
 
                 await migration.down(this.connection);
-                await migrationModel.updateOne({
+                await migrationModel.findOneAndUpdate({ version: migration.getVersion() }, {
                     version: migration.getVersion(),
                     status: MigrationStatusEnum.Down,
                 } as Migration);
