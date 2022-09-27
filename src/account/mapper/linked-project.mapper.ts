@@ -45,26 +45,28 @@ export class LinkedProjectMapper {
                 ) ?? [];
         }
 
-        for (const post of project.posts as Post[]) {
-            post.images = post.images as Image[];
-            mappedProject.posts.push(
-                new LinkedPost({
-                    id: post.id,
-                    reviewStatus: post.reviewStatus,
-                    author: post.author,
-                    title: post.title,
-                    text: post.text,
-                    images: post.images.map((image: Image) => {
-                        return new LinkedImage({
-                            id: image.id,
-                            url: image.url,
-                        });
+        if (project.posts) {
+            for (const post of project.posts as Post[]) {
+                post.images = post.images as Image[];
+                mappedProject.posts.push(
+                    new LinkedPost({
+                        id: post.id,
+                        reviewStatus: post.reviewStatus,
+                        author: post.author,
+                        title: post.title,
+                        text: post.text,
+                        images: post.images.map((image: Image) => {
+                            return new LinkedImage({
+                                id: image.id,
+                                url: image.url,
+                            });
+                        }),
+                        createdAt: post.createdAt,
                     }),
-                    createdAt: post.createdAt,
-                }),
-            );
+                );
+            }    
         }
-
+        
         return mappedProject;
     }
 }
