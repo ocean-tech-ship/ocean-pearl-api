@@ -23,7 +23,7 @@ export class ProjectCreationGuard implements CanActivate {
         const walletInfo = await this.walletInfoService.getCompleteInfo(user.wallet);
         const createdProjects = await this.projectRepository.getAll({
             find: {
-                'author.address': user.wallet.toLocaleLowerCase(),
+                author: user.wallet,
             },
         });
 

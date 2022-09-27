@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ManagedProjectMapper } from '../../../mapper/managed-project.mapper';
+import { LinkedProjectMapper } from '../../../mapper/linked-project.mapper';
 
-describe('ManagedProjectMapper', () => {
+describe('LinkedProjectMapper', () => {
     let module: TestingModule;
-    let service: ManagedProjectMapper;
+    let service: LinkedProjectMapper;
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
-            providers: [ManagedProjectMapper],
+            providers: [LinkedProjectMapper],
         }).compile();
 
-        service = module.get<ManagedProjectMapper>(ManagedProjectMapper);
+        service = module.get<LinkedProjectMapper>(LinkedProjectMapper);
     });
 
     afterAll(async () => {

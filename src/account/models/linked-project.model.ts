@@ -3,16 +3,23 @@ import { CategoryEnum } from '../../database/enums/category.enum';
 import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
 import { ReviewStatusEnum } from '../../database/enums/review-status.enum';
 import { OriginEnum } from '../../database/enums/origin.enum';
+import { LinkedPost } from './linked-post.model';
 
-export class AssociatedImage {
+export class LinkedImage {
     @ApiProperty()
     id: string;
 
     @ApiProperty()
     url: string;
+
+    public constructor(attributes?: Partial<LinkedImage>) {
+        for (let key in attributes) {
+            this[key] = attributes[key];
+        }
+    }
 }
 
-export class AssociatedProject {
+export class LinkedProject {
     @ApiProperty()
     id: string;
 
@@ -58,14 +65,23 @@ export class AssociatedProject {
     mediaHandles: Map<MediaHandlesEnum, string>;
 
     @ApiProperty()
-    logo: AssociatedImage;
+    logo: LinkedImage;
 
     @ApiProperty({
-        type: AssociatedImage,
+        type: LinkedImage,
         isArray: true,
     })
-    images: AssociatedImage[];
+    images: LinkedImage[];
 
     @ApiProperty()
     teamName: string;
+
+    @ApiProperty()
+    posts: LinkedPost[] = [];
+
+    public constructor(attributes?: Partial<LinkedProject>) {
+        for (let key in attributes) {
+            this[key] = attributes[key];
+        }
+    }
 }
