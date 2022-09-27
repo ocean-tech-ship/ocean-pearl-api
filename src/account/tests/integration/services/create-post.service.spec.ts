@@ -2,18 +2,18 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
 import { ImageUtilsModule } from '../../../../utils/image/image-utils.module';
-import { CreateProjectService } from '../../../services/create-project.service';
+import { CreatePostService } from '../../../services/create-post.service';
 
-describe('CreateProjectService', () => {
+describe('CreatePostService', () => {
     let module: TestingModule;
-    let service: CreateProjectService;
+    let service: CreatePostService;
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule, ImageUtilsModule],
         }).compile();
 
-        service = module.get<CreateProjectService>(CreateProjectService);
+        service = module.get<CreatePostService>(CreatePostService);
     });
 
     afterAll(async () => {

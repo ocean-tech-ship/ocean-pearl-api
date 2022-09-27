@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
-import { ImageUtilsModule } from '../../../../utils/image/image-utils.module';
-import { CreateProjectService } from '../../../services/create-project.service';
+import { WalletUtilsModule } from '../../../../utils/wallet/wallet-utils.module';
+import { WalletInfoInterceptor } from '../../../interceptors/wallet-info.interceptor';
 
-describe('CreateProjectService', () => {
+describe('WalletInfoInterceptor', () => {
     let module: TestingModule;
-    let service: CreateProjectService;
+    let service: WalletInfoInterceptor;
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
-            imports: [DatabaseModule, AppModule, ImageUtilsModule],
+            imports: [DatabaseModule, AppModule, WalletUtilsModule],
         }).compile();
 
-        service = module.get<CreateProjectService>(CreateProjectService);
+        service = module.get<WalletInfoInterceptor>(WalletInfoInterceptor);
     });
 
     afterAll(async () => {

@@ -6,8 +6,7 @@ import { ProjectRepository } from '../../database/repositories/project.repositor
 import { Project } from '../../database/schemas/project.schema';
 import { ImageAssociationService } from '../../utils/image/services/image-association.service';
 import { WalletInfo } from '../../utils/wallet/models/wallet-info.model';
-import { CreateProject } from '../models/create-project.model';
-import { AddressFormatService } from '../../utils/wallet/services/address-format.service';
+import { NewProject } from '../models/new-project.model';
 import { OriginEnum } from '../../database/enums/origin.enum';
 import { ReviewStatusEnum } from '../../database/enums/review-status.enum';
 
@@ -16,20 +15,19 @@ export class CreateProjectService {
     // private readonly projectLeadRole = 'project lead';
 
     public constructor(
-        private addressFormatService: AddressFormatService,
         private projectRepository: ProjectRepository,
         private imageAssociationService: ImageAssociationService,
         private imageRepository: ImageRepository,
     ) {}
 
     public async execute(
-        createProject: CreateProject,
+        createProject: NewProject,
         walletInfo: WalletInfo,
     ): Promise<Types.ObjectId> {
         try {
             const newProject = new Project({
                 origin: OriginEnum.OceanPearl,
-                reviewStatus: ReviewStatusEnum.Pending,
+                reviewStatus: ReviewStatusEnum.Accepted,
                 author: walletInfo.address,
                 associatedAddresses: [walletInfo.address, ...(createProject.accessAddresses ?? [])],
                 accessAddresses: [walletInfo.address, ...(createProject.accessAddresses ?? [])],
@@ -50,7 +48,7 @@ export class CreateProjectService {
         }
     }
 
-    private async addLogo(newProject: Project, createProject: CreateProject): Promise<void> {
+    private async addLogo(newProject: Project, createProject: NewProject): Promise<void> {
         if (createProject.logo) {
             if (Object.keys(createProject.logo).length !== 0) {
                 const newLogo = await this.imageRepository.findOneRaw({
@@ -59,7 +57,7 @@ export class CreateProjectService {
 
                 if (!(await this.imageAssociationService.isImageUnassociated(newLogo))) {
                     throw new UnauthorizedException(
-                        'New logo already belongs to a different project',
+                        'New logo already belongs to a different entity',
                     );
                 }
 
@@ -68,7 +66,7 @@ export class CreateProjectService {
         }
     }
 
-    private async addImages(newProject: Project, createProject: CreateProject): Promise<void> {
+    private async addImages(newProject: Project, createProject: NewProject): Promise<void> {
         if (createProject.images) {
             for (const image of createProject.images) {
                 const newImage = await this.imageRepository.findOneRaw({
@@ -77,7 +75,7 @@ export class CreateProjectService {
 
                 if (!(await this.imageAssociationService.isImageUnassociated(newImage))) {
                     throw new UnauthorizedException(
-                        'New image already belongs to a different project',
+                        'New image already belongs to a different entity',
                     );
                 }
 

@@ -16,7 +16,7 @@ import { ImageUploadService } from '../services/image-upload.service';
 import { AssociatedImage } from './associated-project.model';
 import { formatAddresses } from '../../utils/wallet/services/address-format.service';
 
-export class CreateProject {
+export class NewProject {
     @ApiProperty({
         default: "Add the project's name.",
     })

@@ -15,10 +15,13 @@ import { CreateProjectService } from './services/create-project.service';
 import { ProjectCreationGuard } from './guards/project-creation.guard';
 import { ImageOptimizationService } from '../utils/image/services/image-optimization.service';
 import { WalletUtilsModule } from '../utils/wallet/wallet-utils.module';
+import { CreatePostService } from './services/create-post.service';
+import { WalletInfoInterceptor } from './interceptors/wallet-info.interceptor';
+import { PostController } from './controllers/post.controller';
 
 @Module({
     imports: [AuthModule, DatabaseModule, AwsModule, ImageUtilsModule, WalletUtilsModule],
-    controllers: [AccountController, AuthController, ImageController],
+    controllers: [AccountController, AuthController, ImageController, PostController],
     providers: [
         GetAssociatedProjectsService,
         ManagedProjectMapper,
@@ -28,6 +31,8 @@ import { WalletUtilsModule } from '../utils/wallet/wallet-utils.module';
         ProjectCreationGuard,
         ImageOptimizationService,
         ImageUploadService,
+        CreatePostService,
+        WalletInfoInterceptor,
     ],
 })
 export class AccountModule {}

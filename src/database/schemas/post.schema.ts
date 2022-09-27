@@ -1,15 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { Document, Types } from 'mongoose';
+import { formatAddress } from '../../utils/wallet/services/address-format.service';
 import { ReviewStatusEnum } from '../enums/review-status.enum';
 import { nanoid } from '../functions/nano-id.function';
 import { PaginatePlugin } from '../plugins/pagination.plugin';
+import { Image } from './image.schema';
 import { Project } from './project.schema';
 
-export type UpdateType = Update & Document;
+export type PostType = Post & Document;
 
 @Schema({ timestamps: true })
-export class Update {
+export class Post {
     _id: Types.ObjectId;
 
     @Prop({
@@ -37,17 +40,18 @@ export class Update {
         maxLength: 42,
     })
     @ApiProperty()
-    author: string;
+    @Transform(({ value }) => formatAddress(value))
+    author: String;
 
     @Prop({
         type: String,
         enum: ReviewStatusEnum,
-        default: ReviewStatusEnum.Pending,
+        default: ReviewStatusEnum.Accepted,
     })
     @ApiProperty({
         enum: ReviewStatusEnum,
     })
-    reviewStatus: ReviewStatusEnum = ReviewStatusEnum.Pending;
+    reviewStatus: ReviewStatusEnum = ReviewStatusEnum.Accepted;
 
     @Prop({
         type: String,
@@ -68,11 +72,19 @@ export class Update {
     text: string;
 
     @Prop({
-        type: Boolean,
-        default: false,
+        type: [
+            {
+                type: Types.ObjectId,
+                ref: Image.name,
+            },
+        ],
+        default: void 0,
     })
-    @ApiProperty()
-    images: boolean;
+    @ApiProperty({
+        type: Image,
+        isArray: true,
+    })
+    images: Image[] | Types.ObjectId[] = [];
 
     @ApiProperty()
     createdAt: Date;
@@ -80,11 +92,11 @@ export class Update {
     @ApiProperty()
     updatedAt: Date;
 
-    constructor(attributes: Partial<Update> = {}) {
-        for (const key in attributes) {
+    constructor(attributes: Partial<Post> = {}) {
+        for (let key in attributes) {
             this[key] = attributes[key];
         }
     }
 }
 
-export const UpdateSchema = SchemaFactory.createForClass(Update).plugin(PaginatePlugin);
+export const PostSchema = SchemaFactory.createForClass(Post).plugin(PaginatePlugin);

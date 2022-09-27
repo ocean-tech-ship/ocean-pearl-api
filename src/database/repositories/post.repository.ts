@@ -6,13 +6,13 @@ import { MongooseDeleteResponse } from '../interfaces/mongoose-delete-response.i
 import { PaginateModel } from '../interfaces/paginate-model.interface';
 import { RepositoryInterface } from '../interfaces/repository.inteface';
 import { PaginatedResponse } from '../models/paginated-response.model';
-import { Project, ProjectType } from '../schemas/project.schema';
+import { Post, PostType } from '../schemas/post.schema';
 
 @Injectable()
-export class ProjectRepository implements RepositoryInterface<ProjectType> {
-    constructor(@InjectModel(Project.name) private model: PaginateModel<ProjectType>) {}
+export class PostRepository implements RepositoryInterface<PostType> {
+    constructor(@InjectModel(Post.name) private model: PaginateModel<PostType>) {}
 
-    public async findOne(query: FindQuery<ProjectType>): Promise<Project> {
+    public async findOne(query: FindQuery<PostType>): Promise<Post> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
@@ -22,27 +22,21 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .findOne(query.find)
                 .lean()
                 .populate({
-                    path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -airtableId',
+                    path: 'project',
+                    select: '-daoProposals -_id -__v',
                     populate: [
                         {
-                            path: 'fundingRound',
-                            model: 'Round',
+                            path: 'logo',
                             select: '-_id -__v',
                         },
                         {
                             path: 'images',
-                            model: 'Image',
                             select: '-_id -__v',
                         },
                     ],
                 })
                 .populate({
                     path: 'images',
-                    select: '-_id -__v',
-                })
-                .populate({
-                    path: 'logo',
                     select: '-_id -__v',
                 })
                 .select('-_id -__v')
@@ -52,7 +46,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async findOneRaw(query: FindQuery<ProjectType>): Promise<Project> {
+    public async findOneRaw(query: FindQuery<PostType>): Promise<Post> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
@@ -64,26 +58,27 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async getByID(id: string): Promise<Project> {
+    public async getByID(id: string): Promise<Post> {
         try {
             return await this.model
                 .findOne({ id: id })
                 .lean()
                 .populate({
-                    path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -airtableId',
-                    populate: {
-                        path: 'fundingRound',
-                        model: 'Round',
-                        select: '-_id -__v',
-                    },
+                    path: 'project',
+                    select: '-daoProposals -_id -__v',
+                    populate: [
+                        {
+                            path: 'logo',
+                            select: '-_id -__v',
+                        },
+                        {
+                            path: 'images',
+                            select: '-_id -__v',
+                        },
+                    ],
                 })
                 .populate({
                     path: 'images',
-                    select: '-_id -__v',
-                })
-                .populate({
-                    path: 'logo',
                     select: '-_id -__v',
                 })
                 .select('-_id -__v')
@@ -93,7 +88,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async getAll(query?: FindQuery<ProjectType>): Promise<Project[]> {
+    public async getAll(query?: FindQuery<PostType>): Promise<Post[]> {
         try {
             return await this.model
                 .find(query?.find || {})
@@ -101,20 +96,21 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .limit(query?.limit || 0)
                 .lean()
                 .populate({
-                    path: 'daoProposals',
-                    select: '-project -_id -__v -deliverables -airtableId',
-                    populate: {
-                        path: 'fundingRound',
-                        model: 'Round',
-                        select: '-_id -__v',
-                    },
+                    path: 'project',
+                    select: '-daoProposals -_id -__v',
+                    populate: [
+                        {
+                            path: 'logo',
+                            select: '-_id -__v',
+                        },
+                        {
+                            path: 'images',
+                            select: '-_id -__v',
+                        },
+                    ],
                 })
                 .populate({
                     path: 'images',
-                    select: '-_id -__v',
-                })
-                .populate({
-                    path: 'logo',
                     select: '-_id -__v',
                 })
                 .select('-_id -__v')
@@ -124,7 +120,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async getPaginated(query: FindQuery<ProjectType>): Promise<PaginatedResponse<Project>> {
+    public async getPaginated(query: FindQuery<PostType>): Promise<PaginatedResponse<Post>> {
         try {
             return await this.model.paginate(query?.find || {}, {
                 sort: query?.sort || {},
@@ -132,20 +128,21 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 page: query?.page || 0,
                 populate: [
                     {
-                        path: 'daoProposals',
-                        select: '-project -_id -__v -deliverables -airtableId',
-                        populate: {
-                            path: 'fundingRound',
-                            model: 'Round',
-                            select: '-_id -__v',
-                        },
+                        path: 'project',
+                        select: '-daoProposals -_id -__v',
+                        populate: [
+                            {
+                                path: 'logo',
+                                select: '-_id -__v',
+                            },
+                            {
+                                path: 'images',
+                                select: '-_id -__v',
+                            },
+                        ],
                     },
                     {
                         path: 'images',
-                        select: '-_id -__v',
-                    },
-                    {
-                        path: 'logo',
                         select: '-_id -__v',
                     },
                 ],
@@ -156,12 +153,15 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async update(model: Project, options: QueryOptions = { strict: false }): Promise<boolean> {
+    public async update(
+        model: Post,
+        options: QueryOptions = { strict: false },
+    ): Promise<boolean> {
         try {
-            const response: ProjectType = await this.model.findOneAndUpdate(
+            const response: PostType = await this.model.findOneAndUpdate(
                 { id: model.id },
                 model,
-                options
+                options,
             );
 
             return response !== null;
@@ -170,9 +170,9 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async create(model: Project): Promise<Types.ObjectId> {
+    public async create(model: Post): Promise<Types.ObjectId> {
         try {
-            const response: Project = await this.model.create(model);
+            const response: Post = await this.model.create(model);
 
             return response._id;
         } catch (error: any) {
@@ -194,7 +194,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async deleteMany(query: FindQuery<ProjectType>): Promise<boolean> {
+    public async deleteMany(query: FindQuery<PostType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');
@@ -208,7 +208,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public getModel(): PaginateModel<ProjectType> {
+    public getModel(): PaginateModel<PostType> {
         return this.model;
     }
 }
