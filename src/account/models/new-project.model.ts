@@ -13,7 +13,7 @@ import {
 import { CategoryEnum } from '../../database/enums/category.enum';
 import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
 import { ImageUploadService } from '../services/image-upload.service';
-import { AssociatedImage } from './associated-project.model';
+import { LinkedImage } from './linked-project.model';
 import { formatAddresses } from '../../utils/wallet/services/address-format.service';
 
 export class NewProject {
@@ -81,10 +81,10 @@ export class NewProject {
     @ApiProperty()
     @IsOptional()
     @IsObject()
-    logo: AssociatedImage;
+    logo: LinkedImage;
 
     @ApiProperty({
-        type: AssociatedImage,
+        type: LinkedImage,
         isArray: true,
     })
     @IsOptional()
@@ -92,7 +92,7 @@ export class NewProject {
     @ArrayMaxSize(ImageUploadService.IMAGE_MAX_AMOUNT, {
         message: `Exceeded limit of ${ImageUploadService.IMAGE_MAX_AMOUNT} images`,
     })
-    images: AssociatedImage[];
+    images: LinkedImage[];
 
     @ApiProperty({
         default: 'Add a team name.',

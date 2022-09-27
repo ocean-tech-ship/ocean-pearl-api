@@ -1,20 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../../database/database.module';
-import { GetAssociatedProjectsService } from '../../../services/get-associated-projects.service';
+import { DeletePostService } from '../../../services/delete-post.service';
 
-describe('GetAssociatedProjectsService', () => {
+describe('DeletePostService', () => {
     let module: TestingModule;
-    let service: GetAssociatedProjectsService;
+    let service: DeletePostService;
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
             imports: [DatabaseModule, AppModule],
         }).compile();
 
-        service = module.get<GetAssociatedProjectsService>(
-            GetAssociatedProjectsService,
-        );
+        service = module.get<DeletePostService>(DeletePostService);
     });
 
     afterAll(async () => {

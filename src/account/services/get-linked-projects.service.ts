@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { Project } from '../../database/schemas/project.schema';
-import { ManagedProjectMapper } from '../mapper/managed-project.mapper';
-import { AssociatedProject } from '../models/associated-project.model';
+import { LinkedProjectMapper } from '../mapper/linked-project.mapper';
+import { LinkedProject } from '../models/linked-project.model';
 
 @Injectable()
-export class GetAssociatedProjectsService {
+export class GetLinkedProjectsService {
     public constructor(
         private projectRepository: ProjectRepository,
-        private managedProjectMapper: ManagedProjectMapper,
+        private linkedProjectMapper: LinkedProjectMapper,
     ) {}
 
-    public async execute(walletAddress: string): Promise<AssociatedProject[]> {
+    public async execute(walletAddress: string): Promise<LinkedProject[]> {
         const associatedProjects = await this.projectRepository.getAll({
             find: { accessAddresses: walletAddress },
         });
@@ -20,9 +20,9 @@ export class GetAssociatedProjectsService {
             return [];
         }
 
-        const mappedProjects = associatedProjects.map((project: Project) => {
-            return this.managedProjectMapper.map(project);
-        });
+        const mappedProjects = associatedProjects.map((project: Project) =>
+            this.linkedProjectMapper.map(project),
+        );
 
         return mappedProjects;
     }

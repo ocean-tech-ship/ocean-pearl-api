@@ -8,7 +8,6 @@ import { Project } from '../../database/schemas/project.schema';
 import { Round } from '../../database/schemas/round.schema';
 import { LeaderboardProject } from '../models/leaderboard-project.model';
 import { LeaderboardProposal } from '../models/leaderboard-proposal.model';
-import { AssociatedImage } from '../../account/models/associated-project.model';
 
 @Injectable()
 export class LeaderboardProposalBuilder {

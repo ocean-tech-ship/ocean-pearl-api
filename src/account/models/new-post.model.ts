@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ArrayMaxSize, IsArray, IsOptional, IsString, Length } from 'class-validator';
 import { ImageUploadService } from '../services/image-upload.service';
-import { AssociatedImage } from './associated-project.model';
+import { LinkedImage } from './linked-project.model';
 
 export class NewPost {
     @ApiProperty()
@@ -25,7 +25,7 @@ export class NewPost {
         message: `Exceeded limit of ${ImageUploadService.IMAGE_MAX_AMOUNT} images`,
     })
     @IsOptional()
-    images: AssociatedImage[];
+    images: LinkedImage[];
 
     constructor(attributes: Partial<NewPost> = {}) {
         for (const key in attributes) {

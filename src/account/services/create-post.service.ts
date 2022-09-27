@@ -7,7 +7,7 @@ import { NewPost } from '../models/new-post.model';
 import { Types } from 'mongoose';
 import { ImageRepository } from '../../database/repositories/image.repository';
 import { ImageAssociationService } from '../../utils/image/services/image-association.service';
-import { AssociatedImage } from '../models/associated-project.model';
+import { LinkedImage } from '../models/linked-project.model';
 
 @Injectable()
 export class CreatePostService {
@@ -49,7 +49,7 @@ export class CreatePostService {
         return;
     }
 
-    private async addImages(newImages: AssociatedImage[]): Promise<Types.ObjectId[]> {
+    private async addImages(newImages: LinkedImage[]): Promise<Types.ObjectId[]> {
         const newImageIds: Types.ObjectId[] = [];
 
         for (const image of newImages) {

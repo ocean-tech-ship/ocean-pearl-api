@@ -9,7 +9,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { AssociatedImage } from '../models/associated-project.model';
+import { LinkedImage } from '../models/linked-project.model';
 import { ImageUploadService } from '../services/image-upload.service';
 
 @ApiTags('images')
@@ -39,7 +39,7 @@ export class ImageController {
             },
         }),
     )
-    public async uploadLogo(@UploadedFile() logo: Express.Multer.File): Promise<AssociatedImage> {
+    public async uploadLogo(@UploadedFile() logo: Express.Multer.File): Promise<LinkedImage> {
         try {
             return await this.imageUploadService.execute(logo, true);
         } catch (error) {
@@ -81,9 +81,9 @@ export class ImageController {
     )
     public async uploadImage(
         @UploadedFiles() files: { images: Array<Express.Multer.File> },
-    ): Promise<AssociatedImage[]> {
+    ): Promise<LinkedImage[]> {
         try {
-            const savedImages: AssociatedImage[] = [];
+            const savedImages: LinkedImage[] = [];
 
             for (const image of files.images) {
                 savedImages.push(await this.imageUploadService.execute(image));
