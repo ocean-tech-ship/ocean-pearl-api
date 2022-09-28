@@ -31,6 +31,19 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
         }
     }
 
+    public async getAllRaw(query?: FindQuery<SessionType>): Promise<Session[]> {
+        try {
+            return await this.model
+                .find(query?.find || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async findOne(query: FindQuery<SessionType>): Promise<Session> {
         return this.findOneRaw(query);
     }

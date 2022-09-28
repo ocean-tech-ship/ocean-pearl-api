@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { FindQuery } from '../../database/interfaces/find-query.interface';
 import { PaginatedResponse } from '../../database/models/paginated-response.model';
 import { PostRepository } from '../../database/repositories/post.repository';
 import { ProjectRepository } from '../../database/repositories/project.repository';
 import { Post } from '../../database/schemas/post.schema';
-import { Project, ProjectType } from '../../database/schemas/project.schema';
+import { ProjectType } from '../../database/schemas/project.schema';
 import { PostFilterQuery } from '../models/post-filter-query.model';
 
 @Injectable()
@@ -33,8 +34,7 @@ export class GetPostsService {
             }
 
             if (key === 'project') {
-                const linkedProject = await this.getProject(value);
-                query.find.project = linkedProject._id;
+                query.find.project = await this.getProjectIds(value);
 
                 continue;
             }
@@ -50,8 +50,9 @@ export class GetPostsService {
         return await this.postRepository.getPaginated(query);
     }
 
-    private async getProject(projectTitle: string): Promise<Project> {
-        return await this.projectRepository.findOneRaw({
+    private async getProjectIds(projectTitle: string): Promise<Types.ObjectId[]> {
+        const projectIds = [];
+        const projects = await this.projectRepository.getAllRaw({
             find: {
                 title: {
                     $regex: projectTitle,
@@ -59,5 +60,11 @@ export class GetPostsService {
                 },
             },
         });
+
+        for (const project of projects) {
+            projectIds.push(project._id);
+        }
+
+        return projectIds;
     }
 }

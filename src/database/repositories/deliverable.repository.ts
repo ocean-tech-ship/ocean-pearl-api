@@ -74,6 +74,19 @@ export class DeliverableRepository
         }
     }
 
+    public async getAllRaw(query?: FindQuery<DeliverableType>): Promise<Deliverable[]> {
+        try {
+            return await this.model
+                .find(query?.find || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     public async update(model: Deliverable, options: QueryOptions = null): Promise<boolean> {
         try {
             const response: Deliverable = await this.model.findOneAndUpdate(
