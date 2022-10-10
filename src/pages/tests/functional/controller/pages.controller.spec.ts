@@ -4,6 +4,7 @@ import { DaoProposalsModule } from '../../../../dao-proposals/dao-proposals.modu
 import { MetricsModule } from '../../../../metrics/metrics.module';
 import { ProjectsModule } from '../../../../projects/projects.module';
 import { PagesController } from '../../../pages.controller';
+import { PostsModule } from '../../../../posts/posts.module';
 
 describe('PagesController', () => {
     let module: TestingModule;
@@ -11,12 +12,7 @@ describe('PagesController', () => {
 
     beforeAll(async () => {
         module = await Test.createTestingModule({
-            imports: [
-                ProjectsModule,
-                DaoProposalsModule,
-                AppModule,
-                MetricsModule,
-            ],
+            imports: [ProjectsModule, PostsModule, DaoProposalsModule, AppModule, MetricsModule],
             controllers: [PagesController],
         }).compile();
 

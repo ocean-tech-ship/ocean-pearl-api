@@ -3,13 +3,10 @@ import { DaoProposalsModule } from '../dao-proposals/dao-proposals.module';
 import { MetricsModule } from '../metrics/metrics.module';
 import { ProjectsModule } from '../projects/projects.module';
 import { PagesController } from './pages.controller';
+import { PostsModule } from '../posts/posts.module';
 
 @Module({
-  imports: [
-    ProjectsModule,
-    DaoProposalsModule,
-    MetricsModule
-  ],
-  controllers: [PagesController]
+    imports: [ProjectsModule, PostsModule, DaoProposalsModule, MetricsModule],
+    controllers: [PagesController],
 })
 export class PagesModule {}

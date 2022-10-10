@@ -48,6 +48,9 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .populate({
                     path: 'posts',
                     select: '-_id -__v',
+                    options: {
+                        sort: { updatedAt: -1 },
+                    },
                 })
                 .select('-_id -__v')
                 .exec();
@@ -93,6 +96,9 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .populate({
                     path: 'posts',
                     select: '-_id -__v',
+                    options: {
+                        sort: { updatedAt: -1 },
+                    },
                 })
                 .select('-_id -__v')
                 .exec();
@@ -128,6 +134,9 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .populate({
                     path: 'posts',
                     select: '-_id -__v',
+                    options: {
+                        sort: { updatedAt: -1 },
+                    },
                 })
                 .select('-_id -__v')
                 .exec();
@@ -176,6 +185,9 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                     {
                         path: 'posts',
                         select: '-_id -__v',
+                        options: {
+                            sort: { updatedAt: -1 },
+                        },
                     },
                 ],
                 select: '-_id -__v',
