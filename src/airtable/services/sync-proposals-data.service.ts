@@ -38,7 +38,7 @@ export class SyncProposalsDataService {
             this.openRunTimestamp = Date.now();
         }
 
-        const databaseRounds: Round[] = await this.roundRepository.getAll({
+        const databaseRounds: Round[] = await this.roundRepository.getAllRaw({
             sort: {
                 round: 1,
             },
@@ -62,6 +62,10 @@ export class SyncProposalsDataService {
                     id: proposalAirtableID,
                     fields: proposalFields,
                 } = proposal;
+
+                if (!proposalFields['Project Name']) {
+                    continue;
+                }
 
                 const databaseProject: Project = await this.projectRepository.findOneRaw(
                     { find: { title: proposalFields['Project Name'].trim() } },

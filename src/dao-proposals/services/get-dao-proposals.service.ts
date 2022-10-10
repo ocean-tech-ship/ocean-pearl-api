@@ -35,7 +35,7 @@ export class GetDaoProposalsService {
                 const round =
                     value === 0
                         ? await this.getCurrentRoundService.execute()
-                        : await this.roundRepository.findOne({
+                        : await this.roundRepository.findOneRaw({
                               find: { round: value },
                           });
 
