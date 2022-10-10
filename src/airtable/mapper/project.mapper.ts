@@ -6,12 +6,16 @@ import { CategoryMap } from '../constants/category-map.constant';
 
 @Injectable()
 export class ProjectMapper {
-    public map(airtableData: any): Project {
+    public map(airtableData: any): Project | null {
+        if (!airtableData['Project Name']) {
+            return null;
+        }
+
         return new Project({
             title: airtableData['Project Name'].trim(),
             description: airtableData['One Liner'],
             oneLiner: airtableData['One Liner'],
-            category: CategoryMap[airtableData['Grant Category'].trim()] ?? CategoryEnum.Other,
+            category: CategoryMap[airtableData['Grant Category']?.trim()] ?? CategoryEnum.Other,
             author: airtableData['Wallet Address'],
             associatedAddresses: [airtableData['Wallet Address']],
             accessAddresses: [airtableData['Wallet Address']],

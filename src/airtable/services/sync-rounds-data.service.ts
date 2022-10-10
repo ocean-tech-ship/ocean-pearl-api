@@ -158,7 +158,7 @@ export class SyncRoundsDataService {
     }
 
     private async syncRound(round: Round): Promise<void> {
-        const databaseRound: Round = await this.roundsRepository.findOne({
+        const databaseRound: Round = await this.roundsRepository.findOneRaw({
             find: {
                 round: round.round,
             },

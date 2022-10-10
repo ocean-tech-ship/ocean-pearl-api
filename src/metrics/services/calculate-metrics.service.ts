@@ -20,11 +20,11 @@ export class CalculateMetricsService {
         const currentRound =
             round === 0
                 ? await this.getCurrentRoundService.execute()
-                : await this.roundRepository.findOne({
+                : await this.roundRepository.findOneRaw({
                       find: { round: round },
                   });
 
-        const nextRound = await this.roundRepository.findOne({
+        const nextRound = await this.roundRepository.findOneRaw({
             find: { round: currentRound.round + 1 },
         });
 
@@ -53,8 +53,8 @@ export class CalculateMetricsService {
         return {
             startDate: round?.startDate ? new Date(round.startDate) : null,
             votingStartDate: round?.votingStartDate ? new Date(round.votingStartDate) : null,
-            submissionEndDate: new Date(round.submissionEndDate),
-            endDate: new Date(round.votingEndDate),
+            submissionEndDate: round?.submissionEndDate ? new Date(round.submissionEndDate) : null,
+            endDate: round?.votingEndDate ? new Date(round.votingEndDate) : null,
         };
     }
 }
