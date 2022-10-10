@@ -34,6 +34,11 @@ export class NewProjectStrategy implements StrategyInterface {
         airtableData: any,
     ): Promise<void> {
         const newProject: Project = this.projectMapper.map(airtableData);
+
+        if (!newProject) {
+            return;
+        }
+
         const newDeliverable: Deliverable = this.deliverableMapper.map(
             airtableData,
         );
