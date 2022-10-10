@@ -18,9 +18,10 @@ import { UpdateProposalStrategy } from './strategies/update-proposal.strategy';
 import { HttpModule } from '@nestjs/axios';
 import { HealthController } from './controllers/health.controller';
 import { SyncProcessHealthService } from './services/sync-process-health.service';
+import { WalletUtilsModule } from '../utils/wallet/wallet-utils.module';
 
 @Module({
-    imports: [HttpModule, DatabaseModule],
+    imports: [HttpModule, DatabaseModule, WalletUtilsModule],
     controllers: [HealthController],
     providers: [
         SyncProposalsDataService,

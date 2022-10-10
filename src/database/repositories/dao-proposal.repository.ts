@@ -11,7 +11,7 @@ import { DaoProposal, DaoProposalType } from '../schemas/dao-proposal.schema';
 @Injectable()
 export class DaoProposalRepository implements RepositoryInterface<DaoProposalType> {
     constructor(
-        @InjectModel('DaoProposal')
+        @InjectModel(DaoProposal.name)
         private model: PaginateModel<DaoProposalType>,
     ) {}
 
@@ -141,6 +141,19 @@ export class DaoProposalRepository implements RepositoryInterface<DaoProposalTyp
                     select: '-_id -__v',
                 })
                 .select('-_id -__v -airtableId')
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    public async getAllRaw(query?: FindQuery<DaoProposalType>): Promise<DaoProposal[]> {
+        try {
+            return await this.model
+                .find(query?.find || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
+                .lean()
                 .exec();
         } catch (error: any) {
             throw error;

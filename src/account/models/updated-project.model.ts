@@ -9,10 +9,12 @@ import {
     IsString,
     MaxLength,
 } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 import { CategoryEnum } from '../../database/enums/category.enum';
-import { SocialMedia } from '../../database/schemas/social-media.schema';
-import { AssociatedImage } from './associated-project.model';
+import { LinkedImage } from './linked-project.model';
 import { ImageUploadService } from '../services/image-upload.service';
+import { MediaHandlesEnum } from '../../database/enums/media-handles.enum';
+import { formatAddresses } from '../../utils/wallet/services/address-format.service';
 
 export class UpdatedProject {
     @ApiProperty({
@@ -60,22 +62,33 @@ export class UpdatedProject {
     @ArrayNotEmpty({
         message: 'At least one address must be specified',
     })
+    @Transform(({ value }) => formatAddresses(value))
     accessAddresses: string[];
 
     @ApiProperty({
-        type: SocialMedia,
+        type: Object,
+        additionalProperties: {
+            type: 'string',
+        },
+        default: {
+            [MediaHandlesEnum.Twitter]: 'Oceanpearl.io',
+        },
+    })
+    @Type(() => String)
+    @MaxLength(128, {
+        each: true,
     })
     @IsOptional()
     @IsObject()
-    socialMedia: SocialMedia;
+    mediaHandles: Map<MediaHandlesEnum, string>;
 
     @ApiProperty()
     @IsOptional()
     @IsObject()
-    logo: AssociatedImage;
+    logo: LinkedImage;
 
     @ApiProperty({
-        type: AssociatedImage,
+        type: LinkedImage,
         isArray: true,
     })
     @IsOptional()
@@ -83,7 +96,7 @@ export class UpdatedProject {
     @ArrayMaxSize(ImageUploadService.IMAGE_MAX_AMOUNT, {
         message: `Exceeded limit of ${ImageUploadService.IMAGE_MAX_AMOUNT} images`,
     })
-    images: AssociatedImage[];
+    images: LinkedImage[];
 
     @ApiProperty({
         default: 'Ocean Pearl',

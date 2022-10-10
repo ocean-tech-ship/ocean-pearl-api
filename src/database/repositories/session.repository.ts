@@ -8,7 +8,7 @@ import { Session, SessionType } from '../schemas/session.schema';
 
 @Injectable()
 export class SessionRepository implements RepositoryInterface<SessionType> {
-    constructor(@InjectModel('Session') private model: Model<SessionType>) {}
+    constructor(@InjectModel(Session.name) private model: Model<SessionType>) {}
 
     public async getByID(id: string): Promise<Session> {
         try {
@@ -19,6 +19,19 @@ export class SessionRepository implements RepositoryInterface<SessionType> {
     }
 
     public async getAll(query?: FindQuery<SessionType>): Promise<Session[]> {
+        try {
+            return await this.model
+                .find(query?.find || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
+                .lean()
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    public async getAllRaw(query?: FindQuery<SessionType>): Promise<Session[]> {
         try {
             return await this.model
                 .find(query?.find || {})

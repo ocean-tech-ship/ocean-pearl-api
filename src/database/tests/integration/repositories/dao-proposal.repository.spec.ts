@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Wallet } from 'ethers';
 import { Types } from 'mongoose';
 import { AppModule } from '../../../../app.module';
 import { DatabaseModule } from '../../../database.module';
@@ -9,13 +10,13 @@ import { StandingEnum } from '../../../enums/standing.enum';
 import { nanoid } from '../../../functions/nano-id.function';
 import { DaoProposalRepository } from '../../../repositories/dao-proposal.repository';
 import { DaoProposal } from '../../../schemas/dao-proposal.schema';
-import { faker } from '@faker-js/faker';
+import { Funding } from '../../../schemas/funding.schema';
 
 const DAO_PROPOSAL_ID: string = nanoid();
 const DAO_PROPOSAL_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('DaoProposalRepository', () => {
-    const daoProposal: DaoProposal = {
+    const daoProposal: DaoProposal = new DaoProposal({
         _id: DAO_PROPOSAL_MONGO_ID,
         id: DAO_PROPOSAL_ID,
         fundingRound: new Types.ObjectId(),
@@ -25,25 +26,25 @@ describe('DaoProposalRepository', () => {
         title: 'The Title of the Proposal',
         description: 'Here stands a description',
         category: CategoryEnum.BuildAndIntegrate,
-        walletAddress: faker.datatype.hexadecimal(42).toLowerCase(),
+        author: Wallet.createRandom().address,
         yesVotes: 100000,
         noVotes: 20,
         status: DaoProposalStatusEnum.Running,
         deliverables: [new Types.ObjectId()],
-        requestedFunding: {
-            usd: 8400,
-            ocean: 10000, 
-        },
-        receivedFunding: {
+        requestedFunding: new Funding({
             usd: 8400,
             ocean: 10000,
-        },
+        }),
+        receivedFunding: new Funding({
+            usd: 8400,
+            ocean: 10000,
+        }),
         fundamentalMetric: FundamentalMetricEnum.MvpLaunch,
         ipfsHash: '',
         snapshotBlock: 123456789,
         voteUrl: '',
         images: [],
-    } as DaoProposal;
+    });
 
     let module: TestingModule;
     let service: DaoProposalRepository;

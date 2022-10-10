@@ -12,7 +12,7 @@ export class GetCurrentRoundService {
         const searchDate = new Date();
         searchDate.setDate(searchDate.getDate() - this.DATE_CORRECTION);
 
-        let currentRound = await this.roundRepository.findOne({
+        let currentRound = await this.roundRepository.findOneRaw({
             find: {
                 startDate: { $lte: searchDate },
                 votingEndDate: { $gte: searchDate },

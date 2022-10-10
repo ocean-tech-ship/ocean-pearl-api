@@ -6,13 +6,15 @@ import * as request from 'supertest';
 import { AppModule } from '../../../app.module';
 import { AwsModule } from '../../../aws/aws.module';
 import { DatabaseModule } from '../../../database/database.module';
-import { ImageAssociationService } from '../../../utils/services/image-association.service';
+import { ImageAssociationService } from '../../../utils/image/services/image-association.service';
+import { WalletUtilsModule } from '../../../utils/wallet/wallet-utils.module';
 import { AccountController } from '../../controllers/account.controller';
 import { ProjectGuard } from '../../guards/project.guard';
-import { ManagedProjectMapper } from '../../mapper/managed-project.mapper';
-import { AssociatedImage } from '../../models/associated-project.model';
+import { LinkedProjectMapper } from '../../mapper/linked-project.mapper';
+import { LinkedImage } from '../../models/linked-project.model';
 import { UpdatedProject } from '../../models/updated-project.model';
-import { GetAssociatedProjectsService } from '../../services/get-associated-projects.service';
+import { CreateProjectService } from '../../services/create-project.service';
+import { GetLinkedProjectsService } from '../../services/get-linked-projects.service';
 import { ImageUploadService } from '../../services/image-upload.service';
 import { UpdateProjectService } from '../../services/update-project.service';
 
@@ -26,13 +28,14 @@ describe('AccountController', () => {
         const mockGuard: CanActivate = { canActivate: jest.fn(() => true) };
 
         module = await Test.createTestingModule({
-            imports: [DatabaseModule, AppModule, AwsModule],
+            imports: [DatabaseModule, AppModule, AwsModule, WalletUtilsModule],
             controllers: [AccountController],
             providers: [
-                GetAssociatedProjectsService,
+                GetLinkedProjectsService,
                 ImageAssociationService,
                 UpdateProjectService,
-                ManagedProjectMapper,
+                CreateProjectService,
+                LinkedProjectMapper,
                 ProjectGuard,
             ],
         })
@@ -61,7 +64,7 @@ describe('AccountController', () => {
     it('should throw bad request if image amount is exceeded', async () => {
         const images = [];
         for (let i = 0; i < ImageUploadService.IMAGE_MAX_AMOUNT + 1; i++) {
-            images.push({} as AssociatedImage);
+            images.push({} as LinkedImage);
         }
 
         const body = {
@@ -69,7 +72,7 @@ describe('AccountController', () => {
             images,
         } as UpdatedProject;
 
-        const response = await request(app.getHttpServer()).put('/account/project').send(body);
+        const response = await request(app.getHttpServer()).put('/account/projects').send(body);
         expect(response.status).toBe(400);
     });
 });

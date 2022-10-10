@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiBody,
@@ -9,10 +9,15 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthenticatedUser } from '../../auth/models/authenticated-user.model';
+import { WalletInfoParam } from '../../utils/wallet/decorators/wallet-info-parameter.decorator';
+import { WalletInfo } from '../../utils/wallet/models/wallet-info.model';
+import { ProjectCreationGuard } from '../guards/project-creation.guard';
 import { ProjectGuard } from '../guards/project.guard';
-import { AssociatedProject } from '../models/associated-project.model';
+import { LinkedProject } from '../models/linked-project.model';
+import { NewProject } from '../models/new-project.model';
 import { UpdatedProject } from '../models/updated-project.model';
-import { GetAssociatedProjectsService } from '../services/get-associated-projects.service';
+import { CreateProjectService } from '../services/create-project.service';
+import { GetLinkedProjectsService } from '../services/get-linked-projects.service';
 import { UpdateProjectService } from '../services/update-project.service';
 
 @ApiTags('account')
@@ -20,8 +25,9 @@ import { UpdateProjectService } from '../services/update-project.service';
 @Controller('account')
 export class AccountController {
     public constructor(
-        private getAssociatedProjectsService: GetAssociatedProjectsService,
+        private getLinkedProjectsService: GetLinkedProjectsService,
         private updateProjectService: UpdateProjectService,
+        private createProjectService: CreateProjectService,
     ) {}
 
     @Get()
@@ -31,7 +37,7 @@ export class AccountController {
         schema: {
             properties: {
                 projects: {
-                    items: { $ref: getSchemaPath(AssociatedProject) },
+                    items: { $ref: getSchemaPath(LinkedProject) },
                     type: 'array',
                 },
                 wallet: {
@@ -42,11 +48,11 @@ export class AccountController {
     })
     public async getProjects(@Req() request: Request): Promise<{
         wallet: string;
-        projects: AssociatedProject[];
+        projects: LinkedProject[];
     }> {
         const user = request.user as AuthenticatedUser;
 
-        const projects = await this.getAssociatedProjectsService.execute(user.wallet);
+        const projects = await this.getLinkedProjectsService.execute(user.wallet);
 
         return {
             wallet: user.wallet,
@@ -54,7 +60,7 @@ export class AccountController {
         };
     }
 
-    @Put('/project')
+    @Put('/projects')
     @ApiBody({
         type: UpdatedProject,
     })
@@ -64,13 +70,36 @@ export class AccountController {
     public async updateProject(
         @Req() request: Request,
         @Body() project: UpdatedProject,
-    ): Promise<AssociatedProject[]> {
+    ): Promise<LinkedProject[]> {
         try {
             await this.updateProjectService.execute(project);
 
             const user = request.user as AuthenticatedUser;
 
-            return await this.getAssociatedProjectsService.execute(user.wallet);
+            return await this.getLinkedProjectsService.execute(user.wallet);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    @Post('/projects')
+    @ApiBody({
+        type: NewProject,
+    })
+    @ApiOkResponse({ description: 'Ok.' })
+    @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
+    @UseGuards(ProjectCreationGuard)
+    public async createProject(
+        @Req() request: Request,
+        @Body() project: NewProject,
+        @WalletInfoParam() walletInfo: WalletInfo,
+    ): Promise<LinkedProject[]> {
+        try {
+            await this.createProjectService.execute(project, walletInfo);
+
+            const user = request.user as AuthenticatedUser;
+
+            return await this.getLinkedProjectsService.execute(user.wallet);
         } catch (error) {
             throw error;
         }

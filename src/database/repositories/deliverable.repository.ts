@@ -11,7 +11,7 @@ export class DeliverableRepository
     implements RepositoryInterface<DeliverableType>
 {
     constructor(
-        @InjectModel('Deliverable') private model: Model<DeliverableType>,
+        @InjectModel(Deliverable.name) private model: Model<DeliverableType>,
     ) {}
 
     public async findOne(
@@ -68,6 +68,19 @@ export class DeliverableRepository
                 .limit(query?.limit || 0)
                 .lean()
                 .select('-_id -__v')
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    public async getAllRaw(query?: FindQuery<DeliverableType>): Promise<Deliverable[]> {
+        try {
+            return await this.model
+                .find(query?.find || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
+                .lean()
                 .exec();
         } catch (error: any) {
             throw error;

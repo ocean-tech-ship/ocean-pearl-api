@@ -19,6 +19,12 @@ export class Funding {
     @ApiProperty()
     ocean: number = 0;
 
+    public constructor(attributes: Partial<Funding> = {}) {
+        for (const key in attributes) {
+            this[key] = attributes[key];
+        }
+    }
+
     public addFunding(funding: Funding): void {
         this.usd += funding.usd;
         this.ocean += funding.ocean;

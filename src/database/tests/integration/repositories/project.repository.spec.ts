@@ -1,35 +1,41 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Wallet } from 'ethers';
 import { Types } from 'mongoose';
 import { AppModule } from '../../../../app.module';
+import {
+    formatAddress,
+    formatAddresses
+} from '../../../../utils/wallet/services/address-format.service';
 import { DatabaseModule } from '../../../database.module';
 import { CategoryEnum } from '../../../enums/category.enum';
+import { MediaHandlesEnum } from '../../../enums/media-handles.enum';
 import { nanoid } from '../../../functions/nano-id.function';
 import { ProjectRepository } from '../../../repositories/project.repository';
 import { Project } from '../../../schemas/project.schema';
-import { SocialMedia } from '../../../schemas/social-media.schema';
 
 const PROJECT_ID: string = nanoid();
 const PROJECT_MONGO_ID: Types.ObjectId = new Types.ObjectId();
 
 describe('ProjectRepository', () => {
-    const project: Project = <Project>{
+    const project: Project = new Project({
         _id: PROJECT_MONGO_ID,
         id: PROJECT_ID,
         title: 'Best project ever',
         description: 'Still the best project ever.',
         oneLiner: 'Best project as one liner',
-        socialMedia: {
-            twitter: 'test.twitter.com',
-        } as SocialMedia,
+        mediaHandles: new Map<MediaHandlesEnum, string>([
+            [MediaHandlesEnum.Twitter, 'test.twitter.com'],
+        ]),
         category: CategoryEnum.CoreSoftware,
+        author: Wallet.createRandom().address,
         logo: new Types.ObjectId('123456789101112131415161'),
-        associatedAddresses: ['0x967da4048cD07aB37855c090aAF366e4ce1b9F48'],
-        paymentWalletsAddresses: [
-            '0x967da4048cD07aB37855c090aAF366e4ce1b9F42',
-            '0x967da4048cD07aB37855c090aAF366e4ce1b9F48',
+        associatedAddresses: [Wallet.createRandom().address],
+        paymentAddresses: [
+            Wallet.createRandom().address,
+            Wallet.createRandom().address,
         ],
         teamName: 'TestTeam',
-    };
+    });
 
     let module: TestingModule;
     let service: ProjectRepository;
@@ -63,16 +69,20 @@ describe('ProjectRepository', () => {
                 id: dbProject.id,
                 title: dbProject.title,
                 description: dbProject.description,
-                socialMedia: dbProject.socialMedia,
+                mediaHandles: dbProject.mediaHandles,
                 category: dbProject.category,
+                author: dbProject.author,
+                paymentAddresses: dbProject.paymentAddresses,
                 logo: dbProject.logo,
             }).toEqual({
                 id: PROJECT_ID,
                 title: 'Best project ever',
                 description: 'Still the best project ever.',
-                socialMedia: {
+                mediaHandles: {
                     twitter: 'test.twitter.com',
                 },
+                author: formatAddress(project.author),
+                paymentAddresses: formatAddresses(project.paymentAddresses),
                 logo: null,
                 category: CategoryEnum.CoreSoftware,
             });

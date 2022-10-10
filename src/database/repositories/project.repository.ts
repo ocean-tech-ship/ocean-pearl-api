@@ -10,7 +10,7 @@ import { Project, ProjectType } from '../schemas/project.schema';
 
 @Injectable()
 export class ProjectRepository implements RepositoryInterface<ProjectType> {
-    constructor(@InjectModel('Project') private model: PaginateModel<ProjectType>) {}
+    constructor(@InjectModel(Project.name) private model: PaginateModel<ProjectType>) {}
 
     public async findOne(query: FindQuery<ProjectType>): Promise<Project> {
         try {
@@ -44,6 +44,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                 .populate({
                     path: 'logo',
                     select: '-_id -__v',
+                })
+                .populate({
+                    path: 'posts',
+                    select: '-_id -__v',
+                    options: {
+                        sort: { updatedAt: -1 },
+                    },
                 })
                 .select('-_id -__v')
                 .exec();
@@ -86,6 +93,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                     path: 'logo',
                     select: '-_id -__v',
                 })
+                .populate({
+                    path: 'posts',
+                    select: '-_id -__v',
+                    options: {
+                        sort: { updatedAt: -1 },
+                    },
+                })
                 .select('-_id -__v')
                 .exec();
         } catch (error: any) {
@@ -117,7 +131,27 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                     path: 'logo',
                     select: '-_id -__v',
                 })
+                .populate({
+                    path: 'posts',
+                    select: '-_id -__v',
+                    options: {
+                        sort: { updatedAt: -1 },
+                    },
+                })
                 .select('-_id -__v')
+                .exec();
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    public async getAllRaw(query?: FindQuery<ProjectType>): Promise<Project[]> {
+        try {
+            return await this.model
+                .find(query?.find || {})
+                .sort(query?.sort || {})
+                .limit(query?.limit || 0)
+                .lean()
                 .exec();
         } catch (error: any) {
             throw error;
@@ -148,6 +182,13 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
                         path: 'logo',
                         select: '-_id -__v',
                     },
+                    {
+                        path: 'posts',
+                        select: '-_id -__v',
+                        options: {
+                            sort: { updatedAt: -1 },
+                        },
+                    },
                 ],
                 select: '-_id -__v',
             });
@@ -156,12 +197,15 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async update(model: Project, options: QueryOptions = { strict: false }): Promise<boolean> {
+    public async update(
+        model: Project,
+        options: QueryOptions = { strict: false },
+    ): Promise<boolean> {
         try {
             const response: ProjectType = await this.model.findOneAndUpdate(
                 { id: model.id },
                 model,
-                options
+                options,
             );
 
             return response !== null;
@@ -180,7 +224,7 @@ export class ProjectRepository implements RepositoryInterface<ProjectType> {
         }
     }
 
-    public async delete(query): Promise<boolean> {
+    public async delete(query: FindQuery<ProjectType>): Promise<boolean> {
         try {
             if (!query || !query?.find) {
                 throw new Error('Please specify a query');

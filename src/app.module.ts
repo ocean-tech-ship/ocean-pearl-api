@@ -14,9 +14,11 @@ import { DaoProposalsModule } from './dao-proposals/dao-proposals.module';
 import { DatabaseModule } from './database/database.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { PagesModule } from './pages/pages.module';
+import { PostsModule } from './posts/posts.module';
 import { ProjectsModule } from './projects/projects.module';
 import { RoundsModule } from './rounds/rounds.module';
-import { UtilsModule } from './utils/utils.module';
+import { ImageUtilsModule } from './utils/image/image-utils.module';
+import { WalletUtilsModule } from './utils/wallet/wallet-utils.module';
 
 @Module({
     imports: [
@@ -48,11 +50,13 @@ import { UtilsModule } from './utils/utils.module';
         AwsModule,
         DatabaseModule,
         DaoProposalsModule,
+        PostsModule,
         MetricsModule,
         PagesModule,
         ProjectsModule,
         RoundsModule,
-        UtilsModule,
+        ImageUtilsModule,
+        WalletUtilsModule,
     ],
     controllers: [AppController],
     providers: [

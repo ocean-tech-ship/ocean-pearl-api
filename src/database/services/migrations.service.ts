@@ -15,6 +15,7 @@ export class MigrationService implements OnModuleInit {
     public async onModuleInit(): Promise<void> {
         await this.initMigrations();
         await this.up();
+        await this.down();
     }
 
     public async up(): Promise<void> {
@@ -82,7 +83,7 @@ export class MigrationService implements OnModuleInit {
                 }
 
                 await migration.down(this.connection);
-                await migrationModel.updateOne({
+                await migrationModel.findOneAndUpdate({ version: migration.getVersion() }, {
                     version: migration.getVersion(),
                     status: MigrationStatusEnum.Down,
                 } as Migration);

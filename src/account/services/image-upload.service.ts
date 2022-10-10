@@ -3,8 +3,8 @@ import { MimeTypesEnum } from '../../aws/s3/enums/mime-types.enum';
 import { S3ImageManagementService } from '../../aws/s3/services/s3-image-management.service';
 import { ImageRepository } from '../../database/repositories/image.repository';
 import { Image } from '../../database/schemas/image.schema';
-import { ImageOptimizationService } from '../../utils/services/image-optimization.service';
-import { AssociatedImage } from '../models/associated-project.model';
+import { ImageOptimizationService } from '../../utils/image/services/image-optimization.service';
+import { LinkedImage } from '../models/linked-project.model';
 
 @Injectable()
 export class ImageUploadService {
@@ -18,7 +18,7 @@ export class ImageUploadService {
         private imageService: ImageOptimizationService,
     ) {}
 
-    public async execute(image: Express.Multer.File, isLogo = false): Promise<AssociatedImage> {
+    public async execute(image: Express.Multer.File, isLogo = false): Promise<LinkedImage> {
         try {
             const optimizedImage = await this.imageService.optimizeImage(
                 {
@@ -43,7 +43,7 @@ export class ImageUploadService {
             return {
                 id: awsImageData.id,
                 url: awsImageData.url,
-            } as AssociatedImage;
+            } as LinkedImage;
         } catch (error) {
             throw error;
         }
