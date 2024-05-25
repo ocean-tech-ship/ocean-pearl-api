@@ -51,7 +51,7 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.2",
+    "rimraf": "^4.3.1",
     "rxjs": "^7.5.5",
     "sharp": "^0.30.4",
     "svgo": "^2.8.0",
